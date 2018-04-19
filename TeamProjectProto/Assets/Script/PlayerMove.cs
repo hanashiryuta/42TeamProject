@@ -60,8 +60,6 @@ public class PlayerMove : MonoBehaviour {
 
         transform.position = new Vector3(positionX, positionY, positionZ);//位置更新
 
-        Debug.Log(positionY);
-
         itemCountText.text = blastCount.ToString();//内容物取得数表示処理
 
         

@@ -96,8 +96,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
-  blastCount: 1
-  blastLimit: 3
+  scaleCount: 1
+  scaleLimit: 3
+  blastLimit: 30
   isEnd: 0
 --- !u!135 &135719016387797950
 SphereCollider:

@@ -23,8 +23,12 @@ public class BalloonController : MonoBehaviour {
     public GameObject player;//プレイヤー
     
     [HideInInspector]
-    public float blastCount = 1;//現在の内容物総数
-    public float blastLimit = 3;//内容物の所持限界
+    public float scaleCount = 1;//現在の大きさ
+    public float scaleLimit = 3;//大きさ限界
+    float scaleRate = 0;//拡大率
+
+    float blastCount = 0;//内容物総数
+    public float blastLimit = 30;//内容物総数限界
 
     float moveTime = 1.0f;//爆発物が移る際のインターバル
     bool isMove = true;//爆発物が移れるかどうか
@@ -37,11 +41,13 @@ public class BalloonController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         //初期化処理
-        blastCount = 1;
+        scaleCount = 1;
         moveTime = 1.0f;
         isMove = true;
         isEnd = false;
         balloonState = BalloonState.SAFETY;
+        scaleRate = scaleLimit / blastLimit;
+        blastCount = 0;
 
         player = GameObject.Find("Player" + Random.Range(1, 5));//プレイヤーをランダムで指定
         player.GetComponent<PlayerMove>().balloon = transform.gameObject;//プレイヤー内に自分を指定
@@ -49,10 +55,12 @@ public class BalloonController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+        Debug.Log(blastLimit);
         //裏コマンド
         if(Input.GetKeyDown(KeyCode.A))
         {
-            blastCount+=0.1f;
+            scaleCount+=0.1f;
         }
 
         //プレイヤーについていなければ
@@ -75,10 +83,11 @@ public class BalloonController : MonoBehaviour {
         if(blastCount>blastLimit)
         {
             Destroy(player);//プレイヤーを破棄
-            blastCount = 1.0f;
+            scaleCount = 1.0f;
+            blastCount = 0;
         }
 
-        transform.localScale = new Vector3(blastCount, blastCount, blastCount);//内容物の数により大きさ変更        
+        transform.localScale = new Vector3(scaleCount, scaleCount, scaleCount);//内容物の数により大きさ変更        
 
         //常にプレイヤーの上にいるようにする
         if (player != null)
@@ -103,16 +112,16 @@ public class BalloonController : MonoBehaviour {
     /// </summary>
     void ColorChange()
     {
-        if (blastCount < 1.7f) //1.7以下なら安全状態
+        if (blastCount < 10) //1.7以下なら安全状態
             balloonState = BalloonState.SAFETY;
         
         switch(balloonState)
         {
             //1.7以下なら安全状態
-            //色は青
+            //色は緑
             case BalloonState.SAFETY:
-                gameObject.GetComponent<Renderer>().material.color = new Color(0 / 255f, 102 / 255f, 255 / 255f);
-                if (blastCount > 1.7f)
+                gameObject.GetComponent<Renderer>().material.color = new Color(0 / 255f, 255 / 255f, 51 / 255f);
+                if (blastCount > 10)
                     balloonState = BalloonState.CAUTION;
                 break;
 
@@ -120,7 +129,7 @@ public class BalloonController : MonoBehaviour {
             //色は黄色
             case BalloonState.CAUTION:
                 gameObject.GetComponent<Renderer>().material.color = new Color(255 / 255f, 255 / 255f, 51 / 255f);
-                if (blastCount > 2.4f)
+                if (blastCount > 20)
                     balloonState = BalloonState.DANGER;
                 break;
 
@@ -147,5 +156,14 @@ public class BalloonController : MonoBehaviour {
             isMove = false;
         }
        
+    }
+
+    /// <summary>
+    /// 爆発物拡大処理
+    /// </summary>
+    public void BalloonBlast( )
+    {
+        blastCount ++;
+        scaleCount += scaleRate;
     }
 }
