@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 23510664790313840}
   - component: {fileID: 114038795850905584}
   m_Layer: 0
-  m_Name: Item
+  m_Name: PointItem
   m_TagString: Item
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
