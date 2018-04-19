@@ -166,6 +166,19 @@ public class BalloonController : MonoBehaviour {
     }
 
     /// <summary>
+    /// 爆破物ランダム移動処理(1人を除く)
+    /// </summary>
+    /// <param name="playerList"></param>
+    public void BalloonExChange(GameObject[] playerList,GameObject p)
+    {
+        do
+        {
+            player = playerList[Random.Range(0, playerList.Length - 1)];//配列内からランダムでプレイヤーを指定
+        } while (player == p);
+        player.GetComponent<PlayerMove>().balloon = transform.gameObject;
+    }
+
+    /// <summary>
     /// 爆発物拡大処理
     /// </summary>
     public void BalloonBlast( )

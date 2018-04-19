@@ -102,13 +102,21 @@ public class PlayerMove : MonoBehaviour {
     void OnTriggerEnter(Collider col)
     {
         //内容物に当たったら
-        if (col.gameObject.tag == "Item")
+        if (col.gameObject.name.Contains("PointItem"))
         {
             Destroy(col.gameObject);//内容物破棄
             blastCount += col.GetComponent<ItemController>().point; //内容物所持数を増やす  
         }
+        //強制交換アイテムに当たったら
+        if (col.gameObject.name.Contains("ExChangeItem"))
+        {
+            Destroy(col.gameObject);//強制交換アイテム破棄
+            GameObject[] pList = GameObject.FindGameObjectsWithTag("Player");//プレイヤー配列を作成
+            GameObject b = GameObject.FindGameObjectWithTag("Balloon");
+            b.GetComponent<BalloonController>().BalloonExChange(pList, gameObject);
+        }
         //中心物体に当たったら
-        if(col.gameObject.tag == "Post")
+        if (col.gameObject.tag == "Post")
         {
             col.GetComponent<PostController>().blastCount += blastCount;//中心物体に内容物総数を渡す
             blastCount = 0;//内容物所持数を0にする
