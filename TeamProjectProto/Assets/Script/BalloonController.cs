@@ -55,8 +55,6 @@ public class BalloonController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
-        Debug.Log(blastLimit);
         //裏コマンド
         if(Input.GetKeyDown(KeyCode.A))
         {
@@ -69,14 +67,13 @@ public class BalloonController : MonoBehaviour {
             GameObject[] pList = GameObject.FindGameObjectsWithTag("Player");//プレイヤー配列を作成
 
             //プレイヤーが一人しかいなければゲームを終了する
-            if(pList.Length <= 1)
+            if (pList.Length <= 1)
             {
                 isEnd = true;
                 return;
             }
 
-            player = pList[Random.Range(0, pList.Length - 1)];//配列内からランダムでプレイヤーを指定
-            player.GetComponent<PlayerMove>().balloon = transform.gameObject;
+            BalloonExChange(pList);           
         }
 
         //内容物の数が限界を超えたら
@@ -146,16 +143,26 @@ public class BalloonController : MonoBehaviour {
     /// </summary>
     /// <param name="player1">移動元</param>
     /// <param name="player2">移動先</param>
-    public void BalloonMove(GameObject player1,GameObject player2)
+    public void BalloonMove(GameObject player1, GameObject player2)
     {
-        if(isMove)
+        if (isMove)
         {
             player1.GetComponent<PlayerMove>().balloon = null;//移動元の爆発物をNULLに
             player2.GetComponent<PlayerMove>().balloon = transform.gameObject;//移動先に自信を指定
             player = player2;
             isMove = false;
         }
-       
+
+    }
+
+    /// <summary>
+    /// 爆破物ランダム移動処理
+    /// </summary>
+    /// <param name="playerList"></param>
+    public void BalloonExChange(GameObject[] playerList)
+    {       
+        player = playerList[Random.Range(0, playerList.Length - 1)];//配列内からランダムでプレイヤーを指定
+        player.GetComponent<PlayerMove>().balloon = transform.gameObject;
     }
 
     /// <summary>
