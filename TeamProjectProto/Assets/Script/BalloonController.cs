@@ -27,7 +27,8 @@ public class BalloonController : MonoBehaviour {
     public float scaleLimit = 3;//大きさ限界
     float scaleRate = 0;//拡大率
 
-    float blastCount = 0;//内容物総数
+    [HideInInspector]
+    public float blastCount = 0;//内容物総数
     public float blastLimit = 30;//内容物総数限界
 
     float moveTime = 1.0f;//爆発物が移る際のインターバル
