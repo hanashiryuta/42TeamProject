@@ -77,14 +77,6 @@ public class BalloonController : MonoBehaviour {
             BalloonExChangeByPoint(pList);           
         }
 
-        //内容物の数が限界を超えたら
-        if(blastCount>blastLimit)
-        {
-            Destroy(player);//プレイヤーを破棄
-            scaleCount = 1.0f;
-            blastCount = 0;
-        }
-
         transform.localScale = new Vector3(scaleCount, scaleCount, scaleCount);//内容物の数により大きさ変更        
 
         //常にプレイヤーの上にいるようにする
@@ -212,5 +204,30 @@ public class BalloonController : MonoBehaviour {
     {
         blastCount ++;
         scaleCount += scaleRate;
+        //内容物の数が限界を超えたら
+        if (blastCount >= blastLimit)
+        {
+            Destroy(player);//プレイヤーを破棄
+            scaleCount = 1.0f;
+            blastCount = 0;
+        }
+    }
+
+    /// <summary>
+    /// 爆発物拡大処理(中心物体用)
+    /// </summary>
+    /// <param name="post">中心物体</param>
+    public void BalloonBlast(GameObject post)
+    {
+        blastCount++;
+        scaleCount += scaleRate;
+        //内容物の数が限界を超えたら
+        if (blastCount >= blastLimit)
+        {
+            Destroy(player);//プレイヤーを破棄
+            scaleCount = 1.0f;
+            blastCount = 0;
+            post.GetComponent<PostController>().blastCount = 0;//次の爆弾へ超過しないように
+        }
     }
 }

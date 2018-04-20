@@ -40,7 +40,7 @@ public class PostController : MonoBehaviour {
             if (giveTime < 0)//一定時間ごとに
             {
                 //balloon.GetComponent<BalloonController>().blastCount += 0.05f;//内容物を爆発物に移す
-                balloon.GetComponent<BalloonController>().BalloonBlast();
+                balloon.GetComponent<BalloonController>().BalloonBlast(gameObject);
                 blastCount--;//内容物の総数を減らす
                 giveTime = 0.2f;
             }
