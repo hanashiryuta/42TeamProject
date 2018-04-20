@@ -59,7 +59,7 @@ public class BalloonController : MonoBehaviour {
         //裏コマンド
         if(Input.GetKeyDown(KeyCode.A))
         {
-            scaleCount+=0.1f;
+            BalloonBlast();
         }
 
         //プレイヤーについていなければ
@@ -74,7 +74,7 @@ public class BalloonController : MonoBehaviour {
                 return;
             }
 
-            BalloonExChange(pList);           
+            BalloonExChangeByPoint(pList);           
         }
 
         //内容物の数が限界を超えたら
@@ -153,7 +153,32 @@ public class BalloonController : MonoBehaviour {
             player = player2;
             isMove = false;
         }
+    }
 
+    /// <summary>
+    /// 爆破物移動処理(内容物判定)
+    /// </summary>
+    /// <param name="playerList"></param>
+    void BalloonExChangeByPoint(GameObject[] playerList)
+    {
+        GameObject p = playerList[0];
+        float c = p.GetComponent<PlayerMove>().totalBlastCount;
+
+        for(int i = 1; i < playerList.Length; i++)
+        {
+            if (c == playerList[i].GetComponent<PlayerMove>().totalBlastCount && Random.Range(0, 2) == 0) 
+            {
+                continue;
+            }
+            if (c >= playerList[i].GetComponent<PlayerMove>().totalBlastCount)
+            {
+                c = playerList[i].GetComponent<PlayerMove>().totalBlastCount;
+                p = playerList[i];
+            }
+        }
+        player = p;//配列内からランダムでプレイヤーを指定
+        
+        player.GetComponent<PlayerMove>().balloon = transform.gameObject;
     }
 
     /// <summary>

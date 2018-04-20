@@ -26,6 +26,8 @@ public class PlayerMove : MonoBehaviour {
 
     float blastCount = 0;//内容物所持数
     Text itemCountText;//内容物所持数テキスト
+    [HideInInspector]
+    public float totalBlastCount = 0;//内容物所持数累計
 
     [HideInInspector]
     public string horizontal = "Horizontal1";//Inputの左スティック横方向取得名前
@@ -44,7 +46,7 @@ public class PlayerMove : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update () { 
         //プレイヤーの移動処理
         positionX = transform.position.x + Input.GetAxisRaw(horizontal) * moveSpeed;
         positionZ = transform.position.z + Input.GetAxisRaw(vertical) * moveSpeed;
@@ -60,9 +62,7 @@ public class PlayerMove : MonoBehaviour {
 
         transform.position = new Vector3(positionX, positionY, positionZ);//位置更新
 
-        itemCountText.text = blastCount.ToString();//内容物取得数表示処理
-
-        
+        itemCountText.text = blastCount.ToString();//内容物取得数表示処理        
 	}
 
     /// <summary>
@@ -106,6 +106,7 @@ public class PlayerMove : MonoBehaviour {
         {
             Destroy(col.gameObject);//内容物破棄
             blastCount += col.GetComponent<ItemController>().point; //内容物所持数を増やす  
+            totalBlastCount += col.GetComponent<ItemController>().point;//内容物所持数累計を増やす  
         }
         //強制交換アイテムに当たったら
         if (col.gameObject.name.Contains("ExChangeItem"))
@@ -114,6 +115,8 @@ public class PlayerMove : MonoBehaviour {
             GameObject[] pList = GameObject.FindGameObjectsWithTag("Player");//プレイヤー配列を作成
             GameObject b = GameObject.FindGameObjectWithTag("Balloon");
             b.GetComponent<BalloonController>().BalloonExChange(pList, gameObject);
+            if (balloon != null)
+                balloon = null;
         }
         //中心物体に当たったら
         if (col.gameObject.tag == "Post")
