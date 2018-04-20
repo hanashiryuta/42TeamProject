@@ -10,13 +10,13 @@ using UnityEngine;
 public class ExChangeRespawn : MonoBehaviour {
 
     public GameObject originExChangeItem;
-    GameObject exChangeItem = null;
     GameObject balloon;
     public float beforeBP;
+    bool isRespawn = true;
 
 	// Use this for initialization
 	void Start () {
-        exChangeItem = null;
+        isRespawn = true;
         balloon = GameObject.FindGameObjectWithTag("Balloon");
 	}
 	
@@ -28,13 +28,13 @@ public class ExChangeRespawn : MonoBehaviour {
             balloon = GameObject.FindGameObjectWithTag("Balloon");
             return;
         }
-        if (balloon.GetComponent<BalloonController>().blastCount>=balloon.GetComponent<BalloonController>().blastLimit-beforeBP&&exChangeItem == null)
+        if (balloon.GetComponent<BalloonController>().blastCount == 0)
+            isRespawn = true;
+
+        if (balloon.GetComponent<BalloonController>().blastCount>=balloon.GetComponent<BalloonController>().blastLimit-beforeBP&&isRespawn)
         {
-            exChangeItem = Instantiate(originExChangeItem,transform.position,Quaternion.identity,transform);
-        }
-        else if (balloon.GetComponent<BalloonController>().blastCount < balloon.GetComponent<BalloonController>().blastLimit - beforeBP && exChangeItem != null)
-        {
-            Destroy(exChangeItem);
+            Instantiate(originExChangeItem,transform.position,Quaternion.identity,transform);
+            isRespawn = false;
         }
 	}
 }

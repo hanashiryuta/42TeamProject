@@ -111,12 +111,12 @@ public class PlayerMove : MonoBehaviour {
         //強制交換アイテムに当たったら
         if (col.gameObject.name.Contains("ExChangeItem"))
         {
+            if (balloon != null)
+                balloon = null;
             Destroy(col.gameObject);//強制交換アイテム破棄
             GameObject[] pList = GameObject.FindGameObjectsWithTag("Player");//プレイヤー配列を作成
             GameObject b = GameObject.FindGameObjectWithTag("Balloon");
             b.GetComponent<BalloonController>().BalloonExChange(pList, gameObject);
-            if (balloon != null)
-                balloon = null;
         }
         //中心物体に当たったら
         if (col.gameObject.tag == "Post")

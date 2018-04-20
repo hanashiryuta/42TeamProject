@@ -188,7 +188,7 @@ public class BalloonController : MonoBehaviour {
     /// <param name="playerList"></param>
     public void BalloonExChange(GameObject[] playerList)
     {       
-        player = playerList[Random.Range(0, playerList.Length - 1)];//配列内からランダムでプレイヤーを指定
+        player = playerList[Random.Range(0, playerList.Length)];//配列内からランダムでプレイヤーを指定
         player.GetComponent<PlayerMove>().balloon = transform.gameObject;
     }
 
@@ -200,7 +200,7 @@ public class BalloonController : MonoBehaviour {
     {
         do
         {
-            player = playerList[Random.Range(0, playerList.Length - 1)];//配列内からランダムでプレイヤーを指定
+            player = playerList[Random.Range(0, playerList.Length)];//配列内からランダムでプレイヤーを指定
         } while (player == p);
         player.GetComponent<PlayerMove>().balloon = transform.gameObject;
     }
