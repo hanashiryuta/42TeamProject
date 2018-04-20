@@ -166,18 +166,19 @@ public class BalloonController : MonoBehaviour {
 
         for(int i = 1; i < playerList.Length; i++)
         {
+            //もし最小値が二人いたらランダム
             if (c == playerList[i].GetComponent<PlayerMove>().totalBlastCount && Random.Range(0, 2) == 0) 
             {
                 continue;
             }
+            //所持数が少ないやつを保存
             if (c >= playerList[i].GetComponent<PlayerMove>().totalBlastCount)
             {
                 c = playerList[i].GetComponent<PlayerMove>().totalBlastCount;
                 p = playerList[i];
             }
         }
-        player = p;//配列内からランダムでプレイヤーを指定
-        
+        player = p;//一番所持数が少ないやつを設定        
         player.GetComponent<PlayerMove>().balloon = transform.gameObject;
     }
 
