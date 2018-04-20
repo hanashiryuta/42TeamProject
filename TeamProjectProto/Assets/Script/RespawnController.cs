@@ -10,7 +10,6 @@ using UnityEngine;
 public class RespawnController : MonoBehaviour {
 
     public GameObject player;//プレイヤー
-    public GameObject balloon;//爆発物
     List<GameObject> playerList;//プレイヤーリスト
 
 	// Use this for initialization
@@ -27,7 +26,6 @@ public class RespawnController : MonoBehaviour {
             p.GetComponent<PlayerMove>().vertical = "Vertical" + (i + 1);//そのプレイヤーの使うInput指定
             p.GetComponent<PlayerMove>().jump = "Jump" + (i + 1);//そのプレイヤーの使うInput指定
         }
-        Instantiate(balloon);//爆発物生成
 	}
 	
 	// Update is called once per frame
