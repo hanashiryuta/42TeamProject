@@ -841,7 +841,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameObjectList:
-  - {fileID: 1856908396269914, guid: 06f86fddf1205ab4d8eabc57bb35c862, type: 2}
+  - {fileID: 1672163299721614, guid: d3c818eb8e8848449b3451dcf21be0fe, type: 2}
+  - {fileID: 1480723909214556, guid: 3ad8639a6eadcbc4886fab8ba6c76801, type: 2}
+  - {fileID: 1555083879601680, guid: 2bb6585d572e92a45b4cc3fb3c3f6a91, type: 2}
+  - {fileID: 1629509006073450, guid: c819a58f67f2b8849b53513808860638, type: 2}
+  - {fileID: 1019869331174566, guid: f8902cb6e725ba240af1e16dc0aa1f1c, type: 2}
   - {fileID: 1204771191657572, guid: a0a16def173e9d249b10f733f5551e0b, type: 2}
   - {fileID: 1996331776698540, guid: 379cfb78862d0a84faaf898f2e86197e, type: 2}
 --- !u!4 &1616548637
@@ -1002,7 +1006,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 1, g: 0.99219066, b: 0.9485294, a: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -1011,7 +1015,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 90
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -1036,7 +1040,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2094600260}
   m_LocalRotation: {x: 0.6360782, y: 0, z: 0, w: 0.7716246}
-  m_LocalPosition: {x: 0, y: 20, z: -5}
+  m_LocalPosition: {x: 0, y: 20, z: -7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
