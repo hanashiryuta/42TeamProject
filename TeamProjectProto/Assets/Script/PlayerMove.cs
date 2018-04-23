@@ -35,6 +35,8 @@ public class PlayerMove : MonoBehaviour {
     public string vertical = "Vertical1";//Inputの左スティック縦方向取得名前
     [HideInInspector]
     public string jump = "Jump1";//Inputのジャンプボタン取得名前
+
+    List<GameObject> onObject;//今当たっているオブジェクト
     
 
     // Use this for initialization
@@ -42,6 +44,7 @@ public class PlayerMove : MonoBehaviour {
         //初期化処理
         isJump = false;
         blastCount = 0;
+        onObject = new List<GameObject>();
 
         itemCountText = GameObject.Find(transform.name + "ItemCount").GetComponent<Text>();//内容物所持数テキスト取得
 	}
@@ -64,6 +67,8 @@ public class PlayerMove : MonoBehaviour {
         transform.position = new Vector3(positionX, positionY, positionZ);//位置更新
 
         itemCountText.text = blastCount.ToString();//内容物取得数表示処理        
+
+        WallSide();
 	}
 
     /// <summary>
@@ -85,28 +90,15 @@ public class PlayerMove : MonoBehaviour {
         }
     }
 
-    void OnCollisionEnter(Collision col)
+    /// <summary>
+    /// 壁の横にいる処理
+    /// </summary>
+    void WallSide()
     {
-        //床に当たったら
-        if(col.gameObject.tag == "Field")
-        {           
-            isJump = false;//床にいたらジャンプしない
-        }
-        //プレイヤーに当たったら
-        if(col.gameObject.tag == "Player")
+        //フィールドオブジェクトに当たっていたら
+        if (onObject.Count > 0) 
         {
-            if(balloon != null)//爆発物があれば
-            {
-                balloon.GetComponent<BalloonController>().BalloonMove(transform.gameObject, col.gameObject);//爆発物の移動処理
-            }
-        }
-    }
-
-    void OnCollisionStay(Collision col)
-    {
-        //当たっているのがフィールドオブジェクトだったら
-        if(col.gameObject.tag == "Field")
-        {
+            
             bool isOnField = false;//下にフィールドがあるか
             //レイをずらすオフセット
             float offset = -0.4f;
@@ -121,7 +113,7 @@ public class PlayerMove : MonoBehaviour {
             //レイを中心から四角形状に4本出す
             for (int i = 0; i < 4; i++)
             {
-                Ray ray = new Ray(transform.position+offsetList[i], new Vector3(0, -1, 0));
+                Ray ray = new Ray(transform.position + offsetList[i], new Vector3(0, -1, 0));
                 RaycastHit hit;
 
                 //どれか一つでも当たっていたら床に立っている
@@ -136,12 +128,34 @@ public class PlayerMove : MonoBehaviour {
         }
     }
 
+    void OnCollisionEnter(Collision col)
+    {
+        //床に当たったら
+        if(col.gameObject.tag == "Field"&&!onObject.Contains(col.gameObject))
+        {
+            onObject.Add(col.gameObject);
+            isJump = false;//床にいたらジャンプしない
+        }
+        //プレイヤーに当たったら
+        if(col.gameObject.tag == "Player")
+        {
+            if(balloon != null)//爆発物があれば
+            {
+                balloon.GetComponent<BalloonController>().BalloonMove(transform.gameObject, col.gameObject);//爆発物の移動処理
+            }
+        }
+    }
+
     void OnCollisionExit(Collision col)
     {
         //フィールドから離れたら
-        if (col.gameObject.tag == "Field")
+        if (col.gameObject.tag == "Field"&&onObject.Contains(col.gameObject))
         {
-            isJump = true;//ジャンプ判定
+            onObject.Remove(col.gameObject);
+            if (onObject.Count < 1)//床の上でなければ
+            {
+                isJump = true;//ジャンプ判定
+            }
         }
     }
 
