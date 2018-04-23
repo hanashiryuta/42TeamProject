@@ -13,7 +13,7 @@ public class PlayerMove : MonoBehaviour {
     float positionX = 0;//プレイヤーのｘ方向移動距離
     float positionZ = 0;//プレイヤーのｚ方向移動距離
     float positionY = 1;//プレイヤーのｙ座標
-    public float moveSpeed = 0.5f;//プレイヤーの移動速度
+    public float moveSpeed = 0.5f;//プレイヤーの移動速度    
 
     bool isJump = false;//ジャンプしているか
     public float originJumpPower = 0.2f;//基本ジャンプの上方向の力
@@ -35,6 +35,7 @@ public class PlayerMove : MonoBehaviour {
     public string vertical = "Vertical1";//Inputの左スティック縦方向取得名前
     [HideInInspector]
     public string jump = "Jump1";//Inputのジャンプボタン取得名前
+    
 
     // Use this for initialization
     void Start () {
@@ -59,7 +60,7 @@ public class PlayerMove : MonoBehaviour {
         }
 
         Jump();//ジャンプ
-
+        
         transform.position = new Vector3(positionX, positionY, positionZ);//位置更新
 
         itemCountText.text = blastCount.ToString();//内容物取得数表示処理        
@@ -78,6 +79,7 @@ public class PlayerMove : MonoBehaviour {
             if (positionY < 1)
             {
                 positionY = 1;//床以下にならないようにする
+                jumpPower = 0;
                 isJump = false;
             }
         }
@@ -86,8 +88,8 @@ public class PlayerMove : MonoBehaviour {
     void OnCollisionEnter(Collision col)
     {
         //床に当たったら
-        if(col.gameObject.tag == "Floor")
-        {
+        if(col.gameObject.tag == "Field")
+        {           
             isJump = false;//床にいたらジャンプしない
         }
         //プレイヤーに当たったら
@@ -99,6 +101,50 @@ public class PlayerMove : MonoBehaviour {
             }
         }
     }
+
+    void OnCollisionStay(Collision col)
+    {
+        //当たっているのがフィールドオブジェクトだったら
+        if(col.gameObject.tag == "Field")
+        {
+            bool isOnField = false;//下にフィールドがあるか
+            //レイをずらすオフセット
+            float offset = -0.4f;
+            Vector3[] offsetList = new Vector3[]
+            {
+                new Vector3(-offset,0,-offset),
+                new Vector3(-offset,0,offset),
+                new Vector3(offset,0,-offset),
+                new Vector3(offset,0,offset),
+            };
+
+            //レイを中心から四角形状に4本出す
+            for (int i = 0; i < 4; i++)
+            {
+                Ray ray = new Ray(transform.position+offsetList[i], new Vector3(0, -1, 0));
+                RaycastHit hit;
+
+                //どれか一つでも当たっていたら床に立っている
+                if (Physics.Raycast(ray, out hit, 1))
+                {
+                    isOnField = true;
+                }
+            }
+            //床に立っていなければ
+            if (!isOnField)
+                isJump = true;//ジャンプ判定
+        }
+    }
+
+    void OnCollisionExit(Collision col)
+    {
+        //フィールドから離れたら
+        if (col.gameObject.tag == "Field")
+        {
+            isJump = true;//ジャンプ判定
+        }
+    }
+
     void OnTriggerEnter(Collider col)
     {
         //内容物に当たったら
