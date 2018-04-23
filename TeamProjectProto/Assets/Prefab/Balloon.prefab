@@ -58,6 +58,8 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_Materials:
   - {fileID: 2100000, guid: 70f3a79a75aa758458e79783805f1f67, type: 2}
+  - {fileID: 2100000, guid: d9e698e4cc4fb1948a843c9ef3f020e6, type: 2}
+  - {fileID: 2100000, guid: d31883d181ac1734cbeac6e5b4f3c1b3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -98,8 +100,11 @@ MonoBehaviour:
   player: {fileID: 0}
   scaleCount: 1
   scaleLimit: 3
+  blastCount: 0
   blastLimit: 30
   isEnd: 0
+  isTimeBlast: 0
+  originBlastTime: 1
 --- !u!135 &135719016387797950
 SphereCollider:
   m_ObjectHideFlags: 1
