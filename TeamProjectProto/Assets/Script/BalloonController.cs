@@ -39,6 +39,10 @@ public class BalloonController : MonoBehaviour {
 
     BalloonState balloonState;//爆発物の状態
 
+    public bool isTimeBlast = false;//時間経過で爆破の切り替え
+    public float originBlastTime = 1.0f;//爆発物が膨らむ間隔
+    float blastTime;
+
 	// Use this for initialization
 	void Start () {
         //初期化処理
@@ -49,6 +53,8 @@ public class BalloonController : MonoBehaviour {
         balloonState = BalloonState.SAFETY;
         scaleRate = scaleLimit / blastLimit;
         blastCount = 0;
+        isTimeBlast = false;
+        blastTime = originBlastTime;
 
         player = GameObject.Find("Player" + Random.Range(1, 5));//プレイヤーをランダムで指定
         player.GetComponent<PlayerMove>().balloon = transform.gameObject;//プレイヤー内に自分を指定
@@ -60,6 +66,14 @@ public class BalloonController : MonoBehaviour {
         if(Input.GetKeyDown(KeyCode.A))
         {
             BalloonBlast();
+        }
+
+        //時間経過で膨らむ処理
+        blastTime -= Time.deltaTime;
+        if(blastTime <= 0)
+        {
+            BalloonBlast();
+            blastTime = originBlastTime;
         }
 
         //プレイヤーについていなければ
