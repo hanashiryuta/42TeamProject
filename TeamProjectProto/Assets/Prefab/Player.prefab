@@ -128,6 +128,7 @@ MonoBehaviour:
   gravPower: 0.02
   balloonJumpPower: 0.3
   balloon: {fileID: 0}
+  totalBlastCount: 0
   horizontal: Horizontal1
   vertical: Vertical1
   jump: Jump
