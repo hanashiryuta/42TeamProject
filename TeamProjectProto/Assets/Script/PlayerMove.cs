@@ -12,7 +12,7 @@ public class PlayerMove : MonoBehaviour {
 
     float positionX = 0;//プレイヤーのｘ方向移動距離
     float positionZ = 0;//プレイヤーのｚ方向移動距離
-    float positionY = 1;//プレイヤーのｙ座標
+    float positionY = 0;//プレイヤーのｙ座標
     public float moveSpeed = 0.5f;//プレイヤーの移動速度    
 
     bool isJump = false;//ジャンプしているか
@@ -52,9 +52,29 @@ public class PlayerMove : MonoBehaviour {
 	// Update is called once per frame
 	void Update () { 
         //プレイヤーの移動処理
-        positionX = transform.position.x + Input.GetAxisRaw(horizontal) * moveSpeed;
-        positionZ = transform.position.z + Input.GetAxisRaw(vertical) * moveSpeed;
+        positionX =   Input.GetAxisRaw(horizontal) * moveSpeed;
+        positionZ =   Input.GetAxisRaw(vertical) * moveSpeed;
 
+        Jump();//ジャンプ  
+         
+        HitField();//あたり判定
+      
+        transform.position = new Vector3(transform.position.x+positionX, transform.position.y+positionY, transform.position.z + positionZ);//位置更新
+        if (transform.position.y < 1)
+        {
+            transform.position = new Vector3(transform.position.x, 1, transform.position.z);//床以下にならないようにする
+            jumpPower = 0;
+            isJump = false;
+        }
+
+        itemCountText.text = blastCount.ToString();//内容物取得数表示処理 
+	}
+
+    /// <summary>
+    /// ジャンプ処理
+    /// </summary>
+    void Jump()
+    { 
         //ジャンプ処理
         if (Input.GetButtonDown(jump) && !isJump)
         {
@@ -62,46 +82,120 @@ public class PlayerMove : MonoBehaviour {
             isJump = true;
         }
 
-        Jump();//ジャンプ
-        
-        transform.position = new Vector3(positionX, positionY, positionZ);//位置更新
-
-        itemCountText.text = blastCount.ToString();//内容物取得数表示処理        
-
-        WallSide();
-	}
-
-    /// <summary>
-    /// ジャンプ処理
-    /// </summary>
-    void Jump()
-    {
         if (isJump)
         {
-            positionY += jumpPower;//現在のPositionに力を足していく
-            jumpPower -= gravPower;//力を減らしていく
+            positionY = jumpPower;//現在のPositionに力を足していく
+            jumpPower -= gravPower;//力を減らしていく            
+        }
+        
+    }
+    
+    /// <summary>
+    /// Rayを使ったあたり判定
+    /// </summary>
+    void HitField()
+    {
 
-            if (positionY < 1)
+        //x軸方向のあたり判定
+        if (Input.GetAxisRaw(horizontal) != 0)
+        {
+            float offset = 0.49f;
+            Vector3[] offsetList = new Vector3[]
             {
-                positionY = 1;//床以下にならないようにする
-                jumpPower = 0;
-                isJump = false;
+                new Vector3(0,-offset,-offset),
+                new Vector3(0,-offset,offset),
+                new Vector3(0,offset,-offset),
+                new Vector3(0,offset,offset),
+            };
+
+            //x軸マイナス方向
+            if (Input.GetAxisRaw(horizontal) < 0)
+            {
+                //レイを中心から四角形状に4本出す
+                for (int i = 0; i < 4; i++)
+                {
+                    Ray ray = new Ray(transform.position + offsetList[i], new Vector3(-1, 0, 0));
+                    RaycastHit hit;
+
+                    if (Physics.Raycast(ray, out hit, 0.51f))
+                    {
+                        //レイが当たれば移動しない
+                        if (hit.transform.tag == "Field")
+                            positionX = 0;
+                    }
+                }
+            }
+            //x軸プラス方向
+            if (Input.GetAxisRaw(horizontal) > 0)
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    Ray ray = new Ray(transform.position + offsetList[i], new Vector3(1, 0, 0));
+                    RaycastHit hit;
+
+                    if (Physics.Raycast(ray, out hit, 0.51f))
+                    {
+                        //レイが当たれば移動しない
+                        if (hit.transform.tag == "Field")
+                            positionX = 0;
+                    }
+                }
             }
         }
-    }
 
-    /// <summary>
-    /// 壁の横にいる処理
-    /// </summary>
-    void WallSide()
-    {
-        //フィールドオブジェクトに当たっていたら
-        if (onObject.Count > 0) 
+        //z軸方向あたり判定
+        if (Input.GetAxisRaw(vertical) != 0)
         {
-            
+            float offset = 0.49f;
+            Vector3[] offsetList = new Vector3[]
+            {
+                new Vector3(-offset,-offset,0),
+                new Vector3(offset,-offset,0),
+                new Vector3(-offset,offset,0),
+                new Vector3(offset,offset,0),
+            };
+
+            //z軸マイナス方向
+            if (Input.GetAxisRaw(vertical) < 0)
+            {
+                //レイを中心から四角形状に4本出す
+                for (int i = 0; i < 4; i++)
+                {
+                    Ray ray = new Ray(transform.position + offsetList[i], new Vector3(0, 0, -1));
+                    RaycastHit hit;
+
+                    if (Physics.Raycast(ray, out hit, 0.51f))
+                    {
+                        //レイが当たれば移動しない
+                        if (hit.transform.tag == "Field")
+                            positionZ = 0;
+                    }
+                }
+            }
+            //z軸プラス方向
+            if (Input.GetAxisRaw(vertical) > 0)
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    Ray ray = new Ray(transform.position + offsetList[i], new Vector3(0, 0, 1));
+                    RaycastHit hit;
+
+                    if (Physics.Raycast(ray, out hit, 0.51f))
+                    {
+                        //レイが当たれば移動しない
+                        if (hit.transform.tag == "Field")
+                            positionZ = 0;
+                    }
+                }
+            }            
+        }
+
+        //y方向あたり判定
+        if (positionY <= 0)
+        {
             bool isOnField = false;//下にフィールドがあるか
             //レイをずらすオフセット
-            float offset = -0.4f;
+            float offset = 0.49f;
             Vector3[] offsetList = new Vector3[]
             {
                 new Vector3(-offset,0,-offset),
@@ -117,9 +211,14 @@ public class PlayerMove : MonoBehaviour {
                 RaycastHit hit;
 
                 //どれか一つでも当たっていたら床に立っている
-                if (Physics.Raycast(ray, out hit, 1))
+                if (Physics.Raycast(ray, out hit, 0.51f))
                 {
-                    isOnField = true;
+                    if (hit.transform.tag == "Field")
+                    {
+                        isJump = false;
+                        positionY = 0;
+                        isOnField = true;
+                    }
                 }
             }
             //床に立っていなければ
@@ -130,31 +229,12 @@ public class PlayerMove : MonoBehaviour {
 
     void OnCollisionEnter(Collision col)
     {
-        //床に当たったら
-        if(col.gameObject.tag == "Field"&&!onObject.Contains(col.gameObject))
-        {
-            onObject.Add(col.gameObject);
-            isJump = false;//床にいたらジャンプしない
-        }
         //プレイヤーに当たったら
         if(col.gameObject.tag == "Player")
         {
             if(balloon != null)//爆発物があれば
             {
                 balloon.GetComponent<BalloonController>().BalloonMove(transform.gameObject, col.gameObject);//爆発物の移動処理
-            }
-        }
-    }
-
-    void OnCollisionExit(Collision col)
-    {
-        //フィールドから離れたら
-        if (col.gameObject.tag == "Field"&&onObject.Contains(col.gameObject))
-        {
-            onObject.Remove(col.gameObject);
-            if (onObject.Count < 1)//床の上でなければ
-            {
-                isJump = true;//ジャンプ判定
             }
         }
     }
