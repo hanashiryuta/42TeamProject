@@ -6,6 +6,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// 爆発物の状態
@@ -84,7 +85,8 @@ public class BalloonController : MonoBehaviour {
             //プレイヤーが一人しかいなければゲームを終了する
             if (pList.Length <= 1)
             {
-                isEnd = true;
+				SceneManager.LoadScene ("Result");//追加
+                //isEnd = true;
                 return;
             }
 
@@ -222,7 +224,7 @@ public class BalloonController : MonoBehaviour {
         if (blastCount >= blastLimit)
         {
             Destroy(player);//プレイヤーを破棄
-            scaleCount = 1.0f;
+			scaleCount = 1.0f;
             blastCount = 0;
         }
     }
