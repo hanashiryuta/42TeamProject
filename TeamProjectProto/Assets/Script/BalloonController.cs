@@ -54,7 +54,6 @@ public class BalloonController : MonoBehaviour {
         balloonState = BalloonState.SAFETY;
         scaleRate = scaleLimit / blastLimit;
         blastCount = 0;
-        isTimeBlast = false;
         blastTime = originBlastTime;
 
         player = GameObject.Find("Player" + Random.Range(1, 5));//プレイヤーをランダムで指定
@@ -70,11 +69,14 @@ public class BalloonController : MonoBehaviour {
         }
 
         //時間経過で膨らむ処理
-        blastTime -= Time.deltaTime;
-        if(blastTime <= 0)
+        if (isTimeBlast)
         {
-            BalloonBlast();
-            blastTime = originBlastTime;
+            blastTime -= Time.deltaTime;
+            if (blastTime <= 0)
+            {
+                BalloonBlast();
+                blastTime = originBlastTime;
+            }
         }
 
         //プレイヤーについていなければ
@@ -126,7 +128,7 @@ public class BalloonController : MonoBehaviour {
             //1.7以下なら安全状態
             //色は緑
             case BalloonState.SAFETY:
-                gameObject.GetComponent<Renderer>().material.color = new Color(0 / 255f, 255 / 255f, 51 / 255f);
+                gameObject.GetComponent<Renderer>().material.color = new Color(34 / 255f, 195 / 255f, 80 / 255f);
                 if (blastCount > 10)
                     balloonState = BalloonState.CAUTION;
                 break;
@@ -134,7 +136,7 @@ public class BalloonController : MonoBehaviour {
             //1.7以上なら注意状態
             //色は黄色
             case BalloonState.CAUTION:
-                gameObject.GetComponent<Renderer>().material.color = new Color(255 / 255f, 255 / 255f, 51 / 255f);
+                gameObject.GetComponent<Renderer>().material.color = new Color(255 / 255f, 241 / 255f, 15 / 255f);
                 if (blastCount > 20)
                     balloonState = BalloonState.DANGER;
                 break;
@@ -142,7 +144,7 @@ public class BalloonController : MonoBehaviour {
             //2.4以上なら危険状態
             //色は赤
             case BalloonState.DANGER:
-                gameObject.GetComponent<Renderer>().material.color = new Color(255 / 255f, 0 / 255f, 0 / 255f);
+                gameObject.GetComponent<Renderer>().material.color = new Color(229 / 255f, 0 / 255f, 11 / 255f);
                 break;
         }
     }
@@ -160,6 +162,7 @@ public class BalloonController : MonoBehaviour {
             player2.GetComponent<PlayerMove>().balloon = transform.gameObject;//移動先に自信を指定
             player = player2;
             isMove = false;
+            player2.gameObject.GetComponent<PlayerMove>().isStan = true;
         }
     }
 
@@ -246,4 +249,25 @@ public class BalloonController : MonoBehaviour {
             post.GetComponent<PostController>().blastCount = 0;//次の爆弾へ超過しないように
         }
     }
+
+    /// <summary>
+    /// 爆発物減衰処理
+    /// </summary>
+    /// <param name="post"></param>
+    public void BalloonShrink(GameObject post)
+    {
+        blastCount--;
+        scaleCount -= scaleRate;
+
+        if(blastCount<0)
+        {
+            blastCount = 0;
+        }
+        if(scaleCount <1)
+        {
+            scaleCount = 1;
+        }
+        
+    }
+
 }
