@@ -11,10 +11,19 @@ public class RespawnController : MonoBehaviour {
 
     public GameObject player;//プレイヤー
     List<GameObject> playerList;//プレイヤーリスト
+    List<Color> colorList;//カラーリスト
 
 	// Use this for initialization
 	void Start () {
+        //初期化処理
         playerList = new List<GameObject>();
+        colorList = new List<Color>()
+        {
+            new Color(204 / 255f, 0 / 255f, 0 / 255f),//赤
+            new Color(15 / 255f, 82 / 255f, 188 / 255f),//青
+            new Color(255 / 255f, 255 / 255f, 20 / 255f),//黄色
+            new Color(0 / 255f, 255 / 255f, 65 / 255f)//緑
+        };
 
         //生成位置を数だけプレイヤーを生成する
         for (int i = 0; i < transform.childCount; i++) 
@@ -24,12 +33,8 @@ public class RespawnController : MonoBehaviour {
             p.name = "Player" + (i + 1);//名前変更
             p.GetComponent<PlayerMove>().horizontal = "Horizontal" + (i + 1);//そのプレイヤーの使うInput指定
             p.GetComponent<PlayerMove>().vertical = "Vertical" + (i + 1);//そのプレイヤーの使うInput指定
-            p.GetComponent<PlayerMove>().jump = "Jump" + (i + 1);//そのプレイヤーの使うInput指定
+            p.GetComponent<PlayerMove>().jump = "Jump" + (i + 1);//そのプレイヤーの使うInput指定 
+            p.GetComponent<Renderer>().material.color = colorList[i]; //色変更
         }
-	}
-	
-	// Update is called once per frame
-	void Update () {
-       
 	}
 }

@@ -14,6 +14,7 @@ public class PlayerMove : MonoBehaviour {
     float positionZ = 0;//プレイヤーのｚ方向移動距離
     float positionY = 0;//プレイヤーのｙ座標
     public float moveSpeed = 0.5f;//プレイヤーの移動速度    
+    public float balloonMoveSpeed = 0.7f;//爆発物を持っている時の移動速度
 
     bool isJump = false;//ジャンプしているか
     public float originJumpPower = 0.2f;//基本ジャンプの上方向の力
@@ -36,34 +37,60 @@ public class PlayerMove : MonoBehaviour {
     [HideInInspector]
     public string jump = "Jump1";//Inputのジャンプボタン取得名前
 
-    List<GameObject> onObject;//今当たっているオブジェクト
-    
+    public bool isStan = false;//動けるかどうか
+    float stanTime = 1.0f;//動けるようになるまでの時間
+
+    public bool isBalloonShrink = true;//爆発物が縮むかどうか
 
     // Use this for initialization
     void Start () {
         //初期化処理
         isJump = false;
         blastCount = 0;
-        onObject = new List<GameObject>();
 
         itemCountText = GameObject.Find(transform.name + "ItemCount").GetComponent<Text>();//内容物所持数テキスト取得
 	}
 	
 	// Update is called once per frame
-	void Update () { 
-        //プレイヤーの移動処理
-        positionX =   Input.GetAxisRaw(horizontal) * moveSpeed;
-        positionZ =   Input.GetAxisRaw(vertical) * moveSpeed;
+	void Update () {
+        //風船を持っていないとき
+        if (balloon == null)
+        {
+            //プレイヤーの移動処理
+            positionX = Input.GetAxisRaw(horizontal) * moveSpeed;
+            positionZ = Input.GetAxisRaw(vertical) * moveSpeed;
+        }
+        //風船を持っている時
+        else
+        { 
+            //プレイヤーの移動処理
+            positionX = Input.GetAxisRaw(horizontal) * balloonMoveSpeed;
+            positionZ = Input.GetAxisRaw(vertical) * balloonMoveSpeed;
+        }
 
         Jump();//ジャンプ  
          
         HitField();//あたり判定
-      
-        transform.position = new Vector3(transform.position.x+positionX, transform.position.y+positionY, transform.position.z + positionZ);//位置更新
+
+        //動けるとき
+        if (!isStan)
+        {
+            transform.position = new Vector3(transform.position.x + positionX, transform.position.y + positionY, transform.position.z + positionZ);//位置更新
+        }
+        //動けないとき
+        else
+        {
+            stanTime -= Time.deltaTime;
+            if(stanTime < 0)
+            {
+                isStan = false;
+                stanTime = 1.0f;
+            }
+        }
+        //床以下にならないようにする
         if (transform.position.y < 1)
         {
-            transform.position = new Vector3(transform.position.x, 1, transform.position.z);//床以下にならないようにする
-            jumpPower = 0;
+            transform.position = new Vector3(transform.position.x, 1, transform.position.z);
             isJump = false;
         }
 
@@ -74,157 +101,235 @@ public class PlayerMove : MonoBehaviour {
     /// ジャンプ処理
     /// </summary>
     void Jump()
-    { 
-        //ジャンプ処理
-        if (Input.GetButtonDown(jump) && !isJump)
+    {
+        //床にいるならジャンプできる
+        if (Input.GetButtonDown(jump)&&!isJump)
         {
-            jumpPower = balloon != null ? balloonJumpPower : originJumpPower;//爆発物の有無によりジャンプの力が変更
+            //風船を持っているかどうかでジャンプ力が変わる
+            positionY = balloon != null ? balloonJumpPower : originJumpPower; ;
             isJump = true;
         }
 
-        if (isJump)
+        positionY -= gravPower;//重力
+
+        //移動先で当たっているもの
+         Collider[] colArray = Physics.OverlapBox(transform.position + new Vector3(0, positionY, 0), transform.localScale / 2, Quaternion.identity);
+
+        foreach (var cx in colArray)
         {
-            positionY = jumpPower;//現在のPositionに力を足していく
-            jumpPower -= gravPower;//力を減らしていく            
+            //当たっているものが床か特殊壁だったら
+            if (cx.tag == "Field" && !cx.transform.name.Contains(transform.name))
+            {
+                //ジャンプ終える
+                positionY = 0;
+                isJump = false;
+            }
         }
-        
+
+        ////ジャンプ処理
+        //if (Input.GetButtonDown(jump) && !isJump)
+        //{
+        //    jumpPower = balloon != null ? balloonJumpPower : originJumpPower;//爆発物の有無によりジャンプの力が変更
+        //    isJump = true;
+        //}
+
+        //if (isJump)
+        //{
+        //    positionY = jumpPower;//現在のPositionに力を足していく
+        //    jumpPower -= gravPower;//力を減らしていく            
+        //}
+        //if (positionY <= 0)
+        //{
+        //bool isOnField = false;//下にフィールドがあるか
+        //foreach (var cx in colArray)
+        //{
+        //    if (cx.tag == "Field" && !cx.transform.name.Contains(transform.name))
+        //    {
+        //        isJump = false;
+        //        positionY = 0;
+        //        jumpPower = 0;
+        //        isOnField = true;
+        //    }
+        //}
+        ////床に立っていなければ
+        //if (!isOnField)
+        //{
+        //    isJump = true;//ジャンプ判定
+        //}
+        //}
     }
-    
+
     /// <summary>
     /// Rayを使ったあたり判定
     /// </summary>
     void HitField()
     {
-
-        //x軸方向のあたり判定
+        //x方向あたり判定
         if (Input.GetAxisRaw(horizontal) != 0)
         {
-            float offset = 0.49f;
-            Vector3[] offsetList = new Vector3[]
+            //移動先で当たっているもの
+            foreach (var cx in Physics.OverlapBox(transform.position + new Vector3(positionX, 0, 0), transform.localScale / 2, Quaternion.identity))
             {
-                new Vector3(0,-offset,-offset),
-                new Vector3(0,-offset,offset),
-                new Vector3(0,offset,-offset),
-                new Vector3(0,offset,offset),
-            };
-
-            //x軸マイナス方向
-            if (Input.GetAxisRaw(horizontal) < 0)
-            {
-                //レイを中心から四角形状に4本出す
-                for (int i = 0; i < 4; i++)
+                //当たっているものが床か特殊壁だったら
+                if (cx.tag == "Field" && !cx.transform.name.Contains(transform.name))
                 {
-                    Ray ray = new Ray(transform.position + offsetList[i], new Vector3(-1, 0, 0));
-                    RaycastHit hit;
-
-                    if (Physics.Raycast(ray, out hit, 0.51f))
-                    {
-                        //レイが当たれば移動しない
-                        if (hit.transform.tag == "Field")
-                            positionX = 0;
-                    }
-                }
-            }
-            //x軸プラス方向
-            if (Input.GetAxisRaw(horizontal) > 0)
-            {
-                for (int i = 0; i < 4; i++)
-                {
-                    Ray ray = new Ray(transform.position + offsetList[i], new Vector3(1, 0, 0));
-                    RaycastHit hit;
-
-                    if (Physics.Raycast(ray, out hit, 0.51f))
-                    {
-                        //レイが当たれば移動しない
-                        if (hit.transform.tag == "Field")
-                            positionX = 0;
-                    }
+                    //移動しない
+                    positionX = 0;
+                    break;
                 }
             }
         }
 
-        //z軸方向あたり判定
+        //z方向あたり判定
         if (Input.GetAxisRaw(vertical) != 0)
         {
-            float offset = 0.49f;
-            Vector3[] offsetList = new Vector3[]
+            //移動先で当たっているもの
+            foreach (var cx in Physics.OverlapBox(transform.position + new Vector3(0, 0, positionZ), transform.localScale / 2, Quaternion.identity))
             {
-                new Vector3(-offset,-offset,0),
-                new Vector3(offset,-offset,0),
-                new Vector3(-offset,offset,0),
-                new Vector3(offset,offset,0),
-            };
-
-            //z軸マイナス方向
-            if (Input.GetAxisRaw(vertical) < 0)
-            {
-                //レイを中心から四角形状に4本出す
-                for (int i = 0; i < 4; i++)
+                //当たっているものが床か特殊壁だったら
+                if (cx.tag == "Field" && !cx.transform.name.Contains(transform.name))
                 {
-                    Ray ray = new Ray(transform.position + offsetList[i], new Vector3(0, 0, -1));
-                    RaycastHit hit;
-
-                    if (Physics.Raycast(ray, out hit, 0.51f))
-                    {
-                        //レイが当たれば移動しない
-                        if (hit.transform.tag == "Field")
-                            positionZ = 0;
-                    }
+                    //移動しない
+                    positionZ = 0;
+                    break;
                 }
             }
-            //z軸プラス方向
-            if (Input.GetAxisRaw(vertical) > 0)
-            {
-                for (int i = 0; i < 4; i++)
-                {
-                    Ray ray = new Ray(transform.position + offsetList[i], new Vector3(0, 0, 1));
-                    RaycastHit hit;
-
-                    if (Physics.Raycast(ray, out hit, 0.51f))
-                    {
-                        //レイが当たれば移動しない
-                        if (hit.transform.tag == "Field")
-                            positionZ = 0;
-                    }
-                }
-            }            
         }
+       
+        ////x軸方向のあたり判定
+        //if (Input.GetAxisRaw(horizontal) != 0)
+        //{
+        //    float offset = 0.49f;
+        //    Vector3[] offsetList = new Vector3[]
+        //    {
+        //        new Vector3(0,-offset,-offset),
+        //        new Vector3(0,-offset,offset),
+        //        new Vector3(0,offset,-offset),
+        //        new Vector3(0,offset,offset),
+        //    };
 
-        //y方向あたり判定
-        if (positionY <= 0)
-        {
-            bool isOnField = false;//下にフィールドがあるか
-            //レイをずらすオフセット
-            float offset = 0.49f;
-            Vector3[] offsetList = new Vector3[]
-            {
-                new Vector3(-offset,0,-offset),
-                new Vector3(-offset,0,offset),
-                new Vector3(offset,0,-offset),
-                new Vector3(offset,0,offset),
-            };
+        //    //x軸マイナス方向
+        //    if (Input.GetAxisRaw(horizontal) < 0)
+        //    {
+        //        //レイを中心から四角形状に4本出す
+        //        for (int i = 0; i < 4; i++)
+        //        {
+        //            Ray ray = new Ray(transform.position+new Vector3(positionX,0,0) + offsetList[i], new Vector3(-1, 0, 0));
+        //            RaycastHit hit;
 
-            //レイを中心から四角形状に4本出す
-            for (int i = 0; i < 4; i++)
-            {
-                Ray ray = new Ray(transform.position + offsetList[i], new Vector3(0, -1, 0));
-                RaycastHit hit;
+        //            if (Physics.Raycast(ray, out hit, 0.51f))
+        //            //if (Physics.BoxCast(transform.position, Vector3.one, new Vector3(-1, 0, 0), out hit, Quaternion.identity, 0.5f))
+        //            //if (Physics.OverlapBox(transform.position + new Vector3(positionX, 0, 0), Vector3.one, Quaternion.identity).Length > 0)
+        //            {
+        //                //レイが当たれば移動しない
+        //                if (hit.transform.tag == "Field" && !hit.transform.name.Contains(transform.name))
+        //                {
+        //                    positionX = 0;
+        //                }
+        //            }
+        //        }
+        //    }
+        //    //x軸プラス方向
+        //    if (Input.GetAxisRaw(horizontal) > 0)
+        //    {
+        //        for (int i = 0; i < 4; i++)
+        //        {
+        //            Ray ray = new Ray(transform.position + new Vector3(positionX, 0, 0) + offsetList[i], new Vector3(1, 0, 0));
+        //            RaycastHit hit;
 
-                //どれか一つでも当たっていたら床に立っている
-                if (Physics.Raycast(ray, out hit, 0.51f))
-                {
-                    if (hit.transform.tag == "Field")
-                    {
-                        isJump = false;
-                        positionY = 0;
-                        isOnField = true;
-                    }
-                }
-            }
-            //床に立っていなければ
-            if (!isOnField)
-                isJump = true;//ジャンプ判定
-        }
+        //            if (Physics.Raycast(ray, out hit, 0.51f))
+        //            {
+        //                //レイが当たれば移動しない
+        //                if (hit.transform.tag == "Field" && !hit.transform.name.Contains(transform.name))
+        //                    positionX = 0;
+        //            }
+        //        }
+        //    }
+        //}
+
+        ////z軸方向あたり判定
+        //if (Input.GetAxisRaw(vertical) != 0)
+        //{
+        //    float offset = 0.49f;
+        //    Vector3[] offsetList = new Vector3[]
+        //    {
+        //        new Vector3(-offset,-offset,0),
+        //        new Vector3(offset,-offset,0),
+        //        new Vector3(-offset,offset,0),
+        //        new Vector3(offset,offset,0),
+        //    };
+
+        //    //z軸マイナス方向
+        //    if (Input.GetAxisRaw(vertical) < 0)
+        //    {
+        //        //レイを中心から四角形状に4本出す
+        //        for (int i = 0; i < 4; i++)
+        //        {
+        //            Ray ray = new Ray(transform.position + new Vector3(0, 0, positionZ) + offsetList[i], new Vector3(0, 0, -1));
+        //            RaycastHit hit;
+
+        //            if (Physics.Raycast(ray, out hit, 0.51f))
+        //            {
+        //                //レイが当たれば移動しない
+        //                if (hit.transform.tag == "Field" && !hit.transform.name.Contains(transform.name))
+        //                    positionZ = 0;
+        //            }
+        //        }
+        //    }
+        //    //z軸プラス方向
+        //    if (Input.GetAxisRaw(vertical) > 0)
+        //    {
+        //        for (int i = 0; i < 4; i++)
+        //        {
+        //            Ray ray = new Ray(transform.position + new Vector3(0, 0, positionZ) + offsetList[i], new Vector3(0, 0, 1));
+        //            RaycastHit hit;
+
+        //            if (Physics.Raycast(ray, out hit, 0.51f))
+        //            {
+        //                //レイが当たれば移動しない
+        //                if (hit.transform.tag == "Field" && !hit.transform.name.Contains(transform.name))
+        //                    positionZ = 0;
+        //            }
+        //        }
+        //    }            
+        //}
+
+        ////y方向あたり判定
+        //if (positionY <= 0)
+        //{
+        //    bool isOnField = false;//下にフィールドがあるか
+        //    //レイをずらすオフセット
+        //    float offset = 0.49f;
+        //    Vector3[] offsetList = new Vector3[]
+        //    {
+        //        new Vector3(-offset,0,-offset),
+        //        new Vector3(-offset,0,offset),
+        //        new Vector3(offset,0,-offset),
+        //        new Vector3(offset,0,offset),
+        //    };
+
+        //    //レイを中心から四角形状に4本出す
+        //    for (int i = 0; i < 4; i++)
+        //    {
+        //        Ray ray = new Ray(transform.position + new Vector3(0, positionY, 0) + offsetList[i], new Vector3(0, -1, 0));
+        //        RaycastHit hit;
+
+        //        //どれか一つでも当たっていたら床に立っている
+        //        if (Physics.Raycast(ray, out hit, 0.51f))
+        //        {
+        //            if (hit.transform.tag == "Field" && !hit.transform.name.Contains(transform.name))
+        //            {
+        //                isJump = false;
+        //                positionY = 0;
+        //                jumpPower = 0;
+        //                isOnField = true;
+        //            }
+        //        }
+        //    }
+        //    //床に立っていなければ
+        //    if (!isOnField)
+        //        isJump = true;//ジャンプ判定
+        //}
     }
 
     void OnCollisionEnter(Collision col)
@@ -233,7 +338,7 @@ public class PlayerMove : MonoBehaviour {
         if(col.gameObject.tag == "Player")
         {
             if(balloon != null)//爆発物があれば
-            {
+            {                
                 balloon.GetComponent<BalloonController>().BalloonMove(transform.gameObject, col.gameObject);//爆発物の移動処理
             }
         }
@@ -261,7 +366,16 @@ public class PlayerMove : MonoBehaviour {
         //中心物体に当たったら
         if (col.gameObject.tag == "Post")
         {
+            if (balloon != null&&isBalloonShrink)
+            {
+                col.GetComponent<PostController>().blastCount -= blastCount;
+                blastCount = 0;//内容物所持数を0にする
+                return;
+            }
+            
             col.GetComponent<PostController>().blastCount += blastCount;//中心物体に内容物総数を渡す
+            col.GetComponent<PostController>().respawnCount += blastCount;
+            col.GetComponent<PostController>().player = gameObject;
             blastCount = 0;//内容物所持数を0にする
         }
     }
