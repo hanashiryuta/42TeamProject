@@ -42,11 +42,14 @@ public class PlayerMove : MonoBehaviour {
 
     public bool isBalloonShrink = true;//爆発物が縮むかどうか
 
+    bool isGround = true;
+
     // Use this for initialization
     void Start () {
         //初期化処理
         isJump = false;
         blastCount = 0;
+        isGround = true;
 
         itemCountText = GameObject.Find(transform.name + "ItemCount").GetComponent<Text>();//内容物所持数テキスト取得
 	}
@@ -69,13 +72,29 @@ public class PlayerMove : MonoBehaviour {
         }
 
         Jump();//ジャンプ  
+        
+        if(Input.GetKeyDown(KeyCode.A)&&isJump)
+        {
+            Debug.Log("ヒップドロップ！");
+        }
          
         HitField();//あたり判定
 
         //動けるとき
         if (!isStan)
         {
-            transform.position = new Vector3(transform.position.x + positionX, transform.position.y + positionY, transform.position.z + positionZ);//位置更新
+            Vector3 movePosition = new Vector3(positionX, positionY, positionZ);
+            if ((positionX != 0 && positionZ != 0))
+            {
+                movePosition *= 0.71f;
+            }
+            if (((positionX != 0 && positionY != 0) || (positionY != 0 && positionZ != 0)) && !isGround)
+            {
+                movePosition *= 0.71f;
+            }
+
+
+            transform.position += movePosition;//位置更新
         }
         //動けないとき
         else
@@ -92,6 +111,7 @@ public class PlayerMove : MonoBehaviour {
         {
             transform.position = new Vector3(transform.position.x, 1, transform.position.z);
             isJump = false;
+            isGround = true;
         }
 
         itemCountText.text = blastCount.ToString();//内容物取得数表示処理 
@@ -103,18 +123,20 @@ public class PlayerMove : MonoBehaviour {
     void Jump()
     {
         //床にいるならジャンプできる
-        if (Input.GetButtonDown(jump)&&!isJump)
+        if (Input.GetButtonDown(jump)&&!isJump&&isGround)
         {
             //風船を持っているかどうかでジャンプ力が変わる
             positionY = balloon != null ? balloonJumpPower : originJumpPower; ;
             isJump = true;
+            isGround = false;
         }
-
+        
         positionY -= gravPower;//重力
 
         //移動先で当たっているもの
-         Collider[] colArray = Physics.OverlapBox(transform.position + new Vector3(0, positionY, 0), transform.localScale / 2, Quaternion.identity);
+         Collider[] colArray = Physics.OverlapBox(transform.position + new Vector3(0, positionY, 0), new Vector3(transform.localScale.x/2-0.05f,transform.localScale.y/2,transform.localScale.z/2- 0.05f), Quaternion.identity);
 
+        bool isField = false;
         foreach (var cx in colArray)
         {
             //当たっているものが床か特殊壁だったら
@@ -123,7 +145,13 @@ public class PlayerMove : MonoBehaviour {
                 //ジャンプ終える
                 positionY = 0;
                 isJump = false;
+                isField = true;
+                isGround = true;
             }
+        }
+        if(isGround&&!isField)
+        {
+            isGround = false;
         }
 
         ////ジャンプ処理
@@ -168,7 +196,7 @@ public class PlayerMove : MonoBehaviour {
         if (Input.GetAxisRaw(horizontal) != 0)
         {
             //移動先で当たっているもの
-            foreach (var cx in Physics.OverlapBox(transform.position + new Vector3(positionX, 0, 0), transform.localScale / 2, Quaternion.identity))
+            foreach (var cx in Physics.OverlapBox(transform.position + new Vector3(positionX, 0, 0), new Vector3(transform.localScale.x / 2, transform.localScale.y / 2 - 0.05f, transform.localScale.z / 2 ), Quaternion.identity))
             {
                 //当たっているものが床か特殊壁だったら
                 if (cx.tag == "Field" && !cx.transform.name.Contains(transform.name))
@@ -184,7 +212,7 @@ public class PlayerMove : MonoBehaviour {
         if (Input.GetAxisRaw(vertical) != 0)
         {
             //移動先で当たっているもの
-            foreach (var cx in Physics.OverlapBox(transform.position + new Vector3(0, 0, positionZ), transform.localScale / 2, Quaternion.identity))
+            foreach (var cx in Physics.OverlapBox(transform.position + new Vector3(0, 0, positionZ), new Vector3(transform.localScale.x / 2, transform.localScale.y / 2 - 0.05f, transform.localScale.z / 2), Quaternion.identity))
             {
                 //当たっているものが床か特殊壁だったら
                 if (cx.tag == "Field" && !cx.transform.name.Contains(transform.name))
