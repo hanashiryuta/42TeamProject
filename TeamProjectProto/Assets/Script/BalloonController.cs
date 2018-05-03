@@ -44,6 +44,13 @@ public class BalloonController : MonoBehaviour {
     public float originBlastTime = 1.0f;//爆発物が膨らむ間隔
     float blastTime;
 
+	GameObject playerRank;//格納するリストを持つオブジェクト
+
+	void Awake(){
+		playerRank = GameObject.Find ("PlayerRank");
+		//playerRank.GetComponent<PlayerRank> ().Reset ();
+	}
+
 	// Use this for initialization
 	void Start () {
         //初期化処理
@@ -84,12 +91,14 @@ public class BalloonController : MonoBehaviour {
         {
             GameObject[] pList = GameObject.FindGameObjectsWithTag("Player");//プレイヤー配列を作成
 
+			//Debug.Log (pList.Length);
             //プレイヤーが一人しかいなければゲームを終了する
             if (pList.Length <= 1)
-            {
-				SceneManager.LoadScene ("Result");//追加
+            {	
+				playerRank.GetComponent<PlayerRank> ().SetPlayer (pList[0]);
+				SceneManager.LoadScene("Result");
                 //isEnd = true;
-                return;
+                //return;
             }
 
             BalloonExChangeByPoint(pList);           
@@ -225,10 +234,12 @@ public class BalloonController : MonoBehaviour {
         scaleCount += scaleRate;
         //内容物の数が限界を超えたら
         if (blastCount >= blastLimit)
-        {
-            Destroy(player);//プレイヤーを破棄
+		{
+			playerRank.GetComponent<PlayerRank> ().SetPlayer (player);//爆発したらリストに格納
+			//player = null;//風船を他のプレイヤーに回すためにnullにする
+            //Destroy(player);//プレイヤーを破棄
 			scaleCount = 1.0f;
-            blastCount = 0;
+			blastCount = 0;
         }
     }
 
@@ -242,11 +253,13 @@ public class BalloonController : MonoBehaviour {
         scaleCount += scaleRate;
         //内容物の数が限界を超えたら
         if (blastCount >= blastLimit)
-        {
-            Destroy(player);//プレイヤーを破棄
+		{
+			playerRank.GetComponent<PlayerRank> ().SetPlayer (player);//爆発したらリストに格納
+			//player = null;//風船を他のプレイヤーに回すためにnullにする
+			//Destroy(player);//プレイヤーを破棄
             scaleCount = 1.0f;
             blastCount = 0;
-            post.GetComponent<PostController>().blastCount = 0;//次の爆弾へ超過しないように
+			post.GetComponent<PostController>().blastCount = 0;//次の爆弾へ超過しないように
         }
     }
 
@@ -269,5 +282,4 @@ public class BalloonController : MonoBehaviour {
         }
         
     }
-
 }
