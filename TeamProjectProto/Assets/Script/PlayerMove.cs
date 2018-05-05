@@ -43,11 +43,11 @@ public class PlayerMove : MonoBehaviour
 
     public bool isBalloonShrink = true;//爆発物が縮むかどうか
 
-    bool isGround = true;
-    bool isHipDrop = false;
-    float jumpCount = 0;
-    public GameObject hipDropCircle;
-    public GameObject originItem;
+    bool isGround = true;//地面にいるかどうか
+    bool isHipDrop = false;//ヒップドロップしているかどうか
+    float jumpCount = 0;//ジャンプ回数
+    public GameObject hipDropCircle;//衝撃波範囲
+    public GameObject originItem;//アイテム
 
     // Use this for initialization
     void Start()
@@ -126,11 +126,12 @@ public class PlayerMove : MonoBehaviour
     /// </summary>
     void Jump()
     {
+        //床に着くまでジャンプした回数
         if (Input.GetButtonDown(jump))
         {
             jumpCount++;
         }
-        //床にいるならジャンプできる
+        //床でジャンプしたなら普通のジャンプできる
         if (jumpCount == 1 && !isJump && isGround)
         {
             //風船を持っているかどうかでジャンプ力が変わる
@@ -138,12 +139,14 @@ public class PlayerMove : MonoBehaviour
             isJump = true;
             isGround = false;
         }
+        //空中でジャンプしたならヒップドロップ
         if (jumpCount == 2 && isJump && !isHipDrop)
         {
             isHipDrop = true;
             positionY = balloon != null ? balloonJumpPower : originJumpPower;
         }
 
+        //ヒップドロップ中は移動しないようにする
         if (isHipDrop)
         {
             positionX = 0;
@@ -153,7 +156,7 @@ public class PlayerMove : MonoBehaviour
         if (!isHipDrop)
             positionY -= gravPower;//重力
         else
-            positionY -= gravPower * 2.5f;
+            positionY -= gravPower * 2.5f;//ヒップドロップ中は重力2.5倍
 
         //移動先で当たっているもの
         Collider[] colArray = Physics.OverlapBox(transform.position + new Vector3(0, positionY, 0), new Vector3(transform.localScale.x / 2 - 0.05f, transform.localScale.y / 2, transform.localScale.z / 2 - 0.05f), Quaternion.identity);
@@ -170,6 +173,7 @@ public class PlayerMove : MonoBehaviour
                 isGround = true;
                 if (isHipDrop)
                 {
+                    //衝撃波生成
                     GameObject hipDrop = Instantiate(hipDropCircle, transform.position + new Vector3(0, positionY, 0), Quaternion.identity);
                     hipDrop.name = hipDrop.name + transform.name;
                     isHipDrop = false;
@@ -271,6 +275,7 @@ public class PlayerMove : MonoBehaviour
             col.GetComponent<PostController>().player = gameObject;
             blastCount = 0;//内容物所持数を0にする
         }
+        //衝撃波に当たったら
         if (col.gameObject.tag == "HipDropCircle")
         {
             if (!col.transform.name.Contains(transform.name))

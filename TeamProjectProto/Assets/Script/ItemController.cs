@@ -11,17 +11,17 @@ public class ItemController : MonoBehaviour {
 
     public float point = 1;//内容物の数
     [HideInInspector]
-    public bool isGet = true;
-    float positionX = 0;
-    float positionY = 0;
-    float positionZ = 0;
-    bool isGround = true;
-    float moveX = 0;
-    float moveZ = 0;
-    float moveTime = 0.5f;
+    public bool isGet = true;//獲得できるかどうか
+    float positionX = 0;//x軸移動量
+    float positionY = 0;//y軸移動量
+    float positionZ = 0;//z軸移動量
+    bool isGround = true;//地面にいるか
+    float moveX = 0;//x軸移動方向
+    float moveZ = 0;//z軸移動方向
+    float moveTime = 0.5f;//吹き飛び時間
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
 		
 	}
 	
@@ -34,7 +34,7 @@ public class ItemController : MonoBehaviour {
 
             foreach (var cx in Physics.OverlapBox(transform.position + new Vector3(positionX, 0, 0), new Vector3(transform.localScale.x / 2, transform.localScale.y / 2 - 0.05f, transform.localScale.z / 2), Quaternion.identity))
             {
-                //当たっているものが床か特殊壁だったら
+                //当たっているものが床だったら
                 if (cx.tag == "Field")
                 {
                     //移動しない
@@ -45,7 +45,7 @@ public class ItemController : MonoBehaviour {
 
             foreach (var cx in Physics.OverlapBox(transform.position + new Vector3(0, 0, positionZ), new Vector3(transform.localScale.x / 2, transform.localScale.y / 2 - 0.05f, transform.localScale.z / 2), Quaternion.identity))
             {
-                //当たっているものが床か特殊壁だったら
+                //当たっているものが床だったら
                 if (cx.tag == "Field")
                 {
                     //移動しない
@@ -64,9 +64,13 @@ public class ItemController : MonoBehaviour {
         }
 	}
 
+    /// <summary>
+    /// 移動先設定
+    /// </summary>
     public void SetMovePosition()
     {
-        float rand = Random.Range(0, 366);
+        //360度からランダム
+        float rand = Random.Range(0, 361);
         moveX = 2 * Mathf.Cos(rand);
         moveZ = 2 * Mathf.Sin(rand);
     }
