@@ -48,6 +48,9 @@ public class PlayerMove : MonoBehaviour
     float jumpCount = 0;//ジャンプ回数
     public GameObject hipDropCircle;//衝撃波範囲
     public GameObject originItem;//アイテム
+    public GameObject originHighItem;//ハイアイテム
+
+    List<string> itemList;//取得アイテム管理リスト
 
     // Use this for initialization
     void Start()
@@ -60,6 +63,7 @@ public class PlayerMove : MonoBehaviour
         jumpCount = 0;
 
         itemCountText = GameObject.Find(transform.name + "ItemCount").GetComponent<Text>();//内容物所持数テキスト取得
+        itemList = new List<string>();
     }
 
     // Update is called once per frame
@@ -245,6 +249,7 @@ public class PlayerMove : MonoBehaviour
         {
             if (col.gameObject.GetComponent<ItemController>().isGet)
             {
+                itemList.Add(col.name);//リスト追加
                 Destroy(col.gameObject);//内容物破棄
                 blastCount += col.GetComponent<ItemController>().point; //内容物所持数を増やす  
                 totalBlastCount += col.GetComponent<ItemController>().point;//内容物所持数累計を増やす  }
@@ -278,13 +283,25 @@ public class PlayerMove : MonoBehaviour
         //衝撃波に当たったら
         if (col.gameObject.tag == "HipDropCircle")
         {
-            if (!col.transform.name.Contains(transform.name))
+            if (!col.transform.name.Contains(transform.name)&&itemList.Count > 0)
             {
-                Debug.Log(transform.name + "当たった");
-                blastCount--;
-                GameObject item = Instantiate(originItem, transform.position, Quaternion.identity);
-                item.GetComponent<ItemController>().SetMovePosition();
-                item.GetComponent<ItemController>().isGet = false;
+                GameObject item = originItem;
+                int itemNum = Random.Range(0,itemList.Count);
+
+                switch (itemList[itemNum])//取得したアイテムからランダムで選出
+                {
+                    case "PointItem(Clone)"://普通のアイテム
+                        blastCount--;
+                        break;
+                    case "HighPointItem(Clone)"://高ポイントアイテム
+                        blastCount -= 2;
+                        item = originHighItem;
+                        break;
+                }
+                itemList.RemoveAt(itemNum);//リストから削除
+                GameObject spawnItem = Instantiate(item, transform.position, Quaternion.identity);//生成
+                spawnItem.GetComponent<ItemController>().SetMovePosition();
+                spawnItem.GetComponent<ItemController>().isGet = false;
             }
         }
     }
