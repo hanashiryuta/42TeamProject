@@ -103,7 +103,7 @@ MonoBehaviour:
   blastCount: 0
   blastLimit: 30
   isEnd: 0
-  isTimeBlast: 0
+  isTimeBlast: 1
   originBlastTime: 1
 --- !u!135 &135719016387797950
 SphereCollider:

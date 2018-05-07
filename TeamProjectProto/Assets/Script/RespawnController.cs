@@ -29,6 +29,7 @@ public class RespawnController : MonoBehaviour {
         for (int i = 0; i < transform.childCount; i++) 
         {
             GameObject p = Instantiate(player, transform.GetChild(i).transform.position,Quaternion.identity);//プレイヤー生成
+            p.transform.localRotation = Quaternion.Euler(0, 45, 0);
             playerList.Add(p);//リストに追加
             p.name = "Player" + (i + 1);//名前変更
             p.GetComponent<PlayerMove>().horizontal = "Horizontal" + (i + 1);//そのプレイヤーの使うInput指定
