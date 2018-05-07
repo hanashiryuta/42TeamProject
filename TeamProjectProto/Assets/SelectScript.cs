@@ -6,28 +6,45 @@ using UnityEngine.SceneManagement;
 
 public class SelectScript : MonoBehaviour
 {
-    Button Exit;
-    Button Title;
-    private GameObject instancePauseUI;
-    //PauseScript pauseScript;
+    public Button Exit;
+    public Button Title;
+
+    public GameObject pausepanel;
 
     // Use this for initialization
     void Start()
+    {   
+        Title.Select();
+    }
+    
+    // Update is called once per frame
+    void Update()
     {
-        Title = GameObject.Find("/Pause(Clone)/Title").GetComponent<Button>();
-        Exit = GameObject.Find("/Pause(Clone)/Exit").GetComponent<Button>();
-
-        Exit.Select();
+        if (Input.GetKeyDown("p") || Input.GetButtonDown("Action1"))
+        {
+            if (pausepanel.active == false)
+            {
+                pausepanel.active = true;
+                Pauser.Pause();
+            }
+            else
+            {
+                pausepanel.active = false;
+                Pauser.Resume();
+            }
+        }
     }
 
     // Update is called once per frame
     public void ResetTime()
     {
-        Time.timeScale = 1f;
+        pausepanel.active = false;
+        Pauser.Resume();
     }
 
     public void OnClick()
     {
-        SceneManager.LoadScene("Title");
+        Pauser.Remove();
+        SceneManager.LoadScene("Title");   
     }
 }

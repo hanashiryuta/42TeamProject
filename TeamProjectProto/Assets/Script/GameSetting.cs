@@ -12,7 +12,7 @@ public class GameSetting : MonoBehaviour {
     public List<GameObject> gameObjectList;//ゲーム開始時配置するオブジェクト
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
         
         for(int i = 0;i<gameObjectList.Count;i++)
         {
