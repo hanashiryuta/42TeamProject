@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 64519672043794922}
   - component: {fileID: 33193536195772800}
   - component: {fileID: 23740829010025052}
+  - component: {fileID: 114552902895364330}
   m_Layer: 0
   m_Name: HipDropCircle
   m_TagString: HipDropCircle
@@ -97,3 +98,15 @@ MeshCollider:
   m_CookingOptions: 14
   m_SkinWidth: 0.01
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &114552902895364330
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1598151434304912}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22720152f868eb44f895bf8faa4b1359, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deathTime: 0.5
