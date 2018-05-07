@@ -137,3 +137,8 @@ MonoBehaviour:
   jump: Jump
   isStan: 0
   isBalloonShrink: 1
+  hipDropCircle: {fileID: 1598151434304912, guid: 6bcf0921d5888c544b35e4673c0bbc40,
+    type: 2}
+  originItem: {fileID: 1698331365632256, guid: 572603d412f37f447871db3dfc289678, type: 2}
+  originHighItem: {fileID: 1698331365632256, guid: 049d92c48ed7ca648a66371220af2fb0,
+    type: 2}

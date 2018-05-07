@@ -10,6 +10,7 @@ TagManager:
   - Balloon
   - Item
   - Post
+  - HipDropCircle
   layers:
   - Default
   - TransparentFX
