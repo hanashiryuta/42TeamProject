@@ -92,14 +92,16 @@ public class PlayerMove : MonoBehaviour
         if (!isStan)
         {
             Vector3 movePosition = new Vector3(positionX, positionY, positionZ);
-            if ((positionX != 0 && positionZ != 0))
-            {
-                movePosition *= 0.71f;
-            }
-            if (((positionX != 0 && positionY != 0) || (positionY != 0 && positionZ != 0)) && !isGround)
-            {
-                movePosition *= 0.71f;
-            }
+
+            //各移動軸の正規化処理
+            //if ((positionX != 0 && positionZ != 0))
+            //{
+            //    movePosition *= 0.71f;
+            //}
+            //if (((positionX != 0 && positionY != 0) || (positionY != 0 && positionZ != 0)) && !isGround)
+            //{
+            //    movePosition *= 0.71f;
+            //}
 
 
             transform.position += movePosition;//位置更新
