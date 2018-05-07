@@ -46,6 +46,9 @@ public class BalloonController : MonoBehaviour {
 
 	GameObject playerRank;//格納するリストを持つオブジェクト
 
+	public AudioClip soundSE1;//風船が移るときの音
+	public AudioClip soundSE2;//破裂時の音
+
 	void Awake(){
 		playerRank = GameObject.Find ("PlayerRank");
 		//playerRank.GetComponent<PlayerRank> ().Reset ();
@@ -171,7 +174,8 @@ public class BalloonController : MonoBehaviour {
             player2.GetComponent<PlayerMove>().balloon = transform.gameObject;//移動先に自信を指定
             player = player2;
             isMove = false;
-            player2.gameObject.GetComponent<PlayerMove>().isStan = true;
+			player2.gameObject.GetComponent<PlayerMove>().isStan = true;
+			GetComponent<AudioSource> ().PlayOneShot (soundSE1);
         }
     }
 
@@ -240,6 +244,7 @@ public class BalloonController : MonoBehaviour {
             //Destroy(player);//プレイヤーを破棄
 			scaleCount = 1.0f;
 			blastCount = 0;
+			GetComponent<AudioSource> ().PlayOneShot (soundSE2);
         }
     }
 
@@ -260,6 +265,7 @@ public class BalloonController : MonoBehaviour {
             scaleCount = 1.0f;
             blastCount = 0;
 			post.GetComponent<PostController>().blastCount = 0;//次の爆弾へ超過しないように
+			GetComponent<AudioSource> ().PlayOneShot (soundSE2);
         }
     }
 

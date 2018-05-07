@@ -52,6 +52,10 @@ public class PlayerMove : MonoBehaviour
 
     List<string> itemList;//取得アイテム管理リスト
 
+	public AudioClip soundSE1;//ジャンプ時の音
+	public AudioClip soundSE2;//アイテム取得時の音
+	public AudioClip soundSE3;//ポスト投函時の音
+
     // Use this for initialization
     void Start()
     {
@@ -144,6 +148,7 @@ public class PlayerMove : MonoBehaviour
             positionY = balloon != null ? balloonJumpPower : originJumpPower; ;
             isJump = true;
             isGround = false;
+			GetComponent<AudioSource> ().PlayOneShot (soundSE1);
         }
         //空中でジャンプしたならヒップドロップ
         if (jumpCount == 2 && isJump && !isHipDrop)
@@ -254,7 +259,8 @@ public class PlayerMove : MonoBehaviour
                 itemList.Add(col.name);//リスト追加
                 Destroy(col.gameObject);//内容物破棄
                 blastCount += col.GetComponent<ItemController>().point; //内容物所持数を増やす  
-                totalBlastCount += col.GetComponent<ItemController>().point;//内容物所持数累計を増やす  }
+				totalBlastCount += col.GetComponent<ItemController>().point;//内容物所持数累計を増やす  }
+				GetComponent<AudioSource> ().PlayOneShot (soundSE2);
             }
         }
         //強制交換アイテムに当たったら
@@ -280,7 +286,8 @@ public class PlayerMove : MonoBehaviour
             col.GetComponent<PostController>().blastCount += blastCount;//中心物体に内容物総数を渡す
             col.GetComponent<PostController>().respawnCount += blastCount;
             col.GetComponent<PostController>().player = gameObject;
-            blastCount = 0;//内容物所持数を0にする
+			blastCount = 0;//内容物所持数を0にする
+			GetComponent<AudioSource> ().PlayOneShot (soundSE3);
         }
         //衝撃波に当たったら
         if (col.gameObject.tag == "HipDropCircle")
