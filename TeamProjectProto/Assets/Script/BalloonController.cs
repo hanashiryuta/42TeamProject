@@ -96,13 +96,13 @@ public class BalloonController : MonoBehaviour {
 
 			//Debug.Log (pList.Length);
             //プレイヤーが一人しかいなければゲームを終了する
-            if (pList.Length <= 1)
-            {	
-				playerRank.GetComponent<PlayerRank> ().SetPlayer (pList[0]);
-				SceneManager.LoadScene("Result");
-                //isEnd = true;
-                //return;
-            }
+    //        if (pList.Length <= 1)
+    //        {	
+				//playerRank.GetComponent<PlayerRank> ().SetPlayer (pList[0]);
+				//SceneManager.LoadScene("Result");
+    //            //isEnd = true;
+    //            //return;
+    //        }
 
             BalloonExChangeByPoint(pList);           
         }
@@ -239,8 +239,10 @@ public class BalloonController : MonoBehaviour {
         //内容物の数が限界を超えたら
         if (blastCount >= blastLimit)
 		{
-			playerRank.GetComponent<PlayerRank> ().SetPlayer (player);//爆発したらリストに格納
-			//player = null;//風船を他のプレイヤーに回すためにnullにする
+            player.GetComponent<PlayerMove>().ItemBlast(3);
+            player.GetComponent<PlayerMove>().isStan = true;
+			//playerRank.GetComponent<PlayerRank> ().SetPlayer (player);//爆発したらリストに格納
+			player = null;//風船を他のプレイヤーに回すためにnullにする
             //Destroy(player);//プレイヤーを破棄
 			scaleCount = 1.0f;
 			blastCount = 0;
@@ -258,9 +260,11 @@ public class BalloonController : MonoBehaviour {
         scaleCount += scaleRate;
         //内容物の数が限界を超えたら
         if (blastCount >= blastLimit)
-		{
-			playerRank.GetComponent<PlayerRank> ().SetPlayer (player);//爆発したらリストに格納
-			//player = null;//風船を他のプレイヤーに回すためにnullにする
+        {
+            player.GetComponent<PlayerMove>().ItemBlast(3);
+            player.GetComponent<PlayerMove>().isStan = true;
+            //playerRank.GetComponent<PlayerRank> ().SetPlayer (player);//爆発したらリストに格納
+            player = null;//風船を他のプレイヤーに回すためにnullにする
 			//Destroy(player);//プレイヤーを破棄
             scaleCount = 1.0f;
             blastCount = 0;
