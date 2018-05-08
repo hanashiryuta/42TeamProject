@@ -65,6 +65,7 @@ public class ResultManager : MonoBehaviour {
 	/// 「ゲーム終了」を選んだらウィンドウを閉じる処理（.exe形式のみ）
 	/// </summary>
 	public void EndGame(){
-		Application.Quit ();
+        //Application.Quit ();
+        SceneManager.LoadScene("Title");
 	}
 }
