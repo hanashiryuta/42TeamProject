@@ -47,7 +47,7 @@ public class PostController : MonoBehaviour {
         if (respawnCount >= 5)
         {
             respawnCount = 0;
-            specialWallPoint.GetComponent<SpecialWallRespawn>().SpecialRespawn(player);
+            //specialWallPoint.GetComponent<SpecialWallRespawn>().SpecialRespawn(player);
             isRespawn = true;
         }
 

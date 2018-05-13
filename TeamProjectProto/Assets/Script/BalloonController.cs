@@ -11,7 +11,7 @@ using UnityEngine.SceneManagement;
 /// <summary>
 /// 爆発物の状態
 /// </summary>
-enum BalloonState
+public enum BalloonState
 {
     SAFETY,//安全
     CAUTION,//注意
@@ -38,7 +38,12 @@ public class BalloonController : MonoBehaviour {
     [HideInInspector]
     public bool isEnd = false;//ゲームが終わるかどうか
 
-    BalloonState balloonState;//爆発物の状態
+    BalloonState _balloonState;//爆発物の状態
+    //追加日：180513　追加者：何
+    public BalloonState BalloonState
+    {
+        get { return _balloonState; }
+    }
 
     public bool isTimeBlast = false;//時間経過で爆破の切り替え
     public float originBlastTime = 1.0f;//爆発物が膨らむ間隔
@@ -49,7 +54,16 @@ public class BalloonController : MonoBehaviour {
 	public AudioClip soundSE1;//風船が移るときの音
 	public AudioClip soundSE2;//破裂時の音
 
-	void Awake(){
+    //追加日：180513　追加者：何
+    bool _isBlast = false;//爆発したか（エフェクト用）
+    public bool IsBlast
+    {
+        get { return _isBlast; }
+        set { _isBlast = value; }
+    }
+
+
+    void Awake(){
 		playerRank = GameObject.Find ("PlayerRank");
 		//playerRank.GetComponent<PlayerRank> ().Reset ();
 	}
@@ -61,7 +75,7 @@ public class BalloonController : MonoBehaviour {
         moveTime = 1.0f;
         isMove = true;
         isEnd = false;
-        balloonState = BalloonState.SAFETY;
+        _balloonState = BalloonState.SAFETY;
         scaleRate = scaleLimit / blastLimit;
         blastCount = 0;
         blastTime = originBlastTime;
@@ -96,13 +110,13 @@ public class BalloonController : MonoBehaviour {
 
 			//Debug.Log (pList.Length);
             //プレイヤーが一人しかいなければゲームを終了する
-            if (pList.Length <= 1)
-            {	
-				playerRank.GetComponent<PlayerRank> ().SetPlayer (pList[0]);
-				SceneManager.LoadScene("Result");
-                //isEnd = true;
-                //return;
-            }
+    //        if (pList.Length <= 1)
+    //        {	
+				//playerRank.GetComponent<PlayerRank> ().SetPlayer (pList[0]);
+				//SceneManager.LoadScene("Result");
+    //            //isEnd = true;
+    //            //return;
+    //        }
 
             BalloonExChangeByPoint(pList);           
         }
@@ -133,16 +147,16 @@ public class BalloonController : MonoBehaviour {
     void ColorChange()
     {
         if (blastCount < 10) //1.7以下なら安全状態
-            balloonState = BalloonState.SAFETY;
+            _balloonState = BalloonState.SAFETY;
         
-        switch(balloonState)
+        switch(_balloonState)
         {
             //1.7以下なら安全状態
             //色は緑
             case BalloonState.SAFETY:
                 gameObject.GetComponent<Renderer>().material.color = new Color(34 / 255f, 195 / 255f, 80 / 255f);
                 if (blastCount > 10)
-                    balloonState = BalloonState.CAUTION;
+                    _balloonState = BalloonState.CAUTION;
                 break;
 
             //1.7以上なら注意状態
@@ -150,7 +164,7 @@ public class BalloonController : MonoBehaviour {
             case BalloonState.CAUTION:
                 gameObject.GetComponent<Renderer>().material.color = new Color(255 / 255f, 241 / 255f, 15 / 255f);
                 if (blastCount > 20)
-                    balloonState = BalloonState.DANGER;
+                    _balloonState = BalloonState.DANGER;
                 break;
 
             //2.4以上なら危険状態
@@ -239,8 +253,11 @@ public class BalloonController : MonoBehaviour {
         //内容物の数が限界を超えたら
         if (blastCount >= blastLimit)
 		{
-			playerRank.GetComponent<PlayerRank> ().SetPlayer (player);//爆発したらリストに格納
-			//player = null;//風船を他のプレイヤーに回すためにnullにする
+            _isBlast = true;//爆発した
+            player.GetComponent<PlayerMove>().ItemBlast(3);
+            player.GetComponent<PlayerMove>().isStan = true;
+			//playerRank.GetComponent<PlayerRank> ().SetPlayer (player);//爆発したらリストに格納
+			player = null;//風船を他のプレイヤーに回すためにnullにする
             //Destroy(player);//プレイヤーを破棄
 			scaleCount = 1.0f;
 			blastCount = 0;
@@ -258,9 +275,12 @@ public class BalloonController : MonoBehaviour {
         scaleCount += scaleRate;
         //内容物の数が限界を超えたら
         if (blastCount >= blastLimit)
-		{
-			playerRank.GetComponent<PlayerRank> ().SetPlayer (player);//爆発したらリストに格納
-			//player = null;//風船を他のプレイヤーに回すためにnullにする
+        {
+            _isBlast = true;//爆発した
+            player.GetComponent<PlayerMove>().ItemBlast(3);
+            player.GetComponent<PlayerMove>().isStan = true;
+            //playerRank.GetComponent<PlayerRank> ().SetPlayer (player);//爆発したらリストに格納
+            player = null;//風船を他のプレイヤーに回すためにnullにする
 			//Destroy(player);//プレイヤーを破棄
             scaleCount = 1.0f;
             blastCount = 0;
@@ -288,4 +308,5 @@ public class BalloonController : MonoBehaviour {
         }
         
     }
+
 }
