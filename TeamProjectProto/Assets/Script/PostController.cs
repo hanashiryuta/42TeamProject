@@ -25,6 +25,8 @@ public class PostController : MonoBehaviour {
     [HideInInspector]
     public GameObject player;//プレイヤー
 
+    bool isPost;
+
 	// Use this for initialization
 	void Start () {
         //初期化処理
@@ -47,15 +49,22 @@ public class PostController : MonoBehaviour {
         if (respawnCount >= 5)
         {
             respawnCount = 0;
-            specialWallPoint.GetComponent<SpecialWallRespawn>().SpecialRespawn(player);
+            //specialWallPoint.GetComponent<SpecialWallRespawn>().SpecialRespawn(player);
             isRespawn = true;
+        }
+
+        //ポストに入っているアイテムが9以下の場合は爆発物に移らないようにするbool処理
+        if(blastCount <= 0) {
+            isPost = false;
+        } else if(blastCount >= 10) {
+            isPost = true;
         }
 
         //内容物が一つでもあれば
 		if(blastCount>0)
         {
             giveTime -= Time.deltaTime;
-            if (giveTime < 0)//一定時間ごとに
+            if (giveTime < 0 && isPost)//一定時間ごとに　//追記：isPostの判定によって爆発物に移るかの判定を追加
             {
                 //balloon.GetComponent<BalloonController>().blastCount += 0.05f;//内容物を爆発物に移す
                 balloon.GetComponent<BalloonController>().BalloonBlast(gameObject);
