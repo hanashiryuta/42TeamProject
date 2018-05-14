@@ -18,7 +18,7 @@ public class ItemRespawn : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        itemRespawnLimit = GameObject.Find("ItemRespawnLimit");
+        itemRespawnLimit = GameObject.Find("ItemRespawnLimit(Clone)");
         respawnTime = 3.0f;
 
         //初期生成時に上限を超えていれば上限数以上生成できないようにする
