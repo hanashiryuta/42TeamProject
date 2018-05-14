@@ -184,7 +184,7 @@ MonoBehaviour:
   blastCount: 0
   blastLimit: 30
   isEnd: 0
-  isTimeBlast: 0
+  isTimeBlast: 1
   originBlastTime: 1
   soundSE1: {fileID: 8300000, guid: b7b809350da05df4aacab41d43da483c, type: 3}
   soundSE2: {fileID: 8300000, guid: 3bedcf1f668e97343ab5a80c4fb36ea1, type: 3}
