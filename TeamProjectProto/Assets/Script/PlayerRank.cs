@@ -74,7 +74,7 @@ public class PlayerRank : MonoBehaviour {
 //			}
 
 			playerRankList.Clear ();
-		}
+	}
 
 	/// <summary>
 	/// 1位のPlayerの名前を返す
@@ -106,5 +106,5 @@ public class PlayerRank : MonoBehaviour {
 	/// <returns>The fourth player.</returns>
 	public string GetFourthPlayer(){
 		return playerRankList [0];
-	}
-	}
+    }
+}
