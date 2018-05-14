@@ -9,7 +9,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class PlayerRank : MonoBehaviour {
-	List<string> playerRankList;//順位付け用のリスト
+    [HideInInspector]
+	public List<string> playerRankList;//順位付け用のリスト
 	static bool created=false;
 
 	/// <summary>
@@ -53,7 +54,7 @@ public class PlayerRank : MonoBehaviour {
 	/// <param name="player">爆発した時に風船を持っていたPlayer</param>
 	public void SetPlayer(GameObject player){
 		playerRankList.Add (player.name);
-		Destroy (player);
+		//Destroy (player);
 	}
 
 	/// <summary>
@@ -73,7 +74,7 @@ public class PlayerRank : MonoBehaviour {
 //			}
 
 			playerRankList.Clear ();
-		}
+	}
 
 	/// <summary>
 	/// 1位のPlayerの名前を返す
@@ -105,5 +106,5 @@ public class PlayerRank : MonoBehaviour {
 	/// <returns>The fourth player.</returns>
 	public string GetFourthPlayer(){
 		return playerRankList [0];
-	}
-	}
+    }
+}

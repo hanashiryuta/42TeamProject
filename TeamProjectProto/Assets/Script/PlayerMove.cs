@@ -27,7 +27,8 @@ public class PlayerMove : MonoBehaviour
     public GameObject balloon;//爆発物
 
     float blastCount = 0;//内容物所持数
-    Text itemCountText;//内容物所持数テキスト
+    Text blastCountText;//内容物所持数テキスト
+    Text totalBlastCountText;//内容物所持数累計テキスト
     [HideInInspector]
     public float totalBlastCount = 0;//内容物所持数累計
 
@@ -39,7 +40,7 @@ public class PlayerMove : MonoBehaviour
     public string jump = "Jump1";//Inputのジャンプボタン取得名前
 
     public bool isStan = false;//動けるかどうか
-    float stanTime = 1.0f;//動けるようになるまでの時間
+    float stanTime = 2.0f;//動けるようになるまでの時間
 
     public bool isBalloonShrink = true;//爆発物が縮むかどうか
 
@@ -66,7 +67,8 @@ public class PlayerMove : MonoBehaviour
         isHipDrop = false;
         jumpCount = 0;
 
-        itemCountText = GameObject.Find(transform.name + "ItemCount").GetComponent<Text>();//内容物所持数テキスト取得
+        blastCountText = GameObject.Find(transform.name + "ItemCount").GetComponent<Text>();//内容物所持数テキスト取得
+        totalBlastCountText = GameObject.Find(transform.name + "TotalCount").GetComponent<Text>(); 
         itemList = new List<string>();
     }
 
@@ -117,7 +119,7 @@ public class PlayerMove : MonoBehaviour
             if (stanTime < 0)
             {
                 isStan = false;
-                stanTime = 1.0f;
+                stanTime = 2.0f;
             }
         }
         //床以下にならないようにする
@@ -128,7 +130,8 @@ public class PlayerMove : MonoBehaviour
             isGround = true;
         }
 
-        itemCountText.text = blastCount.ToString();//内容物取得数表示処理 
+        blastCountText.text = blastCount.ToString();//内容物取得数表示処理 
+        totalBlastCountText.text = "Total:"+totalBlastCount.ToString();
     }
 
     /// <summary>
@@ -176,7 +179,7 @@ public class PlayerMove : MonoBehaviour
         foreach (var cx in colArray)
         {
             //当たっているものが床か特殊壁だったら
-            if (cx.tag == "Field" && !cx.transform.name.Contains(transform.name))
+            if ((cx.tag == "Field" && !cx.transform.name.Contains(transform.name))||(cx.tag == "Player"&&cx != gameObject.GetComponent<BoxCollider>()))
             {
                 //ジャンプ終える
                 isJump = false;
@@ -259,8 +262,8 @@ public class PlayerMove : MonoBehaviour
                 itemList.Add(col.name);//リスト追加
                 Destroy(col.gameObject);//内容物破棄
                 blastCount += col.GetComponent<ItemController>().point; //内容物所持数を増やす  
-				totalBlastCount += col.GetComponent<ItemController>().point;//内容物所持数累計を増やす  }
 				GetComponent<AudioSource> ().PlayOneShot (soundSE2);
+                //totalBlastCount += col.GetComponent<ItemController>().point;//内容物所持数累計を増やす
             }
         }
         //強制交換アイテムに当たったら
@@ -276,6 +279,8 @@ public class PlayerMove : MonoBehaviour
         //中心物体に当たったら
         if (col.gameObject.tag == "Post")
         {
+            totalBlastCount += blastCount;
+
             if (balloon != null && isBalloonShrink)
             {
                 col.GetComponent<PostController>().blastCount -= blastCount;
@@ -292,10 +297,27 @@ public class PlayerMove : MonoBehaviour
         //衝撃波に当たったら
         if (col.gameObject.tag == "HipDropCircle")
         {
-            if (!col.transform.name.Contains(transform.name)&&itemList.Count > 0)
+            if (!col.transform.name.Contains(transform.name))
+            {
+                isStan = true;
+                ItemBlast(1);
+            }
+        }
+    }
+
+    /// <summary>
+    /// アイテム排出処理
+    /// </summary>
+    /// <param name="count">割合</param>
+    public void ItemBlast(float count)
+    {
+        if (itemList.Count > 0)
+        {
+            int j = (int)(itemList.Count * (count / 10));//指定した割合で排出
+            for (int i = 0; i < j; i++)
             {
                 GameObject item = originItem;
-                int itemNum = Random.Range(0,itemList.Count);
+                int itemNum = Random.Range(0, itemList.Count);
 
                 switch (itemList[itemNum])//取得したアイテムからランダムで選出
                 {
