@@ -454,19 +454,19 @@ public class PlayerMove : MonoBehaviour
         switch (transform.name)
         {
             case "Player1":
-                GameObject hipDrop1 = Instantiate(hipDropCircle[0], transform.position + new Vector3(0, positionY, 0), Quaternion.identity);
+                GameObject hipDrop1 = Instantiate(hipDropCircle[0], transform.position, Quaternion.identity);
                 hipDrop1.name = hipDrop1.name + transform.name;
                 break;
             case "Player2":
-                GameObject hipDrop2 = Instantiate(hipDropCircle[1], transform.position + new Vector3(0, positionY, 0), Quaternion.identity);
+                GameObject hipDrop2 = Instantiate(hipDropCircle[1], transform.position, Quaternion.identity);
                 hipDrop2.name = hipDrop2.name + transform.name;
                 break;
             case "Player3":
-                GameObject hipDrop3 = Instantiate(hipDropCircle[2], transform.position + new Vector3(0, positionY, 0), Quaternion.identity);
+                GameObject hipDrop3 = Instantiate(hipDropCircle[2], transform.position, Quaternion.identity);
                 hipDrop3.name = hipDrop3.name + transform.name;
                 break;
             case "Player4":
-                GameObject hipDrop4 = Instantiate(hipDropCircle[3], transform.position + new Vector3(0, positionY, 0), Quaternion.identity);
+                GameObject hipDrop4 = Instantiate(hipDropCircle[3], transform.position, Quaternion.identity);
                 hipDrop4.name = hipDrop4.name + transform.name;
                 break;
         }
