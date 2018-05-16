@@ -60,6 +60,12 @@ public class PlayerMove : MonoBehaviour
     float hipDropTime = 0.3f;//ヒップドロップ空中待機時間
     Vector3 hipDropPosition = Vector3.zero;//ヒップドロップ空中待機場所
 
+    //180516 何
+    private Animator playerAnim;
+    private Material playerMat;
+    private Vector4 defaultMatValue;
+    public Vector4 matValue;
+
     // Use this for initialization
     void Start()
     {
@@ -74,6 +80,10 @@ public class PlayerMove : MonoBehaviour
         blastCountText = GameObject.Find(transform.name + "ItemCount").GetComponent<Text>();//内容物所持数テキスト取得
         totalBlastCountText = GameObject.Find(transform.name + "TotalCount").GetComponent<Text>(); 
         itemList = new List<string>();
+        //180516 アニメーター
+        playerAnim = transform.GetComponent<Animator>();
+        playerMat = transform.GetComponent<Renderer>().material;
+        defaultMatValue = playerMat.color;
     }
 
     void Update()
@@ -85,6 +95,8 @@ public class PlayerMove : MonoBehaviour
 
         blastCountText.text = blastCount.ToString();//内容物取得数表示処理 
         totalBlastCountText.text = "Total:" + totalBlastCount.ToString();
+
+        PlayerAnim(playerAnim);
     }
 
     // Update is called once per frame
@@ -469,6 +481,29 @@ public class PlayerMove : MonoBehaviour
                 GameObject hipDrop4 = Instantiate(hipDropCircle[3], transform.position, Quaternion.identity);
                 hipDrop4.name = hipDrop4.name + transform.name;
                 break;
+        }
+    }
+
+    /// <summary>
+    /// 追加日：180516 追加者：何
+    /// プレイヤーアニメーション
+    /// </summary>
+    /// <param name="anim"></param>
+    private void PlayerAnim(Animator anim)
+    {
+        //0516 ジャンプアニメーション
+        anim.SetBool("isJump", isJump);
+        anim.SetBool("isHipDrop", isHipDrop);
+        anim.SetFloat("velocity", rigid.velocity.x <= 0.001f && rigid.velocity.z <= 0.001f ? 0 : 1);
+
+        //見やすいようにP1だけ色変化
+        if(transform.name == "Player1")
+        {
+            if (!isHipDrop)
+            {
+                matValue = Color.red;
+            }
+            playerMat.color = matValue;
         }
     }
 }

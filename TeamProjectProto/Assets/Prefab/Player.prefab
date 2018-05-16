@@ -26,6 +26,7 @@ GameObject:
   - component: {fileID: 54730050836596244}
   - component: {fileID: 82625672269409032}
   - component: {fileID: 114984795206964018}
+  - component: {fileID: 95918035659145688}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -196,6 +197,23 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
+--- !u!95 &95918035659145688
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1605397539206766}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: a68fcf2427354b9478e6c4e8f1d11870, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!114 &114868217234465220
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -229,6 +247,7 @@ MonoBehaviour:
   soundSE1: {fileID: 8300000, guid: 96c42a4475b2d32428b25595bf7dc5b0, type: 3}
   soundSE2: {fileID: 8300000, guid: 475d72f144db63844b07315899919ce2, type: 3}
   soundSE3: {fileID: 8300000, guid: 04aabf5253f07f84bb09425dd4cb2c5c, type: 3}
+  matValue: {x: 0, y: 0, z: 0, w: 0}
 --- !u!114 &114984795206964018
 MonoBehaviour:
   m_ObjectHideFlags: 1
