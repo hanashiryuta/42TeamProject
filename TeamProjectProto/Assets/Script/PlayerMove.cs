@@ -47,7 +47,7 @@ public class PlayerMove : MonoBehaviour
     bool isGround = true;//地面にいるかどうか
     bool isHipDrop = false;//ヒップドロップしているかどうか
     float jumpCount = 0;//ジャンプ回数
-    public GameObject hipDropCircle;//衝撃波範囲
+    public GameObject[] hipDropCircle;//衝撃波範囲→0515何変更　色別の4種
     public GameObject originItem;//アイテム
     public GameObject originHighItem;//ハイアイテム
 
@@ -188,8 +188,7 @@ public class PlayerMove : MonoBehaviour
                 if (isHipDrop)
                 {
                     //衝撃波生成
-                    GameObject hipDrop = Instantiate(hipDropCircle, transform.position + new Vector3(0, positionY, 0), Quaternion.identity);
-                    hipDrop.name = hipDrop.name + transform.name;
+                    InstantiateHipDrop();
                     isHipDrop = false;
                 }
                 positionY = 0;
@@ -334,6 +333,34 @@ public class PlayerMove : MonoBehaviour
                 spawnItem.GetComponent<ItemController>().SetMovePosition();
                 spawnItem.GetComponent<ItemController>().isGet = false;
             }
+        }
+    }
+
+    /// <summary>
+    /// 180515　何
+    /// 衝撃波生成
+    /// </summary>
+    private void InstantiateHipDrop()
+    {
+        //プレイヤー別に衝撃波の色が違う
+        switch (transform.name)
+        {
+            case "Player1":
+                GameObject hipDrop1 = Instantiate(hipDropCircle[0], transform.position + new Vector3(0, positionY, 0), Quaternion.identity);
+                hipDrop1.name = hipDrop1.name + transform.name;
+                break;
+            case "Player2":
+                GameObject hipDrop2 = Instantiate(hipDropCircle[1], transform.position + new Vector3(0, positionY, 0), Quaternion.identity);
+                hipDrop2.name = hipDrop2.name + transform.name;
+                break;
+            case "Player3":
+                GameObject hipDrop3 = Instantiate(hipDropCircle[2], transform.position + new Vector3(0, positionY, 0), Quaternion.identity);
+                hipDrop3.name = hipDrop3.name + transform.name;
+                break;
+            case "Player4":
+                GameObject hipDrop4 = Instantiate(hipDropCircle[3], transform.position + new Vector3(0, positionY, 0), Quaternion.identity);
+                hipDrop4.name = hipDrop4.name + transform.name;
+                break;
         }
     }
 }
