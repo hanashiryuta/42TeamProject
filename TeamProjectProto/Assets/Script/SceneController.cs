@@ -64,6 +64,8 @@ public class SceneController : MonoBehaviour {
             }
         }
 
+        playerRank.GetComponent<PlayerRank>().Reset(); //ランクリストをリセット
+
         //ランク登録
         foreach(var cx in pList)
         {

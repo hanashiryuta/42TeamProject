@@ -9,74 +9,82 @@ using UnityEngine;
 
 public class PostController : MonoBehaviour {
 
-    [HideInInspector]
-    public float blastCount = 0;//内容物総数
+	[HideInInspector]
+	public float blastCount = 0;//内容物総数
 
-    GameObject balloon;//爆発物
+	GameObject balloon;//爆発物
 
-    float giveTime = 0.2f;//爆発物に内容物を渡すインターバル
+	float giveTime = 0.2f;//爆発物に内容物を渡すインターバル
 
-    [HideInInspector]
-    public bool isRespawn = false;//中心物体が移動するかどうか
-    [HideInInspector]
-    public float respawnCount = 0;//中心物体が移動するまでのカウント
+	[HideInInspector]
+	public bool isRespawn = false;//中心物体が移動するかどうか
+	[HideInInspector]
+	public float respawnCount = 0;//中心物体が移動するまでのカウント
 
-    public GameObject specialWallPoint;// 特殊壁移動ポイント
-    [HideInInspector]
-    public GameObject player;//プレイヤー
+	public GameObject specialWallPoint;// 特殊壁移動ポイント
+	[HideInInspector]
+	public GameObject player;//プレイヤー
+
+	[HideInInspector]
+	public bool activity;//PostRespawnで処理をおこなうためのbool型
 
 	// Use this for initialization
 	void Start () {
-        //初期化処理
-        blastCount = 0;
-        balloon = GameObject.FindGameObjectWithTag("Balloon");//爆発物取得
-        specialWallPoint = GameObject.Find("SpecialWallPoint(Clone)");//特殊壁移動ポイント取得
-    }
-	
+		//初期化処理
+		blastCount = 0;
+		balloon = GameObject.FindGameObjectWithTag("Balloon");//爆発物取得
+		specialWallPoint = GameObject.Find("SpecialWallPoint(Clone)");//特殊壁移動ポイント取得
+		activity=true;
+	}
+
 	// Update is called once per frame
 	void Update () {
 
-        //爆発物がなければ探す
-        if(balloon == null)
-        {
-            balloon = GameObject.FindGameObjectWithTag("Balloon");
-            return;
-        }
-        
-        //5ポイント貯めたら特殊壁出して移動する
-        if (respawnCount >= 5)
-        {
-            respawnCount = 0;
-            //specialWallPoint.GetComponent<SpecialWallRespawn>().SpecialRespawn(player);
-            isRespawn = true;
-        }
+		//爆発物がなければ探す
+		if(balloon == null)
+		{
+			balloon = GameObject.FindGameObjectWithTag("Balloon");
+			return;
+		}
 
-        //内容物が一つでもあれば
+		//5ポイント貯めたら特殊壁出して移動する
+		if (respawnCount >= 5)
+		{
+			respawnCount = 0;
+			//specialWallPoint.GetComponent<SpecialWallRespawn>().SpecialRespawn(player);
+			isRespawn = true;
+			activity = false;
+		}
+
+		//内容物が一つでもあれば
 		if(blastCount>0)
-        {
-            giveTime -= Time.deltaTime;
-            if (giveTime < 0)//一定時間ごとに
-            {
-                //balloon.GetComponent<BalloonController>().blastCount += 0.05f;//内容物を爆発物に移す
-                balloon.GetComponent<BalloonController>().BalloonBlast(gameObject);
-                blastCount--;//内容物の総数を減らす
-                giveTime = 0.2f;
-            }
-        }
-        else if(blastCount<0)
-        {
-            giveTime -= Time.deltaTime;
-            if (giveTime < 0)//一定時間ごとに
-            {
-                //爆発物縮小
-                balloon.GetComponent<BalloonController>().BalloonShrink(gameObject);
-                blastCount++;//内容物の総数を増やす
-                giveTime = 0.2f;
-            }
-        }
-        else
-        {
-            giveTime = 0.2f;
-        }
+		{
+			giveTime -= Time.deltaTime;
+			if (giveTime < 0)//一定時間ごとに
+			{
+				//balloon.GetComponent<BalloonController>().blastCount += 0.05f;//内容物を爆発物に移す
+				balloon.GetComponent<BalloonController>().BalloonBlast(gameObject);
+				blastCount--;//内容物の総数を減らす
+				giveTime = 0.2f;
+			}
+		}
+		else if(blastCount<0)
+		{
+			giveTime -= Time.deltaTime;
+			if (giveTime < 0)//一定時間ごとに
+			{
+				//爆発物縮小
+				balloon.GetComponent<BalloonController>().BalloonShrink(gameObject);
+				blastCount++;//内容物の総数を増やす
+				giveTime = 0.2f;
+			}
+		}
+		else
+		{
+			giveTime = 0.2f;
+		}
+
+		//activityに応じて表示
+		this.gameObject.SetActive (activity);
 	}
 }
