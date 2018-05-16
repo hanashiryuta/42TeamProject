@@ -171,7 +171,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0
   spreadCustomCurve:
     serializedVersion: 2
     m_Curve:
@@ -183,7 +183,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0
   reverbZoneMixCustomCurve:
     serializedVersion: 2
     m_Curve:
@@ -195,7 +195,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0
 --- !u!114 &114868217234465220
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -207,11 +207,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: faf4c254dc8e32149b20b4a1f2d9c0bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 0.15
-  balloonMoveSpeed: 0.16
-  originJumpPower: 0.25
-  gravPower: 0.02
-  balloonJumpPower: 0.3
+  originMoveSpeed: 1.5
+  balloonMoveSpeed: 2
+  originJumpPower: 1
+  balloonJumpPower: 1.2
   balloon: {fileID: 0}
   totalBlastCount: 0
   horizontal: Horizontal1
