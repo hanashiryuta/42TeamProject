@@ -10,16 +10,15 @@ using UnityEngine.UI;
 
 public class PlayerMove : MonoBehaviour
 {
-
-    float positionX = 0;//プレイヤーのｘ方向移動距離
-    float positionZ = 0;//プレイヤーのｚ方向移動距離
-    float positionY = 0;//プレイヤーのｙ座標
-    public float moveSpeed = 0.5f;//プレイヤーの移動速度    
+    float AxisX = 0;//プレイヤーのｘ移動方向
+    float AxisZ = 0;//プレイヤーのｚ移動方向
+    float moveSpeed = 0;//移動速度
+    public float originMoveSpeed = 0.5f;//プレイヤーの移動速度    
     public float balloonMoveSpeed = 0.7f;//爆発物を持っている時の移動速度
 
     bool isJump = false;//ジャンプしているか
     public float originJumpPower = 0.2f;//基本ジャンプの上方向の力
-    public float gravPower = 0.1f;//重力の力
+    float gravPower = 0.1f;//重力の力
     float jumpPower = 0;//今のジャンプの上方向の力
 
     public float balloonJumpPower = 0.3f;//爆発物所持時のジャンプの上方向の力
@@ -57,6 +56,10 @@ public class PlayerMove : MonoBehaviour
 	public AudioClip soundSE2;//アイテム取得時の音
 	public AudioClip soundSE3;//ポスト投函時の音
 
+    Rigidbody rigid;//リジットボディ
+    float hipDropTime = 0.3f;//ヒップドロップ空中待機時間
+    Vector3 hipDropPosition = Vector3.zero;//ヒップドロップ空中待機場所
+
     // Use this for initialization
     void Start()
     {
@@ -66,72 +69,126 @@ public class PlayerMove : MonoBehaviour
         isGround = true;
         isHipDrop = false;
         jumpCount = 0;
+        rigid = GetComponent<Rigidbody>();
 
         blastCountText = GameObject.Find(transform.name + "ItemCount").GetComponent<Text>();//内容物所持数テキスト取得
         totalBlastCountText = GameObject.Find(transform.name + "TotalCount").GetComponent<Text>(); 
         itemList = new List<string>();
     }
 
-    // Update is called once per frame
     void Update()
     {
+        //移動入力処理
+        MoveInput();
+        //ジャンプ入力処理
+        JumpInput();
+
+        blastCountText.text = blastCount.ToString();//内容物取得数表示処理 
+        totalBlastCountText.text = "Total:" + totalBlastCount.ToString();
+    }
+
+    // Update is called once per frame
+    void FixedUpdate()
+    {
+        //ジャンプ処理
+        Jump();
+        //移動処理
+        Move();      
+    }
+
+    /// <summary>
+    /// 移動入力処理
+    /// </summary>
+    void MoveInput()
+    {
+        //方向指定
+        AxisX = Input.GetAxis(horizontal);
+        AxisZ = Input.GetAxis(vertical);
+
         //風船を持っていないとき
         if (balloon == null)
-        {
-            //プレイヤーの移動処理
-            positionX = Input.GetAxisRaw(horizontal) * moveSpeed;
-            positionZ = Input.GetAxisRaw(vertical) * moveSpeed;
-        }
+            moveSpeed = originMoveSpeed;
         //風船を持っている時
         else
+            moveSpeed = balloonMoveSpeed;
+    }
+
+    /// <summary>
+    /// ジャンプ入力処理
+    /// </summary>
+    void JumpInput()
+    {
+        //ジャンプボタンを押したら
+        if (Input.GetButtonDown(jump))
         {
-            //プレイヤーの移動処理
-            positionX = Input.GetAxisRaw(horizontal) * balloonMoveSpeed;
-            positionZ = Input.GetAxisRaw(vertical) * balloonMoveSpeed;
+            //ジャンプパワー設定
+            jumpPower = balloon != null ? balloonJumpPower * 700 : originJumpPower * 700;
+
+            //地面にいたら
+            if (jumpCount == 0)
+            {
+                rigid.AddForce(new Vector3(0, jumpPower, 0));
+                GetComponent<AudioSource>().PlayOneShot(soundSE1);
+            }
+            //空中にいたら
+            else if (jumpCount == 1)
+            {
+                hipDropTime = 0.3f;
+                rigid.velocity = Vector3.zero;
+                hipDropPosition = transform.position;
+            }
+
+            //ジャンプカウント増加
+            jumpCount++;
+
+            //上限設定
+            if (jumpCount > 2)
+                jumpCount = 2;
         }
+    }
 
-        Jump();//ジャンプ         
-
-        HitField();//あたり判定
-
-        //動けるとき
-        if (!isStan)
+    /// <summary>
+    /// 移動処理
+    /// </summary>
+    void Move()
+    {
+        //動けないなら
+        if (isStan)
         {
-            Vector3 movePosition = new Vector3(positionX, positionY, positionZ);
+            //最初に移動量をゼロに
+            if(stanTime >= 2.0f)
+                rigid.velocity = Vector3.zero;
 
-            //各移動軸の正規化処理
-            //if ((positionX != 0 && positionZ != 0))
-            //{
-            //    movePosition *= 0.71f;
-            //}
-            //if (((positionX != 0 && positionY != 0) || (positionY != 0 && positionZ != 0)) && !isGround)
-            //{
-            //    movePosition *= 0.71f;
-            //}
-
-
-            transform.position += movePosition;//位置更新
-        }
-        //動けないとき
-        else
-        {
+            //時間で回復
             stanTime -= Time.deltaTime;
             if (stanTime < 0)
             {
                 isStan = false;
                 stanTime = 2.0f;
             }
+            return;
         }
-        //床以下にならないようにする
-        if (transform.position.y < 1)
-        {
-            transform.position = new Vector3(transform.position.x, 1, transform.position.z);
-            isJump = false;
-            isGround = true;
-        }
+        //移動vector生成
+        Vector3 moveVector = Vector3.zero;
 
-        blastCountText.text = blastCount.ToString();//内容物取得数表示処理 
-        totalBlastCountText.text = "Total:"+totalBlastCount.ToString();
+        //あたり判定
+        HitField();
+
+        //移動量設定
+        moveVector.x = moveSpeed * AxisX;
+        moveVector.z = moveSpeed * AxisZ;
+
+        //y方向無しの現在のvelocity保存
+        Vector3 rigidVelocity = new Vector3(rigid.velocity.x, 0, rigid.velocity.z);
+
+        //移動量追加
+        rigid.AddForce(100 * (moveVector - rigidVelocity));
+
+        //移動量2.5倍
+        rigidVelocity = new Vector3(rigidVelocity.x * 2.5f, rigid.velocity.y, rigidVelocity.z * 2.5f);
+
+        //設定
+        rigid.velocity = rigidVelocity;
     }
 
     /// <summary>
@@ -139,65 +196,87 @@ public class PlayerMove : MonoBehaviour
     /// </summary>
     void Jump()
     {
-        //床に着くまでジャンプした回数
-        if (Input.GetButtonDown(jump))
+        //地面にいるとき
+        if(jumpCount == 0)
         {
-            jumpCount++;
+            //重力設定
+            gravPower = 9.8f;
         }
-        //床でジャンプしたなら普通のジャンプできる
-        if (jumpCount == 1 && !isJump && isGround)
+        //空中にいるとき
+        if(jumpCount == 1)
         {
-            //風船を持っているかどうかでジャンプ力が変わる
-            positionY = balloon != null ? balloonJumpPower : originJumpPower; ;
+            //ジャンプ中
             isJump = true;
-            isGround = false;
-			GetComponent<AudioSource> ().PlayOneShot (soundSE1);
+            //重力設定
+            gravPower = 9.8f;
         }
-        //空中でジャンプしたならヒップドロップ
-        if (jumpCount == 2 && isJump && !isHipDrop)
+        //ヒップドロップ中
+        if(jumpCount == 2)
         {
+            //一定時間空中で停止
+            hipDropTime -= Time.deltaTime;
+            if (hipDropTime > 0)
+            {
+                //移動量ゼロ
+                rigid.velocity = Vector3.zero;
+                //位置保存
+                transform.position = hipDropPosition;
+            }
+            //左右移動ゼロ化
+            AxisX = 0;
+            AxisZ = 0;
+            //重力設定
+            gravPower = 9.8f * 2;
+            //ヒップドロップ中
             isHipDrop = true;
-            positionY = balloon != null ? balloonJumpPower : originJumpPower;
         }
 
-        //ヒップドロップ中は移動しないようにする
-        if (isHipDrop)
-        {
-            positionX = 0;
-            positionZ = 0;
-        }
+        //あたり判定用配列
+        Collider[] colArray = Physics.OverlapBox(transform.position + new Vector3(0, -0.01f, 0), new Vector3(transform.localScale.x / 2-0.01f, transform.localScale.y / 2, transform.localScale.z / 2-0.01f), transform.localRotation);
+        
+        //重力追加
+        rigid.AddForce(new Vector3(0, -gravPower*5, 0));
 
-        if (!isHipDrop)
-            positionY -= gravPower;//重力
-        else
-            positionY -= gravPower * 2.5f;//ヒップドロップ中は重力2.5倍
-
-        //移動先で当たっているもの
-        Collider[] colArray = Physics.OverlapBox(transform.position + new Vector3(0, positionY, 0), new Vector3(transform.localScale.x / 2 - 0.05f, transform.localScale.y / 2, transform.localScale.z / 2 - 0.05f), Quaternion.identity);
-
+        //地面いるか判定
         bool isField = false;
+
         foreach (var cx in colArray)
         {
-            //当たっているものが床か特殊壁だったら
-            if ((cx.tag == "Field" && !cx.transform.name.Contains(transform.name))||(cx.tag == "Player"&&cx != gameObject.GetComponent<BoxCollider>()))
+            //当たっているものが床かプレイヤーだったら
+            if ((cx.tag == "Field")||(cx.tag == "Player"&&cx.gameObject != gameObject))
             {
+                //位置を少し浮かす
+                transform.position = new Vector3(transform.position.x, transform.position.y + 0.01f, transform.position.z);
+                //地面にいる
+                isField = true;
                 //ジャンプ終える
                 isJump = false;
-                isField = true;
-                isGround = true;
-                if (isHipDrop)
+                //ヒップドロップ中だったら
+                if (isHipDrop&&hipDropTime <= 0)
                 {
                     //衝撃波生成
                     InstantiateHipDrop();
                     isHipDrop = false;
                 }
-                positionY = 0;
-                jumpCount = 0;
+                //地面にいる状態に変更
+                if (jumpCount > 0)
+                {
+                    jumpCount = 0;
+                }
             }
         }
-        if (isGround && !isField)
+        //地面にいる状態　かつ　地面にいない判定だったら（壁から落ちる）
+        if (!isField&&jumpCount == 0)
         {
-            isGround = false;
+            //ジャンプ状態に変更
+            jumpCount = 1;
+        }
+
+        //床以下にならないようにする
+        if (transform.position.y < 1)
+        {
+            transform.position = new Vector3(transform.position.x, 1, transform.position.z);
+            isJump = false;
         }
     }
 
@@ -207,32 +286,61 @@ public class PlayerMove : MonoBehaviour
     void HitField()
     {
         //x方向あたり判定
-        if (Input.GetAxisRaw(horizontal) != 0)
+        if (Input.GetAxis(horizontal) > 0)
         {
             //移動先で当たっているもの
-            foreach (var cx in Physics.OverlapBox(transform.position + new Vector3(positionX, 0, 0), new Vector3(transform.localScale.x / 2, transform.localScale.y / 2 - 0.05f, transform.localScale.z / 2), Quaternion.identity))
+            foreach (var cx in Physics.OverlapBox(transform.position + new Vector3(0.01f, 0.01f, 0), new Vector3(transform.localScale.x / 2, transform.localScale.y / 2, transform.localScale.z / 2), transform.localRotation))
             {
                 //当たっているものが床か特殊壁だったら
-                if (cx.tag == "Field" && !cx.transform.name.Contains(transform.name))
+                if (cx.tag == "Field")
                 {
                     //移動しない
-                    positionX = 0;
+                    AxisX = 0;
                     break;
                 }
             }
         }
-
         //z方向あたり判定
-        if (Input.GetAxisRaw(vertical) != 0)
+        if (Input.GetAxis(vertical) > 0)
         {
             //移動先で当たっているもの
-            foreach (var cx in Physics.OverlapBox(transform.position + new Vector3(0, 0, positionZ), new Vector3(transform.localScale.x / 2, transform.localScale.y / 2 - 0.05f, transform.localScale.z / 2), Quaternion.identity))
+            foreach (var cx in Physics.OverlapBox(transform.position + new Vector3(0, 0.01f, 0.01f), new Vector3(transform.localScale.x / 2, transform.localScale.y / 2, transform.localScale.z / 2), transform.localRotation))
             {
                 //当たっているものが床か特殊壁だったら
-                if (cx.tag == "Field" && !cx.transform.name.Contains(transform.name))
+                if (cx.tag == "Field")
                 {
                     //移動しない
-                    positionZ = 0;
+                    AxisZ = 0;
+                    break;
+                }
+            }
+        }
+        //x方向あたり判定
+        if (Input.GetAxis(horizontal) < 0)
+        {
+            //移動先で当たっているもの
+            foreach (var cx in Physics.OverlapBox(transform.position + new Vector3(-0.01f, 0.01f, 0), new Vector3(transform.localScale.x / 2, transform.localScale.y / 2, transform.localScale.z / 2), transform.localRotation))
+            {
+                //当たっているものが床か特殊壁だったら
+                if (cx.tag == "Field")
+                {
+                    //移動しない
+                    AxisX = 0;
+                    break;
+                }
+            }
+        }
+        //z方向あたり判定
+        if (Input.GetAxis(vertical) < 0)
+        {
+            //移動先で当たっているもの
+            foreach (var cx in Physics.OverlapBox(transform.position + new Vector3(0, 0.01f, -0.01f), new Vector3(transform.localScale.x / 2, transform.localScale.y / 2, transform.localScale.z / 2), transform.localRotation))
+            {
+                //当たっているものが床か特殊壁だったら
+                if (cx.tag == "Field")
+                {
+                    //移動しない
+                    AxisZ = 0;
                     break;
                 }
             }
@@ -256,7 +364,7 @@ public class PlayerMove : MonoBehaviour
         //内容物に当たったら
         if (col.gameObject.name.Contains("PointItem"))
         {
-            if (col.gameObject.GetComponent<ItemController>().isGet)
+            if (col.gameObject.GetComponent<ItemController>().isGet&&balloon == null)
             {
                 itemList.Add(col.name);//リスト追加
                 Destroy(col.gameObject);//内容物破棄
@@ -276,7 +384,7 @@ public class PlayerMove : MonoBehaviour
             b.GetComponent<BalloonController>().BalloonExChange(pList, gameObject);
         }
         //中心物体に当たったら
-        if (col.gameObject.tag == "Post")
+        if (col.gameObject.tag == "Post"&&balloon == null)
         {
             totalBlastCount += blastCount;
 
