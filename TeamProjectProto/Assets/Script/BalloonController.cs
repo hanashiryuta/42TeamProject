@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using XInputDotNetPure; //コントローラー振動用
 
 /// <summary>
 /// 爆発物の状態
@@ -37,6 +38,9 @@ public class BalloonController : MonoBehaviour {
 
     [HideInInspector]
     public bool isEnd = false;//ゲームが終わるかどうか
+
+    private float stopTime = 1.0f; //振動してから止まるまでのタイムラグ
+    private bool isStop = true; //振動を止めるかどうか
 
     BalloonState _balloonState;//爆発物の状態
     //追加日：180513　追加者：何
@@ -82,10 +86,13 @@ public class BalloonController : MonoBehaviour {
 
         player = GameObject.Find("Player" + Random.Range(1, 5));//プレイヤーをランダムで指定
         player.GetComponent<PlayerMove>().balloon = transform.gameObject;//プレイヤー内に自分を指定
+
+        stopTime = 5.0f; //振動してから止まるまでのタイムラグ
+        isStop = true; //振動を止めるかどうか
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+// Update is called once per frame
+void Update () {
         //裏コマンド
         if(Input.GetKeyDown(KeyCode.A))
         {
@@ -137,6 +144,21 @@ public class BalloonController : MonoBehaviour {
                 isMove = true;
             }
         }
+
+
+        //5月16日　追加
+        //追加者　安部崇寛
+        //コントローラーの振動の停止
+        
+            if(stopTime < 0)
+            {
+                GamePad.SetVibration(0, 0.0f, 0.0f);
+                stopTime = 5.0f;
+                isStop = false;
+            } else {
+                stopTime -= 0.1f;
+            }
+        
 
         ColorChange();//色変更
     }
@@ -262,6 +284,11 @@ public class BalloonController : MonoBehaviour {
 			scaleCount = 1.0f;
 			blastCount = 0;
 			GetComponent<AudioSource> ().PlayOneShot (soundSE2);
+
+            //5月16日　追加
+            //追加者　安部崇寛
+            //爆発時にコントローラーを振動させる
+            GamePad.SetVibration(PlayerIndex.One, 1.0f, 1.0f);
         }
     }
 
