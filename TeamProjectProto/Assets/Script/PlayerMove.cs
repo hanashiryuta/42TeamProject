@@ -527,7 +527,7 @@ public class PlayerMove : MonoBehaviour
         //0516 ジャンプアニメーション
         anim.SetBool("isJump", isJump);
         anim.SetBool("isHipDrop", isHipDrop);
-        anim.SetFloat("velocity", rigid.velocity.x <= 0.001f && rigid.velocity.z <= 0.001f ? 0 : 1);
+        anim.SetFloat("velocity", Mathf.Abs(rigid.velocity.x) <= 0.001f && Mathf.Abs(rigid.velocity.z) <= 0.001f ? 0 : 1);
     }
 }
 
