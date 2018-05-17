@@ -35,10 +35,11 @@ public class RespawnController : MonoBehaviour {
             p.GetComponent<PlayerMove>().horizontal = "Horizontal" + (i + 1);//そのプレイヤーの使うInput指定
             p.GetComponent<PlayerMove>().vertical = "Vertical" + (i + 1);//そのプレイヤーの使うInput指定
             p.GetComponent<PlayerMove>().jump = "Jump" + (i + 1);//そのプレイヤーの使うInput指定 
-            p.GetComponent<Renderer>().material.color = colorList[i]; //色変更
+                                                                 //p.GetComponent<Renderer>().material.color = colorList[i]; //色変更
+
 
             //180508 何　追加　アウトラインの色
-            p.GetComponent<Outline>().color = i;
+            p.GetComponentInChildren<Outline>().color = i;
         }
 	}
 }

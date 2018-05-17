@@ -62,9 +62,6 @@ public class PlayerMove : MonoBehaviour
 
     //180516 何
     private Animator playerAnim;
-    private Material playerMat;
-    private Vector4 defaultMatValue;
-    public Vector4 matValue;
 
     // Use this for initialization
     void Start()
@@ -82,8 +79,6 @@ public class PlayerMove : MonoBehaviour
         itemList = new List<string>();
         //180516 アニメーター
         playerAnim = transform.GetComponent<Animator>();
-        playerMat = transform.GetComponent<Renderer>().material;
-        defaultMatValue = playerMat.color;
     }
 
     void Update()
@@ -204,6 +199,18 @@ public class PlayerMove : MonoBehaviour
     }
 
     /// <summary>
+    /// ギズモ描画
+    /// </summary>
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        //Gizmos.DrawWireCube(new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), new Vector3(1, 2, 1));
+
+        Gizmos.DrawWireCube(transform.position + new Vector3(0, -0.01f, 0) + new Vector3(0, 1, 0), new Vector3(1  - 0.01f, 2, 1  - 0.01f));
+
+    }
+
+    /// <summary>
     /// ジャンプ処理
     /// </summary>
     void Jump()
@@ -244,7 +251,11 @@ public class PlayerMove : MonoBehaviour
         }
 
         //あたり判定用配列
-        Collider[] colArray = Physics.OverlapBox(transform.position + new Vector3(0, -0.01f, 0), new Vector3(transform.localScale.x / 2-0.01f, transform.localScale.y / 2, transform.localScale.z / 2-0.01f), transform.localRotation);
+        Collider[] colArray = Physics.OverlapBox(transform.position + new Vector3(0, -0.01f, 0) + new Vector3(0, 1, 0),
+                                                new Vector3(1 / 2 - 0.01f, 
+                                                            2/2, 
+                                                            1 / 2 - 0.01f), 
+                                                transform.localRotation);
         
         //重力追加
         rigid.AddForce(new Vector3(0, -gravPower*5, 0));
@@ -495,16 +506,6 @@ public class PlayerMove : MonoBehaviour
         anim.SetBool("isJump", isJump);
         anim.SetBool("isHipDrop", isHipDrop);
         anim.SetFloat("velocity", rigid.velocity.x <= 0.001f && rigid.velocity.z <= 0.001f ? 0 : 1);
-
-        //見やすいようにP1だけ色変化
-        if(transform.name == "Player1")
-        {
-            if (!isHipDrop)
-            {
-                matValue = Color.red;
-            }
-            playerMat.color = matValue;
-        }
     }
 }
 
