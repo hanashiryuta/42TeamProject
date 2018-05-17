@@ -282,7 +282,8 @@ void Update () {
             _isBlast = true;//爆発した
             player.GetComponent<PlayerMove>().ItemBlast(3);
             player.GetComponent<PlayerMove>().isStan = true;
-			//playerRank.GetComponent<PlayerRank> ().SetPlayer (player);//爆発したらリストに格納
+            //playerRank.GetComponent<PlayerRank> ().SetPlayer (player);//爆発したらリストに格納
+            player.GetComponent<PlayerMove>().balloon = null;
 			player = null;//風船を他のプレイヤーに回すためにnullにする
             //Destroy(player);//プレイヤーを破棄
 			scaleCount = 1.0f;
