@@ -150,14 +150,18 @@ void Update () {
         //追加者　安部崇寛
         //コントローラーの振動の停止
         
-            if(stopTime < 0)
-            {
-                GamePad.SetVibration(0, 0.0f, 0.0f);
-                stopTime = 5.0f;
-                isStop = false;
-            } else {
-                stopTime -= 0.1f;
-            }
+        if(stopTime < 0)
+        {
+            GamePad.SetVibration(PlayerIndex.One, 0.0f, 0.0f);
+            GamePad.SetVibration(PlayerIndex.Two, 0.0f, 0.0f);
+            GamePad.SetVibration(PlayerIndex.Three, 0.0f, 0.0f);
+            GamePad.SetVibration(PlayerIndex.Four, 0.0f, 0.0f);
+
+            stopTime = 5.0f;
+            isStop = false;
+        } else {
+            stopTime -= 0.1f;
+        }
         
 
         ColorChange();//色変更
@@ -289,6 +293,9 @@ void Update () {
             //追加者　安部崇寛
             //爆発時にコントローラーを振動させる
             GamePad.SetVibration(PlayerIndex.One, 1.0f, 1.0f);
+            GamePad.SetVibration(PlayerIndex.Two, 1.0f, 1.0f);
+            GamePad.SetVibration(PlayerIndex.Three, 1.0f, 1.0f);
+            GamePad.SetVibration(PlayerIndex.Four, 1.0f, 1.0f);
         }
     }
 
