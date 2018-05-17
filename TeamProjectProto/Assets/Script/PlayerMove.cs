@@ -51,6 +51,7 @@ public class PlayerMove : MonoBehaviour
     public GameObject originHighItem;//ハイアイテム
 
     List<string> itemList;//取得アイテム管理リスト
+    List<string> totalItemList;//累計取得アイテム管理リスト
 
 	public AudioClip soundSE1;//ジャンプ時の音
 	public AudioClip soundSE2;//アイテム取得時の音
@@ -59,6 +60,8 @@ public class PlayerMove : MonoBehaviour
     Rigidbody rigid;//リジットボディ
     float hipDropTime = 0.3f;//ヒップドロップ空中待機時間
     Vector3 hipDropPosition = Vector3.zero;//ヒップドロップ空中待機場所
+    
+    Vector3 rotationPosition;//プレイヤー回転用ポジション
 
     // Use this for initialization
     void Start()
@@ -70,10 +73,12 @@ public class PlayerMove : MonoBehaviour
         isHipDrop = false;
         jumpCount = 0;
         rigid = GetComponent<Rigidbody>();
+        rotationPosition = transform.position;
 
         blastCountText = GameObject.Find(transform.name + "ItemCount").GetComponent<Text>();//内容物所持数テキスト取得
         totalBlastCountText = GameObject.Find(transform.name + "TotalCount").GetComponent<Text>(); 
         itemList = new List<string>();
+        totalItemList = new List<string>();
     }
 
     void Update()
@@ -93,7 +98,16 @@ public class PlayerMove : MonoBehaviour
         //ジャンプ処理
         Jump();
         //移動処理
-        Move();      
+        Move();
+
+        Vector3 diff = transform.position + new Vector3(AxisX,0,AxisZ)-transform.position;
+
+        diff.y = 0;
+
+        if (diff.magnitude > 0.01f)
+        {
+            transform.rotation = Quaternion.LookRotation(diff);
+        }
     }
 
     /// <summary>
@@ -391,6 +405,7 @@ public class PlayerMove : MonoBehaviour
             if (balloon != null && isBalloonShrink)
             {
                 col.GetComponent<PostController>().blastCount -= blastCount;
+                itemList.Clear();
                 blastCount = 0;//内容物所持数を0にする
                 return;
             }
@@ -398,7 +413,12 @@ public class PlayerMove : MonoBehaviour
             col.GetComponent<PostController>().blastCount += blastCount;//中心物体に内容物総数を渡す
             col.GetComponent<PostController>().respawnCount += blastCount;
             col.GetComponent<PostController>().player = gameObject;
-			blastCount = 0;//内容物所持数を0にする
+            foreach(var cx in itemList)
+            {
+                totalItemList.Add(cx);
+            }
+            itemList.Clear();
+            blastCount = 0;//内容物所持数を0にする
 			GetComponent<AudioSource> ().PlayOneShot (soundSE3);
         }
         //衝撃波に当たったら
@@ -418,25 +438,25 @@ public class PlayerMove : MonoBehaviour
     /// <param name="count">割合</param>
     public void ItemBlast(float count)
     {
-        if (itemList.Count > 0)
+        if (totalItemList.Count > 0)
         {
-            int j = (int)(itemList.Count * (count / 10));//指定した割合で排出
+            int j = (int)(totalItemList.Count * (count / 10));//指定した割合で排出
             for (int i = 0; i < j; i++)
             {
                 GameObject item = originItem;
-                int itemNum = Random.Range(0, itemList.Count);
+                int itemNum = Random.Range(0, totalItemList.Count);
 
-                switch (itemList[itemNum])//取得したアイテムからランダムで選出
+                switch (totalItemList[itemNum])//取得したアイテムからランダムで選出
                 {
                     case "PointItem(Clone)"://普通のアイテム
-                        blastCount--;
+                        totalBlastCount--;
                         break;
                     case "HighPointItem(Clone)"://高ポイントアイテム
-                        blastCount -= 2;
+                        totalBlastCount -= 2;
                         item = originHighItem;
                         break;
                 }
-                itemList.RemoveAt(itemNum);//リストから削除
+                totalItemList.RemoveAt(itemNum);//リストから削除
                 GameObject spawnItem = Instantiate(item, transform.position, Quaternion.identity);//生成
                 spawnItem.GetComponent<ItemController>().SetMovePosition();
                 spawnItem.GetComponent<ItemController>().isGet = false;
