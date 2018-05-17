@@ -32,13 +32,15 @@ public class PostRespawn : MonoBehaviour {
 		for (int i = 0; i < postCount; i++) 
 		{
 			int rand;
-
-			rand = Random.Range(0, childList.Count);
-
+            //ランダムで選ばれたchildListに子があったら選びなおす
+			do {
+				rand = Random.Range (0, childList.Count);
+			} while(childList[rand].transform.childCount >= 1);
+            
 			//リスト追加
 			postList.Add(Instantiate(originPost, childList[rand].transform.position, Quaternion.identity, childList[rand].transform));
 			//移動先候補から現在の位置を除外
-			childList.RemoveAt(rand);
+			//childList.RemoveAt(rand);
 		}
 	}
 
@@ -49,19 +51,27 @@ public class PostRespawn : MonoBehaviour {
 			//移動可能なら
 			if (post.GetComponent<PostController> ().isRespawn) {
 				//現在のPosition保存
-				GameObject nowPosition = post.transform.parent.gameObject;
+				//GameObject nowPosition = post.transform.parent.gameObject;
 
-				int rand = Random.Range (0, childList.Count);
+				int rand;
+                //ランダムで選ばれたchildListに子があったら選びなおす
+                do
+                {
+					rand = Random.Range (0, childList.Count);
+				} while(childList[rand].transform.childCount >= 1);
 
 				//移動先Position保存
 				GameObject nextPosition = childList [rand];
 
-				//今の移動先を次回の候補から除外して
-				childList.RemoveAt (rand);
-				//今のPositionを次回の候補に入れる
-				childList.Add (nowPosition);
+                //今の移動先を次回の候補から除外して
+                //childList.RemoveAt (rand);
 
-				//移動処理
+                //今のPositionを次回の候補に入れる
+                //childList.Add (nowPosition);
+
+
+                //移動処理
+                post.transform.parent = nextPosition.transform;//次のポジションの地点に親子付けする
 				post.transform.position = nextPosition.transform.position;
 				post.GetComponent<PostController> ().isRespawn = false;
 			}

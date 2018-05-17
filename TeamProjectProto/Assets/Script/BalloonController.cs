@@ -133,7 +133,7 @@ void Update () {
 
         //常にプレイヤーの上にいるようにする
         if (player != null)
-            transform.position = new Vector3(player.transform.position.x, player.transform.position.y + 1 + transform.localScale.y / 2, player.transform.position.z);
+            transform.position = new Vector3(player.transform.position.x, player.transform.position.y + 2.5f + transform.localScale.y / 2, player.transform.position.z);
 
         //一度移ってから再度移るまで1秒のインターバルが存在する
         if(!isMove)
