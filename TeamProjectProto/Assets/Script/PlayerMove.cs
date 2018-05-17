@@ -204,9 +204,9 @@ public class PlayerMove : MonoBehaviour
     void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        //Gizmos.DrawWireCube(new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), new Vector3(1, 2, 1));
+        Gizmos.DrawWireCube(new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), new Vector3(transform.localScale.x*2, transform.localScale.x*2*2, transform.localScale.x*2));
 
-        Gizmos.DrawWireCube(transform.position + new Vector3(0, -0.01f, 0) + new Vector3(0, 1, 0), new Vector3(1  - 0.01f, 2, 1  - 0.01f));
+        //Gizmos.DrawWireCube(transform.position + new Vector3(0, -0.01f, 0) + new Vector3(0, 1, 0), new Vector3(1  - 0.01f, 2, 1  - 0.01f));
 
     }
 
@@ -252,9 +252,9 @@ public class PlayerMove : MonoBehaviour
 
         //あたり判定用配列
         Collider[] colArray = Physics.OverlapBox(transform.position + new Vector3(0, -0.01f, 0) + new Vector3(0, 1, 0),
-                                                new Vector3(1 / 2 - 0.01f, 
-                                                            2/2, 
-                                                            1 / 2 - 0.01f), 
+                                                new Vector3(transform.localScale.x * 2 / 2 - 0.01f,
+                                                            transform.localScale.y * 2,
+                                                            transform.localScale.z * 2 / 2 - 0.01f), 
                                                 transform.localRotation);
         
         //重力追加
@@ -295,12 +295,12 @@ public class PlayerMove : MonoBehaviour
             jumpCount = 1;
         }
 
-        //床以下にならないようにする
-        if (transform.position.y < 1)
-        {
-            transform.position = new Vector3(transform.position.x, 1, transform.position.z);
-            isJump = false;
-        }
+        ////床以下にならないようにする
+        //if (transform.position.y < 1f)
+        //{
+        //    transform.position = new Vector3(transform.position.x,1f, transform.position.z);
+        //    isJump = false;
+        //}
     }
 
     /// <summary>
@@ -312,7 +312,7 @@ public class PlayerMove : MonoBehaviour
         if (Input.GetAxis(horizontal) > 0)
         {
             //移動先で当たっているもの
-            foreach (var cx in Physics.OverlapBox(transform.position + new Vector3(0.01f, 0.01f, 0), new Vector3(transform.localScale.x / 2, transform.localScale.y / 2, transform.localScale.z / 2), transform.localRotation))
+            foreach (var cx in Physics.OverlapBox(transform.position + new Vector3(0.01f, 0.01f, 0) + new Vector3(0,1,0), new Vector3(transform.localScale.x * 2 / 2, transform.localScale.y * 2, transform.localScale.z * 2 / 2), transform.localRotation))
             {
                 //当たっているものが床か特殊壁だったら
                 if (cx.tag == "Field")
@@ -327,7 +327,7 @@ public class PlayerMove : MonoBehaviour
         if (Input.GetAxis(vertical) > 0)
         {
             //移動先で当たっているもの
-            foreach (var cx in Physics.OverlapBox(transform.position + new Vector3(0, 0.01f, 0.01f), new Vector3(transform.localScale.x / 2, transform.localScale.y / 2, transform.localScale.z / 2), transform.localRotation))
+            foreach (var cx in Physics.OverlapBox(transform.position + new Vector3(0, 0.01f, 0.01f) + new Vector3(0, 1, 0), new Vector3(transform.localScale.x * 2 / 2, transform.localScale.y * 2, transform.localScale.z * 2 / 2), transform.localRotation))
             {
                 //当たっているものが床か特殊壁だったら
                 if (cx.tag == "Field")
@@ -342,7 +342,7 @@ public class PlayerMove : MonoBehaviour
         if (Input.GetAxis(horizontal) < 0)
         {
             //移動先で当たっているもの
-            foreach (var cx in Physics.OverlapBox(transform.position + new Vector3(-0.01f, 0.01f, 0), new Vector3(transform.localScale.x / 2, transform.localScale.y / 2, transform.localScale.z / 2), transform.localRotation))
+            foreach (var cx in Physics.OverlapBox(transform.position + new Vector3(-0.01f, 0.01f, 0) + new Vector3(0, 1, 0), new Vector3(transform.localScale.x * 2 / 2, transform.localScale.y * 2, transform.localScale.z * 2 / 2), transform.localRotation))
             {
                 //当たっているものが床か特殊壁だったら
                 if (cx.tag == "Field")
@@ -357,7 +357,7 @@ public class PlayerMove : MonoBehaviour
         if (Input.GetAxis(vertical) < 0)
         {
             //移動先で当たっているもの
-            foreach (var cx in Physics.OverlapBox(transform.position + new Vector3(0, 0.01f, -0.01f), new Vector3(transform.localScale.x / 2, transform.localScale.y / 2, transform.localScale.z / 2), transform.localRotation))
+            foreach (var cx in Physics.OverlapBox(transform.position + new Vector3(0, 0.01f, -0.01f) + new Vector3(0, 1, 0), new Vector3(transform.localScale.x * 2 / 2, transform.localScale.y * 2, transform.localScale.z * 2 / 2), transform.localRotation))
             {
                 //当たっているものが床か特殊壁だったら
                 if (cx.tag == "Field")

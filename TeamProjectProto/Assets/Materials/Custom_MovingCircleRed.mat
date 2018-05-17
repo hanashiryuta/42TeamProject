@@ -26,5 +26,5 @@ Material:
     - _Glossiness: 0.5
     - _Metallic: 0
     m_Colors:
-    - _CenterPosition: {r: -21.213203, g: 0.50040007, b: 0.00000047683716, a: 0}
+    - _CenterPosition: {r: -19.51249, g: 0.3065009, b: -0.023162847, a: 0}
     - _Color: {r: 1, g: 0, b: 0, a: 1}
