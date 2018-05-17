@@ -39,8 +39,9 @@ public class BalloonController : MonoBehaviour {
     [HideInInspector]
     public bool isEnd = false;//ゲームが終わるかどうか
 
+    public float setStopTime; //Unity側でのコントローラー振動停止までの時間設定用
     private float stopTime = 1.0f; //振動してから止まるまでのタイムラグ
-    private bool isStop = true; //振動を止めるかどうか
+    private bool isStop = false; //振動を止めるかどうか
 
     BalloonState _balloonState;//爆発物の状態
     //追加日：180513　追加者：何
@@ -87,8 +88,8 @@ public class BalloonController : MonoBehaviour {
         player = GameObject.Find("Player" + Random.Range(1, 5));//プレイヤーをランダムで指定
         player.GetComponent<PlayerMove>().balloon = transform.gameObject;//プレイヤー内に自分を指定
 
-        stopTime = 5.0f; //振動してから止まるまでのタイムラグ
-        isStop = true; //振動を止めるかどうか
+        stopTime = setStopTime; //振動してから止まるまでのタイムラグ
+        isStop = false; //振動を止めるかどうか
     }
 
 // Update is called once per frame
@@ -149,20 +150,19 @@ void Update () {
         //5月16日　追加
         //追加者　安部崇寛
         //コントローラーの振動の停止
-        
-        if(stopTime < 0)
-        {
-            GamePad.SetVibration(PlayerIndex.One, 0.0f, 0.0f);
-            GamePad.SetVibration(PlayerIndex.Two, 0.0f, 0.0f);
-            GamePad.SetVibration(PlayerIndex.Three, 0.0f, 0.0f);
-            GamePad.SetVibration(PlayerIndex.Four, 0.0f, 0.0f);
+        if (isStop) {
+            if (stopTime < 0) {
+                GamePad.SetVibration(PlayerIndex.One, 0.0f, 0.0f);
+                GamePad.SetVibration(PlayerIndex.Two, 0.0f, 0.0f);
+                GamePad.SetVibration(PlayerIndex.Three, 0.0f, 0.0f);
+                GamePad.SetVibration(PlayerIndex.Four, 0.0f, 0.0f);
 
-            stopTime = 5.0f;
-            isStop = false;
-        } else {
-            stopTime -= 0.1f;
+                stopTime = setStopTime;
+                isStop = false;
+            } else {
+                stopTime -= 0.1f;
+            }
         }
-        
 
         ColorChange();//色変更
     }
@@ -292,10 +292,11 @@ void Update () {
             //5月16日　追加
             //追加者　安部崇寛
             //爆発時にコントローラーを振動させる
-            GamePad.SetVibration(PlayerIndex.One, 1.0f, 1.0f);
-            GamePad.SetVibration(PlayerIndex.Two, 1.0f, 1.0f);
-            GamePad.SetVibration(PlayerIndex.Three, 1.0f, 1.0f);
-            GamePad.SetVibration(PlayerIndex.Four, 1.0f, 1.0f);
+            GamePad.SetVibration(PlayerIndex.One, 0.0f, 1.0f);
+            GamePad.SetVibration(PlayerIndex.Two, 0.0f, 1.0f);
+            GamePad.SetVibration(PlayerIndex.Three, 0.0f, 1.0f);
+            GamePad.SetVibration(PlayerIndex.Four, 0.0f, 1.0f);
+            isStop = true;
         }
     }
 
