@@ -166,6 +166,8 @@ public class PlayerMove : MonoBehaviour
             if(stanTime >= 2.0f)
                 rigid.velocity = Vector3.zero;
 
+            rigid.velocity = new Vector3(0, rigid.velocity.y, 0);
+
             //時間で回復
             stanTime -= Time.deltaTime;
             if (stanTime < 0)
@@ -179,7 +181,7 @@ public class PlayerMove : MonoBehaviour
         Vector3 moveVector = Vector3.zero;
 
         //あたり判定
-        HitField();
+       // HitField();
 
         //移動量設定
         moveVector.x = moveSpeed * AxisX;
@@ -190,7 +192,7 @@ public class PlayerMove : MonoBehaviour
 
         //移動量追加
         rigid.AddForce(100 * (moveVector - rigidVelocity));
-
+        
         //移動量2.5倍
         rigidVelocity = new Vector3(rigidVelocity.x * 2.5f, rigid.velocity.y, rigidVelocity.z * 2.5f);
 
