@@ -7,6 +7,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using XInputDotNetPure;
+
 
 public class SceneController : MonoBehaviour {
 
@@ -71,8 +73,16 @@ public class SceneController : MonoBehaviour {
         {
             playerRank.GetComponent<PlayerRank>().playerRankList.Add(cx.name);
         }
+
+        //万が一シーンが切り替わると同時にコントローラーが振動し始めたときにコントローラーの振動を停止する処理
+        GamePad.SetVibration(PlayerIndex.One, 0.0f, 0.0f);
+        GamePad.SetVibration(PlayerIndex.Two, 0.0f, 0.0f);
+        GamePad.SetVibration(PlayerIndex.Three, 0.0f, 0.0f);
+        GamePad.SetVibration(PlayerIndex.Four, 0.0f, 0.0f);
         
         //シーン遷移
         SceneManager.LoadScene("Result");
+
+
     }
 }
