@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PostRespawn : MonoBehaviour {
-
+    
 	List<GameObject> postList;//中心物体リスト
 	public GameObject originPost;//中心物体
 	public float postCount;//中心物体数
@@ -16,11 +16,15 @@ public class PostRespawn : MonoBehaviour {
 
 	float interval;//表示するまでの間隔
 
+    public bool isLimitReset = false;//アイテム生成上限リセット判定用
+
 	// Use this for initialization
 	void Start () {
 		//初期化処理
 		postList = new List<GameObject>();
 		childList = new List<GameObject>();
+
+        isLimitReset = false;
 
 		//移動先リスト追加
 		for (int i = 0; i < transform.childCount; i++)
@@ -46,6 +50,8 @@ public class PostRespawn : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+
+        isLimitReset = false; //アイテム生成上限リセット判定をリセット
 		//中心物体リスト検索
 		foreach (var post in postList) {
 			//移動可能なら
@@ -73,17 +79,24 @@ public class PostRespawn : MonoBehaviour {
                 //移動処理
                 post.transform.parent = nextPosition.transform;//次のポジションの地点に親子付けする
 				post.transform.position = nextPosition.transform.position;
-				post.GetComponent<PostController> ().isRespawn = false;
-			}
-
-			//表示されていない場合の処理
-			if (post.GetComponent<PostController> ().activity==false) {
+                post.GetComponent<PostController> ().isRespawn = false;
+            }
+            
+            //表示されていない場合の処理
+            if (post.GetComponent<PostController> ().activity==false) {
 				interval += 1;
 				if (interval >= 300) {
 					post.SetActive (post.GetComponent<PostController>().activity=true);
 					interval = 0;
-				}
+
+                    //ポストの再生成に合わせてアイテムの生成上限をリセットする
+                    isLimitReset = true;
+                }
 			}
-		}
+        }
 	}
+
+    public bool isLimit() {
+        return isLimitReset;
+    }
 }

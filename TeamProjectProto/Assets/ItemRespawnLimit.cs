@@ -11,11 +11,17 @@ public class ItemRespawnLimit : MonoBehaviour {
 
     public int ItemLimit; //Itemの生成上限
     public int ItemCount = 0; //Itemの生成数のカウント
-    
-	// Update is called once per frame
-	void Update () {
-        //今のところはLキーを押すとカウントをリセット
-        if (Input.GetKeyDown("l")) {
+
+    GameObject postRespawn;
+
+    private void Start() {
+        ItemCount = 0;
+        postRespawn = GameObject.Find("PostRespawnPoint(Clone)");
+    }
+
+    // Update is called once per frame
+    void Update () {
+        if (postRespawn.GetComponent<PostRespawn>().isLimit()) {
             ItemCount = 0;
         }
 	}
