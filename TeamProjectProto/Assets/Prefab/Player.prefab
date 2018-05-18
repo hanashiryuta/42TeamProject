@@ -430,7 +430,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   originMoveSpeed: 1.5
-  balloonMoveSpeed: 2
+  balloonMoveSpeed: 1.5
   originJumpPower: 1
   balloonJumpPower: 1.2
   balloon: {fileID: 0}
