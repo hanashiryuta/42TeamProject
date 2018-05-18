@@ -12,9 +12,11 @@ public class RespawnController : MonoBehaviour {
     public GameObject player;//プレイヤー
     List<GameObject> playerList;//プレイヤーリスト
     List<Color> colorList;//カラーリスト
+    [SerializeField]
+    List<Texture> texList;//テクスチャリスト
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
         //初期化処理
         playerList = new List<GameObject>();
         colorList = new List<Color>()
@@ -34,9 +36,10 @@ public class RespawnController : MonoBehaviour {
             p.name = "Player" + (i + 1);//名前変更
             p.GetComponent<PlayerMove>().horizontal = "Horizontal" + (i + 1);//そのプレイヤーの使うInput指定
             p.GetComponent<PlayerMove>().vertical = "Vertical" + (i + 1);//そのプレイヤーの使うInput指定
-            p.GetComponent<PlayerMove>().jump = "Jump" + (i + 1);//そのプレイヤーの使うInput指定 
-                                                                 //p.GetComponent<Renderer>().material.color = colorList[i]; //色変更
+            p.GetComponent<PlayerMove>().jump = "Jump" + (i + 1);//そのプレイヤーの使うInput指定
 
+            //180518 何　追加
+            p.GetComponentInChildren<SkinnedMeshRenderer>().materials[0].mainTexture = texList[i];//テクスチャ変更
 
             //180508 何　追加　アウトラインの色
             p.GetComponentInChildren<Outline>().color = i;

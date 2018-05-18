@@ -19,9 +19,11 @@ public class PortalCircle : MonoBehaviour
     float currentPortalRadius = 0;//円の半径(現在値)
     [SerializeField]
     float portalWidth = 0.05f;//円の太さ
-    GameObject target;//円の中心目標(デフォはNULL)
+    [SerializeField]
+    float increaseValue = 0.01f;//膨らむ値
+    GameObject target_RedBalloon;//円の中心目標(デフォはNULL)
     bool isBlow = false;//円を吹き飛ばすか
-    bool isBlastCnt = false;//風船膨らんだか？
+    bool isSwelled = false;//風船膨らんだか？
 
     BalloonController balloonController;
 
@@ -34,7 +36,7 @@ public class PortalCircle : MonoBehaviour
     {
         SetPortalRadius(0);//半径を初期化（歪みを無くす）
         SetPortalWidth(portalWidth);//円の太さを指定
-        tmpDefaltRadius = defaltPortalRadius;///設定値を一時格納する
+        tmpDefaltRadius = defaltPortalRadius;///設定値を格納する
     }
 
     void Start()
@@ -47,16 +49,16 @@ public class PortalCircle : MonoBehaviour
     {
         FindTarget();
 
-        if(target != null)//ターゲットがあったら
+        if (target_RedBalloon != null)//ターゲットがあったら
         {
             currentPortalRadius = defaltPortalRadius;
 
             BalloonBlowUp(balloonController.blastCount);
 
             SetPortalRadius(currentPortalRadius);//円の半径を指定
-            SetPortalWidth(defaltPortalRadius);//円の太さを指定
+            SetPortalWidth(portalWidth);//円の太さを指定
 
-            var targetPosition = Camera.main.WorldToScreenPoint(target.transform.position);//ターゲットの座標をスクリーン座標に変換
+            var targetPosition = Camera.main.WorldToScreenPoint(target_RedBalloon.transform.position);//ターゲットの座標をスクリーン座標に変換
 
             var uv = new Vector3(
                 targetPosition.x / Screen.width,
@@ -73,14 +75,23 @@ public class PortalCircle : MonoBehaviour
         if (balloonController.IsBlast)//風船が爆発したら
         {
             isBlow = true;//円を吹き飛ばす
-
-            defaltPortalRadius = tmpDefaltRadius;//歪みを初期値に
-            portalWidth = tmpDefaltRadius;
         }
 
+        // 円を吹き飛ばすか
         if (isBlow)
         {
+            portalWidth = 0.3f;//円の太さを固定値に拡大
+            SetPortalWidth(portalWidth);//円の太さを指定
+            isSwelled = true;
+
             OpenPortal();
+        }
+
+        //拡大した円が目的値に越えたら
+        if (currentPortalRadius >= 2)
+        {
+            //半径を初期化
+            InitRadius();
         }
 
     }
@@ -91,7 +102,7 @@ public class PortalCircle : MonoBehaviour
     void OpenPortal()
     {
         DOTween.KillAll();
-        DOTween.To(() => currentPortalRadius, SetPortalRadius, 1f, 2f).SetEase(Ease.OutBack);
+        DOTween.To(() => currentPortalRadius, SetPortalRadius, 2f, 4f).SetEase(Ease.OutBack);
         isBlow = false;
     }
 
@@ -135,11 +146,11 @@ public class PortalCircle : MonoBehaviour
     {
         if(balloonController.BalloonState == BalloonState.DANGER)//風船が赤色の時
         {
-            target = balloonController.transform.gameObject;//ターゲットに指定
+            target_RedBalloon = balloonController.transform.gameObject;//ターゲットに指定
         }
         else
         {
-            target = null;
+            target_RedBalloon = null;
         }
     }
 
@@ -148,24 +159,26 @@ public class PortalCircle : MonoBehaviour
     /// </summary>
     void BalloonBlowUp(float blastCount)
     {
-        if (blastCount > 20)//風船が赤ゾーンに入って
+        if ((blastCount - 20) % 2 == 0 && !isSwelled)//カウントが偶数の時
         {
-            if ((blastCount - 20) % 2 == 0 && !isBlastCnt)//カウントが偶数の時
-            {
-                defaltPortalRadius = defaltPortalRadius + 0.015f;//半径を拡大
-                portalWidth = defaltPortalRadius;
-                currentPortalRadius = defaltPortalRadius;
-                isBlastCnt = true;
-            }
-
-            if((blastCount - 20) % 2 == 1)//カウントが奇数の時
-            {
-                isBlastCnt = false;
-            }
-        }
-        else
-        {
+            defaltPortalRadius = defaltPortalRadius + increaseValue;//半径を拡大
+            portalWidth = defaltPortalRadius;
             currentPortalRadius = defaltPortalRadius;
+            isSwelled = true;
         }
+
+        if ((blastCount - 20) % 2 == 1)//カウントが奇数の時
+        {
+            isSwelled = false;
+        }
+    }
+
+    /// <summary>
+    /// 歪む円の半径を初期値に
+    /// </summary>
+    void InitRadius()
+    {
+        defaltPortalRadius = tmpDefaltRadius;
+        portalWidth = tmpDefaltRadius;
     }
 }
