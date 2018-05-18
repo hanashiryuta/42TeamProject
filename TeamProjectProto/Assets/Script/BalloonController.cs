@@ -67,6 +67,7 @@ public class BalloonController : MonoBehaviour {
         set { _isBlast = value; }
     }
 
+    float angle = 0;//上下移動遷移用角度
 
     void Awake(){
 		playerRank = GameObject.Find ("PlayerRank");
@@ -131,10 +132,6 @@ void Update () {
 
         transform.localScale = new Vector3(scaleCount, scaleCount, scaleCount);//内容物の数により大きさ変更        
 
-        //常にプレイヤーの上にいるようにする
-        if (player != null)
-            transform.position = new Vector3(player.transform.position.x, player.transform.position.y + 2.5f + transform.localScale.y / 2, player.transform.position.z);
-
         //一度移ってから再度移るまで1秒のインターバルが存在する
         if(!isMove)
         {
@@ -165,6 +162,23 @@ void Update () {
         }
 
         ColorChange();//色変更
+    }
+
+    void FixedUpdate()
+    {
+        //常にプレイヤーの上にいるようにする
+        if (player != null)
+        {
+            //transform.position = new Vector3(player.transform.position.x, player.transform.position.y + 2.5f + transform.localScale.y / 2, player.transform.position.z);
+
+            //transform.position = new Vector3(player.transform.position.x, player.transform.position.y+2.5f+transform.localScale.y / 2 + Mathf.PingPong(Time.time, 1), player.transform.position.z);
+
+            float range = 0.5f;//振れ幅
+
+            transform.position = new Vector3(player.transform.position.x, player.transform.position.y + 2.5f + transform.localScale.y / 2 + range+(Mathf.Sin(angle) * range), player.transform.position.z);//揺れながらプレイヤーの上に配置処理
+            
+            angle += 0.05f;//角度増加
+        }
     }
 
     /// <summary>
@@ -322,6 +336,12 @@ void Update () {
             blastCount = 0;
 			post.GetComponent<PostController>().blastCount = 0;//次の爆弾へ超過しないように
 			GetComponent<AudioSource> ().PlayOneShot (soundSE2);
+            //爆発時にコントローラーを振動させる
+            GamePad.SetVibration(PlayerIndex.One, 0.0f, 1.0f);
+            GamePad.SetVibration(PlayerIndex.Two, 0.0f, 1.0f);
+            GamePad.SetVibration(PlayerIndex.Three, 0.0f, 1.0f);
+            GamePad.SetVibration(PlayerIndex.Four, 0.0f, 1.0f);
+            isStop = true;
         }
     }
 
