@@ -55,7 +55,6 @@ public class CRTController : MonoBehaviour {
             //コンポーネントをON
             mainCamera.GetComponent<CRT>().enabled = true;
             isCnt = true; ;
-            balloonController.IsBlast = false;
         }
     }
 }
