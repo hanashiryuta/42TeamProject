@@ -39,7 +39,7 @@ public class PlayerMove : MonoBehaviour
     public string jump = "Jump1";//Inputのジャンプボタン取得名前
 
     public bool isStan = false;//動けるかどうか
-    float stanTime = 2.0f;//動けるようになるまでの時間
+    float stanTime = 3.0f;//動けるようになるまでの時間
 
     public bool isBalloonShrink = true;//爆発物が縮むかどうか
 
@@ -187,7 +187,7 @@ public class PlayerMove : MonoBehaviour
             if (stanTime < 0)
             {
                 isStan = false;
-                stanTime = 2.0f;
+                stanTime = 3.0f;
             }
             return;
         }

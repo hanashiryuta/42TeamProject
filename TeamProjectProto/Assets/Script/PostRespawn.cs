@@ -16,6 +16,8 @@ public class PostRespawn : MonoBehaviour {
 
 	float interval;//表示するまでの間隔
 
+    public float intervalLimit = 5;//再出現時間
+
     public bool isLimitReset = false;//アイテム生成上限リセット判定用
 
 	// Use this for initialization
@@ -85,7 +87,7 @@ public class PostRespawn : MonoBehaviour {
             //表示されていない場合の処理
             if (post.GetComponent<PostController> ().activity==false) {
 				interval += 1;
-				if (interval >= 300) {
+				if (interval >= intervalLimit*60) {
 					post.SetActive (post.GetComponent<PostController>().activity=true);
 					interval = 0;
 
