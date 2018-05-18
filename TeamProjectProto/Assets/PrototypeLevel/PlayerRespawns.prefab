@@ -168,3 +168,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1515882103006162, guid: 72aae454a9f6d9a498447c4ae7d216b1, type: 2}
+  shadow: {fileID: 1559431038006236, guid: b534d641b217ad14f80c647df005f9b8, type: 2}

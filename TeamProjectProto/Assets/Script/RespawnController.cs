@@ -13,6 +13,8 @@ public class RespawnController : MonoBehaviour {
     List<GameObject> playerList;//プレイヤーリスト
     List<Color> colorList;//カラーリスト
 
+    public GameObject shadow;//影のオブジェクト
+
 	// Use this for initialization
 	void Start () {
         //初期化処理
@@ -40,6 +42,9 @@ public class RespawnController : MonoBehaviour {
 
             //180508 何　追加　アウトラインの色
             p.GetComponentInChildren<Outline>().color = i;
+
+            //影をPlayerの子にして生成
+            GameObject s = Instantiate(shadow, p.transform.position - Vector3.down, Quaternion.identity, p.transform);
         }
 	}
 }

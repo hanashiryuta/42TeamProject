@@ -79,10 +79,12 @@ public class PostRespawn : MonoBehaviour {
 			//表示されていない場合の処理
 			if (post.GetComponent<PostController> ().activity==false) {
 				interval += 1;
-				if (interval >= 300) {
+                if (interval >= 300) {
 					post.SetActive (post.GetComponent<PostController>().activity=true);
 					interval = 0;
-				}
+                    post.GetComponent<PostController>().activeCount = 0;
+                    post.GetComponent<PostController>().mesh.enabled = true;//透明化を解除
+                }
 			}
 		}
 	}
