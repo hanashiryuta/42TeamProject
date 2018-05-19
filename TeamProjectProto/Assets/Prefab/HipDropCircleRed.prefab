@@ -25,7 +25,7 @@ GameObject:
   - component: {fileID: 114552902895364330}
   - component: {fileID: 114367563450661770}
   m_Layer: 0
-  m_Name: HipDropCircle
+  m_Name: HipDropCircleRed
   m_TagString: HipDropCircle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

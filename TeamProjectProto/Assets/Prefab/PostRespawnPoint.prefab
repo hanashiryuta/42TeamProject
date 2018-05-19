@@ -314,3 +314,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   originPost: {fileID: 1856908396269914, guid: 06f86fddf1205ab4d8eabc57bb35c862, type: 2}
   postCount: 2
+  intervalLimit: 20
+  isLimitReset: 0

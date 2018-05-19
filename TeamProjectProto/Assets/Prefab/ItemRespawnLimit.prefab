@@ -51,5 +51,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14ee5cbb98dead84f83779594defeac1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ItemLimit: 5
+  ItemLimit: 20
   ItemCount: 0
