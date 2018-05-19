@@ -295,8 +295,9 @@ public class PlayerMove : MonoBehaviour
                 {
                     //衝撃波生成
                     InstantiateHipDrop();
-                    isHipDrop = false;
+                    
                 }
+                isHipDrop = false;
                 //地面にいる状態に変更
                 if (jumpCount > 0)
                 {
