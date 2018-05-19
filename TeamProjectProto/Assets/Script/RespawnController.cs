@@ -12,6 +12,10 @@ public class RespawnController : MonoBehaviour {
     public GameObject player;//プレイヤー
     List<GameObject> playerList;//プレイヤーリスト
     List<Color> colorList;//カラーリスト
+    [SerializeField]
+    List<Texture> texList;//テクスチャリスト
+
+    public GameObject shadow;//影のオブジェクト
 
 	// Use this for initialization
 	void Start () {
@@ -34,12 +38,16 @@ public class RespawnController : MonoBehaviour {
             p.name = "Player" + (i + 1);//名前変更
             p.GetComponent<PlayerMove>().horizontal = "Horizontal" + (i + 1);//そのプレイヤーの使うInput指定
             p.GetComponent<PlayerMove>().vertical = "Vertical" + (i + 1);//そのプレイヤーの使うInput指定
-            p.GetComponent<PlayerMove>().jump = "Jump" + (i + 1);//そのプレイヤーの使うInput指定 
-                                                                 //p.GetComponent<Renderer>().material.color = colorList[i]; //色変更
+            p.GetComponent<PlayerMove>().jump = "Jump" + (i + 1);//そのプレイヤーの使うInput指定
 
+            //180518 何　追加
+            p.GetComponentInChildren<SkinnedMeshRenderer>().materials[0].mainTexture = texList[i];//テクスチャ変更
 
             //180508 何　追加　アウトラインの色
             p.GetComponentInChildren<Outline>().color = i;
+
+            //影をPlayerの子にして生成
+            GameObject s = Instantiate(shadow, p.transform.position - Vector3.down, Quaternion.identity, p.transform);
         }
 	}
 }
