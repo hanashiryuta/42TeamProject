@@ -15,8 +15,10 @@ public class RespawnController : MonoBehaviour {
     [SerializeField]
     List<Texture> texList;//テクスチャリスト
 
-    // Use this for initialization
-    void Start () {
+    public GameObject shadow;//影のオブジェクト
+
+	// Use this for initialization
+	void Start () {
         //初期化処理
         playerList = new List<GameObject>();
         colorList = new List<Color>()
@@ -43,6 +45,9 @@ public class RespawnController : MonoBehaviour {
 
             //180508 何　追加　アウトラインの色
             p.GetComponentInChildren<Outline>().color = i;
+
+            //影をPlayerの子にして生成
+            GameObject s = Instantiate(shadow, p.transform.position - Vector3.down, Quaternion.identity, p.transform);
         }
 	}
 }
