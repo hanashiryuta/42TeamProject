@@ -221,9 +221,6 @@ public class PlayerMove : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireCube(new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), new Vector3(transform.localScale.x*2, transform.localScale.x*2*2, transform.localScale.x*2));
-
-        //Gizmos.DrawWireCube(transform.position + new Vector3(0, -0.01f, 0) + new Vector3(0, 1, 0), new Vector3(1  - 0.01f, 2, 1  - 0.01f));
-
     }
 
     /// <summary>
@@ -525,10 +522,10 @@ public class PlayerMove : MonoBehaviour
     /// <param name="anim"></param>
     private void PlayerAnim(Animator anim)
     {
-        //0516 ジャンプアニメーション
-        anim.SetBool("isJump", isJump);
-        anim.SetBool("isHipDrop", isHipDrop);
-        anim.SetFloat("velocity", Mathf.Abs(rigid.velocity.x) <= 0.001f && Mathf.Abs(rigid.velocity.z) <= 0.001f ? 0 : 1);
+        anim.SetBool("isJump", isJump);//`ジャンプ
+        anim.SetBool("isHipDrop", isHipDrop);//ヒップドロップ
+        anim.SetFloat("velocity", Mathf.Abs(rigid.velocity.x) <= 0.001f && Mathf.Abs(rigid.velocity.z) <= 0.001f ? 0 : 1);//移動
+        anim.SetBool("isStan", isStan);//スタン
     }
 }
 
