@@ -25,7 +25,8 @@ public class PlayerMove : MonoBehaviour
     [HideInInspector]
     public GameObject balloon;//爆発物
 
-    float blastCount = 0;//内容物所持数
+    [HideInInspector]
+    public float blastCount = 0;//内容物所持数
     Text blastCountText;//内容物所持数テキスト
     Text totalBlastCountText;//内容物所持数累計テキスト
     [HideInInspector]
@@ -50,7 +51,8 @@ public class PlayerMove : MonoBehaviour
     public GameObject originItem;//アイテム
     public GameObject originHighItem;//ハイアイテム
 
-    List<string> itemList;//取得アイテム管理リスト
+    [HideInInspector]
+    public List<string> itemList;//取得アイテム管理リスト
     List<string> totalItemList;//累計取得アイテム管理リスト
 
 	public AudioClip soundSE1;//ジャンプ時の音
@@ -102,6 +104,24 @@ public class PlayerMove : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        //動けないなら
+        if (isStan)
+        {
+            //最初に移動量をゼロに
+            if (stanTime >= 2.0f)
+                rigid.velocity = Vector3.zero;
+
+            rigid.velocity = new Vector3(0, rigid.velocity.y, 0);
+
+            //時間で回復
+            stanTime -= Time.deltaTime;
+            if (stanTime < 0)
+            {
+                isStan = false;
+                stanTime = 3.0f;
+            }
+            return;
+        }
         //ジャンプ処理
         Jump();
         //移動処理
@@ -173,24 +193,6 @@ public class PlayerMove : MonoBehaviour
     /// </summary>
     void Move()
     {
-        //動けないなら
-        if (isStan)
-        {
-            //最初に移動量をゼロに
-            if(stanTime >= 2.0f)
-                rigid.velocity = Vector3.zero;
-
-            rigid.velocity = new Vector3(0, rigid.velocity.y, 0);
-
-            //時間で回復
-            stanTime -= Time.deltaTime;
-            if (stanTime < 0)
-            {
-                isStan = false;
-                stanTime = 3.0f;
-            }
-            return;
-        }
         //移動vector生成
         Vector3 moveVector = Vector3.zero;
 
@@ -295,8 +297,8 @@ public class PlayerMove : MonoBehaviour
                 {
                     //衝撃波生成
                     InstantiateHipDrop();
-                    isHipDrop = false;
                 }
+                isHipDrop = false;
                 //地面にいる状態に変更
                 if (jumpCount > 0)
                 {
@@ -400,18 +402,18 @@ public class PlayerMove : MonoBehaviour
 
     void OnTriggerEnter(Collider col)
     {
-        //内容物に当たったら
-        if (col.gameObject.name.Contains("PointItem"))
-        {
-            if (col.gameObject.GetComponent<ItemController>().isGet&&balloon == null)
-            {
-                itemList.Add(col.name);//リスト追加
-                Destroy(col.gameObject);//内容物破棄
-                blastCount += col.GetComponent<ItemController>().point; //内容物所持数を増やす  
-				GetComponent<AudioSource> ().PlayOneShot (soundSE2);
-                //totalBlastCount += col.GetComponent<ItemController>().point;//内容物所持数累計を増やす
-            }
-        }
+    //    //内容物に当たったら
+    //    if (col.gameObject.name.Contains("PointItem"))
+    //    {
+    //        if (col.gameObject.GetComponent<ItemController>().isGet&&balloon == null)
+    //        {
+    //            itemList.Add(col.name);//リスト追加
+    //            Destroy(col.gameObject);//内容物破棄
+    //            blastCount += col.GetComponent<ItemController>().point; //内容物所持数を増やす  
+				//GetComponent<AudioSource> ().PlayOneShot (soundSE2);
+    //            //totalBlastCount += col.GetComponent<ItemController>().point;//内容物所持数累計を増やす
+    //        }
+    //    }
         //強制交換アイテムに当たったら
         if (col.gameObject.name.Contains("ExChangeItem"))
         {
@@ -463,26 +465,26 @@ public class PlayerMove : MonoBehaviour
     /// <param name="count">割合</param>
     public void ItemBlast(float count)
     {
-        if (totalItemList.Count > 0)
+        if (itemList.Count > 0)
         {
-            int j = (int)(totalItemList.Count * (count / 10));//指定した割合で排出
+            int j = (int)(itemList.Count * (count / 10));//指定した割合で排出
             for (int i = 0; i < j; i++)
             {
                 GameObject item = originItem;
-                int itemNum = Random.Range(0, totalItemList.Count);
+                int itemNum = Random.Range(0, itemList.Count);
 
-                switch (totalItemList[itemNum])//取得したアイテムからランダムで選出
+                switch (itemList[itemNum])//取得したアイテムからランダムで選出
                 {
                     case "PointItem(Clone)"://普通のアイテム
-                        totalBlastCount--;
+                        blastCount--;
                         break;
                     case "HighPointItem(Clone)"://高ポイントアイテム
-                        totalBlastCount -= 2;
+                        blastCount -= 2;
                         item = originHighItem;
                         break;
                 }
-                totalItemList.RemoveAt(itemNum);//リストから削除
-                GameObject spawnItem = Instantiate(item, transform.position, Quaternion.identity);//生成
+                itemList.RemoveAt(itemNum);//リストから削除
+                GameObject spawnItem = Instantiate(item, transform.position+new Vector3(0,item.transform.localScale.y+3,0), Quaternion.identity);//生成
                 spawnItem.GetComponent<ItemController>().SetMovePosition();
                 spawnItem.GetComponent<ItemController>().isGet = false;
             }

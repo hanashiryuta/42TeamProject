@@ -34,7 +34,7 @@ public class PostController : MonoBehaviour {
 		blastCount = 0;
 		balloon = GameObject.FindGameObjectWithTag("Balloon");//爆発物取得
 		specialWallPoint = GameObject.Find("SpecialWallPoint(Clone)");//特殊壁移動ポイント取得
-		activity=true;
+		activity=false;
 	}
 
 	// Update is called once per frame
