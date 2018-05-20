@@ -23,7 +23,7 @@ public class ItemRespawn : MonoBehaviour {
 
         //初期生成時に上限を超えていれば上限数以上生成できないようにする
         if (itemRespawnLimit.GetComponent<ItemRespawnLimit>().isRespawn()) {
-            item = Instantiate(itemList[Random.Range(0, itemList.Count)], transform.position, Quaternion.identity, transform);//内容物生成
+            item = Instantiate(itemList[Random.Range(0, itemList.Count)], transform.position + new Vector3(0, 0.5f, 0), Quaternion.identity, transform);//内容物生成
 
             itemRespawnLimit.GetComponent<ItemRespawnLimit>().Count(); //アイテム生成数をカウント
         }
@@ -38,7 +38,7 @@ public class ItemRespawn : MonoBehaviour {
             respawnTime -= Time.deltaTime;
             if (respawnTime < 0)
             {
-                item = Instantiate(itemList[Random.Range(0, itemList.Count)], transform.position, Quaternion.identity, transform);//内容物を生成する
+                item = Instantiate(itemList[Random.Range(0, itemList.Count)], transform.position + new Vector3(0,0.5f,0), Quaternion.identity, transform);//内容物を生成する
                 respawnTime = 3.0f;
 
                 itemRespawnLimit.GetComponent<ItemRespawnLimit>().Count();　//アイテム生成数をカウント
