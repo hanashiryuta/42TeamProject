@@ -304,7 +304,7 @@ void Update () {
         if (blastCount >= blastLimit)
 		{
             _isBlast = true;//爆発した
-            player.GetComponent<PlayerMove>().ItemBlast(3);
+            player.GetComponent<PlayerMove>().ItemBlast(5);
             player.GetComponent<PlayerMove>().isStan = true;
             //playerRank.GetComponent<PlayerRank> ().SetPlayer (player);//爆発したらリストに格納
             GameObject[] pList = GameObject.FindGameObjectsWithTag("Player");//プレイヤー配列を作成
@@ -337,7 +337,7 @@ void Update () {
         if (blastCount >= blastLimit)
         {
             _isBlast = true;//爆発した
-            player.GetComponent<PlayerMove>().ItemBlast(3);
+            player.GetComponent<PlayerMove>().ItemBlast(5);
             player.GetComponent<PlayerMove>().isStan = true;
             //playerRank.GetComponent<PlayerRank> ().SetPlayer (player);//爆発したらリストに格納
             GameObject[] pList = GameObject.FindGameObjectsWithTag("Player");//プレイヤー配列を作成
