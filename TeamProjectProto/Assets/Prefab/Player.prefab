@@ -86,6 +86,8 @@ GameObject:
   - component: {fileID: 114844505345048394}
   - component: {fileID: 54808840653408818}
   - component: {fileID: 82618936267711668}
+  - component: {fileID: 114295103744815772}
+  - component: {fileID: 114380417687261246}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -446,6 +448,28 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &114295103744815772
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1515882103006162}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2f686fcf8b573f4889414efc3215a46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114380417687261246
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1515882103006162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7da9924899a986f49a0fa74a8650a7fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114583404204353246
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -498,8 +522,8 @@ MonoBehaviour:
   hipDropCircle:
   - {fileID: 1598151434304912, guid: 6bcf0921d5888c544b35e4673c0bbc40, type: 2}
   - {fileID: 1578071290630430, guid: bf2bbcaf45753ce449f6c3843771c7e3, type: 2}
-  - {fileID: 1543973167486684, guid: 67594920fe3345542868ff44bdfa02c0, type: 2}
   - {fileID: 1195641294193534, guid: 3c2ab9bc51628e94b811c28e5b8ef19c, type: 2}
+  - {fileID: 1543973167486684, guid: 67594920fe3345542868ff44bdfa02c0, type: 2}
   originItem: {fileID: 1698331365632256, guid: 572603d412f37f447871db3dfc289678, type: 2}
   originHighItem: {fileID: 1698331365632256, guid: 049d92c48ed7ca648a66371220af2fb0,
     type: 2}
@@ -514,7 +538,7 @@ SkinnedMeshRenderer:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1262565347018612}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_MotionVectors: 1

@@ -90,6 +90,8 @@ public class PostRespawn : MonoBehaviour {
 				if (interval >= intervalLimit*60) {
 					post.SetActive (post.GetComponent<PostController>().activity=true);
 					interval = 0;
+                    post.GetComponent<PostController>().activeCount = 0;
+                    post.GetComponent<PostController>().mesh.enabled = true;//透明化を解除
 
                     //ポストの再生成に合わせてアイテムの生成上限をリセットする
                     isLimitReset = true;
