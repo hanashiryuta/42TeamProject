@@ -27,14 +27,19 @@ public class PostController : MonoBehaviour {
 
 	[HideInInspector]
 	public bool activity;//PostRespawnで処理をおこなうためのbool型
+    [HideInInspector]
+    public int activeCount;//activityが切り替わるまでのアイテムの個数
+    public MeshRenderer mesh;//ポストを透明化させるためのもの
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
 		//初期化処理
 		blastCount = 0;
 		balloon = GameObject.FindGameObjectWithTag("Balloon");//爆発物取得
 		specialWallPoint = GameObject.Find("SpecialWallPoint(Clone)");//特殊壁移動ポイント取得
-		activity=true;
+		activity=false;
+        activeCount = 0;
+        mesh = GetComponent<MeshRenderer>();
 	}
 
 	// Update is called once per frame
@@ -53,7 +58,8 @@ public class PostController : MonoBehaviour {
 			respawnCount = 0;
 			//specialWallPoint.GetComponent<SpecialWallRespawn>().SpecialRespawn(player);
 			isRespawn = true;
-			activity = false;
+            //activity = false;
+            mesh.enabled = false;//透明化する
 		}
 
 		//内容物が一つでもあれば
@@ -65,7 +71,12 @@ public class PostController : MonoBehaviour {
 				//balloon.GetComponent<BalloonController>().blastCount += 0.05f;//内容物を爆発物に移す
 				balloon.GetComponent<BalloonController>().BalloonBlast(gameObject);
 				blastCount--;//内容物の総数を減らす
+                activeCount++;
 				giveTime = 0.2f;
+                if(activeCount>=5)
+                {
+                    activity = false;
+                }
 			}
 		}
 		else if(blastCount<0)
