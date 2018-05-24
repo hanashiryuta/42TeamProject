@@ -21,6 +21,7 @@ public class PostController : MonoBehaviour {
 	[HideInInspector]
 	public float respawnCount = 0;//中心物体が移動するまでのカウント
 
+    [HideInInspector]
 	public GameObject specialWallPoint;// 特殊壁移動ポイント
 	[HideInInspector]
 	public GameObject player;//プレイヤー
@@ -29,6 +30,7 @@ public class PostController : MonoBehaviour {
 	public bool activity;//PostRespawnで処理をおこなうためのbool型
     [HideInInspector]
     public int activeCount;//activityが切り替わるまでのアイテムの個数
+    [HideInInspector]
     public MeshRenderer mesh;//ポストを透明化させるためのもの
 
     // Use this for initialization
