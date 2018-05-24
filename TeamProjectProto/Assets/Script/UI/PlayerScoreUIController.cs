@@ -73,7 +73,7 @@ public class PlayerScoreUIController : MonoBehaviour
 
             switch (pList[i].name) //Rank
             {
-                case "Player4":
+                case "Player1":
                     DOTween.To
                         (
                             () => playerScoreUI[0].transform.position,
@@ -100,7 +100,7 @@ public class PlayerScoreUIController : MonoBehaviour
                             1f
                         );
                     break;
-                case "Player1":
+                case "Player4":
                     DOTween.To
                         (
                             () => playerScoreUI[3].transform.position,
@@ -119,12 +119,12 @@ public class PlayerScoreUIController : MonoBehaviour
     /// </summary>
     void SetPlayerRank()
     {
-        //ソート（小さい順に）
+        //ソート（大きい順に）
         for (int i = 0; i < pList.Length - 1; i++)
         {
             for (int j = i + 1; j < pList.Length; j++)
             {
-                if (pList[i].GetComponent<PlayerMove>().totalBlastCount > pList[j].GetComponent<PlayerMove>().totalBlastCount)
+                if (pList[i].GetComponent<PlayerMove>().totalBlastCount < pList[j].GetComponent<PlayerMove>().totalBlastCount)
                 {
                     GameObject p = pList[j];
                     pList[j] = pList[i];
