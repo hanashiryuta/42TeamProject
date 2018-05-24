@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 65461237098786126}
   - component: {fileID: 23661248240736404}
   m_Layer: 0
-  m_Name: LowWall8 (2)
+  m_Name: LowWall
   m_TagString: Field
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

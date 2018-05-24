@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 65468070678980072}
   - component: {fileID: 23669388327335154}
   m_Layer: 0
-  m_Name: StageWall1
+  m_Name: StageWall
   m_TagString: Field
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

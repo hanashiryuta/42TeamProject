@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 65835574077313446}
   - component: {fileID: 23316621182739224}
   m_Layer: 0
-  m_Name: HeighWall5 (1)
+  m_Name: HeighWall
   m_TagString: Field
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
