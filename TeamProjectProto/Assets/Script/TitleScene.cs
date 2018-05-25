@@ -10,7 +10,7 @@ public class TitleScene : MonoBehaviour
     [SerializeField]
     GameObject fadePanel;
     FadeController fadeCon;
-    bool isSceneChange = false;
+    public bool isSceneChange = false;
     bool isFaded = false;
     
     // Use this for initialization
@@ -24,12 +24,6 @@ public class TitleScene : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("Fire1") || Input.GetKeyDown("s"))
-        {
-            isSceneChange = true;
-            Debug.Log("SceneChange");
-        }
-
         if (isSceneChange)
         {
             //SceneManager.LoadScene("main");
@@ -43,7 +37,5 @@ public class TitleScene : MonoBehaviour
                 isFaded = true;
             }
         }
-
-
     }
 }
