@@ -16,23 +16,21 @@ public class PlayerScoreUIController : MonoBehaviour
     [SerializeField]
     RectTransform[] UIposition;
 
+    GameObject[] _pList; // Player's Rank List
+
     [SerializeField]
-    GameObject[] pList;
+    GameObject playerRank; //PlayerRankオブジェ
 
     // Use this for initialization
-    void Start ()
+    void Start()
     {
-        pList = GameObject.FindGameObjectsWithTag("Player");//プレイ
+        _pList = playerRank.GetComponent<PlayerRank>().PlayerRankArray;
     }
-	
-	// Update is called once per frame
-	void Update ()
+
+    // Update is called once per frame
+    void Update()
     {
-        SetPlayerRank();
-
-        //SetRankUIPosition();
         SetRankUIPositionWithAnim();
-
     }
 
     /// <summary>
@@ -40,11 +38,11 @@ public class PlayerScoreUIController : MonoBehaviour
     /// </summary>
     void SetRankUIPosition()
     {
-        for (int i = 0; i < pList.Length; i++)
+        for (int i = 0; i < _pList.Length; i++)
         {
             Vector3 tmp = Vector3.zero;
 
-            switch (pList[i].name) //Rank
+            switch (_pList[i].name) //Rank
             {
                 case "Player1":
                     playerScoreUI[0].transform.position = UIposition[i].position;
@@ -67,11 +65,11 @@ public class PlayerScoreUIController : MonoBehaviour
     /// </summary>
     void SetRankUIPositionWithAnim()
     {
-        for (int i = 0; i < pList.Length; i++)
+        for (int i = 0; i < _pList.Length; i++)
         {
             Vector3 tmp = Vector3.zero;
 
-            switch (pList[i].name) //Rank
+            switch (_pList[i].name) //Rank
             {
                 case "Player1":
                     DOTween.To
@@ -109,27 +107,6 @@ public class PlayerScoreUIController : MonoBehaviour
                             1f
                         );
                     break;
-            }
-        }
-    }
-
-
-    /// <summary>
-    /// プレイヤーのランク付け
-    /// </summary>
-    void SetPlayerRank()
-    {
-        //ソート（大きい順に）
-        for (int i = 0; i < pList.Length - 1; i++)
-        {
-            for (int j = i + 1; j < pList.Length; j++)
-            {
-                if (pList[i].GetComponent<PlayerMove>().totalBlastCount < pList[j].GetComponent<PlayerMove>().totalBlastCount)
-                {
-                    GameObject p = pList[j];
-                    pList[j] = pList[i];
-                    pList[i] = p;
-                }
             }
         }
     }
