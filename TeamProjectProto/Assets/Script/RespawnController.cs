@@ -18,7 +18,7 @@ public class RespawnController : MonoBehaviour {
     public GameObject shadow;//影のオブジェクト
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
         //初期化処理
         playerList = new List<GameObject>();
         colorList = new List<Color>()
