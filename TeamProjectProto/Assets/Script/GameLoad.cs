@@ -24,7 +24,7 @@ public class GameLoad : MonoBehaviour
 
     private IEnumerator LoadData()
     {
-        AsyncOperation async = SceneManager.LoadSceneAsync("main");
+        AsyncOperation async = SceneManager.LoadSceneAsync("CharacterSelect");
         async.allowSceneActivation = false;    // シーン遷移をしない
 
         //　読み込みが終わるまで進捗状況をスライダーの値に反映させる

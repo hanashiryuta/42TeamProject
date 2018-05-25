@@ -43,7 +43,5 @@ public class TitleScene : MonoBehaviour
                 isFaded = true;
             }
         }
-
-
     }
 }
