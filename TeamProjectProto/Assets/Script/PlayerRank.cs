@@ -11,7 +11,7 @@ using UnityEngine.SceneManagement;
 public class PlayerRank : MonoBehaviour {
     [HideInInspector]
 	public List<string> playerRankList;//順位付け用のリスト
-	static bool created=false;
+    static bool created = false;
 
 	/// <summary>
 	/// 1つだけを生成
