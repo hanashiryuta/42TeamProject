@@ -840,7 +840,7 @@ Transform:
   m_Father: {fileID: 2094600264}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!84 &1455399840
+--- !u!84 &1363868440
 RenderTexture:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -1149,37 +1149,6 @@ RenderTexture:
   m_DownscaleFallback: 0
   m_Width: 750
   m_Height: 422
-  m_AntiAliasing: 1
-  m_DepthFormat: 1
-  m_ColorFormat: 0
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 0
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
---- !u!84 &1610128117
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  m_Width: 1280
-  m_Height: 720
   m_AntiAliasing: 1
   m_DepthFormat: 1
   m_ColorFormat: 0
@@ -1529,7 +1498,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 0
   m_RenderingPath: 1
-  m_TargetTexture: {fileID: 1610128117}
+  m_TargetTexture: {fileID: 2037037250}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 0
@@ -1629,6 +1598,37 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!84 &2037037250
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  m_Width: 1280
+  m_Height: 720
+  m_AntiAliasing: 1
+  m_DepthFormat: 1
+  m_ColorFormat: 0
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 0
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
 --- !u!1 &2071780948
 GameObject:
   m_ObjectHideFlags: 0
@@ -1683,6 +1683,7 @@ GameObject:
   - component: {fileID: 2094600265}
   - component: {fileID: 2094600266}
   - component: {fileID: 2094600267}
+  - component: {fileID: 2094600269}
   - component: {fileID: 2094600268}
   m_Layer: 0
   m_Name: Main Camera
@@ -1788,8 +1789,8 @@ MonoBehaviour:
   sourceCamera: {fileID: 2094600263}
   outlineCamera: {fileID: 1846411882}
   outlineShaderMaterial: {fileID: 0}
-  renderTexture: {fileID: 1610128117}
-  extraRenderTexture: {fileID: 1455399840}
+  renderTexture: {fileID: 2037037250}
+  extraRenderTexture: {fileID: 1363868440}
 --- !u!114 &2094600266
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1816,12 +1817,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c129016bd3ea4c48b516ee9a2d147ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isDirectionToOutside: 1
   material: {fileID: 2100000, guid: 08809cfabed61b1489016209243e4fc8, type: 2}
   texture: {fileID: 10305, guid: 0000000000000000f000000000000000, type: 0}
   defaltPortalRadius: 0.03
   currentPortalRadius: 0
   portalWidth: 0.03
   increaseValue: 0.01
+  range: 2
+  seconds: 4
 --- !u!114 &2094600268
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1835,6 +1839,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeSeconds: 1
   shakeValue: {x: 5, y: 5, z: 0}
+--- !u!114 &2094600269
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2094600260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c129016bd3ea4c48b516ee9a2d147ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isDirectionToOutside: 0
+  material: {fileID: 2100000, guid: 521b113c177c64b4e9996d3384b2a8b3, type: 2}
+  texture: {fileID: 10305, guid: 0000000000000000f000000000000000, type: 0}
+  defaltPortalRadius: 0.3
+  currentPortalRadius: 0
+  portalWidth: 0.05
+  increaseValue: 0.01
+  range: 0
+  seconds: 2
 --- !u!1 &2096571984
 GameObject:
   m_ObjectHideFlags: 0

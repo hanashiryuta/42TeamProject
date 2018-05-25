@@ -69,7 +69,18 @@ public class BalloonController : MonoBehaviour {
 
     float angle = 0;//上下移動遷移用角度
 
-    void Awake(){
+    //追加日：180525　追加者：何
+    BalloonState preState;
+    BalloonState curState;
+    bool _isColorChaged = false;
+    public bool IsColorChanged
+    {
+        get { return _isColorChaged; }
+    }
+
+
+    void Awake()
+    {
 		playerRank = GameObject.Find ("PlayerRank");
 		//playerRank.GetComponent<PlayerRank> ().Reset ();
 	}
@@ -91,6 +102,9 @@ public class BalloonController : MonoBehaviour {
 
         stopTime = setStopTime; //振動してから止まるまでのタイムラグ
         isStop = false; //振動を止めるかどうか
+
+        preState = _balloonState;
+        curState = _balloonState;
     }
 
 // Update is called once per frame
@@ -163,6 +177,8 @@ void Update () {
         }
 
         ColorChange();//色変更
+
+        _isColorChaged = CheckColorChange();
     }
 
     void FixedUpdate()
@@ -374,6 +390,23 @@ void Update () {
             scaleCount = 1;
         }
         
+    }
+
+    /// <summary>
+    /// 風船色変更
+    /// </summary>
+    /// <returns></returns>
+    bool CheckColorChange()
+    {
+        preState = curState;
+        curState = _balloonState;
+
+        if(preState != curState)
+        {
+            return true;
+        }
+
+        return false;
     }
 
 }
