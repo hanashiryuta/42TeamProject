@@ -17,7 +17,7 @@ public class ResultManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		playerRank = GameObject.Find ("PlayerRank");
+		playerRank = GameObject.Find ("PlayerRankController");
 
 		backtoGame = GameObject.Find ("/Canvas/BacktoGame").GetComponent<Button> ();
 		endGame = GameObject.Find ("/Canvas/EndGame").GetComponent<Button> ();
@@ -34,10 +34,10 @@ public class ResultManager : MonoBehaviour {
 	void Update () {
 
 		//上から順位順に名前表示
-		player1.text = "1位:"+playerRank.GetComponent<PlayerRank> ().GetFirstPlayer ();
-		player2.text = "2位:"+playerRank.GetComponent<PlayerRank> ().GetSecondPlayer ();
-		player3.text = "3位:"+playerRank.GetComponent<PlayerRank> ().GetThirdPlayer ();
-		player4.text = "4位:"+playerRank.GetComponent<PlayerRank> ().GetFourthPlayer ();
+		player1.text = "1位:"+playerRank.GetComponent<PlayerRank> ().ResultRank[0];
+		player2.text = "2位:"+playerRank.GetComponent<PlayerRank> ().ResultRank[1];
+		player3.text = "3位:"+playerRank.GetComponent<PlayerRank> ().ResultRank[2];
+		player4.text = "4位:"+playerRank.GetComponent<PlayerRank> ().ResultRank[3];
 
 		count += Input.GetAxisRaw ("Horizontal1");
 
