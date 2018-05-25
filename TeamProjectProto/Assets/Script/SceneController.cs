@@ -20,7 +20,7 @@ public class SceneController : MonoBehaviour {
 	void Start () {
         //balloon = GameObject.FindGameObjectWithTag("Balloon");//爆発物取得
         timeController = GameObject.Find("TimeController");
-        playerRank = GameObject.Find("PlayerRank");
+        playerRank = GameObject.Find("PlayerRankController");
     }
 	
 	// Update is called once per frame
@@ -50,29 +50,16 @@ public class SceneController : MonoBehaviour {
     /// </summary>
     public void isEnd()
     {
-        GameObject[] pList = GameObject.FindGameObjectsWithTag("Player");//プレイ
+        // PlayerRankの順位更新を停止
+        playerRank.GetComponent<PlayerRank>().IsInPlay = false;
 
-        //ソート（小さい順に）
-        for(int i = 0;i< pList.Length-1; i++)
+        //ゲーム中の順位の名前を記録してリザルトシーン用に保存
+        List<string> tmp = new List<string>();
+        foreach(var player in playerRank.GetComponent<PlayerRank>().PlayerRankArray)
         {
-            for (int j = i+1; j < pList.Length; j++)
-            {
-                if(pList[i].GetComponent<PlayerMove>().totalBlastCount > pList[j].GetComponent<PlayerMove>().totalBlastCount)
-                {
-                    GameObject p = pList[j];
-                    pList[j] = pList[i];
-                    pList[i] = p;
-                }
-            }
+            tmp.Add(player.name);
         }
-
-        playerRank.GetComponent<PlayerRank>().Reset(); //ランクリストをリセット
-
-        //ランク登録
-        foreach(var cx in pList)
-        {
-            playerRank.GetComponent<PlayerRank>().playerRankList.Add(cx.name);
-        }
+        playerRank.GetComponent<PlayerRank>().ResultRank = tmp;
 
         //万が一シーンが切り替わると同時にコントローラーが振動し始めたときにコントローラーの振動を停止する処理
         GamePad.SetVibration(PlayerIndex.One, 0.0f, 0.0f);
@@ -82,7 +69,6 @@ public class SceneController : MonoBehaviour {
         
         //シーン遷移
         SceneManager.LoadScene("Result");
-
 
     }
 }
