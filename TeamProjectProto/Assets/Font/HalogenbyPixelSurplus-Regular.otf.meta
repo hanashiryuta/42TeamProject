@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: 698f882da85038b4f867fc25c6e7a3c5
+timeCreated: 1511761791
+licenseType: Free
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Halogen by Pixel Surplus
+  fontNames:
+  - Halogen by Pixel Surplus
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -78,7 +78,7 @@ public class BalloonController : MonoBehaviour {
 	void Start () {
         //初期化処理
         scaleCount = 1;
-        moveTime = 1.0f;
+        moveTime = 3.0f;
         isMove = true;
         isEnd = false;
         _balloonState = BalloonState.SAFETY;
@@ -113,22 +113,23 @@ void Update () {
         }
 
         //プレイヤーについていなければ
-        if (player == null)
-        {
-            GameObject[] pList = GameObject.FindGameObjectsWithTag("Player");//プレイヤー配列を作成
+   //     if (player == null)
+   //     {
+   //         GameObject[] pList = GameObject.FindGameObjectsWithTag("Player");//プレイヤー配列を作成
 
-			//Debug.Log (pList.Length);
-            //プレイヤーが一人しかいなければゲームを終了する
-    //        if (pList.Length <= 1)
-    //        {	
-				//playerRank.GetComponent<PlayerRank> ().SetPlayer (pList[0]);
-				//SceneManager.LoadScene("Result");
-    //            //isEnd = true;
-    //            //return;
-    //        }
+			////Debug.Log (pList.Length);
+   //         //プレイヤーが一人しかいなければゲームを終了する
+   // //        if (pList.Length <= 1)
+   // //        {	
+			//	//playerRank.GetComponent<PlayerRank> ().SetPlayer (pList[0]);
+			//	//SceneManager.LoadScene("Result");
+   // //            //isEnd = true;
+   // //            //return;
+   // //        }
 
-            BalloonExChangeByPoint(pList);           
-        }
+   //         BalloonExChangeByPoint(pList);           
+            
+   //     }
 
         transform.localScale = new Vector3(scaleCount, scaleCount, scaleCount);//内容物の数により大きさ変更        
 
@@ -138,7 +139,7 @@ void Update () {
             moveTime -= Time.deltaTime;
             if (moveTime < 0)
             {
-                moveTime = 1.0f;
+                moveTime = 3.0f;
                 isMove = true;
             }
         }
@@ -239,6 +240,9 @@ void Update () {
     /// <param name="playerList"></param>
     void BalloonExChangeByPoint(GameObject[] playerList)
     {
+        player.GetComponent<PlayerMove>().balloon = null;
+        player = null;//風船を他のプレイヤーに回すためにnullにする
+
         GameObject p = playerList[0];
         float c = p.GetComponent<PlayerMove>().totalBlastCount;
 
@@ -265,7 +269,10 @@ void Update () {
     /// </summary>
     /// <param name="playerList"></param>
     public void BalloonExChange(GameObject[] playerList)
-    {       
+    {
+        player.GetComponent<PlayerMove>().balloon = null;
+        player = null;//風船を他のプレイヤーに回すためにnullにする
+
         player = playerList[Random.Range(0, playerList.Length)];//配列内からランダムでプレイヤーを指定
         player.GetComponent<PlayerMove>().balloon = transform.gameObject;
     }
@@ -276,6 +283,9 @@ void Update () {
     /// <param name="playerList"></param>
     public void BalloonExChange(GameObject[] playerList,GameObject p)
     {
+        player.GetComponent<PlayerMove>().balloon = null;
+        player = null;//風船を他のプレイヤーに回すためにnullにする
+
         do
         {
             player = playerList[Random.Range(0, playerList.Length)];//配列内からランダムでプレイヤーを指定
@@ -294,11 +304,11 @@ void Update () {
         if (blastCount >= blastLimit)
 		{
             _isBlast = true;//爆発した
-            player.GetComponent<PlayerMove>().ItemBlast(3);
+            player.GetComponent<PlayerMove>().ItemBlast(5);
             player.GetComponent<PlayerMove>().isStan = true;
             //playerRank.GetComponent<PlayerRank> ().SetPlayer (player);//爆発したらリストに格納
-            player.GetComponent<PlayerMove>().balloon = null;
-			player = null;//風船を他のプレイヤーに回すためにnullにする
+            GameObject[] pList = GameObject.FindGameObjectsWithTag("Player");//プレイヤー配列を作成
+            BalloonExChange(pList, player);//ランダム移動処理
             //Destroy(player);//プレイヤーを破棄
 			scaleCount = 1.0f;
 			blastCount = 0;
@@ -327,11 +337,12 @@ void Update () {
         if (blastCount >= blastLimit)
         {
             _isBlast = true;//爆発した
-            player.GetComponent<PlayerMove>().ItemBlast(3);
+            player.GetComponent<PlayerMove>().ItemBlast(5);
             player.GetComponent<PlayerMove>().isStan = true;
             //playerRank.GetComponent<PlayerRank> ().SetPlayer (player);//爆発したらリストに格納
-            player = null;//風船を他のプレイヤーに回すためにnullにする
-			//Destroy(player);//プレイヤーを破棄
+            GameObject[] pList = GameObject.FindGameObjectsWithTag("Player");//プレイヤー配列を作成
+            BalloonExChange(pList, player);//ランダム移動処理
+            //Destroy(player);//プレイヤーを破棄
             scaleCount = 1.0f;
             blastCount = 0;
 			post.GetComponent<PostController>().blastCount = 0;//次の爆弾へ超過しないように
