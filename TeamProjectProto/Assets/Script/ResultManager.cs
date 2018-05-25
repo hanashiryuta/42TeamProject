@@ -32,7 +32,7 @@ public class ResultManager : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void Update() { 
     
 		//上から順位順に名前表示
 		player1.text = "1位:"+playerRank.GetComponent<PlayerRank> ().ResultRank[0];
