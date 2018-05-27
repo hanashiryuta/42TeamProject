@@ -401,9 +401,16 @@ void Update () {
         preState = curState;
         curState = _balloonState;
 
-        if(preState != curState)
+        if(_isBlast) //爆発した時はfalse
         {
-            return true;
+            return false;
+        }
+        else
+        {
+            if (preState != curState)
+            {
+                return true;
+            }
         }
 
         return false;
