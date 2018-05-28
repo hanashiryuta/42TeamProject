@@ -69,6 +69,9 @@ public class BalloonController : MonoBehaviour {
 
     float angle = 0;//上下移動遷移用角度
 
+    Vector3 BalloontransfromSave; //balloon移動開始前の座標
+    float height;//PlayerからBalloonまでの高さ
+
     void Awake(){
 		playerRank = GameObject.Find ("PlayerRank");
 		//playerRank.GetComponent<PlayerRank> ().Reset ();
@@ -91,6 +94,9 @@ public class BalloonController : MonoBehaviour {
 
         stopTime = setStopTime; //振動してから止まるまでのタイムラグ
         isStop = false; //振動を止めるかどうか
+
+        BalloontransfromSave = player.transform.position;
+        height = 2.5f;
     }
 
 // Update is called once per frame
@@ -167,19 +173,43 @@ void Update () {
 
     void FixedUpdate()
     {
+        //BalloonがついているPlayerのコントローラーのAxisを取得
+        Vector3 playerAxis = new Vector3(player.GetComponent<PlayerMove>().AxisX, 0.0f, player.GetComponent<PlayerMove>().AxisZ);
+        //BalloonがついているPlayerの座標を取得
+        Vector3 playertransfrom = player.transform.position;
+        //BalloonがついているPlayerとBalloonの差
+        Vector3 balloonPlayer = new Vector3(player.transform.position.x - BalloontransfromSave.x, player.transform.position.y - BalloontransfromSave.y + height, player.transform.position.z - BalloontransfromSave.z);
+        //BalloonがついているPlayerとBalloonの差の絶対値
+        Vector3 balloonPlayerAbs = new Vector3(Mathf.Abs(balloonPlayer.x), Mathf.Abs(balloonPlayer.y), Mathf.Abs(balloonPlayer.z));
+
         //常にプレイヤーの上にいるようにする
         if (player != null)
         {
             //transform.position = new Vector3(player.transform.position.x, player.transform.position.y + 2.5f + transform.localScale.y / 2, player.transform.position.z);
-
             //transform.position = new Vector3(player.transform.position.x, player.transform.position.y+2.5f+transform.localScale.y / 2 + Mathf.PingPong(Time.time, 1), player.transform.position.z);
 
-            float range = 0.5f;//振れ幅
+            //Playerの後を追うように移動させる処理
 
-            transform.position = new Vector3(player.transform.position.x, player.transform.position.y + 2.5f + transform.localScale.y / 2 + range+(Mathf.Sin(angle) * range), player.transform.position.z);//揺れながらプレイヤーの上に配置処理
+            if (playerAxis.z > -0.1) {
+                height = 5.5f;
+            } else {
+                height = 2.5f;
+            }
+
+            if (playerAxis.x < -0.1f || playerAxis.x > 0.1f || playerAxis.z < -0.1f || playerAxis.z > 0.1f) {
+                if (balloonPlayerAbs.x > 0.9 || balloonPlayerAbs.z > 0.9)
+                {
+                    BalloontransfromSave += balloonPlayer / 20;
+                }
+            } else {
+                BalloontransfromSave += balloonPlayer / 20;
+            }
             
+            float range = 0.5f;//振れ幅
+            transform.position = new Vector3(BalloontransfromSave.x, BalloontransfromSave.y + transform.localScale.y / 2 + range+(Mathf.Sin(angle) * range), BalloontransfromSave.z);//揺れながらプレイヤーの上に配置処理
             angle += 0.05f;//角度増加
         }
+
     }
 
     /// <summary>
