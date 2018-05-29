@@ -72,7 +72,17 @@ public class BalloonController : MonoBehaviour {
     Vector3 BalloontransfromSave; //balloon移動開始前の座標
     float height;//PlayerからBalloonまでの高さ
 
-    void Awake(){
+    //追加日：180525　追加者：何
+    BalloonState preState;
+    BalloonState curState;
+    bool _isColorChaged = false;
+    public bool IsColorChanged
+    {
+        get { return _isColorChaged; }
+    }
+    
+    void Awake()
+    {
 		playerRank = GameObject.Find ("PlayerRank");
 		//playerRank.GetComponent<PlayerRank> ().Reset ();
 	}
@@ -97,6 +107,9 @@ public class BalloonController : MonoBehaviour {
 
         BalloontransfromSave = player.transform.position;
         height = 2.5f;
+        
+        preState = _balloonState;
+        curState = _balloonState;
     }
 
 // Update is called once per frame
@@ -169,6 +182,8 @@ void Update () {
         }
 
         ColorChange();//色変更
+
+        _isColorChaged = CheckColorChange();
     }
 
     void FixedUpdate()
@@ -404,6 +419,30 @@ void Update () {
             scaleCount = 1;
         }
         
+    }
+
+    /// <summary>
+    /// 風船色変更
+    /// </summary>
+    /// <returns></returns>
+    bool CheckColorChange()
+    {
+        preState = curState;
+        curState = _balloonState;
+
+        if(_isBlast) //爆発した時はfalse
+        {
+            return false;
+        }
+        else
+        {
+            if (preState != curState)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }
