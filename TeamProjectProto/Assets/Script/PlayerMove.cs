@@ -91,9 +91,6 @@ public class PlayerMove : MonoBehaviour
 
     void Update()
     {
-        //移動&ジャンプ入力処理
-        HandleXInput();
-
         blastCountText.text = blastCount.ToString();//内容物取得数表示処理 
         totalBlastCountText.text = "Total:" + totalBlastCount.ToString();
 
@@ -104,10 +101,8 @@ public class PlayerMove : MonoBehaviour
             return;
         }
 
-        //移動入力処理
-        MoveInput();
-        //ジャンプ入力処理
-        JumpInput();
+        //移動&ジャンプ入力処理
+        HandleXInput();
 
         if (Input.GetKeyDown(KeyCode.R))
         {
