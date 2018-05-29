@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using XInputDotNetPure;
 
 public class PlayerMove : MonoBehaviour
 {
@@ -90,10 +91,8 @@ public class PlayerMove : MonoBehaviour
 
     void Update()
     {
-        //移動入力処理
-        MoveInput();
-        //ジャンプ入力処理
-        JumpInput();
+        //移動&ジャンプ入力処理
+        HandleXInput();
 
         blastCountText.text = blastCount.ToString();//内容物取得数表示処理 
         totalBlastCountText.text = "Total:" + totalBlastCount.ToString();
@@ -127,7 +126,7 @@ public class PlayerMove : MonoBehaviour
         //移動処理
         Move();
 
-        Vector3 diff = transform.position + new Vector3(AxisX,0,AxisZ)-transform.position;
+        Vector3 diff = transform.position + new Vector3(moveJoy.x, 0, moveJoy.y) - transform.position;
 
         diff.y = 0;
 
@@ -197,11 +196,11 @@ public class PlayerMove : MonoBehaviour
         Vector3 moveVector = Vector3.zero;
 
         //あたり判定
-       // HitField();
+        // HitField();
 
         //移動量設定
-        moveVector.x = moveSpeed * AxisX;
-        moveVector.z = moveSpeed * AxisZ;
+        moveVector.x = moveSpeed * moveJoy.x;
+        moveVector.z = moveSpeed * moveJoy.y;
 
         //y方向無しの現在のvelocity保存
         Vector3 rigidVelocity = new Vector3(rigid.velocity.x, 0, rigid.velocity.z);
@@ -257,8 +256,9 @@ public class PlayerMove : MonoBehaviour
                 transform.position = hipDropPosition;
             }
             //左右移動ゼロ化
-            AxisX = 0;
-            AxisZ = 0;
+            moveJoy.x = 0;
+            moveJoy.y = 0;
+
             //重力設定
             gravPower = 9.8f * 2;
             //ヒップドロップ中
@@ -333,7 +333,8 @@ public class PlayerMove : MonoBehaviour
                 if (cx.tag == "Field")
                 {
                     //移動しない
-                    AxisX = 0;
+                    //AxisX = 0;
+                    moveJoy.x = 0;
                     break;
                 }
             }
@@ -348,7 +349,8 @@ public class PlayerMove : MonoBehaviour
                 if (cx.tag == "Field")
                 {
                     //移動しない
-                    AxisZ = 0;
+                    //AxisZ = 0;
+                    moveJoy.y = 0;
                     break;
                 }
             }
@@ -363,7 +365,8 @@ public class PlayerMove : MonoBehaviour
                 if (cx.tag == "Field")
                 {
                     //移動しない
-                    AxisX = 0;
+                    //AxisX = 0;
+                    moveJoy.x = 0;
                     break;
                 }
             }
@@ -378,7 +381,8 @@ public class PlayerMove : MonoBehaviour
                 if (cx.tag == "Field")
                 {
                     //移動しない
-                    AxisZ = 0;
+                    //AxisZ = 0;
+                    moveJoy.y = 0;
                     break;
                 }
             }
@@ -528,5 +532,82 @@ public class PlayerMove : MonoBehaviour
         anim.SetFloat("velocity", Mathf.Abs(rigid.velocity.x) <= 0.001f && Mathf.Abs(rigid.velocity.z) <= 0.001f ? 0 : 1);//移動
         anim.SetBool("isStan", isStan);//スタン
     }
+
+
+
+    [HideInInspector]
+    public PlayerIndex playerIndex;
+    GamePadState previousState;
+    GamePadState currentState;
+
+    Vector2 moveJoy;
+
+    /// <summary>
+    /// 追加日：180529 追加者：何
+    /// XBoxコントローラー入力
+    /// </summary>
+    void HandleXInput()
+    {
+        currentState = GamePad.GetState(playerIndex);
+
+        if (!currentState.IsConnected)
+        {
+            return;
+        }
+
+        moveJoy.x = currentState.ThumbSticks.Left.X;
+        moveJoy.y = currentState.ThumbSticks.Left.Y;
+
+        //風船を持っていないとき
+        if (balloon == null)
+            moveSpeed = originMoveSpeed;
+        //風船を持っている時
+        else
+            moveSpeed = balloonMoveSpeed;
+
+
+        JumpXInput();
+
+        previousState = currentState;
+    }
+
+    /// <summary>
+    /// 追加日：180529 追加者：何
+    /// Jumpボタン入力
+    /// </summary>
+    /// <returns>Aボタン一回押されたか</returns>
+    void JumpXInput()
+    {
+        //ジャンプボタンを押したら
+        if (previousState.Buttons.A == ButtonState.Released && currentState.Buttons.A == ButtonState.Pressed)
+        {
+            //ジャンプパワー設定
+            jumpPower = balloon != null ? balloonJumpPower * 700 : originJumpPower * 700;
+
+            //地面にいたら
+            if (jumpCount == 0)
+            {
+                rigid.AddForce(new Vector3(0, jumpPower, 0));
+                GetComponent<AudioSource>().PlayOneShot(soundSE1);
+            }
+            //空中にいたら
+            else if (jumpCount == 1)
+            {
+                hipDropTime = 0.3f;
+                rigid.velocity = Vector3.zero;
+                hipDropPosition = transform.position;
+            }
+
+            //ジャンプカウント増加
+            jumpCount++;
+
+            //上限設定
+            if (jumpCount > 2)
+                jumpCount = 2;
+        }
+    }
+
+
+
 }
 
