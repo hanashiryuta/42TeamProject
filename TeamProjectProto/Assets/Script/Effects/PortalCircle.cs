@@ -48,6 +48,16 @@ public class PortalCircle : MonoBehaviour
         SetPortalWidth(portalWidth);//円の太さを指定
         tmpDefaltRadius = defaltPortalRadius;///設定値を格納する
         tmpWidth = portalWidth;
+
+        if (material.name.IndexOf("Outside") > 0)//マテリアルに沿って円の方向を設定
+        {
+            isDirectionToOutside = true;
+        }
+        else
+        {
+            isDirectionToOutside = false;
+        }
+
     }
 
     void Start()
@@ -76,7 +86,7 @@ public class PortalCircle : MonoBehaviour
     void OpenPortal()
     {
         DOTween.KillAll();
-        DOTween.To(() => currentPortalRadius, SetPortalRadius, range, seconds).SetEase(Ease.OutBack);
+        DOTween.To(() => currentPortalRadius, SetPortalRadius, range, seconds).SetEase(Ease.OutExpo);
     }
 
     /// <summary>
@@ -85,7 +95,7 @@ public class PortalCircle : MonoBehaviour
     void ClosePortal()
     {
         DOTween.KillAll();
-        DOTween.To(() => currentPortalRadius, SetPortalRadius, range, seconds).SetEase(Ease.OutBack);
+        DOTween.To(() => currentPortalRadius, SetPortalRadius, range, seconds).SetEase(Ease.OutCubic);
     }
 
     /// <summary>
@@ -208,7 +218,6 @@ public class PortalCircle : MonoBehaviour
         {
             //半径を初期化
             InitRadius();
-            Debug.Log(target);
         }
     }
 
