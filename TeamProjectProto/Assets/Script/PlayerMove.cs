@@ -11,8 +11,8 @@ using XInputDotNetPure;
 
 public class PlayerMove : MonoBehaviour
 {
-    float AxisX = 0;//プレイヤーのｘ移動方向
-    float AxisZ = 0;//プレイヤーのｚ移動方向
+    public float AxisX = 0;//プレイヤーのｘ移動方向
+    public float AxisZ = 0;//プレイヤーのｚ移動方向
     float moveSpeed = 0;//移動速度
     public float originMoveSpeed = 0.5f;//プレイヤーの移動速度    
     public float balloonMoveSpeed = 0.7f;//爆発物を持っている時の移動速度
@@ -200,7 +200,7 @@ public class PlayerMove : MonoBehaviour
     /// <summary>
     /// 移動処理
     /// </summary>
-    void Move()
+    public void Move()
     {
         //移動vector生成
         Vector3 moveVector = Vector3.zero;
