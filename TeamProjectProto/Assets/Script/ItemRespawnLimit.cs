@@ -23,6 +23,7 @@ public class ItemRespawnLimit : MonoBehaviour {
     void Update () {
         if (postRespawn.GetComponent<PostRespawn>().isLimit()) {
             ItemCount = 0;
+            postRespawn.GetComponent<PostRespawn>().isLimitReset = false;
         }
 	}
 

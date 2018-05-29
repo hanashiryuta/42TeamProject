@@ -33,7 +33,7 @@ public class BalloonController : MonoBehaviour {
     public float blastCount = 0;//内容物総数
     public float blastLimit = 30;//内容物総数限界
 
-    float moveTime = 1.0f;//爆発物が移る際のインターバル
+    float moveTime = 3.0f;//爆発物が移る際のインターバル
     bool isMove = true;//爆発物が移れるかどうか
 
     [HideInInspector]
@@ -147,7 +147,7 @@ void Update () {
 
         transform.localScale = new Vector3(scaleCount, scaleCount, scaleCount);//内容物の数により大きさ変更        
 
-        //一度移ってから再度移るまで1秒のインターバルが存在する
+        //一度移ってから再度移るまで3秒のインターバルが存在する
         if(!isMove)
         {
             moveTime -= Time.deltaTime;

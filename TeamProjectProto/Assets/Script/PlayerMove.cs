@@ -98,6 +98,21 @@ public class PlayerMove : MonoBehaviour
         totalBlastCountText.text = "Total:" + totalBlastCount.ToString();
 
         PlayerAnim(playerAnim);
+
+        if(isStan)
+        {
+            return;
+        }
+
+        //移動入力処理
+        MoveInput();
+        //ジャンプ入力処理
+        JumpInput();
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            Debug.Log(jumpCount + "ジャンプカウント");
+        }
     }
 
     // Update is called once per frame
@@ -107,7 +122,7 @@ public class PlayerMove : MonoBehaviour
         if (isStan)
         {
             //最初に移動量をゼロに
-            if (stanTime >= 2.0f)
+            if (stanTime >= 3.0f)
                 rigid.velocity = Vector3.zero;
 
             rigid.velocity = new Vector3(0, rigid.velocity.y, 0);
@@ -266,11 +281,12 @@ public class PlayerMove : MonoBehaviour
         }
 
         //あたり判定用配列
-        Collider[] colArray = Physics.OverlapBox(transform.position + new Vector3(0, -0.01f, 0) + new Vector3(0, 1, 0),
-                                                new Vector3(transform.localScale.x * 2 / 2 - 0.01f,
-                                                            transform.localScale.y * 2,
-                                                            transform.localScale.z * 2 / 2 - 0.01f), 
-                                                transform.localRotation);
+        Collider[] colArray = Physics.OverlapBox(
+            transform.position + new Vector3(0, -0.01f, 0) + new Vector3(0, 1, 0),
+            new Vector3(transform.localScale.x * 2 / 2 -0.01f,
+            transform.localScale.y * 2,
+            transform.localScale.z * 2 / 2 -0.01f), 
+            transform.localRotation);
         
         //重力追加
         rigid.AddForce(new Vector3(0, -gravPower*5, 0));
@@ -452,7 +468,7 @@ public class PlayerMove : MonoBehaviour
         //衝撃波に当たったら
         if (col.gameObject.tag == "HipDropCircle")
         {
-            if (!col.transform.name.Contains(transform.name))
+            if (!col.transform.name.Contains(transform.name)&&!isStan)
             {
                 isStan = true;
                 ItemBlast(1);
@@ -502,19 +518,19 @@ public class PlayerMove : MonoBehaviour
         switch (transform.name)
         {
             case "Player1":
-                GameObject hipDrop1 = Instantiate(hipDropCircle[0], transform.position, Quaternion.identity);
+                GameObject hipDrop1 = Instantiate(hipDropCircle[0], transform.position+new Vector3(0,0.2f,0), Quaternion.identity);
                 hipDrop1.name = hipDrop1.name + transform.name;
                 break;
             case "Player2":
-                GameObject hipDrop2 = Instantiate(hipDropCircle[1], transform.position, Quaternion.identity);
+                GameObject hipDrop2 = Instantiate(hipDropCircle[1], transform.position + new Vector3(0, 0.2f, 0), Quaternion.identity);
                 hipDrop2.name = hipDrop2.name + transform.name;
                 break;
             case "Player3":
-                GameObject hipDrop3 = Instantiate(hipDropCircle[2], transform.position, Quaternion.identity);
+                GameObject hipDrop3 = Instantiate(hipDropCircle[2], transform.position + new Vector3(0, 0.2f, 0), Quaternion.identity);
                 hipDrop3.name = hipDrop3.name + transform.name;
                 break;
             case "Player4":
-                GameObject hipDrop4 = Instantiate(hipDropCircle[3], transform.position, Quaternion.identity);
+                GameObject hipDrop4 = Instantiate(hipDropCircle[3], transform.position + new Vector3(0, 0.2f, 0), Quaternion.identity);
                 hipDrop4.name = hipDrop4.name + transform.name;
                 break;
         }
