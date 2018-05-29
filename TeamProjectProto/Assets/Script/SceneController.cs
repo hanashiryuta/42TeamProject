@@ -20,7 +20,11 @@ public class SceneController : MonoBehaviour {
 	void Start () {
         //balloon = GameObject.FindGameObjectWithTag("Balloon");//爆発物取得
         timeController = GameObject.Find("TimeController");
+
+        //ランク関連
         playerRank = GameObject.Find("PlayerRankController");
+        playerRank.GetComponent<PlayerRank>().InitPlayerList();
+        playerRank.GetComponent<PlayerRank>().IsInPlay = true;
     }
 	
 	// Update is called once per frame

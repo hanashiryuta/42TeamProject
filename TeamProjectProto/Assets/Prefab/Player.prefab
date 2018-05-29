@@ -106,6 +106,7 @@ GameObject:
   - component: {fileID: 82618936267711668}
   - component: {fileID: 114295103744815772}
   - component: {fileID: 114380417687261246}
+  - component: {fileID: 114125977234718296}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -521,6 +522,18 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &114125977234718296
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1515882103006162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 117bf7e233e44d34b97ebcc17bf0f141, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerIndex: 0
 --- !u!114 &114295103744815772
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -604,6 +617,7 @@ MonoBehaviour:
   soundSE1: {fileID: 8300000, guid: 96c42a4475b2d32428b25595bf7dc5b0, type: 3}
   soundSE2: {fileID: 8300000, guid: 475d72f144db63844b07315899919ce2, type: 3}
   soundSE3: {fileID: 8300000, guid: 04aabf5253f07f84bb09425dd4cb2c5c, type: 3}
+  playerIndex: 0
 --- !u!136 &136683905432024742
 CapsuleCollider:
   m_ObjectHideFlags: 1

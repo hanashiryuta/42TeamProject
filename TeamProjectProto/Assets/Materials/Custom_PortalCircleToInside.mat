@@ -6,7 +6,7 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Custom_PortalCircle
+  m_Name: Custom_PortalCircleToInside
   m_Shader: {fileID: 4800000, guid: ded1b3a5ff0e9784f94eb9b98816faf3, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
