@@ -68,6 +68,8 @@ public class PlayerMove : MonoBehaviour
 
     //180516 何
     private Animator playerAnim;
+    //180530 何
+    StartCountDown startCntDown;
 
     // Use this for initialization
     void Start()
@@ -87,6 +89,8 @@ public class PlayerMove : MonoBehaviour
         totalItemList = new List<string>();
         //180516 アニメーター
         playerAnim = transform.GetComponent<Animator>();
+        //180530 スタートカウントダウン
+        startCntDown = GameObject.Find("StartCountDown").GetComponent<StartCountDown>();
     }
 
     void Update()
@@ -133,8 +137,13 @@ public class PlayerMove : MonoBehaviour
         }
         //ジャンプ処理
         Jump();
-        //移動処理
-        Move();
+
+        //スタートカウントダウン中動けない
+        if (!startCntDown.IsCntDown)
+        {
+            //移動処理
+            Move();
+        }
 
         Vector3 diff = transform.position + new Vector3(moveJoy.x, 0, moveJoy.y) - transform.position;
 
@@ -143,7 +152,7 @@ public class PlayerMove : MonoBehaviour
         if (diff.magnitude > 0.01f)
         {
             transform.rotation = Quaternion.LookRotation(diff);
-        }
+        }       
     }
 
     /// <summary>
