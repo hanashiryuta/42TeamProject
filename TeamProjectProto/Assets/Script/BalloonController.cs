@@ -69,6 +69,10 @@ public class BalloonController : MonoBehaviour {
 
     float angle = 0;//上下移動遷移用角度
 
+    [HideInInspector]
+    public bool isDestroy = false;//風船に移るオブジェクトを破棄させるための判定
+    GameObject air;//風船に移るオブジェクト
+
     Vector3 BalloontransfromSave; //balloon移動開始前の座標
     float height;//PlayerからBalloonまでの高さ
 
@@ -107,6 +111,7 @@ public class BalloonController : MonoBehaviour {
         stopTime = setStopTime; //振動してから止まるまでのタイムラグ
         isStop = false; //振動を止めるかどうか
 
+        isDestroy = false;
         BalloontransfromSave = player.transform.position;
         height = 2.5f;
         
@@ -359,6 +364,7 @@ public class BalloonController : MonoBehaviour {
     {
         blastCount ++;
         scaleCount += scaleRate;
+        isDestroy = false;//破棄できないようにする
         //内容物の数が限界を超えたら
         if (blastCount >= blastLimit)
 		{
@@ -381,6 +387,8 @@ public class BalloonController : MonoBehaviour {
             GamePad.SetVibration(PlayerIndex.Three, 0.0f, 1.0f);
             GamePad.SetVibration(PlayerIndex.Four, 0.0f, 1.0f);
             isStop = true;
+
+            isDestroy = true;//破棄できるようにする
         }
     }
 
@@ -392,6 +400,7 @@ public class BalloonController : MonoBehaviour {
     {
         blastCount++;
         scaleCount += scaleRate;
+        isDestroy = false;//破棄できないようにする
         //内容物の数が限界を超えたら
         if (blastCount >= blastLimit)
         {
@@ -412,6 +421,8 @@ public class BalloonController : MonoBehaviour {
             GamePad.SetVibration(PlayerIndex.Three, 0.0f, 1.0f);
             GamePad.SetVibration(PlayerIndex.Four, 0.0f, 1.0f);
             isStop = true;
+
+            isDestroy = true;//破棄できるようにする
         }
     }
 
