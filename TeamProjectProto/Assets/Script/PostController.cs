@@ -42,6 +42,8 @@ public class PostController : MonoBehaviour {
     public float inflateTime = 0.05f;//ポストから風船に内容物を膨らませるまでの時間
     public GameObject marker;
 
+    StartCountDown startCountDown;//カウントダウンScript
+
     // Use this for initialization
     void Start () {
 		//初期化処理
@@ -52,7 +54,8 @@ public class PostController : MonoBehaviour {
         //activeCount = 0;
         mesh = GetComponent<MeshRenderer>();
         bc = GetComponent<BoxCollider>();
-	}
+        startCountDown = GameObject.Find("StartCountDown").GetComponent<StartCountDown>();
+    }
 
 	// Update is called once per frame
 	void Update () {
@@ -132,7 +135,8 @@ public class PostController : MonoBehaviour {
             //MeshとColliderをfalseにする
             mesh.enabled = false;
             bc.enabled = false;
-            interval++;
+            if(!startCountDown.IsCntDown)
+                interval++;
             //約5秒後に再出現させる。その際に移動させるために必要なものを初期化
             if (interval >= intervalLimit * 60)
             {
