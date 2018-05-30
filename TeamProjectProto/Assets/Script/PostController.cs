@@ -42,6 +42,11 @@ public class PostController : MonoBehaviour {
     public float inflateTime = 0.05f;//ポストから風船に内容物を膨らませるまでの時間
     public GameObject marker;
 
+    public GameObject air;//風船に移るオブジェクト
+    float airCount = 0;//風船に移るオブジェクトの数
+
+    public bool inflateObj = true;//風船に移るオブジェクトを作るかどうか：true=作る、false=作らない
+
     // Use this for initialization
     void Start () {
 		//初期化処理
@@ -72,7 +77,7 @@ public class PostController : MonoBehaviour {
             //specialWallPoint.GetComponent<SpecialWallRespawn>().SpecialRespawn(player);
             Debug.Log("移る");
             activity = false;
-            isRespawn = true;
+            //isRespawn = true;
         }
 
 		//内容物が一つでもあれば
@@ -84,10 +89,21 @@ public class PostController : MonoBehaviour {
             {
                 if (inflateTime < 0)
                 {
-                    //内容物の総数分風船を膨らます
-                    balloon.GetComponent<BalloonController>().BalloonBlast(gameObject);
+                    ////内容物の総数分風船を膨らます
+                    //balloon.GetComponent<BalloonController>().BalloonBlast(gameObject);
+                    if(inflateObj)
+                    {
+                        Instantiate(air, gameObject.transform.position + Vector3.up, Quaternion.identity);
+                    }
+                    airCount++;//生成されるたびに加算していく
                     blastCount--;//内容物の総数を減らす
                     inflateTime = 0.05f;
+                    //ポイント分生成したらポストを移動させる
+                    if (airCount >= limitCount)
+                    {
+                        isRespawn = true;
+                        airCount = 0;
+                    }
                 }
             }
 
