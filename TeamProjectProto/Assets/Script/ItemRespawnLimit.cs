@@ -16,7 +16,7 @@ public class ItemRespawnLimit : MonoBehaviour {
 
     private void Start() {
         ItemCount = 0;
-        postRespawn = GameObject.Find("PostRespawnPoint(Clone)");
+        postRespawn = GameObject.Find("PostRespawnPoint");
     }
 
     // Update is called once per frame

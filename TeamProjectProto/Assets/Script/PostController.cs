@@ -46,6 +46,7 @@ public class PostController : MonoBehaviour {
     float airCount = 0;//風船に移るオブジェクトの数
 
     public bool inflateObj = true;//風船に移るオブジェクトを作るかどうか：true=作る、false=作らない
+    StartCountDown startCountDown;//カウントダウンScript
 
     // Use this for initialization
     void Start () {
@@ -57,7 +58,8 @@ public class PostController : MonoBehaviour {
         //activeCount = 0;
         mesh = GetComponent<MeshRenderer>();
         bc = GetComponent<BoxCollider>();
-	}
+        startCountDown = GameObject.Find("StartCountDown").GetComponent<StartCountDown>();
+    }
 
 	// Update is called once per frame
 	void Update () {
@@ -148,7 +150,8 @@ public class PostController : MonoBehaviour {
             //MeshとColliderをfalseにする
             mesh.enabled = false;
             bc.enabled = false;
-            interval++;
+            if(!startCountDown.IsCntDown)
+                interval++;
             //約5秒後に再出現させる。その際に移動させるために必要なものを初期化
             if (interval >= intervalLimit * 60)
             {

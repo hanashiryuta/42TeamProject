@@ -101,6 +101,7 @@ GameObject:
   - component: {fileID: 4999574636648600}
   - component: {fileID: 95322635193170888}
   - component: {fileID: 65774382792441882}
+  - component: {fileID: 114125977234718296}
   - component: {fileID: 114844505345048394}
   - component: {fileID: 54808840653408818}
   - component: {fileID: 82618936267711668}
@@ -359,6 +360,8 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_Materials:
   - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: d9e698e4cc4fb1948a843c9ef3f020e6, type: 2}
+  - {fileID: 2100000, guid: d31883d181ac1734cbeac6e5b4f3c1b3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -521,6 +524,18 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &114125977234718296
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1515882103006162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 117bf7e233e44d34b97ebcc17bf0f141, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerIndex: 0
 --- !u!114 &114295103744815772
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -580,6 +595,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: faf4c254dc8e32149b20b4a1f2d9c0bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AxisX: 0
+  AxisZ: 0
   originMoveSpeed: 1.5
   balloonMoveSpeed: 1.5
   originJumpPower: 1
@@ -604,6 +621,7 @@ MonoBehaviour:
   soundSE1: {fileID: 8300000, guid: 96c42a4475b2d32428b25595bf7dc5b0, type: 3}
   soundSE2: {fileID: 8300000, guid: 475d72f144db63844b07315899919ce2, type: 3}
   soundSE3: {fileID: 8300000, guid: 04aabf5253f07f84bb09425dd4cb2c5c, type: 3}
+  playerIndex: 0
 --- !u!136 &136683905432024742
 CapsuleCollider:
   m_ObjectHideFlags: 1
