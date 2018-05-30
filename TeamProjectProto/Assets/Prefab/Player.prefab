@@ -593,6 +593,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: faf4c254dc8e32149b20b4a1f2d9c0bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AxisX: 0
+  AxisZ: 0
   originMoveSpeed: 1.5
   balloonMoveSpeed: 1.5
   originJumpPower: 1

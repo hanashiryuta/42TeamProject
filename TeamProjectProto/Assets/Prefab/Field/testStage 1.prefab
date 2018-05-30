@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 23097753445079022}
   m_Layer: 0
   m_Name: Floor
-  m_TagString: Floor
+  m_TagString: Field
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4852,6 +4852,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   originPost: {fileID: 1856908396269914, guid: 06f86fddf1205ab4d8eabc57bb35c862, type: 2}
   postCount: 2
+  intervalLimit: 5
+  isLimitReset: 0
 --- !u!114 &114241392617534960
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4891,7 +4893,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 571453228d6a77e48a28059810c30f2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 1605397539206766, guid: 2ba74753a7e80354a8b962335b494909, type: 2}
+  player: {fileID: 1515882103006162, guid: 72aae454a9f6d9a498447c4ae7d216b1, type: 2}
+  texList:
+  - {fileID: 2800000, guid: a84c2e86edc95be49942785b7cc7ee56, type: 3}
+  - {fileID: 2800000, guid: 68711883e125ef04eb5781202e6520b5, type: 3}
+  - {fileID: 2800000, guid: 327d27672235e6f4792e6685379e40a3, type: 3}
+  - {fileID: 2800000, guid: b90f9ccad4815494787a95fe34389d8e, type: 3}
+  shadow: {fileID: 1559431038006236, guid: b534d641b217ad14f80c647df005f9b8, type: 2}
 --- !u!114 &114653734942319444
 MonoBehaviour:
   m_ObjectHideFlags: 1
