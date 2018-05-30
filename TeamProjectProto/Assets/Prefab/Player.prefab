@@ -101,12 +101,12 @@ GameObject:
   - component: {fileID: 4999574636648600}
   - component: {fileID: 95322635193170888}
   - component: {fileID: 65774382792441882}
+  - component: {fileID: 114125977234718296}
   - component: {fileID: 114844505345048394}
   - component: {fileID: 54808840653408818}
   - component: {fileID: 82618936267711668}
   - component: {fileID: 114295103744815772}
   - component: {fileID: 114380417687261246}
-  - component: {fileID: 114125977234718296}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -360,6 +360,8 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_Materials:
   - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: d9e698e4cc4fb1948a843c9ef3f020e6, type: 2}
+  - {fileID: 2100000, guid: d31883d181ac1734cbeac6e5b4f3c1b3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
