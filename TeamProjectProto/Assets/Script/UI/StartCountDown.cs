@@ -11,6 +11,8 @@ using System;
 public class StartCountDown : MonoBehaviour
 {
     Text _textCntDown; //カウントダウン用テキスト
+    [SerializeField]
+    Image _bg;
 
     [SerializeField]
     int _cntDownTime = 3;
@@ -48,6 +50,7 @@ public class StartCountDown : MonoBehaviour
         yield return new WaitForSeconds(_waitTime);
 
         _textCntDown.enabled = true;
+        _bg.enabled = true;
 
         for(int i = _cntDownTime; i > 0; i--)
         {
@@ -61,6 +64,7 @@ public class StartCountDown : MonoBehaviour
         _textCntDown.text = "";
         _isCntDown = false;
         _textCntDown.enabled = false;
+        _bg.enabled = false;
     }
 
 }
