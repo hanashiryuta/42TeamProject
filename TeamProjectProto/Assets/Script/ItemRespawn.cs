@@ -41,7 +41,7 @@ public class ItemRespawn : MonoBehaviour {
             respawnTime -= Time.deltaTime;
             if (respawnTime < 0 && !startCountDown.IsCntDown)
             {
-                item = Instantiate(itemList[Random.Range(0, itemList.Count)], transform.position + new Vector3(0,0.5f,0), Quaternion.identity, transform);//内容物を生成する
+                item = Instantiate(itemList[Random.Range(0, itemList.Count)], transform.position + new Vector3(0,0.5f,0), Quaternion.Euler(90,0,0), transform);//内容物を生成する
                 respawnTime = 3.0f;
 
                 itemRespawnLimit.GetComponent<ItemRespawnLimit>().Count();　//アイテム生成数をカウント

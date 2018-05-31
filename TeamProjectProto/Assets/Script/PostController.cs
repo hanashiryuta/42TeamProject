@@ -56,7 +56,7 @@ public class PostController : MonoBehaviour {
 		specialWallPoint = GameObject.Find("SpecialWallPoint(Clone)");//特殊壁移動ポイント取得
         activity = false;
         //activeCount = 0;
-        mesh = GetComponent<MeshRenderer>();
+        mesh = GetComponentInChildren<MeshRenderer>();
         bc = GetComponent<BoxCollider>();
         startCountDown = GameObject.Find("StartCountDown").GetComponent<StartCountDown>();
     }

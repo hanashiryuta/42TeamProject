@@ -505,7 +505,7 @@ public class PlayerMove : MonoBehaviour
                         break;
                 }
                 itemList.RemoveAt(itemNum);//リストから削除
-                GameObject spawnItem = Instantiate(item, transform.position+new Vector3(0,item.transform.localScale.y+3,0), Quaternion.identity);//生成
+                GameObject spawnItem = Instantiate(item, transform.position+new Vector3(0,item.transform.localScale.y+3,0), Quaternion.Euler(90,0,0));//生成
                 spawnItem.GetComponent<ItemController>().SetMovePosition();
                 spawnItem.GetComponent<ItemController>().isGet = false;
             }
