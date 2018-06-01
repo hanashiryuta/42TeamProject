@@ -22,6 +22,8 @@ public class TimeController : MonoBehaviour {
     // 追加日：180530　追加者：何
     [SerializeField]
     GameObject startCntDown; //スタートカウントダウン
+    [SerializeField]
+    GameObject finishCall;
     
     // Use this for initialization
     void Start ()
@@ -32,20 +34,21 @@ public class TimeController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         //時間表示
-        timeText.text = "Time:"+gameTime.ToString("0.0");
-
-        //
+        //timeText.text = "time "+gameTime.ToString("0.0");
+        timeText.text = gameTime.ToString("0.0"); 
         //5月19日
         //ポーズ画面の表示に合わせてgameTimeの処理を止める
         //追記者：安部崇寛
         //
         //PausePanelがnullならばPausePanelを探し出して入れる
-        if(PausePanel == null) { 
+        if (PausePanel == null) { 
             PausePanel = GameObject.Find("PausePanel");
         }
 
         //ポーズ画面のactive状態でタイムを進めるか判定   //startCountDown中タイム進まない
-        if ((PausePanel == null ||!PausePanel.active) && !startCntDown.GetComponent<StartCountDown>().IsCntDown)
+        if ((PausePanel == null ||!PausePanel.active) &&
+            !startCntDown.GetComponent<StartCountDown>().IsCntDown &&
+            !finishCall.GetComponent<FinishCall>().IsCalling)
         {
             gameTime -= Time.deltaTime;
             if(gameTime <= 0)
@@ -54,6 +57,12 @@ public class TimeController : MonoBehaviour {
                 gameTime = 0;
                 isEnd = true;
             }
+        }
+
+        //10秒以下になったら赤色
+        if (gameTime <= 10)
+        {
+            timeText.color = Color.red;
         }
 	}
 }

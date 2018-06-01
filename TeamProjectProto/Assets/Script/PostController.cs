@@ -47,6 +47,7 @@ public class PostController : MonoBehaviour {
 
     public bool inflateObj = true;//風船に移るオブジェクトを作るかどうか：true=作る、false=作らない
     StartCountDown startCountDown;//カウントダウンScript
+    FinishCall finishCall;//終了合図Script
 
     // Use this for initialization
     void Start () {
@@ -59,10 +60,11 @@ public class PostController : MonoBehaviour {
         mesh = GetComponentInChildren<MeshRenderer>();
         bc = GetComponent<BoxCollider>();
         startCountDown = GameObject.Find("StartCountDown").GetComponent<StartCountDown>();
+        finishCall = GameObject.Find("FinishCall").GetComponent<FinishCall>();
     }
 
-	// Update is called once per frame
-	void Update () {
+    // Update is called once per frame
+    void Update () {
 
 		//爆発物がなければ探す
 		if(balloon == null)
@@ -150,7 +152,7 @@ public class PostController : MonoBehaviour {
             //MeshとColliderをfalseにする
             mesh.enabled = false;
             bc.enabled = false;
-            if(!startCountDown.IsCntDown)
+            if(!startCountDown.IsCntDown && !finishCall.IsCalling)
                 interval++;
             //約5秒後に再出現させる。その際に移動させるために必要なものを初期化
             if (interval >= intervalLimit * 60)
