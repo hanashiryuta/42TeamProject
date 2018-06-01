@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using XInputDotNetPure;
 
 public class SelectScript : MonoBehaviour
 {
@@ -32,6 +33,11 @@ public class SelectScript : MonoBehaviour
                 pausepanel.active = true;
                 Pauser.Pause();
                 RBPauser.Pause();
+                
+                GamePad.SetVibration(PlayerIndex.One, 0.0f, 0.0f);
+                GamePad.SetVibration(PlayerIndex.Two, 0.0f, 0.0f);
+                GamePad.SetVibration(PlayerIndex.Three, 0.0f, 0.0f);
+                GamePad.SetVibration(PlayerIndex.Four, 0.0f, 0.0f);
             }
             else
             {
