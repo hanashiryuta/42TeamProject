@@ -69,7 +69,6 @@ public class BalloonController : MonoBehaviour {
 
     float angle = 0;//上下移動遷移用角度
 
-<<<<<<< HEAD
     [HideInInspector]
     public bool isDestroy = false;//風船に移るオブジェクトを破棄させるための判定
     GameObject air;//風船に移るオブジェクト
@@ -91,9 +90,6 @@ public class BalloonController : MonoBehaviour {
 
     void Awake()
     {
-=======
-    void Awake(){
->>>>>>> parent of bb982be... Merge branch 'PresenProtoType' into Tokisaki_Branch_Light
 		playerRank = GameObject.Find ("PlayerRank");
 		//playerRank.GetComponent<PlayerRank> ().Reset ();
 	}
@@ -115,7 +111,6 @@ public class BalloonController : MonoBehaviour {
 
         stopTime = setStopTime; //振動してから止まるまでのタイムラグ
         isStop = false; //振動を止めるかどうか
-<<<<<<< HEAD
 
         isDestroy = false;
         BalloontransfromSave = player.transform.position;
@@ -126,19 +121,16 @@ public class BalloonController : MonoBehaviour {
 
         startCntDown = GameObject.Find("StartCountDown").GetComponent<StartCountDown>();
         finishCall = GameObject.Find("FinishCall").GetComponent<FinishCall>();
-=======
->>>>>>> parent of bb982be... Merge branch 'PresenProtoType' into Tokisaki_Branch_Light
     }
 
-// Update is called once per frame
-void Update () {
+    // Update is called once per frame
+    void Update () {
         //裏コマンド
         if(Input.GetKeyDown(KeyCode.A))
         {
             BalloonBlast();
         }
 
-<<<<<<< HEAD
         //スタートカウントダウンOR終了合図中膨らまない
         if (startCntDown.IsCntDown || finishCall.IsCalling)
         {
@@ -149,8 +141,6 @@ void Update () {
             isTimeBlast = true;
         }
 
-=======
->>>>>>> parent of bb982be... Merge branch 'PresenProtoType' into Tokisaki_Branch_Light
         //時間経過で膨らむ処理
         if (isTimeBlast)
         {
@@ -213,23 +203,49 @@ void Update () {
         }
 
         ColorChange();//色変更
+
+        _isColorChaged = CheckColorChange();
     }
 
     void FixedUpdate()
     {
+        //BalloonがついているPlayerのコントローラーのAxisを取得
+        Vector3 playerAxis = new Vector3(player.GetComponent<PlayerMove>().AxisX, 0.0f, player.GetComponent<PlayerMove>().AxisZ);
+        //BalloonがついているPlayerの座標を取得
+        Vector3 playertransfrom = player.transform.position;
+        //BalloonがついているPlayerとBalloonの差
+        Vector3 balloonPlayer = new Vector3(player.transform.position.x - BalloontransfromSave.x, player.transform.position.y - BalloontransfromSave.y + height, player.transform.position.z - BalloontransfromSave.z);
+        //BalloonがついているPlayerとBalloonの差の絶対値
+        Vector3 balloonPlayerAbs = new Vector3(Mathf.Abs(balloonPlayer.x), Mathf.Abs(balloonPlayer.y), Mathf.Abs(balloonPlayer.z));
+
         //常にプレイヤーの上にいるようにする
         if (player != null)
         {
             //transform.position = new Vector3(player.transform.position.x, player.transform.position.y + 2.5f + transform.localScale.y / 2, player.transform.position.z);
-
             //transform.position = new Vector3(player.transform.position.x, player.transform.position.y+2.5f+transform.localScale.y / 2 + Mathf.PingPong(Time.time, 1), player.transform.position.z);
 
-            float range = 0.5f;//振れ幅
+            //Playerの後を追うように移動させる処理
 
-            transform.position = new Vector3(player.transform.position.x, player.transform.position.y + 2.5f + transform.localScale.y / 2 + range+(Mathf.Sin(angle) * range), player.transform.position.z);//揺れながらプレイヤーの上に配置処理
+            if (playerAxis.z > -0.1) {
+                height = 5.5f;
+            } else {
+                height = 2.5f;
+            }
+
+            if (playerAxis.x < -0.1f || playerAxis.x > 0.1f || playerAxis.z < -0.1f || playerAxis.z > 0.1f) {
+                if (balloonPlayerAbs.x > 0.9 || balloonPlayerAbs.z > 0.9)
+                {
+                    BalloontransfromSave += balloonPlayer / 20;
+                }
+            } else {
+                BalloontransfromSave += balloonPlayer / 20;
+            }
             
+            float range = 0.5f;//振れ幅
+            transform.position = new Vector3(BalloontransfromSave.x, BalloontransfromSave.y + transform.localScale.y / 2 + range+(Mathf.Sin(angle) * range), BalloontransfromSave.z);//揺れながらプレイヤーの上に配置処理
             angle += 0.05f;//角度増加
         }
+
     }
 
     /// <summary>
@@ -350,6 +366,7 @@ void Update () {
     {
         blastCount ++;
         scaleCount += scaleRate;
+        isDestroy = false;//破棄できないようにする
         //内容物の数が限界を超えたら
         if (blastCount >= blastLimit)
 		{
@@ -372,6 +389,8 @@ void Update () {
             GamePad.SetVibration(PlayerIndex.Three, 0.0f, 1.0f);
             GamePad.SetVibration(PlayerIndex.Four, 0.0f, 1.0f);
             isStop = true;
+
+            isDestroy = true;//破棄できるようにする
         }
     }
 
@@ -383,6 +402,7 @@ void Update () {
     {
         blastCount++;
         scaleCount += scaleRate;
+        isDestroy = false;//破棄できないようにする
         //内容物の数が限界を超えたら
         if (blastCount >= blastLimit)
         {
@@ -403,6 +423,8 @@ void Update () {
             GamePad.SetVibration(PlayerIndex.Three, 0.0f, 1.0f);
             GamePad.SetVibration(PlayerIndex.Four, 0.0f, 1.0f);
             isStop = true;
+
+            isDestroy = true;//破棄できるようにする
         }
     }
 
@@ -424,6 +446,30 @@ void Update () {
             scaleCount = 1;
         }
         
+    }
+
+    /// <summary>
+    /// 風船色変更
+    /// </summary>
+    /// <returns></returns>
+    bool CheckColorChange()
+    {
+        preState = curState;
+        curState = _balloonState;
+
+        if(_isBlast) //爆発した時はfalse
+        {
+            return false;
+        }
+        else
+        {
+            if (preState != curState)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }

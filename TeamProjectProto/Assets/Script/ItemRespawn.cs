@@ -16,7 +16,6 @@ public class ItemRespawn : MonoBehaviour {
 
     GameObject itemRespawnLimit; //アイテムのリスポーン上限管理オブジェクト
 
-<<<<<<< HEAD
     StartCountDown startCntDown;//カウントダウンScript
     FinishCall finishCall;//終了合図Script
 
@@ -26,44 +25,25 @@ public class ItemRespawn : MonoBehaviour {
         respawnTime = 3.0f;
         startCntDown = GameObject.Find("StartCountDown").GetComponent<StartCountDown>();
         finishCall = GameObject.Find("FinishCall").GetComponent<FinishCall>();
-=======
-	// Use this for initialization
-	void Start () {
-        itemRespawnLimit = GameObject.Find("ItemRespawnLimit(Clone)");
-        respawnTime = 3.0f;
->>>>>>> parent of bb982be... Merge branch 'PresenProtoType' into Tokisaki_Branch_Light
 
         //初期生成時に上限を超えていれば上限数以上生成できないようにする
-        if (itemRespawnLimit.GetComponent<ItemRespawnLimit>().isRespawn()) {
-            item = Instantiate(itemList[Random.Range(0, itemList.Count)], transform.position + new Vector3(0, 0.5f, 0), Quaternion.identity, transform);//内容物生成
+        //if (itemRespawnLimit.GetComponent<ItemRespawnLimit>().isRespawn()) {
+        //    item = Instantiate(itemList[Random.Range(0, itemList.Count)], transform.position + new Vector3(0, 0.5f, 0), Quaternion.identity, transform);//内容物生成
 
-<<<<<<< HEAD
         //    itemRespawnLimit.GetComponent<ItemRespawnLimit>().Count(); //アイテム生成数をカウント
         //}
     }
 
     // Update is called once per frame
     void Update () {
-=======
-            itemRespawnLimit.GetComponent<ItemRespawnLimit>().Count(); //アイテム生成数をカウント
-        }
-	}
-	
-	// Update is called once per frame
-	void Update () {
->>>>>>> parent of bb982be... Merge branch 'PresenProtoType' into Tokisaki_Branch_Light
         //内容物がなければ
         // 追加：アイテム上限以上の場合は生成できない
         if (item == null && itemRespawnLimit.GetComponent<ItemRespawnLimit>().isRespawn())
         {
             respawnTime -= Time.deltaTime;
-<<<<<<< HEAD
             if (respawnTime < 0 && !startCntDown.IsCntDown && !finishCall.IsCalling)
-=======
-            if (respawnTime < 0)
->>>>>>> parent of bb982be... Merge branch 'PresenProtoType' into Tokisaki_Branch_Light
             {
-                item = Instantiate(itemList[Random.Range(0, itemList.Count)], transform.position + new Vector3(0,0.5f,0), Quaternion.identity, transform);//内容物を生成する
+                item = Instantiate(itemList[Random.Range(0, itemList.Count)], transform.position + new Vector3(0,0.5f,0), Quaternion.Euler(90,0,0), transform);//内容物を生成する
                 respawnTime = 3.0f;
 
                 itemRespawnLimit.GetComponent<ItemRespawnLimit>().Count();　//アイテム生成数をカウント
