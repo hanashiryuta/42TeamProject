@@ -13,12 +13,12 @@ public class BGSpawn : MonoBehaviour
     private Camera mainCam;
     public float zDistance = 20f;
 
-    // Use this for initialization
-    void Start ()
+	// Use this for initialization
+	void Start ()
     {
         this.mainCam = Camera.main;
 
-        Start_Spawn();
+        BG_Spawn();
 	}
 	
 	// Update is called once per frame
@@ -28,9 +28,9 @@ public class BGSpawn : MonoBehaviour
 	}
 
     /// <summary>
-    /// 背景生成(初期)
+    /// 背景生成
     /// </summary>
-    void Start_Spawn()
+    void BG_Spawn()
     {
         Vector3 bg_position = new Vector3(Screen.width / 2, Screen.height / 2, zDistance);
 
