@@ -45,7 +45,7 @@ public class RespawnController : MonoBehaviour {
 
             //180518 何　追加
             p.GetComponentInChildren<SkinnedMeshRenderer>().materials[0].mainTexture = texList[i];//テクスチャ変更
-            p.GetComponentInChildren<SkinnedMeshRenderer>().materials[0].SetColor("_EmissionColor", new Color(1f, 1f, 1f));
+            p.GetComponentInChildren<SkinnedMeshRenderer>().materials[0].SetColor("_EmissionColor", new Color(0.2f, 0.2f, 0.2f));
             p.GetComponentInChildren<SkinnedMeshRenderer>().materials[0].SetTexture("_EmissionMap", texList[i]);
             p.GetComponentInChildren<SkinnedMeshRenderer>().materials[0].EnableKeyword("_EMISSION");
 
