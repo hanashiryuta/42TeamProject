@@ -42,6 +42,12 @@ public class PostController : MonoBehaviour {
     public float inflateTime = 0.05f;//ポストから風船に内容物を膨らませるまでの時間
     public GameObject marker;
 
+    public GameObject air;//風船に移るオブジェクト
+    float airCount = 0;//風船に移るオブジェクトの数
+
+    public bool inflateObj = true;//風船に移るオブジェクトを作るかどうか：true=作る、false=作らない
+    StartCountDown startCountDown;//カウントダウンScript
+
     // Use this for initialization
     void Start () {
 		//初期化処理
@@ -50,9 +56,10 @@ public class PostController : MonoBehaviour {
 		specialWallPoint = GameObject.Find("SpecialWallPoint(Clone)");//特殊壁移動ポイント取得
         activity = false;
         //activeCount = 0;
-        mesh = GetComponent<MeshRenderer>();
+        mesh = GetComponentInChildren<MeshRenderer>();
         bc = GetComponent<BoxCollider>();
-	}
+        startCountDown = GameObject.Find("StartCountDown").GetComponent<StartCountDown>();
+    }
 
 	// Update is called once per frame
 	void Update () {
@@ -72,7 +79,7 @@ public class PostController : MonoBehaviour {
             //specialWallPoint.GetComponent<SpecialWallRespawn>().SpecialRespawn(player);
             Debug.Log("移る");
             activity = false;
-            isRespawn = true;
+            //isRespawn = true;
         }
 
 		//内容物が一つでもあれば
@@ -84,10 +91,21 @@ public class PostController : MonoBehaviour {
             {
                 if (inflateTime < 0)
                 {
-                    //内容物の総数分風船を膨らます
-                    balloon.GetComponent<BalloonController>().BalloonBlast(gameObject);
+                    ////内容物の総数分風船を膨らます
+                    //balloon.GetComponent<BalloonController>().BalloonBlast(gameObject);
+                    if(inflateObj)
+                    {
+                        Instantiate(air, gameObject.transform.position + Vector3.up, Quaternion.identity);
+                    }
+                    airCount++;//生成されるたびに加算していく
                     blastCount--;//内容物の総数を減らす
                     inflateTime = 0.05f;
+                    //ポイント分生成したらポストを移動させる
+                    if (airCount >= limitCount)
+                    {
+                        isRespawn = true;
+                        airCount = 0;
+                    }
                 }
             }
 
@@ -132,7 +150,8 @@ public class PostController : MonoBehaviour {
             //MeshとColliderをfalseにする
             mesh.enabled = false;
             bc.enabled = false;
-            interval++;
+            if(!startCountDown.IsCntDown)
+                interval++;
             //約5秒後に再出現させる。その際に移動させるために必要なものを初期化
             if (interval >= intervalLimit * 60)
             {

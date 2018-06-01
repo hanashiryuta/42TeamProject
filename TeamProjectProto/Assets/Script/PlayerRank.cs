@@ -48,19 +48,18 @@ public class PlayerRank : MonoBehaviour
         {
 			Destroy (this.gameObject);
 		}
-
-        _playerRankArray = GameObject.FindGameObjectsWithTag("Player");
-        _resultRank = null;
-        //Reset ();
     }
 
     // Use this for initialization
     void Start ()
     {
+        //DontDestroyオブジェのためシーンマネージャーで初期化
+        
+        //Reset ();
     }
-	
-	// Update is called once per frame
-	void Update ()
+
+    // Update is called once per frame
+    void Update ()
 	{
         // ゲーム中か
         if (_isInPlay)
@@ -84,6 +83,13 @@ public class PlayerRank : MonoBehaviour
 			}
 		}
 	}
+
+    public void InitPlayerList()
+    {
+        _playerRankArray = GameObject.FindGameObjectsWithTag("Player");
+        _resultRank = null;
+        Debug.Log("InitPlayerList");
+    }
 
     /// <summary>
     /// 作成日：180525
