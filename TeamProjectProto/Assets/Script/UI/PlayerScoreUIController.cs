@@ -18,12 +18,12 @@ public class PlayerScoreUIController : MonoBehaviour
 
     GameObject[] _pList; // Player's Rank List
 
+    [SerializeField]
     GameObject playerRank; //PlayerRankオブジェ
 
     // Use this for initialization
     void Start()
     {
-        playerRank = GameObject.Find("PlayerRankController");
         _pList = playerRank.GetComponent<PlayerRank>().PlayerRankArray;
     }
 

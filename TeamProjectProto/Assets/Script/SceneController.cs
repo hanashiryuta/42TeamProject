@@ -23,14 +23,15 @@ public class SceneController : MonoBehaviour {
 	void Start () {
         //balloon = GameObject.FindGameObjectWithTag("Balloon");//爆発物取得
         timeController = GameObject.Find("TimeController");
-
-        //ランク関連
         playerRank = GameObject.Find("PlayerRankController");
+<<<<<<< HEAD
         playerRank.GetComponent<PlayerRank>().InitPlayerList();
         playerRank.GetComponent<PlayerRank>().IsInPlay = true;
 
         //終了関連
         finishCall = GameObject.Find("FinishCall").GetComponent<FinishCall>();
+=======
+>>>>>>> parent of bb982be... Merge branch 'PresenProtoType' into Tokisaki_Branch_Light
     }
 	
 	// Update is called once per frame

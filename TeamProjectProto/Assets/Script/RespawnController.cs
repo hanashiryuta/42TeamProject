@@ -6,7 +6,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using XInputDotNetPure; // Required in C#
 
 public class RespawnController : MonoBehaviour {
 
@@ -40,8 +39,6 @@ public class RespawnController : MonoBehaviour {
             p.GetComponent<PlayerMove>().horizontal = "Horizontal" + (i + 1);//そのプレイヤーの使うInput指定
             p.GetComponent<PlayerMove>().vertical = "Vertical" + (i + 1);//そのプレイヤーの使うInput指定
             p.GetComponent<PlayerMove>().jump = "Jump" + (i + 1);//そのプレイヤーの使うInput指定
-
-            p.GetComponent<XInputConfig>().playerIndex = (PlayerIndex)i; //XInput指定
 
             //180518 何　追加
             p.GetComponentInChildren<SkinnedMeshRenderer>().materials[0].mainTexture = texList[i];//テクスチャ変更

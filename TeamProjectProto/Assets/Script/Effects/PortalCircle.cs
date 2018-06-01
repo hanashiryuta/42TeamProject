@@ -9,9 +9,6 @@ using UnityEngine;
 public class PortalCircle : MonoBehaviour
 {
     [SerializeField]
-    bool isDirectionToOutside = false;
-
-    [SerializeField]
     Material material;
     [SerializeField]
     Texture texture;//サブテクスチャ
@@ -22,18 +19,11 @@ public class PortalCircle : MonoBehaviour
     float currentPortalRadius = 0;//円の半径(現在値)
     [SerializeField]
     float portalWidth = 0.05f;//円の太さ
-    float tmpWidth = 0;
     [SerializeField]
     float increaseValue = 0.01f;//膨らむ値
-    GameObject target;//円の中心目標(デフォはNULL)
+    GameObject target_RedBalloon;//円の中心目標(デフォはNULL)
     bool isBlow = false;//円を吹き飛ばすか
     bool isSwelled = false;//風船膨らんだか？
-
-    [SerializeField]
-    float range = 1f; //変化後半径
-    [SerializeField]
-    float seconds = 1f; //継続時間
-    bool isCreateCircle = false;
 
     BalloonController balloonController;
 
@@ -47,17 +37,6 @@ public class PortalCircle : MonoBehaviour
         SetPortalRadius(0);//半径を初期化（歪みを無くす）
         SetPortalWidth(portalWidth);//円の太さを指定
         tmpDefaltRadius = defaltPortalRadius;///設定値を格納する
-        tmpWidth = portalWidth;
-
-        if (material.name.IndexOf("Outside") > 0)//マテリアルに沿って円の方向を設定
-        {
-            isDirectionToOutside = true;
-        }
-        else
-        {
-            isDirectionToOutside = false;
-        }
-
     }
 
     void Start()
@@ -68,16 +47,53 @@ public class PortalCircle : MonoBehaviour
 
     void Update()
     {
-        // 爆発円（外向け）
-        if (isDirectionToOutside)
+        FindTarget();
+
+        if (target_RedBalloon != null)//ターゲットがあったら
         {
-            SetCircleToOutside();
+            currentPortalRadius = defaltPortalRadius;
+
+            BalloonBlowUp(balloonController.blastCount);
+
+            SetPortalRadius(currentPortalRadius);//円の半径を指定
+            SetPortalWidth(portalWidth);//円の太さを指定
+
+            var targetPosition = Camera.main.WorldToScreenPoint(target_RedBalloon.transform.position);//ターゲットの座標をスクリーン座標に変換
+
+            var uv = new Vector3(
+                targetPosition.x / Screen.width,
+                targetPosition.y / Screen.height, 0);
+
+            material.SetVector("_Position", uv);
+
+            var fluct = Mathf.Sin(Time.timeSinceLevelLoad * 3) * 0.1f + 0.9f;//円を拡張・縮小
+            SetPortalRadius(currentPortalRadius * fluct);
+
+            material.SetFloat("_Aspect", Screen.height / (float)Screen.width);//アスペクトを合わせる
         }
-        // 集中円（内向け）
-        else
+
+        if (balloonController.IsBlast)//風船が爆発したら
         {
-            SetCircleToInside();
+            isBlow = true;//円を吹き飛ばす
         }
+
+        // 円を吹き飛ばすか
+        if (isBlow)
+        {
+            portalWidth = 0.3f;//円の太さを固定値に拡大
+            SetPortalWidth(portalWidth);//円の太さを指定
+            isSwelled = true;
+
+            OpenPortal();
+        }
+
+        //拡大した円が目的値に越えたら
+        if (currentPortalRadius >= 2)
+        {
+            //半径を初期化
+            InitRadius();
+        }
+
     }
 
     /// <summary>
@@ -86,7 +102,8 @@ public class PortalCircle : MonoBehaviour
     void OpenPortal()
     {
         DOTween.KillAll();
-        DOTween.To(() => currentPortalRadius, SetPortalRadius, range, seconds).SetEase(Ease.OutExpo);
+        DOTween.To(() => currentPortalRadius, SetPortalRadius, 2f, 4f).SetEase(Ease.OutBack);
+        isBlow = false;
     }
 
     /// <summary>
@@ -95,7 +112,7 @@ public class PortalCircle : MonoBehaviour
     void ClosePortal()
     {
         DOTween.KillAll();
-        DOTween.To(() => currentPortalRadius, SetPortalRadius, range, seconds).SetEase(Ease.OutCubic);
+        DOTween.To(() => currentPortalRadius, SetPortalRadius, 0f, 0.6f).SetEase(Ease.InBack);
     }
 
     /// <summary>
@@ -123,128 +140,17 @@ public class PortalCircle : MonoBehaviour
     }
 
     /// <summary>
-    /// 外向け円
+    /// ターゲットを探す
     /// </summary>
-    void SetCircleToOutside()
-    {
-        FindDangerTarget();
-
-        if (target != null)//ターゲットがあったら
-        {
-            currentPortalRadius = defaltPortalRadius;
-
-            BalloonBlowUp(balloonController.blastCount);
-
-            SetPortalRadius(currentPortalRadius);//円の半径を指定
-            SetPortalWidth(portalWidth);//円の太さを指定
-
-            var targetPosition = Camera.main.WorldToScreenPoint(target.transform.position);//ターゲットの座標をスクリーン座標に変換
-
-            var uv = new Vector3(
-                targetPosition.x / Screen.width,
-                targetPosition.y / Screen.height, 0);
-
-            material.SetVector("_Position", uv);
-
-            var fluct = Mathf.Sin(Time.timeSinceLevelLoad * 3) * 0.1f + 0.9f;//円を拡張・縮小
-            SetPortalRadius(currentPortalRadius * fluct);
-
-            material.SetFloat("_Aspect", Screen.height / (float)Screen.width);//アスペクトを合わせる
-        }
-
-        if (balloonController.IsBlast)//風船が爆発したら
-        {
-            isBlow = true;//円を吹き飛ばす
-        }
-
-        // 円を吹き飛ばすか
-        if (isBlow)
-        {
-            portalWidth = 0.3f;//円の太さを固定値に拡大
-            SetPortalWidth(portalWidth);//円の太さを指定
-            isSwelled = true;
-
-            OpenPortal();
-            isBlow = false;
-        }
-
-        //拡大した円が目的値に越えたら
-        if (currentPortalRadius >= range)
-        {
-            //半径を初期化
-            InitRadius();
-        }
-    }
-
-    /// <summary>
-    /// 内向け円
-    /// </summary>
-    void SetCircleToInside()
-    {
-        FindColorChangedTarget();
-
-        if (target != null)//ターゲットがあったら
-        {
-            currentPortalRadius = defaltPortalRadius;
-
-            SetPortalRadius(currentPortalRadius);//円の半径を指定
-            SetPortalWidth(portalWidth);//円の太さを指定
-
-            var targetPosition = Camera.main.WorldToScreenPoint(target.transform.position);//ターゲットの座標をスクリーン座標に変換
-
-            var uv = new Vector3(
-                targetPosition.x / Screen.width,
-                targetPosition.y / Screen.height, 0);
-
-            material.SetVector("_Position", uv);
-
-            material.SetFloat("_Aspect", Screen.height / (float)Screen.width);//アスペクトを合わせる
-        }
-
-        if (balloonController.IsColorChanged)//色変わった時
-        {
-            isCreateCircle = true;
-        }
-
-        if (isCreateCircle)
-        {
-            ClosePortal();
-            target = null;
-            isCreateCircle = false;
-        }
-
-        //円が目的値に越えたら
-        if (currentPortalRadius <= range)
-        {
-            //半径を初期化
-            InitRadius();
-        }
-    }
-
-    /// <summary>
-    /// ターゲットを探す（赤風船）
-    /// </summary>
-    private void FindDangerTarget()
+    private void FindTarget()
     {
         if(balloonController.BalloonState == BalloonState.DANGER)//風船が赤色の時
         {
-            target = balloonController.transform.gameObject;//ターゲットに指定
+            target_RedBalloon = balloonController.transform.gameObject;//ターゲットに指定
         }
         else
         {
-            target = null;
-        }
-    }
-
-    /// <summary>
-    /// ターゲットを探す（色変化）
-    /// </summary>
-    void FindColorChangedTarget()
-    {
-        if (balloonController.IsColorChanged)//色変わった時
-        {
-            target = balloonController.transform.gameObject;//ターゲットに指定
-            Debug.Log("target");
+            target_RedBalloon = null;
         }
     }
 
@@ -268,12 +174,11 @@ public class PortalCircle : MonoBehaviour
     }
 
     /// <summary>
-    /// 円の半径を初期値に
+    /// 歪む円の半径を初期値に
     /// </summary>
     void InitRadius()
     {
         defaltPortalRadius = tmpDefaltRadius;
-        portalWidth = tmpWidth;
-        currentPortalRadius = 0;
+        portalWidth = tmpDefaltRadius;
     }
 }

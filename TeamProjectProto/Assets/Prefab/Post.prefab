@@ -118,5 +118,3 @@ MonoBehaviour:
   intervalLimit: 5
   inflateTime: 0.05
   marker: {fileID: 1717468611347260, guid: 453cfdb7f33c3f84584e8401e015ec6b, type: 2}
-  air: {fileID: 1732370374321784, guid: 6d5dce969aa62bb4b8f96da4c35d3310, type: 2}
-  inflateObj: 0

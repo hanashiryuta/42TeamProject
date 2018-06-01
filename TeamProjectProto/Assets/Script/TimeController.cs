@@ -18,16 +18,18 @@ public class TimeController : MonoBehaviour {
     public bool isEnd = false;//ゲーム終了判定
 
     GameObject PausePanel;//ポーズ画面がactiveかどうかを参照する
+<<<<<<< HEAD
 
     // 追加日：180530　追加者：何
     [SerializeField]
     GameObject startCntDown; //スタートカウントダウン
     [SerializeField]
     GameObject finishCall;
+=======
+>>>>>>> parent of bb982be... Merge branch 'PresenProtoType' into Tokisaki_Branch_Light
     
     // Use this for initialization
-    void Start ()
-    {
+    void Start () {
         timeText = timeTextObject.GetComponent<Text>();//テキスト取得
     }
 	
@@ -45,10 +47,14 @@ public class TimeController : MonoBehaviour {
             PausePanel = GameObject.Find("PausePanel");
         }
 
+<<<<<<< HEAD
         //ポーズ画面のactive状態でタイムを進めるか判定   //startCountDown中タイム進まない
         if ((PausePanel == null ||!PausePanel.active) &&
             !startCntDown.GetComponent<StartCountDown>().IsCntDown &&
             !finishCall.GetComponent<FinishCall>().IsCalling)
+=======
+        if (PausePanel == null ||!PausePanel.active)//ポーズ画面のactive状態でタイムを進めるか判定
+>>>>>>> parent of bb982be... Merge branch 'PresenProtoType' into Tokisaki_Branch_Light
         {
             gameTime -= Time.deltaTime;
             if(gameTime <= 0)

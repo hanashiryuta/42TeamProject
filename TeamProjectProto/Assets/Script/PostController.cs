@@ -42,6 +42,7 @@ public class PostController : MonoBehaviour {
     public float inflateTime = 0.05f;//ポストから風船に内容物を膨らませるまでの時間
     public GameObject marker;
 
+<<<<<<< HEAD
     public GameObject air;//風船に移るオブジェクト
     float airCount = 0;//風船に移るオブジェクトの数
 
@@ -49,6 +50,8 @@ public class PostController : MonoBehaviour {
     StartCountDown startCountDown;//カウントダウンScript
     FinishCall finishCall;//終了合図Script
 
+=======
+>>>>>>> parent of bb982be... Merge branch 'PresenProtoType' into Tokisaki_Branch_Light
     // Use this for initialization
     void Start () {
 		//初期化処理
@@ -57,11 +60,15 @@ public class PostController : MonoBehaviour {
 		specialWallPoint = GameObject.Find("SpecialWallPoint(Clone)");//特殊壁移動ポイント取得
         activity = false;
         //activeCount = 0;
-        mesh = GetComponentInChildren<MeshRenderer>();
+        mesh = GetComponent<MeshRenderer>();
         bc = GetComponent<BoxCollider>();
+<<<<<<< HEAD
         startCountDown = GameObject.Find("StartCountDown").GetComponent<StartCountDown>();
         finishCall = GameObject.Find("FinishCall").GetComponent<FinishCall>();
     }
+=======
+	}
+>>>>>>> parent of bb982be... Merge branch 'PresenProtoType' into Tokisaki_Branch_Light
 
     // Update is called once per frame
     void Update () {
@@ -81,7 +88,7 @@ public class PostController : MonoBehaviour {
             //specialWallPoint.GetComponent<SpecialWallRespawn>().SpecialRespawn(player);
             Debug.Log("移る");
             activity = false;
-            //isRespawn = true;
+            isRespawn = true;
         }
 
 		//内容物が一つでもあれば
@@ -93,21 +100,10 @@ public class PostController : MonoBehaviour {
             {
                 if (inflateTime < 0)
                 {
-                    ////内容物の総数分風船を膨らます
-                    //balloon.GetComponent<BalloonController>().BalloonBlast(gameObject);
-                    if(inflateObj)
-                    {
-                        Instantiate(air, gameObject.transform.position + Vector3.up, Quaternion.identity);
-                    }
-                    airCount++;//生成されるたびに加算していく
+                    //内容物の総数分風船を膨らます
+                    balloon.GetComponent<BalloonController>().BalloonBlast(gameObject);
                     blastCount--;//内容物の総数を減らす
                     inflateTime = 0.05f;
-                    //ポイント分生成したらポストを移動させる
-                    if (airCount >= limitCount)
-                    {
-                        isRespawn = true;
-                        airCount = 0;
-                    }
                 }
             }
 
@@ -152,8 +148,12 @@ public class PostController : MonoBehaviour {
             //MeshとColliderをfalseにする
             mesh.enabled = false;
             bc.enabled = false;
+<<<<<<< HEAD
             if(!startCountDown.IsCntDown && !finishCall.IsCalling)
                 interval++;
+=======
+            interval++;
+>>>>>>> parent of bb982be... Merge branch 'PresenProtoType' into Tokisaki_Branch_Light
             //約5秒後に再出現させる。その際に移動させるために必要なものを初期化
             if (interval >= intervalLimit * 60)
             {
