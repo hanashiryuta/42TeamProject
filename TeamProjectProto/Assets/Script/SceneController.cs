@@ -16,6 +16,9 @@ public class SceneController : MonoBehaviour {
     GameObject timeController;//時間管理オブジェクト
     GameObject playerRank;//プレイヤーランク管理オブジェクト
 
+    //180601 何
+    FinishCall finishCall;
+
 	// Use this for initialization
 	void Start () {
         //balloon = GameObject.FindGameObjectWithTag("Balloon");//爆発物取得
@@ -25,6 +28,9 @@ public class SceneController : MonoBehaviour {
         playerRank = GameObject.Find("PlayerRankController");
         playerRank.GetComponent<PlayerRank>().InitPlayerList();
         playerRank.GetComponent<PlayerRank>().IsInPlay = true;
+
+        //終了関連
+        finishCall = GameObject.Find("FinishCall").GetComponent<FinishCall>();
     }
 	
 	// Update is called once per frame
@@ -70,9 +76,20 @@ public class SceneController : MonoBehaviour {
         GamePad.SetVibration(PlayerIndex.Two, 0.0f, 0.0f);
         GamePad.SetVibration(PlayerIndex.Three, 0.0f, 0.0f);
         GamePad.SetVibration(PlayerIndex.Four, 0.0f, 0.0f);
-        
-        //シーン遷移
-        SceneManager.LoadScene("Result");
 
+        //終了合図
+        finishCall.ShowUp();
+
+        //シーン遷移
+        Invoke("LoadResult", finishCall._waitTime);
+    }
+
+    /// <summary>
+    /// 追加日：180601 追加者：何
+    /// リザルトシーン遷移
+    /// </summary>
+    void LoadResult()
+    {
+        SceneManager.LoadScene("Result");
     }
 }

@@ -79,7 +79,7 @@ public class PlayerRank : MonoBehaviour
 
 			foreach (var rank in _resultRank)
             {
-				Debug.Log (rank);
+				//Debug.Log (rank);
 			}
 		}
 	}

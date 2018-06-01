@@ -69,7 +69,8 @@ public class PlayerMove : MonoBehaviour
     //180516 何
     private Animator playerAnim;
     //180530 何
-    StartCountDown startCntDown;
+    StartCountDown startCntDown;//カウントダウンScript
+    FinishCall finishCall;//終了合図Script
 
     // Use this for initialization
     void Start()
@@ -91,6 +92,9 @@ public class PlayerMove : MonoBehaviour
         playerAnim = transform.GetComponent<Animator>();
         //180530 スタートカウントダウン
         startCntDown = GameObject.Find("StartCountDown").GetComponent<StartCountDown>();
+        //180601 終了合図
+        finishCall = GameObject.Find("FinishCall").GetComponent<FinishCall>();
+
     }
 
     void Update()
@@ -138,12 +142,18 @@ public class PlayerMove : MonoBehaviour
         //ジャンプ処理
         Jump();
 
-        //スタートカウントダウン中動けない
-        if (!startCntDown.IsCntDown)
+        //スタートカウントダウンOR終了合図中動かせない
+        if (!startCntDown.IsCntDown && !finishCall.IsCalling)
         {
             //移動処理
             Move();
         }
+        //終了合図中動けない
+        if (finishCall.IsCalling)
+        {
+            rigid.velocity = Vector3.zero;
+        }
+
 
         Vector3 diff = transform.position + new Vector3(moveJoy.x, 0, moveJoy.y) - transform.position;
 
