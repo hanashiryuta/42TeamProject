@@ -16,15 +16,13 @@ public class ItemRespawn : MonoBehaviour {
 
     GameObject itemRespawnLimit; //アイテムのリスポーン上限管理オブジェクト
 
-    StartCountDown startCntDown;//カウントダウンScript
-    FinishCall finishCall;//終了合図Script
+    StartCountDown startCountDown;//カウントダウンScript
 
     // Use this for initialization
     void Start () {
         itemRespawnLimit = GameObject.Find("ItemRespawnLimit(Clone)");
         respawnTime = 3.0f;
-        startCntDown = GameObject.Find("StartCountDown").GetComponent<StartCountDown>();
-        finishCall = GameObject.Find("FinishCall").GetComponent<FinishCall>();
+        startCountDown = GameObject.Find("StartCountDown").GetComponent<StartCountDown>();
 
         //初期生成時に上限を超えていれば上限数以上生成できないようにする
         //if (itemRespawnLimit.GetComponent<ItemRespawnLimit>().isRespawn()) {
@@ -33,15 +31,15 @@ public class ItemRespawn : MonoBehaviour {
         //    itemRespawnLimit.GetComponent<ItemRespawnLimit>().Count(); //アイテム生成数をカウント
         //}
     }
-
-    // Update is called once per frame
-    void Update () {
+	
+	// Update is called once per frame
+	void Update () {
         //内容物がなければ
         // 追加：アイテム上限以上の場合は生成できない
         if (item == null && itemRespawnLimit.GetComponent<ItemRespawnLimit>().isRespawn())
         {
             respawnTime -= Time.deltaTime;
-            if (respawnTime < 0 && !startCntDown.IsCntDown && !finishCall.IsCalling)
+            if (respawnTime < 0 && !startCountDown.IsCntDown)
             {
                 item = Instantiate(itemList[Random.Range(0, itemList.Count)], transform.position + new Vector3(0,0.5f,0), Quaternion.Euler(90,0,0), transform);//内容物を生成する
                 respawnTime = 3.0f;

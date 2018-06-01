@@ -85,9 +85,8 @@ public class BalloonController : MonoBehaviour {
         get { return _isColorChaged; }
     }
     //追加日：180530　追加者：何
-    StartCountDown startCntDown;//カウントダウンScript
-    FinishCall finishCall;//終了合図Script
-
+    StartCountDown startCntDown;
+    
     void Awake()
     {
 		playerRank = GameObject.Find ("PlayerRank");
@@ -120,7 +119,6 @@ public class BalloonController : MonoBehaviour {
         curState = _balloonState;
 
         startCntDown = GameObject.Find("StartCountDown").GetComponent<StartCountDown>();
-        finishCall = GameObject.Find("FinishCall").GetComponent<FinishCall>();
     }
 
     // Update is called once per frame
@@ -131,8 +129,8 @@ public class BalloonController : MonoBehaviour {
             BalloonBlast();
         }
 
-        //スタートカウントダウンOR終了合図中膨らまない
-        if (startCntDown.IsCntDown || finishCall.IsCalling)
+        //スタートカウントダウン中膨らまない
+        if (startCntDown.IsCntDown)
         {
             isTimeBlast = false;
         }
