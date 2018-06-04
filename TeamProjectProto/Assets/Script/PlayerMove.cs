@@ -158,7 +158,7 @@ public class PlayerMove : MonoBehaviour
             if (stanTime >= 3.0f)
                 rigid.velocity = Vector3.zero;
 
-            rigid.velocity = new Vector3(0, rigid.velocity.y, 0);
+            rigid.AddForce(new Vector3(0, -9.8f * 5, 0));
 
             //時間で回復
             stanTime -= Time.deltaTime;
