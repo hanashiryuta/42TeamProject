@@ -117,8 +117,7 @@ public class PlayerMove : MonoBehaviour
         totalBlastCountText.text = "Total:" + totalBlastCount.ToString();
         
         PlayerAnim(playerAnim);
-
-        //コントローラーの振動停止
+        
         if (isStop)
         {
             if (stopTime < 0)
@@ -156,7 +155,11 @@ public class PlayerMove : MonoBehaviour
         {
             //最初に移動量をゼロに
             if (stanTime >= 3.0f)
+            {
                 rigid.velocity = Vector3.zero;
+                GamePad.SetVibration(XDInput[(int)(playerIndex)], 0.0f, 1.0f);
+                isStop = true;
+            }
 
             rigid.AddForce(new Vector3(0, -9.8f * 5, 0));
 
@@ -498,6 +501,8 @@ public class PlayerMove : MonoBehaviour
             if (balloon != null)//爆発物があれば
             {
                 balloon.GetComponent<BalloonController>().BalloonMove(transform.gameObject, col.gameObject);//爆発物の移動処理
+                GamePad.SetVibration(XDInput[(int)(playerIndex)], 0.0f, 1.0f);
+                isStop = true;
             }
         }
     }
@@ -557,8 +562,8 @@ public class PlayerMove : MonoBehaviour
             //衝撃波ヒット時振動
             if (!col.transform.name.Contains(transform.name)&&!isStan)
             {
-                GamePad.SetVibration(XDInput[(int)(playerIndex)], 0.0f, 1.0f);
-                isStop = true;
+                //GamePad.SetVibration(XDInput[(int)(playerIndex)], 0.0f, 1.0f);
+                //isStop = true;
                 isStan = true;
                 ItemBlast(1);
             }
