@@ -31,8 +31,8 @@ public class ResultManager : MonoBehaviour
     {
 		playerRank = GameObject.Find ("PlayerRankController");
 
-        backtoGame = GameObject.Find("/Canvas/BacktoGame").GetComponent<Button>();
-        endGame = GameObject.Find("/Canvas/EndGame").GetComponent<Button>();
+        backtoGame = GameObject.Find("BacktoGame").GetComponent<Button>();
+        endGame = GameObject.Find("EndGame").GetComponent<Button>();
 
         for(int i = 0; i < playerRankTexts.Length; i++)
         {
