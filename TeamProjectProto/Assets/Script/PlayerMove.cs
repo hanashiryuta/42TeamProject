@@ -72,6 +72,13 @@ public class PlayerMove : MonoBehaviour
     StartCountDown startCntDown;//カウントダウンScript
     FinishCall finishCall;//終了合図Script
 
+    //衝撃波ヒット時コントローラー振動用リスト
+    List<PlayerIndex> XDInput = new List<PlayerIndex>() { PlayerIndex.One, PlayerIndex.Two, PlayerIndex.Three, PlayerIndex.Four };
+    public float setStopTime; //Unity側でのコントローラー振動停止までの時間設定用
+    private float stopTime; //振動してから止まるまでのタイムラグ
+    private bool isStop = false; //振動を止めるかどうか
+
+
     // Use this for initialization
     void Start()
     {
@@ -95,14 +102,32 @@ public class PlayerMove : MonoBehaviour
         //180601 終了合図
         finishCall = GameObject.Find("FinishCall").GetComponent<FinishCall>();
 
+        stopTime = setStopTime * 60; //振動してから止まるまでのタイムラグ
+        isStop = false; //振動を止めるかどうか
+        
     }
 
     void Update()
     {
         blastCountText.text = blastCount.ToString();//内容物取得数表示処理 
         totalBlastCountText.text = "Total:" + totalBlastCount.ToString();
-
+        
         PlayerAnim(playerAnim);
+
+        //コントローラーの振動停止
+        if (isStop)
+        {
+            if (stopTime < 0)
+            {
+                GamePad.SetVibration(XDInput[(int)(playerIndex)], 0.0f, 0.0f);
+                stopTime = setStopTime * 60;
+                isStop = false;
+            }
+            else
+            {
+                stopTime -= 1.0f;
+            }
+        }
 
         if(isStan)
         {
@@ -116,6 +141,7 @@ public class PlayerMove : MonoBehaviour
         {
             Debug.Log(jumpCount + "ジャンプカウント");
         }
+
     }
 
     // Update is called once per frame
@@ -148,12 +174,12 @@ public class PlayerMove : MonoBehaviour
             //移動処理
             Move();
         }
+
         //終了合図中動けない
         if (finishCall.IsCalling)
         {
             rigid.velocity = Vector3.zero;
         }
-
 
         Vector3 diff = transform.position + new Vector3(moveJoy.x, 0, moveJoy.y) - transform.position;
 
@@ -199,6 +225,7 @@ public class PlayerMove : MonoBehaviour
                 rigid.AddForce(new Vector3(0, jumpPower, 0));
                 GetComponent<AudioSource>().PlayOneShot(soundSE1);
             }
+
             //空中にいたら
             else if (jumpCount == 1)
             {
@@ -264,6 +291,7 @@ public class PlayerMove : MonoBehaviour
             //重力設定
             gravPower = 9.8f;
         }
+
         //空中にいるとき
         if(jumpCount == 1)
         {
@@ -272,6 +300,7 @@ public class PlayerMove : MonoBehaviour
             //重力設定
             gravPower = 9.8f;
         }
+
         //ヒップドロップ中
         if(jumpCount == 2)
         {
@@ -333,6 +362,7 @@ public class PlayerMove : MonoBehaviour
                 }
             }
         }
+
         //地面にいる状態　かつ　地面にいない判定だったら（壁から落ちる）
         if (!isField&&jumpCount == 0)
         {
@@ -369,6 +399,7 @@ public class PlayerMove : MonoBehaviour
                 }
             }
         }
+
         //z方向あたり判定
         if (Input.GetAxis(vertical) > 0)
         {
@@ -385,6 +416,7 @@ public class PlayerMove : MonoBehaviour
                 }
             }
         }
+
         //x方向あたり判定
         if (Input.GetAxis(horizontal) < 0)
         {
@@ -401,6 +433,7 @@ public class PlayerMove : MonoBehaviour
                 }
             }
         }
+
         //z方向あたり判定
         if (Input.GetAxis(vertical) < 0)
         {
@@ -479,11 +512,15 @@ public class PlayerMove : MonoBehaviour
             blastCount = 0;//内容物所持数を0にする
 			GetComponent<AudioSource> ().PlayOneShot (soundSE3);
         }
+
         //衝撃波に当たったら
         if (col.gameObject.tag == "HipDropCircle")
         {
+            //衝撃波ヒット時振動
             if (!col.transform.name.Contains(transform.name)&&!isStan)
             {
+                GamePad.SetVibration(XDInput[(int)(playerIndex)], 0.0f, 1.0f);
+                isStop = true;
                 isStan = true;
                 ItemBlast(1);
             }
@@ -563,8 +600,6 @@ public class PlayerMove : MonoBehaviour
         anim.SetBool("isStan", isStan);//スタン
     }
 
-
-
     [HideInInspector]
     public PlayerIndex playerIndex;
     GamePadState previousState;
@@ -636,8 +671,4 @@ public class PlayerMove : MonoBehaviour
                 jumpCount = 2;
         }
     }
-
-
-
 }
-
