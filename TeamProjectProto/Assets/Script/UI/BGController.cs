@@ -11,8 +11,11 @@ using UnityEngine.UI;
 public class BGController : MonoBehaviour
 {
     [SerializeField]
-    float _moveSpeed = 0.5f;
+    float _moveSpeedX = 0.2f;
+    [SerializeField]
+    float _moveSpeedY = 0.2f;
 
+    float offsetX = 0;
     float offsetY = 0;
 
     // Use this for initialization
@@ -38,9 +41,10 @@ public class BGController : MonoBehaviour
     /// <param name="offsety"></param>
     void BG_SpriteOffsetChange()
     {
-        offsetY += _moveSpeed * Time.deltaTime;
+        offsetX += _moveSpeedX * Time.deltaTime;
+        offsetY += _moveSpeedY * Time.deltaTime;
 
-        transform.GetComponent<MeshRenderer>().materials[1].SetTextureOffset("_MainTex", new Vector2(0, offsetY));
+        transform.GetComponent<MeshRenderer>().materials[1].SetTextureOffset("_MainTex", new Vector2(offsetX, offsetY));
     }
 
 }
