@@ -15,7 +15,10 @@ public class Air : MonoBehaviour {
 	void Update () {
         //風船に向かって飛んでいく
         Vector3 direction = balloon.transform.position - transform.position;
-        GetComponent<Rigidbody>().AddForce(direction.normalized * power);
+        //GetComponent<Rigidbody>().AddForce(direction.normalized * power);
+
+        //直線で飛んでいく
+        GetComponent<Rigidbody>().MovePosition(transform.position + direction.normalized * 0.5f);
 
         if (balloon.GetComponent<BalloonController>().isDestroy)
         {
