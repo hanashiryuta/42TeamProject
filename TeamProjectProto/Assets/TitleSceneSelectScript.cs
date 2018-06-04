@@ -26,4 +26,9 @@ public class TitleSceneSelectScript : MonoBehaviour {
     public void GameExit() {
         Application.Quit();
     }
+
+    public void GameCredit()
+    {
+
+    }
 }
