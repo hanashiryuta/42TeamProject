@@ -71,6 +71,9 @@ public class PlayerMove : MonoBehaviour
     //180530 何
     StartCountDown startCntDown;//カウントダウンScript
     FinishCall finishCall;//終了合図Script
+    PlayerJumpHit playerJumpHit;
+
+    public bool isMoveInertia = false;
 
     //衝撃波ヒット時コントローラー振動用リスト
     List<PlayerIndex> XDInput = new List<PlayerIndex>() { PlayerIndex.One, PlayerIndex.Two, PlayerIndex.Three, PlayerIndex.Four };
@@ -101,6 +104,7 @@ public class PlayerMove : MonoBehaviour
         startCntDown = GameObject.Find("StartCountDown").GetComponent<StartCountDown>();
         //180601 終了合図
         finishCall = GameObject.Find("FinishCall").GetComponent<FinishCall>();
+        playerJumpHit = GetComponentInChildren<PlayerJumpHit>();
 
         stopTime = setStopTime * 60; //振動してから止まるまでのタイムラグ
         isStop = false; //振動を止めるかどうか
@@ -258,17 +262,45 @@ public class PlayerMove : MonoBehaviour
         moveVector.x = moveSpeed * moveJoy.x;
         moveVector.z = moveSpeed * moveJoy.y;
 
+            
         //y方向無しの現在のvelocity保存
         Vector3 rigidVelocity = new Vector3(rigid.velocity.x, 0, rigid.velocity.z);
 
-        //移動量追加
-        rigid.AddForce(100 * (moveVector - rigidVelocity));
-        
-        //移動量2.5倍
-        rigidVelocity = new Vector3(rigidVelocity.x * 2.5f, rigid.velocity.y, rigidVelocity.z * 2.5f);
+        if (!isMoveInertia)
+        {
+            //移動量追加
+            rigid.AddForce(100 * (moveVector - rigidVelocity));
 
-        //設定
-        rigid.velocity = rigidVelocity;
+            //移動量2.5倍
+            rigidVelocity = new Vector3(rigidVelocity.x * 2.5f, rigid.velocity.y, rigidVelocity.z * 2.5f);
+
+            //設定
+            rigid.velocity = rigidVelocity;
+        }
+        else
+        {
+            //移動（慣性あり）
+            rigid.AddForce(moveVector * 15 - rigidVelocity * 2);
+
+            float a = 7;
+
+            if (rigid.velocity.x > a)
+            {
+                rigid.velocity = new Vector3(a, rigid.velocity.y, rigid.velocity.z);
+            }
+            if (rigid.velocity.z > a)
+            {
+                rigid.velocity = new Vector3(rigid.velocity.x, rigid.velocity.y, a);
+            }
+            if (rigid.velocity.x < -a)
+            {
+                rigid.velocity = new Vector3(-a, rigid.velocity.y, rigid.velocity.z);
+            }
+            if (rigid.velocity.z < -a)
+            {
+                rigid.velocity = new Vector3(rigid.velocity.x, rigid.velocity.y, -a);
+            }
+        }
     }
 
     /// <summary>
@@ -324,23 +356,29 @@ public class PlayerMove : MonoBehaviour
         }
 
         //あたり判定用配列
+        /*
         Collider[] colArray = Physics.OverlapBox(
             transform.position + new Vector3(0, -0.01f, 0) + new Vector3(0, 1, 0),
-            new Vector3(transform.localScale.x * 2 / 2 -0.01f,
+            new Vector3(transform.localScale.x * 2 / 2 - 0.01f,
             transform.localScale.y * 2,
-            transform.localScale.z * 2 / 2 -0.01f), 
-            transform.localRotation);
-        
+            transform.localScale.z * 2 / 2 - 0.01f),
+            transform.localRotation);*/
+
+        //RaycastHit[] colArray = rigid.SweepTestAll(-transform.up, 10.0f);
+
         //重力追加
         rigid.AddForce(new Vector3(0, -gravPower*5, 0));
 
         //地面いるか判定
         bool isField = false;
 
-        foreach (var cx in colArray)
+        //foreach (var cx in colArray)
         {
+            //Debug.Log(cx.transform.name);
             //当たっているものが床かプレイヤーだったら
-            if ((cx.tag == "Field")||(cx.tag == "Player"&&cx.gameObject != gameObject))
+            //if ((cx.transform.tag == "Field")||(cx.transform.tag == "Player"&&cx.transform.gameObject != gameObject))
+            //あたり判定を別のオブジェクトに任せた
+            if(playerJumpHit.isJumpHit)
             {
                 //位置を少し浮かす
                 transform.position = new Vector3(transform.position.x, transform.position.y + 0.01f, transform.position.z);
