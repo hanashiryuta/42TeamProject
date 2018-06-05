@@ -85,8 +85,12 @@ public class BalloonController : MonoBehaviour {
         get { return _isColorChaged; }
     }
     //追加日：180530　追加者：何
-    StartCountDown startCntDown;
-    
+    StartCountDown startCntDown;//カウントダウンScript
+    FinishCall finishCall;//終了合図Script
+
+    public bool isCameraDistance = false;
+
+
     void Awake()
     {
 		playerRank = GameObject.Find ("PlayerRank");
@@ -119,6 +123,7 @@ public class BalloonController : MonoBehaviour {
         curState = _balloonState;
 
         startCntDown = GameObject.Find("StartCountDown").GetComponent<StartCountDown>();
+        finishCall = GameObject.Find("FinishCall").GetComponent<FinishCall>();
     }
 
     // Update is called once per frame
@@ -129,8 +134,8 @@ public class BalloonController : MonoBehaviour {
             BalloonBlast();
         }
 
-        //スタートカウントダウン中膨らまない
-        if (startCntDown.IsCntDown)
+        //スタートカウントダウンOR終了合図中膨らまない
+        if (startCntDown.IsCntDown || finishCall.IsCalling)
         {
             isTimeBlast = false;
         }
@@ -358,6 +363,45 @@ public class BalloonController : MonoBehaviour {
     }
 
     /// <summary>
+    /// 追加日：180604 追加者：何
+    /// 爆破物移動処理(一番遠い人)
+    /// </summary>
+    public void BalloonExChangeByDistance(GameObject[] playerList, GameObject p)
+    {
+        player.GetComponent<PlayerMove>().balloon = null;
+        player = null;//風船を他のプレイヤーに回すためにnullにする
+
+        //風船持つ人との距離
+        float p2b_Distance = 0;
+        GameObject farthestPlayer = null;
+        for (int i = 0; i < playerList.Length; i++)
+        {
+            float distance = 0;
+            if (isCameraDistance)
+            {
+                //画面距離
+                distance = Vector3.Distance(Camera.main.WorldToScreenPoint(playerList[i].transform.position),
+                                                  Camera.main.WorldToScreenPoint(p.transform.position));
+            }
+            else
+            {
+                //実距離
+                distance = Vector3.Distance(playerList[i].transform.position, p.transform.position);
+            }
+
+            //一番遠い人
+            if (distance > p2b_Distance)
+            {
+                p2b_Distance = distance;
+                farthestPlayer = playerList[i];
+            }
+        }
+
+        player = farthestPlayer;
+        player.GetComponent<PlayerMove>().balloon = transform.gameObject;
+    }
+
+    /// <summary>
     /// 爆発物拡大処理
     /// </summary>
     public void BalloonBlast( )
@@ -373,7 +417,8 @@ public class BalloonController : MonoBehaviour {
             player.GetComponent<PlayerMove>().isStan = true;
             //playerRank.GetComponent<PlayerRank> ().SetPlayer (player);//爆発したらリストに格納
             GameObject[] pList = GameObject.FindGameObjectsWithTag("Player");//プレイヤー配列を作成
-            BalloonExChange(pList, player);//ランダム移動処理
+            //BalloonExChange(pList, player);//ランダム移動処理
+            BalloonExChangeByDistance(pList, player);//距離移動処理
             //Destroy(player);//プレイヤーを破棄
 			scaleCount = 1.0f;
 			blastCount = 0;

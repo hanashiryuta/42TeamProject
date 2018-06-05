@@ -69,7 +69,18 @@ public class PlayerMove : MonoBehaviour
     //180516 何
     private Animator playerAnim;
     //180530 何
-    StartCountDown startCntDown;
+    StartCountDown startCntDown;//カウントダウンScript
+    FinishCall finishCall;//終了合図Script
+    PlayerJumpHit playerJumpHit;
+
+    public bool isMoveInertia = false;
+
+    //衝撃波ヒット時コントローラー振動用リスト
+    List<PlayerIndex> XDInput = new List<PlayerIndex>() { PlayerIndex.One, PlayerIndex.Two, PlayerIndex.Three, PlayerIndex.Four };
+    public float setStopTime; //Unity側でのコントローラー振動停止までの時間設定用
+    private float stopTime; //振動してから止まるまでのタイムラグ
+    private bool isStop = false; //振動を止めるかどうか
+
 
     public GameObject effect;//エフェクト
 
@@ -93,14 +104,35 @@ public class PlayerMove : MonoBehaviour
         playerAnim = transform.GetComponent<Animator>();
         //180530 スタートカウントダウン
         startCntDown = GameObject.Find("StartCountDown").GetComponent<StartCountDown>();
+        //180601 終了合図
+        finishCall = GameObject.Find("FinishCall").GetComponent<FinishCall>();
+        playerJumpHit = GetComponentInChildren<PlayerJumpHit>();
+
+        stopTime = setStopTime * 60; //振動してから止まるまでのタイムラグ
+        isStop = false; //振動を止めるかどうか
+        
     }
 
     void Update()
     {
         blastCountText.text = blastCount.ToString();//内容物取得数表示処理 
         totalBlastCountText.text = "Total:" + totalBlastCount.ToString();
-
+        
         PlayerAnim(playerAnim);
+        
+        if (isStop)
+        {
+            if (stopTime < 0)
+            {
+                GamePad.SetVibration(XDInput[(int)(playerIndex)], 0.0f, 0.0f);
+                stopTime = setStopTime * 60;
+                isStop = false;
+            }
+            else
+            {
+                stopTime -= 1.0f;
+            }
+        }
 
         if(isStan)
         {
@@ -114,6 +146,7 @@ public class PlayerMove : MonoBehaviour
         {
             Debug.Log(jumpCount + "ジャンプカウント");
         }
+
     }
 
     // Update is called once per frame
@@ -124,9 +157,13 @@ public class PlayerMove : MonoBehaviour
         {
             //最初に移動量をゼロに
             if (stanTime >= 3.0f)
+            {
                 rigid.velocity = Vector3.zero;
+                GamePad.SetVibration(XDInput[(int)(playerIndex)], 0.0f, 1.0f);
+                isStop = true;
+            }
 
-            rigid.velocity = new Vector3(0, rigid.velocity.y, 0);
+            rigid.AddForce(new Vector3(0, -9.8f * 5, 0));
 
             //時間で回復
             stanTime -= Time.deltaTime;
@@ -140,11 +177,17 @@ public class PlayerMove : MonoBehaviour
         //ジャンプ処理
         Jump();
 
-        //スタートカウントダウン中動けない
-        if (!startCntDown.IsCntDown)
+        //スタートカウントダウンOR終了合図中動かせない
+        if (!startCntDown.IsCntDown && !finishCall.IsCalling)
         {
             //移動処理
             Move();
+        }
+
+        //終了合図中動けない
+        if (finishCall.IsCalling)
+        {
+            rigid.velocity = Vector3.zero;
         }
 
         Vector3 diff = transform.position + new Vector3(moveJoy.x, 0, moveJoy.y) - transform.position;
@@ -191,6 +234,7 @@ public class PlayerMove : MonoBehaviour
                 rigid.AddForce(new Vector3(0, jumpPower, 0));
                 GetComponent<AudioSource>().PlayOneShot(soundSE1);
             }
+
             //空中にいたら
             else if (jumpCount == 1)
             {
@@ -223,17 +267,45 @@ public class PlayerMove : MonoBehaviour
         moveVector.x = moveSpeed * moveJoy.x;
         moveVector.z = moveSpeed * moveJoy.y;
 
+            
         //y方向無しの現在のvelocity保存
         Vector3 rigidVelocity = new Vector3(rigid.velocity.x, 0, rigid.velocity.z);
 
-        //移動量追加
-        rigid.AddForce(100 * (moveVector - rigidVelocity));
-        
-        //移動量2.5倍
-        rigidVelocity = new Vector3(rigidVelocity.x * 2.5f, rigid.velocity.y, rigidVelocity.z * 2.5f);
+        if (!isMoveInertia)
+        {
+            //移動量追加
+            rigid.AddForce(100 * (moveVector - rigidVelocity));
 
-        //設定
-        rigid.velocity = rigidVelocity;
+            //移動量2.5倍
+            rigidVelocity = new Vector3(rigidVelocity.x * 2.5f, rigid.velocity.y, rigidVelocity.z * 2.5f);
+
+            //設定
+            rigid.velocity = rigidVelocity;
+        }
+        else
+        {
+            //移動（慣性あり）
+            rigid.AddForce(moveVector * 15 - rigidVelocity * 2);
+
+            float a = 7;
+
+            if (rigid.velocity.x > a)
+            {
+                rigid.velocity = new Vector3(a, rigid.velocity.y, rigid.velocity.z);
+            }
+            if (rigid.velocity.z > a)
+            {
+                rigid.velocity = new Vector3(rigid.velocity.x, rigid.velocity.y, a);
+            }
+            if (rigid.velocity.x < -a)
+            {
+                rigid.velocity = new Vector3(-a, rigid.velocity.y, rigid.velocity.z);
+            }
+            if (rigid.velocity.z < -a)
+            {
+                rigid.velocity = new Vector3(rigid.velocity.x, rigid.velocity.y, -a);
+            }
+        }
     }
 
     /// <summary>
@@ -256,6 +328,7 @@ public class PlayerMove : MonoBehaviour
             //重力設定
             gravPower = 9.8f;
         }
+
         //空中にいるとき
         if(jumpCount == 1)
         {
@@ -264,6 +337,7 @@ public class PlayerMove : MonoBehaviour
             //重力設定
             gravPower = 9.8f;
         }
+
         //ヒップドロップ中
         if(jumpCount == 2)
         {
@@ -287,23 +361,29 @@ public class PlayerMove : MonoBehaviour
         }
 
         //あたり判定用配列
+        /*
         Collider[] colArray = Physics.OverlapBox(
             transform.position + new Vector3(0, -0.01f, 0) + new Vector3(0, 1, 0),
-            new Vector3(transform.localScale.x * 2 / 2 -0.01f,
+            new Vector3(transform.localScale.x * 2 / 2 - 0.01f,
             transform.localScale.y * 2,
-            transform.localScale.z * 2 / 2 -0.01f), 
-            transform.localRotation);
-        
+            transform.localScale.z * 2 / 2 - 0.01f),
+            transform.localRotation);*/
+
+        //RaycastHit[] colArray = rigid.SweepTestAll(-transform.up, 10.0f);
+
         //重力追加
         rigid.AddForce(new Vector3(0, -gravPower*5, 0));
 
         //地面いるか判定
         bool isField = false;
 
-        foreach (var cx in colArray)
+        //foreach (var cx in colArray)
         {
+            //Debug.Log(cx.transform.name);
             //当たっているものが床かプレイヤーだったら
-            if ((cx.tag == "Field")||(cx.tag == "Player"&&cx.gameObject != gameObject))
+            //if ((cx.transform.tag == "Field")||(cx.transform.tag == "Player"&&cx.transform.gameObject != gameObject))
+            //あたり判定を別のオブジェクトに任せた
+            if(playerJumpHit.isJumpHit)
             {
                 //位置を少し浮かす
                 transform.position = new Vector3(transform.position.x, transform.position.y + 0.01f, transform.position.z);
@@ -325,6 +405,7 @@ public class PlayerMove : MonoBehaviour
                 }
             }
         }
+
         //地面にいる状態　かつ　地面にいない判定だったら（壁から落ちる）
         if (!isField&&jumpCount == 0)
         {
@@ -361,6 +442,7 @@ public class PlayerMove : MonoBehaviour
                 }
             }
         }
+
         //z方向あたり判定
         if (Input.GetAxis(vertical) > 0)
         {
@@ -377,6 +459,7 @@ public class PlayerMove : MonoBehaviour
                 }
             }
         }
+
         //x方向あたり判定
         if (Input.GetAxis(horizontal) < 0)
         {
@@ -393,6 +476,7 @@ public class PlayerMove : MonoBehaviour
                 }
             }
         }
+
         //z方向あたり判定
         if (Input.GetAxis(vertical) < 0)
         {
@@ -419,6 +503,8 @@ public class PlayerMove : MonoBehaviour
             if (balloon != null)//爆発物があれば
             {
                 balloon.GetComponent<BalloonController>().BalloonMove(transform.gameObject, col.gameObject);//爆発物の移動処理
+                GamePad.SetVibration(XDInput[(int)(playerIndex)], 0.0f, 1.0f);
+                isStop = true;
             }
         }
     }
@@ -479,11 +565,15 @@ public class PlayerMove : MonoBehaviour
             blastCount = 0;//内容物所持数を0にする
 			//GetComponent<AudioSource> ().PlayOneShot (soundSE3);
         }
+
         //衝撃波に当たったら
         if (col.gameObject.tag == "HipDropCircle")
         {
+            //衝撃波ヒット時振動
             if (!col.transform.name.Contains(transform.name)&&!isStan)
             {
+                //GamePad.SetVibration(XDInput[(int)(playerIndex)], 0.0f, 1.0f);
+                //isStop = true;
                 isStan = true;
                 ItemBlast(1);
             }
@@ -563,8 +653,6 @@ public class PlayerMove : MonoBehaviour
         anim.SetBool("isStan", isStan);//スタン
     }
 
-
-
     [HideInInspector]
     public PlayerIndex playerIndex;
     GamePadState previousState;
@@ -636,8 +724,4 @@ public class PlayerMove : MonoBehaviour
                 jumpCount = 2;
         }
     }
-
-
-
 }
-

@@ -31,7 +31,7 @@ public class TitleScene : MonoBehaviour
             fadeCon.ChangeAlpha();
             Debug.Log("changeAlpha");
 
-            if (fadeCon.image.color.a >= 254 && !isFaded)
+            if (fadeCon.IsFadeFinish && !isFaded)
             {
                 gameload.LoadingStart();
                 isFaded = true;
