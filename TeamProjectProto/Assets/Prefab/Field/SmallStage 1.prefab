@@ -2810,7 +2810,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   originPost: {fileID: 1960808050330346, guid: 14616bf70e2bd6d4d8fe06683b92cf0e, type: 2}
   postCount: 2
-  intervalLimit: 5
+  intervalLimit: 10
   isLimitReset: 0
 --- !u!114 &114796369755744432
 MonoBehaviour:
