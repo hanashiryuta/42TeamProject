@@ -14,11 +14,11 @@ public class Air : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         //風船に向かって飛んでいく
-        Vector3 direction = balloon.transform.position - transform.position;
+        //Vector3 direction = balloon.transform.position - transform.position;
         //GetComponent<Rigidbody>().AddForce(direction.normalized * power);
 
-        //直線で飛んでいく
-        GetComponent<Rigidbody>().MovePosition(transform.position + direction.normalized * 0.5f);
+        Vector3 pos = (balloon.transform.position - transform.position).normalized; //balloonとの距離を求める
+        transform.position += pos; //距離分足していく
 
         if (balloon.GetComponent<BalloonController>().isDestroy)
         {
