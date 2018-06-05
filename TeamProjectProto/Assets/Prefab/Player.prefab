@@ -679,6 +679,8 @@ MonoBehaviour:
   soundSE3: {fileID: 8300000, guid: 04aabf5253f07f84bb09425dd4cb2c5c, type: 3}
   isMoveInertia: 0
   setStopTime: 1
+  origin_Stan_Star_Particle: {fileID: 1785694701142120, guid: 9160900c0c7b95b4085f3a675b321bf8,
+    type: 2}
   playerIndex: 0
 --- !u!136 &136683905432024742
 CapsuleCollider:

@@ -81,6 +81,8 @@ public class PlayerMove : MonoBehaviour
     private float stopTime; //振動してから止まるまでのタイムラグ
     private bool isStop = false; //振動を止めるかどうか
 
+    public GameObject origin_Stan_Star_Particle;//星型パーティクル生成元
+    GameObject stan_Star_Particle;//星型パーティクル
 
     // Use this for initialization
     void Start()
@@ -159,6 +161,9 @@ public class PlayerMove : MonoBehaviour
                 rigid.velocity = Vector3.zero;
                 GamePad.SetVibration(XDInput[(int)(playerIndex)], 0.0f, 1.0f);
                 isStop = true;
+                //星型パーティクル生成
+                if (stan_Star_Particle == null)
+                    stan_Star_Particle = Instantiate(origin_Stan_Star_Particle, transform);
             }
 
             rigid.AddForce(new Vector3(0, -9.8f * 5, 0));
@@ -169,6 +174,11 @@ public class PlayerMove : MonoBehaviour
             {
                 isStan = false;
                 stanTime = 3.0f;
+                if(stan_Star_Particle != null)
+                {
+                    //星型パーティクル削除
+                    Destroy(stan_Star_Particle);
+                }
             }
             return;
         }
@@ -554,6 +564,8 @@ public class PlayerMove : MonoBehaviour
             itemList.Clear();
             blastCount = 0;//内容物所持数を0にする
 			GetComponent<AudioSource> ().PlayOneShot (soundSE3);
+            //ポストパーティクル生成
+            col.GetComponent<PostController>().Pig_ToCoin_Particle();
         }
 
         //衝撃波に当たったら
