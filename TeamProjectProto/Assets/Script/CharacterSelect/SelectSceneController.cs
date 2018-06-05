@@ -11,30 +11,38 @@ using XInputDotNetPure; // Required in C#
 
 public class SelectSceneController : MonoBehaviour
 {
+    //プレイヤー準備関連
     [SerializeField]
     CheckPlayerStandby[] standbyCheck;//プレイヤースタンドバイチェック
-
     [SerializeField]
     Text mainText;
-    
     bool _isAISpawned = false;
+
+    float _delayTime = 1.5F;
+
+    //シーン移転関連
+    GameLoad gameload;
+    [SerializeField]
+    GameObject fadePanel;
+    FadeController fadeController;
+    bool isFaded = false;
 
     // Use this for initialization
     void Start ()
     {
-		
-	}
-	
-	// Update is called once per frame
-	void Update ()
+        gameload = this.GetComponent<GameLoad>();
+        fadeController = fadePanel.GetComponent<FadeController>();
+    }
+
+    // Update is called once per frame
+    void Update ()
     {
         if (IsPlayerStandby())
         {
             if (!_isAISpawned)
             {
-                Invoke("AICharacterSpawn", 1f);
+                Invoke("AICharacterSpawn", _delayTime);
                 _isAISpawned = true;
-                //AICharacterSpawn();
             }
             ToGameScene();
         }
@@ -90,6 +98,7 @@ public class SelectSceneController : MonoBehaviour
             {
                 standbyCheck[i].IsAI = true;
                 standbyCheck[i].SpawnAICharacter();
+                standbyCheck[i].PlayerLabel.text = "COM";
             }
         }
         _isAISpawned = true;
@@ -108,5 +117,20 @@ public class SelectSceneController : MonoBehaviour
 
         mainText.text = "ゲーム\nスタートだ！";
         mainText.color = Color.yellow;
+
+        Invoke("GameSceneLoad", _delayTime + 1f);
+    }
+
+
+    void GameSceneLoad()
+    {
+        fadeController.ChangeAlpha();
+        Debug.Log(fadeController.IsFadeFinish);
+        if (fadeController.IsFadeFinish && !isFaded)
+        {
+            gameload.LoadingStart();
+            Debug.Log(isFaded);
+            isFaded = true;
+        }
     }
 }

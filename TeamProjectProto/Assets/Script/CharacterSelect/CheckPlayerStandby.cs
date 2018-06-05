@@ -7,11 +7,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using XInputDotNetPure; // Required in C#
+using UnityEngine.UI;
 
 public class CheckPlayerStandby : MonoBehaviour
 {
-    [SerializeField]
-    PlayerIndex playerIndex;// ゲームパッド用インデックス
+    public PlayerIndex playerIndex;// ゲームパッド用インデックス
     GamePadState _previousState;
     GamePadState _currentState;
     public GamePadState CurrentState
@@ -22,6 +22,13 @@ public class CheckPlayerStandby : MonoBehaviour
     GameObject playerPrefabs;//キャラプレハブ
     [SerializeField]
     Texture tex;//テクスチャ
+    [SerializeField]
+    Text _playrLabel;//プレイヤーラベル
+    public Text PlayerLabel
+    {
+        get { return _playrLabel; }
+        set { _playrLabel = value; }
+    }
 
     GameObject player;
     bool _isSpawn = false;//キャラ生成したか
@@ -88,6 +95,8 @@ public class CheckPlayerStandby : MonoBehaviour
     {
         player = GameObject.Instantiate(playerPrefabs, transform.position, Quaternion.Euler(0, 180, 0));
         player.GetComponentInChildren<SkinnedMeshRenderer>().materials[0].mainTexture = tex;//テクスチャ変更
+
+        _playrLabel.enabled = true;
     }
 
     /// <summary>
@@ -97,6 +106,7 @@ public class CheckPlayerStandby : MonoBehaviour
     {
         GameObject.Destroy(player);
         player = null;
+        _playrLabel.enabled = false;
     }
 
     /// <summary>
@@ -107,6 +117,8 @@ public class CheckPlayerStandby : MonoBehaviour
     {
         player = GameObject.Instantiate(playerPrefabs, transform.position, Quaternion.Euler(0, 180, 0));
         player.GetComponentInChildren<SkinnedMeshRenderer>().materials[0].mainTexture = tex;//テクスチャ変更
+        _playrLabel.enabled = true;
+
         _isSpawn = true;
     }
 
