@@ -313,19 +313,19 @@ public class BalloonController : MonoBehaviour {
         player = null;//風船を他のプレイヤーに回すためにnullにする
 
         GameObject p = playerList[0];
-        float c = p.GetComponent<PlayerMove>().totalBlastCount;
+        float c = p.GetComponent<PlayerMove>().totalItemCount;
 
         for(int i = 1; i < playerList.Length; i++)
         {
             //もし最小値が二人いたらランダム
-            if (c == playerList[i].GetComponent<PlayerMove>().totalBlastCount && Random.Range(0, 2) == 0) 
+            if (c == playerList[i].GetComponent<PlayerMove>().totalItemCount && Random.Range(0, 2) == 0) 
             {
                 continue;
             }
             //所持数が少ないやつを保存
-            if (c >= playerList[i].GetComponent<PlayerMove>().totalBlastCount)
+            if (c >= playerList[i].GetComponent<PlayerMove>().totalItemCount)
             {
-                c = playerList[i].GetComponent<PlayerMove>().totalBlastCount;
+                c = playerList[i].GetComponent<PlayerMove>().totalItemCount;
                 p = playerList[i];
             }
         }

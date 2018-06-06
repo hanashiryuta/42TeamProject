@@ -11,6 +11,8 @@ TagManager:
   - Item
   - Post
   - HipDropCircle
+  - Undefined
+  - Canvas
   layers:
   - Default
   - TransparentFX

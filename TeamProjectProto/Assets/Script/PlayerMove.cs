@@ -27,11 +27,11 @@ public class PlayerMove : MonoBehaviour
     public GameObject balloon;//爆発物
 
     [HideInInspector]
-    public float blastCount = 0;//内容物所持数
-    Text blastCountText;//内容物所持数テキスト
-    Text totalBlastCountText;//内容物所持数累計テキスト
+    public float holdItemCount = 0;//内容物所持数
+    Text holdItemCountText;//内容物所持数テキスト
+    Text totalItemCountText;//内容物所持数累計テキスト
     [HideInInspector]
-    public float totalBlastCount = 0;//内容物所持数累計
+    public float totalItemCount = 0;//内容物所持数累計
 
     [HideInInspector]
     public string horizontal = "Horizontal1";//Inputの左スティック横方向取得名前
@@ -86,20 +86,39 @@ public class PlayerMove : MonoBehaviour
 
     public GameObject effect;//エフェクト
 
+    // ダッシュ関連 0606 何
+    bool _isDash = false;//ダッシュ中か
+    public bool IsDash
+    {
+        get { return _isDash; }
+    }
+    public float dashSpeedScale = 2f;// ダッシュ速度倍率
+    public float dashTimePerItem = 0.5f;// アイテム一個でダッシュできる時間
+    float _dashLimitTime = 0f;//ダッシュ上限時間
+    public float DashLimitTime
+    {
+        get { return _dashLimitTime; }
+    }
+    float _dashCountDown = 0f;//ダッシュカウントダウン
+    public float DashCountDown
+    {
+        get { return _dashCountDown; }
+    }
+
     // Use this for initialization
     void Start()
     {
         //初期化処理
         isJump = false;
-        blastCount = 0;
+        holdItemCount = 0;
         isGround = true;
         isHipDrop = false;
         jumpCount = 0;
         rigid = GetComponent<Rigidbody>();
         rotationPosition = transform.position;
 
-        blastCountText = GameObject.Find(transform.name + "ItemCount").GetComponent<Text>();//内容物所持数テキスト取得
-        totalBlastCountText = GameObject.Find(transform.name + "TotalCount").GetComponent<Text>(); 
+        holdItemCountText = GameObject.Find(transform.name + "ItemCount").GetComponent<Text>();//内容物所持数テキスト取得
+        totalItemCountText = GameObject.Find(transform.name + "TotalCount").GetComponent<Text>(); 
         itemList = new List<string>();
         totalItemList = new List<string>();
         //180516 アニメーター
@@ -112,13 +131,16 @@ public class PlayerMove : MonoBehaviour
 
         stopTime = setStopTime * 60; //振動してから止まるまでのタイムラグ
         isStop = false; //振動を止めるかどうか
-        
+
+        //180607 ダッシュ
+        SetDashLimitTime(holdItemCount, dashTimePerItem);
+        _dashCountDown = _dashLimitTime;
     }
 
     void Update()
     {
-        blastCountText.text = blastCount.ToString();//内容物取得数表示処理 
-        totalBlastCountText.text = "Total:" + totalBlastCount.ToString();
+        holdItemCountText.text = holdItemCount.ToString();//内容物取得数表示処理 
+        totalItemCountText.text = "Total:" + totalItemCount.ToString();
         
         PlayerAnim(playerAnim);
         
@@ -546,33 +568,33 @@ public class PlayerMove : MonoBehaviour
         //中心物体に当たったら
         if (col.gameObject.tag == "Post"&&balloon == null)
         {
-            totalBlastCount += blastCount;
+            totalItemCount += holdItemCount;
 
             if (balloon != null && isBalloonShrink)
             {
-                col.GetComponent<PostController>().blastCount -= blastCount;
+                col.GetComponent<PostController>().blastCount -= holdItemCount;
                 itemList.Clear();
-                blastCount = 0;//内容物所持数を0にする
+                holdItemCount = 0;//内容物所持数を0にする
                 return;
             }
 
             //ポイントが1つでもあったとき
-            if (blastCount >= 1)
+            if (holdItemCount >= 1)
             {
                 effect.GetComponent<ScoreEffect>().playerName = transform.name; //プレイヤーの名前を代入
                 //エフェクトを生成
                 Instantiate(effect, RectTransformUtility.WorldToScreenPoint(Camera.main, transform.position), Quaternion.identity, GameObject.Find("Canvas").transform);
                 GetComponent<AudioSource>().PlayOneShot(soundSE3);
             }
-            col.GetComponent<PostController>().blastCount += blastCount;//中心物体に内容物総数を渡す
-            col.GetComponent<PostController>().respawnCount += blastCount;
+            col.GetComponent<PostController>().blastCount += holdItemCount;//中心物体に内容物総数を渡す
+            col.GetComponent<PostController>().respawnCount += holdItemCount;
             col.GetComponent<PostController>().player = gameObject;
             foreach(var cx in itemList)
             {
                 totalItemList.Add(cx);
             }
             itemList.Clear();
-            blastCount = 0;//内容物所持数を0にする
+            holdItemCount = 0;//内容物所持数を0にする
             //ポストパーティクル生成
             col.GetComponent<PostController>().Pig_ToCoin_Particle();
 			//GetComponent<AudioSource> ().PlayOneShot (soundSE3);
@@ -624,7 +646,7 @@ public class PlayerMove : MonoBehaviour
         //}
         
         //排出ポイント割合
-        int itemRatio = (int)(blastCount * (count / 10));
+        int itemRatio = (int)(holdItemCount * (count / 10));
         //排出ポイント割合が0になるまで排出
         while(itemRatio > 0)
         {
@@ -640,7 +662,7 @@ public class PlayerMove : MonoBehaviour
                 //1/2の確率で、排出ポイント割合が2で、2ポイントアイテムをもっていたら
                 if (TwoOrOne == 0&&itemRatio == 2&&itemList.Contains("2CoinPointItem(Clone)"))
                 {
-                    blastCount -= 2;//2ポイント減
+                    holdItemCount -= 2;//2ポイント減
                     itemRatio -= 2;//排出ポイント割合2ポイント減
                      item = originHighItem;//2ポイントアイテム排出
                     spawnItem = Instantiate(item, transform.position + new Vector3(0, item.transform.localScale.y + 3, 0), Quaternion.Euler(90, 0, 0));//生成
@@ -649,7 +671,7 @@ public class PlayerMove : MonoBehaviour
                     itemList.Remove("2CoinPointItem(Clone)");//2ポイントアイテム削除
                     break;
                 }
-                blastCount --;//ポイント減
+                holdItemCount --;//ポイント減
                 itemRatio --;//排出ポイント割合ポイント減
                 item = originItem;//ポイントアイテム排出
                 spawnItem = Instantiate(item, transform.position + new Vector3(0, item.transform.localScale.y + 3, 0), Quaternion.Euler(90, 0, 0));//生成
@@ -664,12 +686,12 @@ public class PlayerMove : MonoBehaviour
                 switch (itemList[itemNum])//取得したアイテムからランダムで選出
                 {
                     case "1CoinPointItem(Clone)"://普通のアイテム
-                        blastCount--;//ポイント減
+                        holdItemCount--;//ポイント減
                         itemRatio--;//排出ポイント割合ポイント減
                         item = originItem;//ポイントアイテム排出
                         break;
                     case "2CoinPointItem(Clone)"://高ポイントアイテム
-                        blastCount -= 2;//2ポイント減
+                        holdItemCount -= 2;//2ポイント減
                         itemRatio -= 2;//排出ポイント割合2ポイント減
                         item = originHighItem;//2ポイントアイテム排出
                         break;
@@ -748,13 +770,27 @@ public class PlayerMove : MonoBehaviour
 
         //風船を持っていないとき
         if (balloon == null)
-            moveSpeed = originMoveSpeed;
+        {
+            //ダッシュ中
+            if (_isDash)
+            {
+                moveSpeed = originMoveSpeed * dashSpeedScale;
+            }
+            else moveSpeed = originMoveSpeed;
+        }
         //風船を持っている時
         else
-            moveSpeed = balloonMoveSpeed;
-
+        {
+            //ダッシュ中
+            if (_isDash)
+            {
+                moveSpeed = balloonMoveSpeed * dashSpeedScale;
+            }
+            else moveSpeed = balloonMoveSpeed;
+        }
 
         JumpXInput();
+        DashXInput();
 
         previousState = currentState;
     }
@@ -793,5 +829,60 @@ public class PlayerMove : MonoBehaviour
             if (jumpCount > 2)
                 jumpCount = 2;
         }
+    }
+
+    /// <summary>
+    /// 追加日：180607 追加者：何
+    /// ダッシュ中かチェック
+    /// ダッシュ中ならmoveSpeed二倍
+    /// </summary>
+    void DashXInput()
+    {
+        if (!_isDash)
+        {
+            SetDashLimitTime(holdItemCount, dashTimePerItem);
+        }
+
+        // RBボタン押している間
+        if (currentState.Buttons.RightShoulder == ButtonState.Pressed)
+        {
+            //カウントダウン
+            _dashCountDown -= Time.deltaTime;
+
+            if (_dashCountDown > 0)
+            {
+                _isDash = true;
+            }
+            else
+            {
+                _dashCountDown = 0;
+                _isDash = false;
+            }
+
+        }
+        // RBボタン押してない間
+        else
+        {
+            _isDash = false;
+
+            //半分の速度でカウントダウン回復
+            _dashCountDown += Time.deltaTime / 2f;
+            //上限に超えないようにする
+            if (_dashCountDown >= _dashLimitTime)
+            {
+                _dashCountDown = _dashLimitTime;
+            }
+        }
+    }
+
+    /// <summary>
+    /// 追加日：180607 追加者：何
+    /// ダッシュタイム上限を設定
+    /// </summary>
+    /// <param name="itemAmount"></param>
+    /// <param name="time"></param>
+    void SetDashLimitTime(float itemAmount, float time)
+    {
+        _dashLimitTime = (itemAmount + 1) * time;
     }
 }
