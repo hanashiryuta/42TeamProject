@@ -588,30 +588,88 @@ public class PlayerMove : MonoBehaviour
     /// <param name="count">割合</param>
     public void ItemBlast(float count)
     {
-        if (itemList.Count > 0)
-        {
-            int j = (int)(itemList.Count * (count / 10));//指定した割合で排出
-            for (int i = 0; i < j; i++)
-            {
-                GameObject item = originItem;
-                int itemNum = Random.Range(0, itemList.Count);
+        //if (itemList.Count > 0)
+        //{
+        //    int j = (int)(itemList.Count * (count / 10));//指定した割合で排出
+        //    for (int i = 0; i < j; i++)
+        //    {
+        //        GameObject item = originItem;
+        //        int itemNum = Random.Range(0, itemList.Count);
 
+        //        switch (itemList[itemNum])//取得したアイテムからランダムで選出
+        //        {
+        //            case "PointItem(Clone)"://普通のアイテム
+        //                blastCount--;
+        //                break;
+        //            case "HighPointItem(Clone)"://高ポイントアイテム
+        //                blastCount -= 2;
+        //                item = originHighItem;
+        //                break;
+        //        }
+        //        itemList.RemoveAt(itemNum);//リストから削除
+        //        GameObject spawnItem = Instantiate(item, transform.position+new Vector3(0,item.transform.localScale.y+3,0), Quaternion.Euler(90,0,0));//生成
+        //        spawnItem.GetComponent<ItemController>().SetMovePosition();
+        //        spawnItem.GetComponent<ItemController>().isGet = false;
+        //    }
+        //}
+        
+        //排出ポイント割合
+        int itemRatio = (int)(blastCount * (count / 10));
+        //排出ポイント割合が0になるまで排出
+        while(itemRatio > 0)
+        {
+            //排出アイテム設定
+            GameObject item = originItem;
+
+            //2ポイント以下なら別設定
+            if (itemRatio <= 2)
+            {
+                GameObject spawnItem;//排出させたアイテム
+                int TwoOrOne = Random.Range(0, 2);
+
+                //1/2の確率で、排出ポイント割合が2で、2ポイントアイテムをもっていたら
+                if (TwoOrOne == 0&&itemRatio == 2&&itemList.Contains("2CoinPointItem(Clone)"))
+                {
+                    blastCount -= 2;//2ポイント減
+                    itemRatio -= 2;//排出ポイント割合2ポイント減
+                     item = originHighItem;//2ポイントアイテム排出
+                    spawnItem = Instantiate(item, transform.position + new Vector3(0, item.transform.localScale.y + 3, 0), Quaternion.Euler(90, 0, 0));//生成
+                    spawnItem.GetComponent<ItemController>().SetMovePosition();//移動設定
+                    spawnItem.GetComponent<ItemController>().isGet = false;//取れない設定
+                    itemList.Remove("2CoinPointItem(Clone)");//2ポイントアイテム削除
+                    break;
+                }
+                blastCount --;//ポイント減
+                itemRatio --;//排出ポイント割合ポイント減
+                item = originItem;//ポイントアイテム排出
+                spawnItem = Instantiate(item, transform.position + new Vector3(0, item.transform.localScale.y + 3, 0), Quaternion.Euler(90, 0, 0));//生成
+                spawnItem.GetComponent<ItemController>().SetMovePosition();//移動設定
+                spawnItem.GetComponent<ItemController>().isGet = false;//取れない設定
+                itemList.Remove("1CoinPointItem(Clone)");//ポイントアイテム削除
+            }
+            //それ以外はランダム
+            else
+            {
+                int itemNum = Random.Range(0, itemList.Count);//ランダム設定
                 switch (itemList[itemNum])//取得したアイテムからランダムで選出
                 {
-                    case "PointItem(Clone)"://普通のアイテム
-                        blastCount--;
+                    case "1CoinPointItem(Clone)"://普通のアイテム
+                        blastCount--;//ポイント減
+                        itemRatio--;//排出ポイント割合ポイント減
+                        item = originItem;//ポイントアイテム排出
                         break;
-                    case "HighPointItem(Clone)"://高ポイントアイテム
-                        blastCount -= 2;
-                        item = originHighItem;
+                    case "2CoinPointItem(Clone)"://高ポイントアイテム
+                        blastCount -= 2;//2ポイント減
+                        itemRatio -= 2;//排出ポイント割合2ポイント減
+                        item = originHighItem;//2ポイントアイテム排出
                         break;
                 }
-                itemList.RemoveAt(itemNum);//リストから削除
-                GameObject spawnItem = Instantiate(item, transform.position+new Vector3(0,item.transform.localScale.y+3,0), Quaternion.Euler(90,0,0));//生成
-                spawnItem.GetComponent<ItemController>().SetMovePosition();
-                spawnItem.GetComponent<ItemController>().isGet = false;
+                GameObject spawnItem = Instantiate(item, transform.position + new Vector3(0, item.transform.localScale.y + 3, 0), Quaternion.Euler(90, 0, 0));//生成
+                spawnItem.GetComponent<ItemController>().SetMovePosition();//移動設定
+                spawnItem.GetComponent<ItemController>().isGet = false;//取れない設定
+                itemList.RemoveAt(itemNum);//排出アイテム削除
             }
-        }
+        } 
     }
 
     /// <summary>
