@@ -680,6 +680,8 @@ MonoBehaviour:
   effect: {fileID: 1347281360223456, guid: dcb6dca670cc92248bf25501f9bcbea7, type: 2}
   isMoveInertia: 0
   setStopTime: 1
+  origin_Stan_Star_Particle: {fileID: 1785694701142120, guid: 9160900c0c7b95b4085f3a675b321bf8,
+    type: 2}
   playerIndex: 0
 --- !u!136 &136683905432024742
 CapsuleCollider:

@@ -185,6 +185,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   point: 2
   isGet: 1
+  origin_Item_Death_Particle: {fileID: 1632877197018554, guid: 6d0457235c72a1a4ca2bffaaa7c4143e,
+    type: 2}
 --- !u!136 &136308040362840922
 CapsuleCollider:
   m_ObjectHideFlags: 1

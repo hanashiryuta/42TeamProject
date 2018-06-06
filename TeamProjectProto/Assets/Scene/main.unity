@@ -156,7 +156,17 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!84 &117579110
+--- !u!224 &159552143 stripped
+RectTransform:
+  m_PrefabParentObject: {fileID: 224846934616948154, guid: 91347e7381ca01b46b64cae46052ffeb,
+    type: 2}
+  m_PrefabInternal: {fileID: 549912037}
+--- !u!224 &382059076 stripped
+RectTransform:
+  m_PrefabParentObject: {fileID: 224071879788058470, guid: 91347e7381ca01b46b64cae46052ffeb,
+    type: 2}
+  m_PrefabInternal: {fileID: 549912037}
+--- !u!84 &402563096
 RenderTexture:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -187,16 +197,6 @@ RenderTexture:
     m_WrapW: 1
   m_Dimension: 2
   m_VolumeDepth: 1
---- !u!224 &159552143 stripped
-RectTransform:
-  m_PrefabParentObject: {fileID: 224846934616948154, guid: 91347e7381ca01b46b64cae46052ffeb,
-    type: 2}
-  m_PrefabInternal: {fileID: 549912037}
---- !u!224 &382059076 stripped
-RectTransform:
-  m_PrefabParentObject: {fileID: 224071879788058470, guid: 91347e7381ca01b46b64cae46052ffeb,
-    type: 2}
-  m_PrefabInternal: {fileID: 549912037}
 --- !u!1 &402976472 stripped
 GameObject:
   m_PrefabParentObject: {fileID: 1753210076928182, guid: 91347e7381ca01b46b64cae46052ffeb,
@@ -339,6 +339,11 @@ Prefab:
         type: 2}
       propertyPath: m_Pivot.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114927463786293658, guid: 91347e7381ca01b46b64cae46052ffeb,
+        type: 2}
+      propertyPath: gameTime
+      value: 125
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 91347e7381ca01b46b64cae46052ffeb, type: 2}
@@ -597,7 +602,7 @@ Transform:
   m_Father: {fileID: 2094600264}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!84 &1469444427
+--- !u!84 &1469970467
 RenderTexture:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -759,7 +764,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameObjectList:
-  - {fileID: 1996728732374686, guid: 1bc25a29a6e14c24bb68276f48b30452, type: 2}
+  - {fileID: 1210675158441864, guid: dffc553878bac6a4abaaa81edcf130f7, type: 2}
   - {fileID: 1996331776698540, guid: 379cfb78862d0a84faaf898f2e86197e, type: 2}
   - {fileID: 1204771191657572, guid: a0a16def173e9d249b10f733f5551e0b, type: 2}
   - {fileID: 1824404104768216, guid: d0f7451e0a1c28740bf1661d29f205b9, type: 2}
@@ -978,17 +983,17 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: -20.8
+  near clip plane: -21
   far clip plane: 1000
   field of view: 90
   orthographic: 1
-  orthographic size: 13.5
+  orthographic size: 11
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 0
   m_RenderingPath: 1
-  m_TargetTexture: {fileID: 117579110}
+  m_TargetTexture: {fileID: 402563096}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 0
@@ -1141,11 +1146,11 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: -20.8
+  near clip plane: -21
   far clip plane: 1000
   field of view: 90
   orthographic: 1
-  orthographic size: 13.5
+  orthographic size: 11
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -1208,8 +1213,8 @@ MonoBehaviour:
   sourceCamera: {fileID: 2094600263}
   outlineCamera: {fileID: 1846411882}
   outlineShaderMaterial: {fileID: 0}
-  renderTexture: {fileID: 117579110}
-  extraRenderTexture: {fileID: 1469444427}
+  renderTexture: {fileID: 402563096}
+  extraRenderTexture: {fileID: 1469970467}
 --- !u!114 &2094600266
 MonoBehaviour:
   m_ObjectHideFlags: 0

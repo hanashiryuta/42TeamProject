@@ -49,6 +49,9 @@ public class PostController : MonoBehaviour {
     StartCountDown startCountDown;//カウントダウンScript
     FinishCall finishCall;//終了合図Script
 
+    public GameObject origin_Pig_ToCoin_Particle;
+    GameObject pig_ToCoin_Particle;
+
     // Use this for initialization
     void Start () {
 		//初期化処理
@@ -102,8 +105,8 @@ public class PostController : MonoBehaviour {
                     airCount++;//生成されるたびに加算していく
                     blastCount--;//内容物の総数を減らす
                     inflateTime = 0.05f;
-                    //ポイント分生成したらポストを移動させる
-                    if (airCount >= limitCount)
+                    //ポイント分生成したらポストを移動させる＆パーティクルが消えたら
+                    if (airCount >= limitCount&&pig_ToCoin_Particle == null)
                     {
                         isRespawn = true;
                         airCount = 0;
@@ -150,6 +153,8 @@ public class PostController : MonoBehaviour {
         if (activity == false)
         {
             //MeshとColliderをfalseにする
+            //Meshはパーティクルが消えたら
+            if (pig_ToCoin_Particle == null)
             mesh.enabled = false;
             bc.enabled = false;
             if(!startCountDown.IsCntDown && !finishCall.IsCalling)
@@ -170,4 +175,15 @@ public class PostController : MonoBehaviour {
         //activityに応じて表示
         //this.gameObject.SetActive (activity);
 	}
+
+    /// <summary>
+    /// アイテムを入れた際のパーティクル生成メソッド
+    /// </summary>
+    public void Pig_ToCoin_Particle()
+    {
+        if(pig_ToCoin_Particle == null)
+        {
+            pig_ToCoin_Particle = Instantiate(origin_Pig_ToCoin_Particle, transform);
+        }
+    }
 }

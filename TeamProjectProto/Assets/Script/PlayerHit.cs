@@ -28,6 +28,7 @@ public class PlayerHit : MonoBehaviour {
         {
             if (col.gameObject.GetComponent<ItemController>().isGet && playerMove.balloon == null)
             {
+                col.gameObject.GetComponent<ItemController>().Item_Death_Particle();//アイテム取得時パーティクル生成
                 playerMove.itemList.Add(col.name);//リスト追加
                 Destroy(col.gameObject);//内容物破棄
                 playerMove.blastCount += col.GetComponent<ItemController>().point; //内容物所持数を増やす  

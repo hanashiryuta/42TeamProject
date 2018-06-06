@@ -81,6 +81,8 @@ public class PlayerMove : MonoBehaviour
     private float stopTime; //振動してから止まるまでのタイムラグ
     private bool isStop = false; //振動を止めるかどうか
 
+    public GameObject origin_Stan_Star_Particle;//星型パーティクル生成元
+    GameObject stan_Star_Particle;//星型パーティクル
 
     public GameObject effect;//エフェクト
 
@@ -161,6 +163,9 @@ public class PlayerMove : MonoBehaviour
                 rigid.velocity = Vector3.zero;
                 GamePad.SetVibration(XDInput[(int)(playerIndex)], 0.0f, 1.0f);
                 isStop = true;
+                //星型パーティクル生成
+                if (stan_Star_Particle == null)
+                    stan_Star_Particle = Instantiate(origin_Stan_Star_Particle, transform);
             }
 
             rigid.AddForce(new Vector3(0, -9.8f * 5, 0));
@@ -171,6 +176,11 @@ public class PlayerMove : MonoBehaviour
             {
                 isStan = false;
                 stanTime = 3.0f;
+                if(stan_Star_Particle != null)
+                {
+                    //星型パーティクル削除
+                    Destroy(stan_Star_Particle);
+                }
             }
             return;
         }
@@ -563,6 +573,8 @@ public class PlayerMove : MonoBehaviour
             }
             itemList.Clear();
             blastCount = 0;//内容物所持数を0にする
+            //ポストパーティクル生成
+            col.GetComponent<PostController>().Pig_ToCoin_Particle();
 			//GetComponent<AudioSource> ().PlayOneShot (soundSE3);
         }
 
@@ -586,30 +598,88 @@ public class PlayerMove : MonoBehaviour
     /// <param name="count">割合</param>
     public void ItemBlast(float count)
     {
-        if (itemList.Count > 0)
-        {
-            int j = (int)(itemList.Count * (count / 10));//指定した割合で排出
-            for (int i = 0; i < j; i++)
-            {
-                GameObject item = originItem;
-                int itemNum = Random.Range(0, itemList.Count);
+        //if (itemList.Count > 0)
+        //{
+        //    int j = (int)(itemList.Count * (count / 10));//指定した割合で排出
+        //    for (int i = 0; i < j; i++)
+        //    {
+        //        GameObject item = originItem;
+        //        int itemNum = Random.Range(0, itemList.Count);
 
+        //        switch (itemList[itemNum])//取得したアイテムからランダムで選出
+        //        {
+        //            case "PointItem(Clone)"://普通のアイテム
+        //                blastCount--;
+        //                break;
+        //            case "HighPointItem(Clone)"://高ポイントアイテム
+        //                blastCount -= 2;
+        //                item = originHighItem;
+        //                break;
+        //        }
+        //        itemList.RemoveAt(itemNum);//リストから削除
+        //        GameObject spawnItem = Instantiate(item, transform.position+new Vector3(0,item.transform.localScale.y+3,0), Quaternion.Euler(90,0,0));//生成
+        //        spawnItem.GetComponent<ItemController>().SetMovePosition();
+        //        spawnItem.GetComponent<ItemController>().isGet = false;
+        //    }
+        //}
+        
+        //排出ポイント割合
+        int itemRatio = (int)(blastCount * (count / 10));
+        //排出ポイント割合が0になるまで排出
+        while(itemRatio > 0)
+        {
+            //排出アイテム設定
+            GameObject item = originItem;
+
+            //2ポイント以下なら別設定
+            if (itemRatio <= 2)
+            {
+                GameObject spawnItem;//排出させたアイテム
+                int TwoOrOne = Random.Range(0, 2);
+
+                //1/2の確率で、排出ポイント割合が2で、2ポイントアイテムをもっていたら
+                if (TwoOrOne == 0&&itemRatio == 2&&itemList.Contains("2CoinPointItem(Clone)"))
+                {
+                    blastCount -= 2;//2ポイント減
+                    itemRatio -= 2;//排出ポイント割合2ポイント減
+                     item = originHighItem;//2ポイントアイテム排出
+                    spawnItem = Instantiate(item, transform.position + new Vector3(0, item.transform.localScale.y + 3, 0), Quaternion.Euler(90, 0, 0));//生成
+                    spawnItem.GetComponent<ItemController>().SetMovePosition();//移動設定
+                    spawnItem.GetComponent<ItemController>().isGet = false;//取れない設定
+                    itemList.Remove("2CoinPointItem(Clone)");//2ポイントアイテム削除
+                    break;
+                }
+                blastCount --;//ポイント減
+                itemRatio --;//排出ポイント割合ポイント減
+                item = originItem;//ポイントアイテム排出
+                spawnItem = Instantiate(item, transform.position + new Vector3(0, item.transform.localScale.y + 3, 0), Quaternion.Euler(90, 0, 0));//生成
+                spawnItem.GetComponent<ItemController>().SetMovePosition();//移動設定
+                spawnItem.GetComponent<ItemController>().isGet = false;//取れない設定
+                itemList.Remove("1CoinPointItem(Clone)");//ポイントアイテム削除
+            }
+            //それ以外はランダム
+            else
+            {
+                int itemNum = Random.Range(0, itemList.Count);//ランダム設定
                 switch (itemList[itemNum])//取得したアイテムからランダムで選出
                 {
-                    case "PointItem(Clone)"://普通のアイテム
-                        blastCount--;
+                    case "1CoinPointItem(Clone)"://普通のアイテム
+                        blastCount--;//ポイント減
+                        itemRatio--;//排出ポイント割合ポイント減
+                        item = originItem;//ポイントアイテム排出
                         break;
-                    case "HighPointItem(Clone)"://高ポイントアイテム
-                        blastCount -= 2;
-                        item = originHighItem;
+                    case "2CoinPointItem(Clone)"://高ポイントアイテム
+                        blastCount -= 2;//2ポイント減
+                        itemRatio -= 2;//排出ポイント割合2ポイント減
+                        item = originHighItem;//2ポイントアイテム排出
                         break;
                 }
-                itemList.RemoveAt(itemNum);//リストから削除
-                GameObject spawnItem = Instantiate(item, transform.position+new Vector3(0,item.transform.localScale.y+3,0), Quaternion.Euler(90,0,0));//生成
-                spawnItem.GetComponent<ItemController>().SetMovePosition();
-                spawnItem.GetComponent<ItemController>().isGet = false;
+                GameObject spawnItem = Instantiate(item, transform.position + new Vector3(0, item.transform.localScale.y + 3, 0), Quaternion.Euler(90, 0, 0));//生成
+                spawnItem.GetComponent<ItemController>().SetMovePosition();//移動設定
+                spawnItem.GetComponent<ItemController>().isGet = false;//取れない設定
+                itemList.RemoveAt(itemNum);//排出アイテム削除
             }
-        }
+        } 
     }
 
     /// <summary>
