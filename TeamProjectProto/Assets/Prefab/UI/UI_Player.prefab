@@ -108,7 +108,7 @@ GameObject:
   - component: {fileID: 114295103744815772}
   - component: {fileID: 114380417687261246}
   m_Layer: 8
-  m_Name: Player
+  m_Name: UI_Player
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -454,7 +454,7 @@ BoxCollider:
   m_GameObject: {fileID: 1515882103006162}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 2, y: 4, z: 2}
   m_Center: {x: 0, y: 2, z: 0}
@@ -476,7 +476,7 @@ AudioSource:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1515882103006162}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
@@ -573,7 +573,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1515882103006162}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 117bf7e233e44d34b97ebcc17bf0f141, type: 3}
   m_Name: 
@@ -620,7 +620,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1262565347018612}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4f0f64cd7bfbad04091023b47917a900, type: 3}
   m_Name: 
@@ -646,7 +646,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1515882103006162}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: faf4c254dc8e32149b20b4a1f2d9c0bc, type: 3}
   m_Name: 
@@ -677,11 +677,8 @@ MonoBehaviour:
   soundSE1: {fileID: 8300000, guid: 96c42a4475b2d32428b25595bf7dc5b0, type: 3}
   soundSE2: {fileID: 8300000, guid: 475d72f144db63844b07315899919ce2, type: 3}
   soundSE3: {fileID: 8300000, guid: 04aabf5253f07f84bb09425dd4cb2c5c, type: 3}
-  effect: {fileID: 1347281360223456, guid: dcb6dca670cc92248bf25501f9bcbea7, type: 2}
   isMoveInertia: 0
   setStopTime: 1
-  origin_Stan_Star_Particle: {fileID: 1785694701142120, guid: 9160900c0c7b95b4085f3a675b321bf8,
-    type: 2}
   playerIndex: 0
 --- !u!136 &136683905432024742
 CapsuleCollider:

@@ -84,6 +84,8 @@ public class PlayerMove : MonoBehaviour
     public GameObject origin_Stan_Star_Particle;//星型パーティクル生成元
     GameObject stan_Star_Particle;//星型パーティクル
 
+    public GameObject effect;//エフェクト
+
     // Use this for initialization
     void Start()
     {
@@ -554,6 +556,14 @@ public class PlayerMove : MonoBehaviour
                 return;
             }
 
+            //ポイントが1つでもあったとき
+            if (blastCount >= 1)
+            {
+                effect.GetComponent<ScoreEffect>().playerName = transform.name; //プレイヤーの名前を代入
+                //エフェクトを生成
+                Instantiate(effect, RectTransformUtility.WorldToScreenPoint(Camera.main, transform.position), Quaternion.identity, GameObject.Find("Canvas").transform);
+                GetComponent<AudioSource>().PlayOneShot(soundSE3);
+            }
             col.GetComponent<PostController>().blastCount += blastCount;//中心物体に内容物総数を渡す
             col.GetComponent<PostController>().respawnCount += blastCount;
             col.GetComponent<PostController>().player = gameObject;
@@ -563,9 +573,9 @@ public class PlayerMove : MonoBehaviour
             }
             itemList.Clear();
             blastCount = 0;//内容物所持数を0にする
-			GetComponent<AudioSource> ().PlayOneShot (soundSE3);
             //ポストパーティクル生成
             col.GetComponent<PostController>().Pig_ToCoin_Particle();
+			//GetComponent<AudioSource> ().PlayOneShot (soundSE3);
         }
 
         //衝撃波に当たったら
