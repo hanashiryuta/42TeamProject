@@ -60,8 +60,8 @@ public class GameMaster : MonoBehaviour {
         //プレイヤーのパラメーターを追加
         for(int i = 1; i < 5; i++)
         {
-            gameParameter.Add("Player" + i + "ポイント", gameObjectMaster["Player" + i].GetComponent<PlayerMove>().blastCount);
-            gameParameter.Add("Player" + i + "総ポイント", gameObjectMaster["Player" + i].GetComponent<PlayerMove>().totalBlastCount);
+            gameParameter.Add("Player" + i + "ポイント", gameObjectMaster["Player" + i].GetComponent<PlayerMove>().holdItemCount);
+            gameParameter.Add("Player" + i + "総ポイント", gameObjectMaster["Player" + i].GetComponent<PlayerMove>().totalItemCount);
         }
 
         //風船のパラメーターを追加
@@ -80,8 +80,8 @@ public class GameMaster : MonoBehaviour {
         //パラメーター更新
         for(int i = 1; i < 5; i++)
         {
-            gameParameter["Player" + i + "ポイント"] = gameObjectMaster["Player" + i].GetComponent<PlayerMove>().blastCount;
-            gameParameter["Player" + i + "総ポイント"] = gameObjectMaster["Player" + i].GetComponent<PlayerMove>().totalBlastCount;
+            gameParameter["Player" + i + "ポイント"] = gameObjectMaster["Player" + i].GetComponent<PlayerMove>().holdItemCount;
+            gameParameter["Player" + i + "総ポイント"] = gameObjectMaster["Player" + i].GetComponent<PlayerMove>().totalItemCount;
         }
         gameParameter["Balloon大きさ"] = gameObjectMaster["Balloon"].GetComponent<BalloonController>().scaleCount;
         gameParameter["Balloonポイント"] = gameObjectMaster["Balloon"].GetComponent<BalloonController>().blastCount;

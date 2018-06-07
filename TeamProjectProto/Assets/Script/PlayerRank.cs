@@ -103,7 +103,7 @@ public class PlayerRank : MonoBehaviour
         {
             for (int j = i + 1; j < _playerRankArray.Length; j++)
             {
-                if (_playerRankArray[i].GetComponent<PlayerMove>().totalBlastCount < _playerRankArray[j].GetComponent<PlayerMove>().totalBlastCount)
+                if (_playerRankArray[i].GetComponent<PlayerMove>().totalItemCount < _playerRankArray[j].GetComponent<PlayerMove>().totalItemCount)
                 {
                     GameObject p = _playerRankArray[j];
                     _playerRankArray[j] = _playerRankArray[i];
@@ -123,7 +123,7 @@ public class PlayerRank : MonoBehaviour
         foreach (var player in _playerRankArray)
         {
             // 1位の得点が0 => 全得点が0 なので
-            if (_playerRankArray[0].GetComponent<PlayerMove>().totalBlastCount == 0)
+            if (_playerRankArray[0].GetComponent<PlayerMove>().totalItemCount == 0)
             {
                 //全プレイヤーの王冠は消す
                 player.transform.Find("Armature/Bone/Bone.001/Bone.002/Bone.003/Bone.004/Bone.004_end/Crown").GetComponent<MeshRenderer>().enabled = false;
@@ -132,7 +132,7 @@ public class PlayerRank : MonoBehaviour
             {
                 //1位の王冠を見えるようにする
                 //1位タイも王冠を見えるようにする
-                if (player.GetComponent<PlayerMove>().totalBlastCount >= _playerRankArray[0].GetComponent<PlayerMove>().totalBlastCount)
+                if (player.GetComponent<PlayerMove>().totalItemCount >= _playerRankArray[0].GetComponent<PlayerMove>().totalItemCount)
                 {
                     player.transform.Find("Armature/Bone/Bone.001/Bone.002/Bone.003/Bone.004/Bone.004_end/Crown").GetComponent<MeshRenderer>().enabled = true;
                 }

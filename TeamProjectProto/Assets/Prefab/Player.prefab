@@ -104,6 +104,7 @@ GameObject:
   - component: {fileID: 114125977234718296}
   - component: {fileID: 114844505345048394}
   - component: {fileID: 54808840653408818}
+  - component: {fileID: 114446471231669394}
   - component: {fileID: 82618936267711668}
   - component: {fileID: 114295103744815772}
   - component: {fileID: 114380417687261246}
@@ -614,6 +615,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isJumpHit: 0
   rigid: {fileID: 54808840653408818}
+--- !u!114 &114446471231669394
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1515882103006162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ab0b71356c23a44f97baddb943ca0d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dashSliderOBJ: {fileID: 1785252829080750, guid: cd246b47764bcec4288e6f3badbf508a,
+    type: 2}
+  dashOffset: {x: 0, y: -2, z: 0}
 --- !u!114 &114583404204353246
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -658,8 +673,8 @@ MonoBehaviour:
   originJumpPower: 1
   balloonJumpPower: 1.2
   balloon: {fileID: 0}
-  blastCount: 0
-  totalBlastCount: 0
+  holdItemCount: 0
+  totalItemCount: 0
   horizontal: Horizontal1
   vertical: Vertical1
   jump: Jump
@@ -677,11 +692,13 @@ MonoBehaviour:
   soundSE1: {fileID: 8300000, guid: 96c42a4475b2d32428b25595bf7dc5b0, type: 3}
   soundSE2: {fileID: 8300000, guid: 475d72f144db63844b07315899919ce2, type: 3}
   soundSE3: {fileID: 8300000, guid: 04aabf5253f07f84bb09425dd4cb2c5c, type: 3}
-  effect: {fileID: 1347281360223456, guid: dcb6dca670cc92248bf25501f9bcbea7, type: 2}
   isMoveInertia: 0
   setStopTime: 1
   origin_Stan_Star_Particle: {fileID: 1785694701142120, guid: 9160900c0c7b95b4085f3a675b321bf8,
     type: 2}
+  effect: {fileID: 1347281360223456, guid: dcb6dca670cc92248bf25501f9bcbea7, type: 2}
+  dashSpeedScale: 2
+  dashTimePerItem: 0.5
   playerIndex: 0
 --- !u!136 &136683905432024742
 CapsuleCollider:
