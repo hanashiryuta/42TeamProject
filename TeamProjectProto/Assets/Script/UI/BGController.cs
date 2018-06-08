@@ -21,7 +21,8 @@ public class BGController : MonoBehaviour
     float offsetX = 0;
     float offsetY = 0;
 
-    BalloonController balloon;
+    BalloonOrigin balloon;
+    GameObject balloonControllerObject;
 
     // Use this for initialization
 	void Start ()
@@ -31,8 +32,7 @@ public class BGController : MonoBehaviour
         if (SceneManager.GetActiveScene().name == "main")
         {
             mats[0] = bg_Mat[0];//プレイヤー色
-                                                                            
-            balloon = GameObject.Find("Balloon(Clone)").GetComponent<BalloonController>();//風船を取得
+                                          
         }
         else
         {
@@ -53,7 +53,15 @@ public class BGController : MonoBehaviour
         BG_SpriteOffsetChange();
 
         if (SceneManager.GetActiveScene().name == "main")
+        {
+            if (balloonControllerObject == null)
+            {
+                balloonControllerObject = GameObject.FindGameObjectWithTag("Balloon");
+                return;
+            }
+            balloon = balloonControllerObject.GetComponent<BalloonOrigin>();
             BG_SpriteColorChange();
+        }
     }
 
     /// <summary>

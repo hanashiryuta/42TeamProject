@@ -35,7 +35,8 @@ public class PortalCircle : MonoBehaviour
     float seconds = 1f; //継続時間
     bool isCreateCircle = false;
 
-    BalloonController balloonController;
+    BalloonOrigin balloonController;
+    GameObject balloonControllerObject;
 
     readonly int subTexPropertyId = Shader.PropertyToID("_SubTex");
     readonly int radiusPropertyId = Shader.PropertyToID("_Radius");
@@ -63,11 +64,16 @@ public class PortalCircle : MonoBehaviour
     void Start()
     {
         material.SetTexture(subTexPropertyId, texture);
-        balloonController = GameObject.FindGameObjectWithTag("Balloon").GetComponent<BalloonController>();
     }
 
     void Update()
     {
+        if (balloonControllerObject == null)
+        {
+            balloonControllerObject = GameObject.FindGameObjectWithTag("Balloon");
+            return;
+        }
+        balloonController = balloonControllerObject.GetComponent<BalloonOrigin>();
         // 爆発円（外向け）
         if (isDirectionToOutside)
         {

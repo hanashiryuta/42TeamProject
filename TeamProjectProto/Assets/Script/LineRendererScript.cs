@@ -12,7 +12,14 @@ public class LineRendererScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         GameObject Balloon = GameObject.FindGameObjectWithTag("Balloon");
-        GameObject Player = Balloon.GetComponent<BalloonController>().player;
+        if (Balloon == null)
+        {
+            gameObject.GetComponent<LineRenderer>().enabled = false;
+            return;
+        }
+
+        gameObject.GetComponent<LineRenderer>().enabled = true;
+        GameObject Player = Balloon.GetComponent<BalloonOrigin>().player;
         Vector3 PlayerPosition = Player.transform.Find("Armature/Bone/Bone.001/Bone.002/Bone.003/Bone.004/Bone.004_end/Crown").transform.position;
         LineRenderer Line = GameObject.Find("BalloonLineRenderer(Clone)").GetComponent<LineRenderer>();
         //PlayerPosition.y += 3.0f;

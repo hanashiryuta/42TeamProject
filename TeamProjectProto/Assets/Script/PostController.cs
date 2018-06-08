@@ -69,13 +69,6 @@ public class PostController : MonoBehaviour {
     // Update is called once per frame
     void Update () {
 
-		//爆発物がなければ探す
-		if(balloon == null)
-		{
-			balloon = GameObject.FindGameObjectWithTag("Balloon");
-			return;
-		}
-
 		//5ポイント貯めたら特殊壁出して移動する
 		if (respawnCount >= 5)
         {
@@ -129,7 +122,7 @@ public class PostController : MonoBehaviour {
 			if (giveTime < 0)//一定時間ごとに
 			{
 				//爆発物縮小
-				balloon.GetComponent<BalloonController>().BalloonShrink(gameObject);
+				//balloon.GetComponent<BalloonOrigin>().BalloonShrink(gameObject);
 				blastCount++;//内容物の総数を増やす
 				giveTime = 0.2f;
 			}

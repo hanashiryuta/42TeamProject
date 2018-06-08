@@ -11,7 +11,8 @@ public class CRTController : MonoBehaviour {
 
     [SerializeField]
     Camera mainCamera;
-    BalloonController balloonController;
+    BalloonOrigin balloonController;
+    GameObject balloonControllerObject;
 
     float cnt = 0;      //カウンター
     [SerializeField]
@@ -20,12 +21,18 @@ public class CRTController : MonoBehaviour {
 
     void Start()
     {
-        balloonController = GameObject.FindGameObjectWithTag("Balloon").GetComponent<BalloonController>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (balloonControllerObject == null)
+        {
+            balloonControllerObject = GameObject.FindGameObjectWithTag("Balloon");
+            return;
+        }
+        balloonController = balloonControllerObject.GetComponent<BalloonOrigin>();
+
         StartCnt();
 
         if (isCnt)

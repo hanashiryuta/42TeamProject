@@ -28,10 +28,10 @@ public class ExChangeRespawn : MonoBehaviour {
             balloon = GameObject.FindGameObjectWithTag("Balloon");
             return;
         }
-        if (balloon.GetComponent<BalloonController>().blastCount == 0)
+        if (balloon.GetComponent<BalloonOrigin>().blastCount == 0)
             isRespawn = true;
 
-        if (balloon.GetComponent<BalloonController>().blastCount>=balloon.GetComponent<BalloonController>().blastLimit-beforeBP&&isRespawn)
+        if (balloon.GetComponent<BalloonOrigin>().blastCount>=balloon.GetComponent<BalloonOrigin>().blastLimit-beforeBP&&isRespawn)
         {
             Instantiate(originExChangeItem,transform.position,Quaternion.identity,transform);
             isRespawn = false;
