@@ -200,8 +200,9 @@ MonoBehaviour:
   isTimeBlast: 1
   originBlastTime: 1
   soundSE1: {fileID: 8300000, guid: b7b809350da05df4aacab41d43da483c, type: 3}
-  soundSE2: {fileID: 8300000, guid: 3bedcf1f668e97343ab5a80c4fb36ea1, type: 3}
+  soundSE2: {fileID: 8300000, guid: 6551094618a9b2c4db6ca204ba1cde3d, type: 3}
   isDestroy: 0
+  isCameraDistance: 0
 --- !u!135 &135719016387797950
 SphereCollider:
   m_ObjectHideFlags: 1
