@@ -5,10 +5,12 @@ using UnityEngine;
 public class Air : MonoBehaviour {
     public float power = 10;//移動速度
     GameObject balloon;
+    public AudioClip soundSE1;//生成時の効果音
 
     // Use this for initialization
     void Start () {
         balloon = GameObject.FindGameObjectWithTag("Balloon");
+        GetComponent<AudioSource>().PlayOneShot(soundSE1);
 	}
 	
 	// Update is called once per frame
