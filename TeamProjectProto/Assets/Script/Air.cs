@@ -14,7 +14,13 @@ public class Air : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update () { if (balloon == null)
+        {
+            balloon = GameObject.FindGameObjectWithTag("Balloon");
+            Destroy(gameObject);
+            return;
+        }
+
         //風船に向かって飛んでいく
         //Vector3 direction = balloon.transform.position - transform.position;
         //GetComponent<Rigidbody>().AddForce(direction.normalized * power);
@@ -22,7 +28,8 @@ public class Air : MonoBehaviour {
         Vector3 pos = (balloon.transform.position - transform.position).normalized; //balloonとの距離を求める
         transform.position += pos; //距離分足していく
 
-        if (balloon.GetComponent<BalloonController>().isDestroy)
+       
+        if (balloon.GetComponent<BalloonOrigin>().isDestroy)
         {
             Destroy(gameObject);
         }
@@ -33,7 +40,7 @@ public class Air : MonoBehaviour {
         //風船に当たったら膨らませる
         if (col.gameObject.tag == "Balloon")
         {
-            balloon.GetComponent<BalloonController>().BalloonBlast();
+            balloon.GetComponent<BalloonOrigin>().BalloonBlast();
             Destroy(gameObject);
         }
     }

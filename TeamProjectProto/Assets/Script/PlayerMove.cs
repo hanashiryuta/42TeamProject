@@ -54,7 +54,8 @@ public class PlayerMove : MonoBehaviour
 
     [HideInInspector]
     public List<string> itemList;//取得アイテム管理リスト
-    List<string> totalItemList;//累計取得アイテム管理リスト
+    [HideInInspector]
+    public List<string> totalItemList;//累計取得アイテム管理リスト
 
 	public AudioClip soundSE1;//ジャンプ時の音
 	public AudioClip soundSE2;//アイテム取得時の音
@@ -544,7 +545,7 @@ public class PlayerMove : MonoBehaviour
         {
             if (balloon != null)//爆発物があれば
             {
-                balloon.GetComponent<BalloonController>().BalloonMove(transform.gameObject, col.gameObject);//爆発物の移動処理
+                balloon.GetComponent<BalloonOrigin>().BalloonMove(transform.gameObject, col.gameObject);//爆発物の移動処理
                 GamePad.SetVibration(XDInput[(int)(playerIndex)], 0.0f, 1.0f);
                 isStop = true;
             }
@@ -573,7 +574,7 @@ public class PlayerMove : MonoBehaviour
             Destroy(col.gameObject);//強制交換アイテム破棄
             GameObject[] pList = GameObject.FindGameObjectsWithTag("Player");//プレイヤー配列を作成
             GameObject b = GameObject.FindGameObjectWithTag("Balloon");
-            b.GetComponent<BalloonController>().BalloonExChange(pList, gameObject);
+            b.GetComponent<BalloonOrigin>().BalloonExChange(pList, gameObject);
         }
         //中心物体に当たったら
         if (col.gameObject.tag == "Post"&&balloon == null)

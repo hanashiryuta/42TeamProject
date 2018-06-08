@@ -16,18 +16,24 @@ public class CameraShake : MonoBehaviour
     private Vector3 shakeValue = new Vector3(1, 1, 0);
     private bool isShake = false;
 
-    BalloonController balloonController;
+    BalloonOrigin balloonController;
+    GameObject balloonControllerObject;
 
     // Use this for initialization
     void Start ()
     {
-        balloonController = GameObject.FindGameObjectWithTag("Balloon").GetComponent<BalloonController>();
     }
 
     // Update is called once per frame
     void Update ()
     {
-        Shake(shakeSeconds, shakeValue);
+        if (balloonControllerObject == null)
+        {
+            balloonControllerObject = GameObject.FindGameObjectWithTag("Balloon");
+            return;
+        }
+        balloonController = balloonControllerObject.GetComponent<BalloonOrigin>();
+        //Shake(shakeSeconds, shakeValue);
     }
 
     /// <summary>
@@ -35,12 +41,12 @@ public class CameraShake : MonoBehaviour
     /// </summary>
     /// <param name="time">秒数</param>
     /// <param name="value">揺らす度合い</param>
-    void Shake(float time, Vector3 value)
+    public void Shake()
     {
         if (balloonController.IsBlast)
         {
             isShake = true;
-            Camera.main.DOShakePosition(time, value);
+            Camera.main.DOShakePosition(shakeSeconds, shakeValue);
             balloonController.IsBlast = false;
         }
     }

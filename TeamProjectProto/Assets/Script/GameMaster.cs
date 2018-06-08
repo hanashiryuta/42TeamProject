@@ -64,11 +64,6 @@ public class GameMaster : MonoBehaviour {
             gameParameter.Add("Player" + i + "総ポイント", gameObjectMaster["Player" + i].GetComponent<PlayerMove>().totalItemCount);
         }
 
-        //風船のパラメーターを追加
-        gameParameter.Add("Balloon大きさ", gameObjectMaster["Balloon"].GetComponent<BalloonController>().scaleCount);
-        gameParameter.Add("Balloon大きさ限界", gameObjectMaster["Balloon"].GetComponent<BalloonController>().scaleLimit);
-        gameParameter.Add("Balloonポイント", gameObjectMaster["Balloon"].GetComponent<BalloonController>().blastCount);
-        gameParameter.Add("Balloonポイント限界", gameObjectMaster["Balloon"].GetComponent<BalloonController>().blastLimit);
 
         //制限時間を取得
         gameParameter.Add("制限時間", gameObjectMaster["TimeController"].GetComponent<TimeController>().gameTime);
@@ -83,8 +78,26 @@ public class GameMaster : MonoBehaviour {
             gameParameter["Player" + i + "ポイント"] = gameObjectMaster["Player" + i].GetComponent<PlayerMove>().holdItemCount;
             gameParameter["Player" + i + "総ポイント"] = gameObjectMaster["Player" + i].GetComponent<PlayerMove>().totalItemCount;
         }
-        gameParameter["Balloon大きさ"] = gameObjectMaster["Balloon"].GetComponent<BalloonController>().scaleCount;
-        gameParameter["Balloonポイント"] = gameObjectMaster["Balloon"].GetComponent<BalloonController>().blastCount;
+
+        if (gameObjectMaster["Balloon"] == null)
+        {
+            gameObjectMaster["Balloon"] = GameObject.FindGameObjectWithTag("Balloon");
+        }
+        else
+        {
+            //風船のパラメーターを追加
+            if (!gameParameter.ContainsKey("Balloon大きさ"))
+                gameParameter.Add("Balloon大きさ", gameObjectMaster["Balloon"].GetComponent<BalloonOrigin>().scaleCount);
+            if (!gameParameter.ContainsKey("Balloon大きさ限界"))
+                gameParameter.Add("Balloon大きさ限界", gameObjectMaster["Balloon"].GetComponent<BalloonOrigin>().scaleLimit);
+            if (!gameParameter.ContainsKey("Balloonポイント"))
+                gameParameter.Add("Balloonポイント", gameObjectMaster["Balloon"].GetComponent<BalloonOrigin>().blastCount);
+            if (!gameParameter.ContainsKey("Balloonポイント限界"))
+                gameParameter.Add("Balloonポイント限界", gameObjectMaster["Balloon"].GetComponent<BalloonOrigin>().blastLimit);
+
+            gameParameter["Balloon大きさ"] = gameObjectMaster["Balloon"].GetComponent<BalloonOrigin>().scaleCount;
+            gameParameter["Balloonポイント"] = gameObjectMaster["Balloon"].GetComponent<BalloonOrigin>().blastCount;
+        }
         gameParameter["制限時間"] = gameObjectMaster["TimeController"].GetComponent<TimeController>().gameTime;
 
         //表示
