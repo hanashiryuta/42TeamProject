@@ -12,12 +12,12 @@ using XInputDotNetPure; //コントローラー振動用
 /// <summary>
 /// 爆発物の状態
 /// </summary>
-public enum BalloonState
-{
-    SAFETY,//安全
-    CAUTION,//注意
-    DANGER//危険
-}
+//public enum BalloonState
+//{
+//    SAFETY,//安全
+//    CAUTION,//注意
+//    DANGER//危険
+//}
 
 public class BalloonController : MonoBehaviour {
     

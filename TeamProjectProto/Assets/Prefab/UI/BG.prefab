@@ -112,7 +112,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _moveSpeedX: 0.05
-  _moveSpeedY: -0.1
+  _moveSpeedY: 0.1
   bg_Mat:
   - {fileID: 2100000, guid: cee57c9a410d223428364a86838a52a6, type: 2}
   - {fileID: 2100000, guid: 423e3e89941b4c64f928ce0ff5a117d6, type: 2}
