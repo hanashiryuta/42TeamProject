@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using XInputDotNetPure; //コントローラー振動用
+using DG.Tweening;
 
 /// <summary>
 /// 爆発物の状態
@@ -366,12 +367,13 @@ public class BalloonOrigin : MonoBehaviour
     public virtual void BlastAction()
     {
         _isBlast = true;//爆発した
+        balloonMaster.IsBlast = true;//爆発した
+        player.GetComponent<PlayerMove>().isStan = true;
         GetComponent<AudioSource>().PlayOneShot(soundSE2);
         //次のプレイヤー指定
         balloonMaster.nextPlayer = BalloonExChangeByDistance(balloonMaster.pList, player);
         isDestroy = true;//破棄できるようにする
-        Camera.main.GetComponent<CameraShake>().Shake();
-
+                
         Destroy(this.gameObject);
     }
 

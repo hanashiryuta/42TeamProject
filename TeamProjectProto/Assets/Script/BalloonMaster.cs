@@ -7,11 +7,27 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+    public enum NowBalloonState
+{
+    SAFETY,//安全
+    CAUTION,//注意
+    DANGER,//危険
+    NONE//何もない
+}
+
 public class BalloonMaster : MonoBehaviour {
 
     public List<GameObject> balloonList;//バルーンリスト
     GameObject nextSpawnBalloon;//次にセルバルーン
+    public GameObject NextSpawnBalloon
+    {
+        get { return nextSpawnBalloon; }
+    }
     GameObject nowBalloon;//今で出ているバルーン
+    public GameObject NowBalloon
+    {
+        get { return nowBalloon; }
+    }
 
     [HideInInspector]
     public GameObject nextPlayer;//次にバルーンがつくプレイヤー
@@ -29,8 +45,41 @@ public class BalloonMaster : MonoBehaviour {
 
     public bool isCameraDistance = false;
 
+    PortalCircle portalCircle_ToOutside;//外向け円(Effect)
+    PortalCircle portalCircle_ToInside;//内向け円(Effect)
+    CameraShake cameraShake;//カメラ振動(Effect)
+
+    public GameObject origin_BalloonEffectCenter;//風船用エフェクト用中心オブジェ
+    GameObject balloonEffectCenter;
+    public GameObject PortalCenter
+    {
+        get { return balloonEffectCenter; }
+    }
+
+    NowBalloonState _nowBalloonState;//風船色状態
+    public NowBalloonState NowBState
+    {
+        get { return _nowBalloonState; }
+    }
+
+    bool _isColorChaged = false;//色変化したか（エフェクト用）
+    public bool IsColorChanged
+    {
+        get { return _isColorChaged; }
+    }
+
+    bool _isBlast = false;//爆発したか（エフェクト用）
+    public bool IsBlast
+    {
+        get { return _isBlast; }
+        set { _isBlast = value; }
+    }
+    [HideInInspector]
+    public float blastCount = 0;//内容物総数
+
     // Use this for initialization
-    void Start (){
+    void Start ()
+    {
         //初期化処理
         pList = GameObject.FindGameObjectsWithTag("Player");
         nextPlayer = pList[Random.Range(0, pList.Length)];
@@ -40,10 +89,22 @@ public class BalloonMaster : MonoBehaviour {
 
         startCntDown = GameObject.Find("StartCountDown").GetComponent<StartCountDown>();
         finishCall = GameObject.Find("FinishCall").GetComponent<FinishCall>();
+
+        balloonEffectCenter = null;
+
+        portalCircle_ToOutside = Camera.main.GetComponents<PortalCircle>()[0];//1個目がoutside
+        portalCircle_ToInside = Camera.main.GetComponents<PortalCircle>()[1];//2個目がinside
+
+        portalCircle_ToOutside.BalloonM = this;
+        portalCircle_ToInside.BalloonM = this;
+
+        cameraShake = Camera.main.GetComponent<CameraShake>();
+        cameraShake.BalloonM = this;
     }
 
     // Update is called once per frame
-    void Update () {
+    void Update ()
+    {
         // カウントダウン中は何もしない
         if (startCntDown.IsCntDown || finishCall.IsCalling)
             return;
@@ -51,6 +112,10 @@ public class BalloonMaster : MonoBehaviour {
         //バルーンがなければ
         if (nowBalloon == null)
         {
+            blastCount = 0;
+            _nowBalloonState = NowBalloonState.NONE;
+
+
             //時間経過
             balloonRespawnTime -= Time.deltaTime;
             if(balloonRespawnTime <= 0)
@@ -69,7 +134,36 @@ public class BalloonMaster : MonoBehaviour {
                 nextSpawnBalloon = balloonList[Random.Range(0, balloonList.Count)];
 
                 balloonRespawnTime = originBalloonRespawnTime;
+
+                //風船の色状態
+                _nowBalloonState = (NowBalloonState)(nowBalloon.GetComponent<BalloonOrigin>().BalloonState);
+
+                if (balloonEffectCenter != null)
+                {
+                    Destroy(balloonEffectCenter);
+                    //中心座標替わり
+                    balloonEffectCenter = Instantiate(origin_BalloonEffectCenter, nowBalloon.transform.position, Quaternion.identity);
+                }
+                else
+                {
+                    //中心座標替わり
+                    balloonEffectCenter = Instantiate(origin_BalloonEffectCenter, nowBalloon.transform.position, Quaternion.identity);
+                }
             }
+
         }
-	}
+        //バルーンがある時
+        else
+        {
+            //位置合わせ
+            balloonEffectCenter.transform.position = nowBalloon.transform.position;
+            _isColorChaged = nowBalloon.GetComponent<BalloonOrigin>().IsColorChanged;
+
+            _nowBalloonState = (NowBalloonState)(nowBalloon.GetComponent<BalloonOrigin>().BalloonState);
+            blastCount = nowBalloon.GetComponent<BalloonOrigin>().blastCount;
+
+            portalCircle_ToOutside.TargetCenter = balloonEffectCenter;
+            portalCircle_ToInside.TargetCenter = balloonEffectCenter;
+        }
+    }
 }

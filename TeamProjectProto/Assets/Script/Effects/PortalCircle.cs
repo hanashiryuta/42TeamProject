@@ -27,6 +27,11 @@ public class PortalCircle : MonoBehaviour
     float increaseValue = 0.01f;//膨らむ値
     GameObject target;//円の中心目標(デフォはNULL)
     bool isBlow = false;//円を吹き飛ばすか
+    public bool IsBlow
+    {
+        get { return isBlow; }
+        set { isBlow = value; }
+    }
     bool isSwelled = false;//風船膨らんだか？
 
     [SerializeField]
@@ -35,8 +40,19 @@ public class PortalCircle : MonoBehaviour
     float seconds = 1f; //継続時間
     bool isCreateCircle = false;
 
-    BalloonOrigin balloonController;
-    GameObject balloonControllerObject;
+    BalloonMaster _balloonM;//風船総合管理クラス
+    public BalloonMaster BalloonM
+    {
+        get { return _balloonM; }
+        set { _balloonM = value; }
+    }
+
+    GameObject _targetCenter;//風船エフェクト座標オブジェ
+    public GameObject TargetCenter
+    {
+        get { return _targetCenter; }
+        set { _targetCenter = value; }
+    }
 
     readonly int subTexPropertyId = Shader.PropertyToID("_SubTex");
     readonly int radiusPropertyId = Shader.PropertyToID("_Radius");
@@ -63,37 +79,39 @@ public class PortalCircle : MonoBehaviour
 
     void Start()
     {
+        DOTween.KillAll();
+
         material.SetTexture(subTexPropertyId, texture);
     }
 
     void Update()
     {
-        if (balloonControllerObject == null)
+        //ターゲットがある場合
+        if (_targetCenter != null)
         {
-            balloonControllerObject = GameObject.FindGameObjectWithTag("Balloon");
-            return;
-        }
-        balloonController = balloonControllerObject.GetComponent<BalloonOrigin>();
-        // 爆発円（外向け）
-        if (isDirectionToOutside)
-        {
-            SetCircleToOutside();
-        }
-        // 集中円（内向け）
-        else
-        {
-            SetCircleToInside();
+
+            // 爆発円（外向け）
+            if (isDirectionToOutside)
+            {
+                SetCircleToOutside();
+            }
+            // 集中円（内向け）
+            else
+            {
+                SetCircleToInside();
+            }
         }
     }
-
+    float tmpRange = 0;
     /// <summary>
     /// ポータルを開く（外側に伸ばす）
     /// </summary>
     void OpenPortal()
     {
-        DOTween.KillAll();
+        //DOTween.KillAll(); ここでKillしたらCameraChakeが止まっちゃう
         DOTween.To(() => currentPortalRadius, SetPortalRadius, range, seconds).SetEase(Ease.OutExpo);
     }
+
 
     /// <summary>
     /// ポータルを閉める
@@ -133,18 +151,16 @@ public class PortalCircle : MonoBehaviour
     /// </summary>
     void SetCircleToOutside()
     {
-        FindDangerTarget();
-
-        if (target != null)//ターゲットがあったら
+        if (BalloonM.NowBState == NowBalloonState.DANGER) //風船が赤い時
         {
             currentPortalRadius = defaltPortalRadius;
 
-            BalloonBlowUp(balloonController.blastCount);
+            BalloonBlowUp(BalloonM.blastCount);
 
             SetPortalRadius(currentPortalRadius);//円の半径を指定
             SetPortalWidth(portalWidth);//円の太さを指定
 
-            var targetPosition = Camera.main.WorldToScreenPoint(target.transform.position);//ターゲットの座標をスクリーン座標に変換
+            var targetPosition = Camera.main.WorldToScreenPoint(_targetCenter.transform.position);//ターゲットの座標をスクリーン座標に変換
 
             var uv = new Vector3(
                 targetPosition.x / Screen.width,
@@ -158,7 +174,7 @@ public class PortalCircle : MonoBehaviour
             material.SetFloat("_Aspect", Screen.height / (float)Screen.width);//アスペクトを合わせる
         }
 
-        if (balloonController.IsBlast)//風船が爆発したら
+        if (BalloonM.IsBlast)//風船が爆発したら
         {
             isBlow = true;//円を吹き飛ばす
         }
@@ -168,6 +184,7 @@ public class PortalCircle : MonoBehaviour
         {
             portalWidth = 0.3f;//円の太さを固定値に拡大
             SetPortalWidth(portalWidth);//円の太さを指定
+
             isSwelled = true;
 
             OpenPortal();
@@ -177,6 +194,7 @@ public class PortalCircle : MonoBehaviour
         //拡大した円が目的値に越えたら
         if (currentPortalRadius >= range)
         {
+            Debug.Log("InitCircle");
             //半径を初期化
             InitRadius();
         }
@@ -187,16 +205,14 @@ public class PortalCircle : MonoBehaviour
     /// </summary>
     void SetCircleToInside()
     {
-        FindColorChangedTarget();
-
-        if (target != null)//ターゲットがあったら
+        if (BalloonM.IsColorChanged) //色変わった時
         {
             currentPortalRadius = defaltPortalRadius;
 
             SetPortalRadius(currentPortalRadius);//円の半径を指定
             SetPortalWidth(portalWidth);//円の太さを指定
 
-            var targetPosition = Camera.main.WorldToScreenPoint(target.transform.position);//ターゲットの座標をスクリーン座標に変換
+            var targetPosition = Camera.main.WorldToScreenPoint(_targetCenter.transform.position);//ターゲットの座標をスクリーン座標に変換
 
             var uv = new Vector3(
                 targetPosition.x / Screen.width,
@@ -205,17 +221,14 @@ public class PortalCircle : MonoBehaviour
             material.SetVector("_Position", uv);
 
             material.SetFloat("_Aspect", Screen.height / (float)Screen.width);//アスペクトを合わせる
-        }
 
-        if (balloonController.IsColorChanged)//色変わった時
-        {
             isCreateCircle = true;
         }
 
         if (isCreateCircle)
         {
             ClosePortal();
-            target = null;
+            //target = null;
             isCreateCircle = false;
         }
 
@@ -224,33 +237,6 @@ public class PortalCircle : MonoBehaviour
         {
             //半径を初期化
             InitRadius();
-        }
-    }
-
-    /// <summary>
-    /// ターゲットを探す（赤風船）
-    /// </summary>
-    private void FindDangerTarget()
-    {
-        if(balloonController.BalloonState == BalloonState.DANGER)//風船が赤色の時
-        {
-            target = balloonController.transform.gameObject;//ターゲットに指定
-        }
-        else
-        {
-            target = null;
-        }
-    }
-
-    /// <summary>
-    /// ターゲットを探す（色変化）
-    /// </summary>
-    void FindColorChangedTarget()
-    {
-        if (balloonController.IsColorChanged)//色変わった時
-        {
-            target = balloonController.transform.gameObject;//ターゲットに指定
-            Debug.Log("target");
         }
     }
 

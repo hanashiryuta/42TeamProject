@@ -105,11 +105,15 @@ public class PlayerMove : MonoBehaviour
     {
         get { return _dashCountDown; }
     }
+    public GameObject origin_Dash_Particle;//ダッシュパーティクル生成元
+    GameObject dash_Particle;//ダッシュパーティクル
 
     public AudioClip soundSE4;//ヒップドロップ時の効果音
     public AudioClip soundSE5;//ヒップドロップ直前の回転時の効果音
     public AudioClip soundSE6;//ダッシュした時の効果音
     bool dashStart = true;//ダッシュしたかどうか
+    
+    public float shockWavePower = 100;//衝撃波で吹き飛ぶ強さ
 
     // Use this for initialization
     void Start()
@@ -621,6 +625,9 @@ public class PlayerMove : MonoBehaviour
                 //isStop = true;
                 isStan = true;
                 ItemBlast(1);
+                
+                //衝撃波からプレイヤーの方向に向かって吹き飛ぶ
+                rigid.AddForce((col.transform.position - transform.position) * -shockWavePower);
             }
         }
     }
@@ -788,6 +795,7 @@ public class PlayerMove : MonoBehaviour
             //ダッシュ中
             if (_isDash)
             {
+                //倍率によって乗算
                 moveSpeed = originMoveSpeed * dashSpeedScale;
             }
             else moveSpeed = originMoveSpeed;
@@ -798,6 +806,7 @@ public class PlayerMove : MonoBehaviour
             //ダッシュ中
             if (_isDash)
             {
+                //倍率によって乗算
                 moveSpeed = balloonMoveSpeed * dashSpeedScale;
             }
             else moveSpeed = balloonMoveSpeed;
@@ -848,16 +857,25 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
+    public float dashTiredTime = 1f; //疲れた時間
+
     /// <summary>
     /// 追加日：180607 追加者：何
-    /// ダッシュ中かチェック
-    /// ダッシュ中ならmoveSpeed二倍
+    /// ダッシュ入力
     /// </summary>
     void DashXInput()
     {
-        if (!_isDash)
+        if (_isDash)
+        {
+            //ダッシュ中にパーティクルを生成
+            if (dash_Particle == null) dash_Particle = Instantiate(origin_Dash_Particle, transform);
+        }
+        else
         {
             SetDashLimitTime(holdItemCount, dashTimePerItem);
+            
+            //ダッシュ中ではない時パーティクルを削除
+            if (dash_Particle != null) Destroy(dash_Particle);
         }
 
         // RBボタン押している間
@@ -883,20 +901,29 @@ public class PlayerMove : MonoBehaviour
                 _dashCountDown = 0;
                 _isDash = false;
             }
-
         }
         // RBボタン押してない間
         else
         {
             _isDash = false;
 
-            //半分の速度でカウントダウン回復
-            _dashCountDown += Time.deltaTime / 2f;
-            //上限に超えないようにする
-            if (_dashCountDown >= _dashLimitTime)
+            //ゲージ切れでしたら１秒待つから回復
+            if (_dashCountDown <= 0 && dashTiredTime > 0)
             {
-                _dashCountDown = _dashLimitTime;
+                dashTiredTime -= Time.deltaTime;
             }
+            else
+            {
+                //半分の速度でカウントダウン回復
+                _dashCountDown += Time.deltaTime / 2f;
+                dashTiredTime = 1f;
+            }
+        }
+
+        //上限に超えないようにする
+        if (_dashCountDown >= _dashLimitTime)
+        {
+            _dashCountDown = _dashLimitTime;
         }
     }
 

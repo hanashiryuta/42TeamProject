@@ -59,3 +59,6 @@ MonoBehaviour:
   originBalloonRespawnTime: 3
   pList: []
   isCameraDistance: 0
+  origin_BalloonEffectCenter: {fileID: 1263330718962570, guid: 4e5866f69cdd80a4aa51ba1da64adbbf,
+    type: 2}
+  blastCount: 0

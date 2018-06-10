@@ -11,29 +11,44 @@ using DG.Tweening;
 public class CameraShake : MonoBehaviour
 {
     [SerializeField]
-    private float shakeSeconds = 1f;
+    private float shakeSeconds = 1f;//揺れの継続時間
     [SerializeField]
-    private Vector3 shakeValue = new Vector3(1, 1, 0);
-    private bool isShake = false;
+    private Vector3 shakeValue = new Vector3(5, 5, 0);//揺れ具合
+    private bool isShaked = false;//
+    private bool currentIsShake = false;
+    private bool previousIsShake = false;
 
-    BalloonOrigin balloonController;
-    GameObject balloonControllerObject;
+    BalloonMaster _balloonM;//風船総合管理クラス
+    public BalloonMaster BalloonM
+    {
+        get { return _balloonM; }
+        set { _balloonM = value; }
+    }
 
     // Use this for initialization
     void Start ()
     {
+        previousIsShake = currentIsShake;
     }
 
     // Update is called once per frame
     void Update ()
     {
-        if (balloonControllerObject == null)
+        currentIsShake = BalloonM.IsBlast;
+
+        if (currentIsShake == true &&
+            previousIsShake == false) 
         {
-            balloonControllerObject = GameObject.FindGameObjectWithTag("Balloon");
-            return;
+            isShaked = true;
         }
-        balloonController = balloonControllerObject.GetComponent<BalloonOrigin>();
-        //Shake(shakeSeconds, shakeValue);
+
+        previousIsShake = currentIsShake;
+
+        if (isShaked)
+        {
+            Shake();
+            isShaked = false;
+        }
     }
 
     /// <summary>
@@ -43,11 +58,11 @@ public class CameraShake : MonoBehaviour
     /// <param name="value">揺らす度合い</param>
     public void Shake()
     {
-        if (balloonController.IsBlast)
-        {
-            isShake = true;
-            Camera.main.DOShakePosition(shakeSeconds, shakeValue);
-            balloonController.IsBlast = false;
-        }
+        DOTween.Shake(() => Camera.main.transform.position,
+                        x => Camera.main.transform.position = x,
+                        shakeSeconds, 
+                        shakeValue); 
+
+        BalloonM.IsBlast = false;
     }
 }

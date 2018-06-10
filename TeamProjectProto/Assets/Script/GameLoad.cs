@@ -10,7 +10,15 @@ public class GameLoad : MonoBehaviour
     public Slider slider;
 
     [SerializeField]
-    string _NextScene;
+    Scene _NextScene;
+
+    enum Scene
+    {
+        Tilte,
+        CharacterSelect,
+        Main,
+        Result
+    }
 
     public GameLoad()
     {
@@ -27,7 +35,7 @@ public class GameLoad : MonoBehaviour
 
     private IEnumerator LoadData()
     {
-        AsyncOperation async = SceneManager.LoadSceneAsync(_NextScene);
+        AsyncOperation async = SceneManager.LoadSceneAsync((int)_NextScene);
         async.allowSceneActivation = false;    // シーン遷移をしない
 
         //　読み込みが終わるまで進捗状況をスライダーの値に反映させる
