@@ -700,7 +700,10 @@ MonoBehaviour:
   effect: {fileID: 1347281360223456, guid: dcb6dca670cc92248bf25501f9bcbea7, type: 2}
   dashSpeedScale: 2
   dashTimePerItem: 0.5
+  origin_Dash_Particle: {fileID: 1858700151214336, guid: 2a0474e26149afc48859d826b9e9a250,
+    type: 2}
   playerIndex: 0
+  dashTiredTime: 1
 --- !u!136 &136683905432024742
 CapsuleCollider:
   m_ObjectHideFlags: 1
