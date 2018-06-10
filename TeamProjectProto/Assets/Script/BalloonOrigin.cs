@@ -93,6 +93,8 @@ public class BalloonOrigin : MonoBehaviour
     public Color coutionColor;
     public Color dangerColor;
 
+    public Collider[] detonationList;//誘爆範囲に入ったプレイヤーリスト
+
     // Use this for initialization
     void Start()
     {
@@ -124,7 +126,7 @@ public class BalloonOrigin : MonoBehaviour
         {
             BalloonBlast();
         }
-
+        
         //時間経過で膨らむ処理
         if (isTimeBlast)
         {
@@ -152,6 +154,9 @@ public class BalloonOrigin : MonoBehaviour
         ColorChange();//色変更
 
         _isColorChaged = CheckColorChange();
+
+
+        detonationList = Physics.OverlapSphere(player.transform.position + new Vector3(0, 1, 0), 4, 1 << LayerMask.NameToLayer("Player"));//円形のあたり判定で誘爆範囲指定して入ったプレイヤー設定
     }
 
     void FixedUpdate()
@@ -361,7 +366,7 @@ public class BalloonOrigin : MonoBehaviour
     /// </summary>
     public virtual void BlastAction()
     {
-        _isBlast = true;
+        _isBlast = true;//爆発した
         balloonMaster.IsBlast = true;//爆発した
         player.GetComponent<PlayerMove>().isStan = true;
         GetComponent<AudioSource>().PlayOneShot(soundSE2);
@@ -370,5 +375,79 @@ public class BalloonOrigin : MonoBehaviour
         isDestroy = true;//破棄できるようにする
                 
         Destroy(this.gameObject);
+    }
+
+    /// <summary>
+    /// アイテム飛び散りメソッド
+    /// </summary>
+    /// <param name="player">プレイヤー</param>
+    /// <param name="itemRate">飛び散り割合</param>
+    /// <param name="isTotal">トータルか所持からか</param>
+    public virtual void ItemBlast(GameObject player,float itemRate,bool isTotal)
+    {
+        PlayerMove playerMove = player.GetComponent<PlayerMove>();
+        playerMove.isStan = true;
+        //排出ポイント割合
+        List<string> itemList = isTotal ? playerMove.totalItemList : playerMove.itemList;
+
+        float itemCount = isTotal ? playerMove.totalItemCount : playerMove.holdItemCount;
+
+        int itemRatio = (int)(itemCount *(itemRate/10));
+
+        if(isTotal)
+            playerMove.totalItemCount -= itemRatio;
+        else
+            playerMove.holdItemCount -= itemRatio;
+        //排出ポイント割合が0になるまで排出
+        while (itemRatio > 0)
+        {
+            //排出アイテム設定
+            GameObject outItem = playerMove.originItem;
+
+            //2ポイント以下なら別設定
+            if (itemRatio <= 2)
+            {
+                GameObject spawnItem;//排出させたアイテム
+                int TwoOrOne = Random.Range(0, 2);
+
+                //1/2の確率で、排出ポイント割合が2で、2ポイントアイテムをもっていたら
+                if (TwoOrOne == 0 && itemRatio == 2 && itemList.Contains("2CoinPointItem(Clone)"))
+                {
+                    itemRatio -= 2;//排出ポイント割合2ポイント減
+                    outItem = playerMove.originHighItem;//2ポイントアイテム排出
+                    spawnItem = Instantiate(outItem, player.transform.position + new Vector3(0, outItem.transform.localScale.y + 3, 0), Quaternion.Euler(90, 0, 0));//生成
+                    spawnItem.GetComponent<ItemController>().SetMovePosition();//移動設定
+                    spawnItem.GetComponent<ItemController>().isGet = false;//取れない設定
+                    itemList.Remove("2CoinPointItem(Clone)");//2ポイントアイテム削除
+                    break;
+                }
+                itemRatio--;//排出ポイント割合ポイント減
+                outItem = playerMove.originItem;//ポイントアイテム排出
+                spawnItem = Instantiate(outItem, player.transform.position + new Vector3(0, outItem.transform.localScale.y + 3, 0), Quaternion.Euler(90, 0, 0));//生成
+                spawnItem.GetComponent<ItemController>().SetMovePosition();//移動設定
+                spawnItem.GetComponent<ItemController>().isGet = false;//取れない設定
+                itemList.Remove("1CoinPointItem(Clone)");//ポイントアイテム削除
+            }
+            //それ以外はランダム
+            else
+            {
+                int itemNum = Random.Range(0, itemList.Count);//ランダム設定
+                switch (itemList[itemNum])//取得したアイテムからランダムで選出
+                {
+                    case "1CoinPointItem(Clone)"://普通のアイテム
+                        itemRatio--;//排出ポイント割合ポイント減
+                        outItem = playerMove.originItem;//ポイントアイテム排出
+                        break;
+                    case "2CoinPointItem(Clone)"://高ポイントアイテム
+                        itemRatio -= 2;//排出ポイント割合2ポイント減
+                        outItem = playerMove.originHighItem;//2ポイントアイテム排出
+                        break;
+                }
+                GameObject spawnItem = Instantiate(outItem, player.transform.position + new Vector3(0, outItem.transform.localScale.y + 3, 0), Quaternion.Euler(90, 0, 0));//生成
+                spawnItem.GetComponent<ItemController>().SetMovePosition();//移動設定
+                spawnItem.GetComponent<ItemController>().isGet = false;//取れない設定
+                itemList.RemoveAt(itemNum);//排出アイテム削除
+            }
+        }
     }
 }

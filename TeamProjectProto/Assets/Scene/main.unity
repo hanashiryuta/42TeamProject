@@ -118,6 +118,37 @@ RectTransform:
   m_PrefabParentObject: {fileID: 224846934616948154, guid: 91347e7381ca01b46b64cae46052ffeb,
     type: 2}
   m_PrefabInternal: {fileID: 549912037}
+--- !u!84 &181060742
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  m_Width: 1280
+  m_Height: 720
+  m_AntiAliasing: 1
+  m_DepthFormat: 1
+  m_ColorFormat: 0
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 0
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
 --- !u!224 &382059076 stripped
 RectTransform:
   m_PrefabParentObject: {fileID: 224071879788058470, guid: 91347e7381ca01b46b64cae46052ffeb,
@@ -269,7 +300,7 @@ Prefab:
     - target: {fileID: 114927463786293658, guid: 91347e7381ca01b46b64cae46052ffeb,
         type: 2}
       propertyPath: gameTime
-      value: 125
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 1912439068673506, guid: 91347e7381ca01b46b64cae46052ffeb, type: 2}
       propertyPath: m_TagString
@@ -529,6 +560,37 @@ RectTransform:
   m_PrefabParentObject: {fileID: 224605370156193110, guid: 91347e7381ca01b46b64cae46052ffeb,
     type: 2}
   m_PrefabInternal: {fileID: 549912037}
+--- !u!84 &1300369255
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  m_Width: 1280
+  m_Height: 720
+  m_AntiAliasing: 1
+  m_DepthFormat: 1
+  m_ColorFormat: 0
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
 --- !u!4 &1235523766 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4865645227401938, guid: 4e5866f69cdd80a4aa51ba1da64adbbf,
@@ -1182,8 +1244,23 @@ MonoBehaviour:
   sourceCamera: {fileID: 2094600263}
   outlineCamera: {fileID: 1846411882}
   outlineShaderMaterial: {fileID: 0}
-  renderTexture: {fileID: 1012824808}
-  extraRenderTexture: {fileID: 1045518373}
+  renderTexture: {fileID: 181060742}
+  extraRenderTexture: {fileID: 1300369255}
+--- !u!114 &2094600266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2094600260}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cab769a52b31d4d409df18fd2d859344, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  material: {fileID: 2100000, guid: 37ebe2defd6eeaa4c98b17006b8c4d10, type: 2}
+  noiseX: 0
+  sinNoiseOffset: 0
+  offset: {x: 0, y: 0}
 --- !u!114 &2094600267
 MonoBehaviour:
   m_ObjectHideFlags: 0

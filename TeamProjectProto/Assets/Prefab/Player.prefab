@@ -202,7 +202,7 @@ GameObject:
   - component: {fileID: 4095338767754048}
   - component: {fileID: 65182502362328944}
   - component: {fileID: 114427091718037632}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: PlayerJumpHit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
