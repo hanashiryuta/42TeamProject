@@ -108,6 +108,11 @@ public class PlayerMove : MonoBehaviour
     public GameObject origin_Dash_Particle;//ダッシュパーティクル生成元
     GameObject dash_Particle;//ダッシュパーティクル
 
+    public AudioClip soundSE4;//ヒップドロップ時の効果音
+    public AudioClip soundSE5;//ヒップドロップ直前の回転時の効果音
+    public AudioClip soundSE6;//ダッシュした時の効果音
+    bool dashStart = true;//ダッシュしたかどうか
+
     // Use this for initialization
     void Start()
     {
@@ -174,6 +179,11 @@ public class PlayerMove : MonoBehaviour
             Debug.Log(jumpCount + "ジャンプカウント");
         }
 
+        //ダッシュ中でなければ
+        if (!_isDash)
+        {
+            dashStart = true;
+        }
     }
 
     // Update is called once per frame
@@ -733,6 +743,9 @@ public class PlayerMove : MonoBehaviour
                 hipDrop4.name = hipDrop4.name + transform.name;
                 break;
         }
+
+        //効果音追加
+        GetComponent<AudioSource>().PlayOneShot(soundSE4);
     }
 
     /// <summary>
@@ -825,6 +838,9 @@ public class PlayerMove : MonoBehaviour
                 hipDropTime = 0.3f;
                 rigid.velocity = Vector3.zero;
                 hipDropPosition = transform.position;
+
+                //効果音追加
+                GetComponent<AudioSource>().PlayOneShot(soundSE5);
             }
 
             //ジャンプカウント増加
@@ -866,6 +882,14 @@ public class PlayerMove : MonoBehaviour
             if (_dashCountDown > 0)
             {
                 _isDash = true;
+
+                //ダッシュしたら1度だけ音を鳴らす
+                if (dashStart)
+                {
+                    //効果音追加
+                    GetComponent<AudioSource>().PlayOneShot(soundSE6);
+                }
+                dashStart = false;
             }
             else
             {

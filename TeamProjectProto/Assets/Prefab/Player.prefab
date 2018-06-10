@@ -689,8 +689,8 @@ MonoBehaviour:
   originHighItem: {fileID: 1787082520497464, guid: c96169cf033f68d48b4cdeffe9ed0122,
     type: 2}
   itemList: []
+  soundSE1: {fileID: 8300000, guid: f5c3ff069cdfdc14eb9af8c8956482e8, type: 3}
   totalItemList: []
-  soundSE1: {fileID: 8300000, guid: 96c42a4475b2d32428b25595bf7dc5b0, type: 3}
   soundSE2: {fileID: 8300000, guid: 475d72f144db63844b07315899919ce2, type: 3}
   soundSE3: {fileID: 8300000, guid: 04aabf5253f07f84bb09425dd4cb2c5c, type: 3}
   isMoveInertia: 0
@@ -702,6 +702,9 @@ MonoBehaviour:
   dashTimePerItem: 0.5
   origin_Dash_Particle: {fileID: 1858700151214336, guid: 2a0474e26149afc48859d826b9e9a250,
     type: 2}
+  soundSE4: {fileID: 8300000, guid: a8c23cd303a620d4ea481ba4058b6f1f, type: 3}
+  soundSE5: {fileID: 8300000, guid: 326474d3a1aee7144bb04f2591955df0, type: 3}
+  soundSE6: {fileID: 8300000, guid: 2235b27092d1cd14682903feadae2b33, type: 3}
   playerIndex: 0
   dashTiredTime: 1
 --- !u!136 &136683905432024742
