@@ -26,7 +26,7 @@ public class PlayerHit : MonoBehaviour {
         //内容物に当たったら
         if (col.gameObject.name.Contains("PointItem"))
         {
-            if (col.gameObject.GetComponent<ItemController>().isGet && playerMove.balloon == null)
+            if (col.gameObject.GetComponent<ItemController>().isGet && playerMove.balloon == null&&!playerMove.isStan)
             {
                 col.gameObject.GetComponent<ItemController>().Item_Death_Particle();//アイテム取得時パーティクル生成
                 playerMove.itemList.Add(col.name);//リスト追加

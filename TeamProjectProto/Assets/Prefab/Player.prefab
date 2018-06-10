@@ -202,7 +202,7 @@ GameObject:
   - component: {fileID: 4095338767754048}
   - component: {fileID: 65182502362328944}
   - component: {fileID: 114427091718037632}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: PlayerJumpHit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -689,8 +689,8 @@ MonoBehaviour:
   originHighItem: {fileID: 1787082520497464, guid: c96169cf033f68d48b4cdeffe9ed0122,
     type: 2}
   itemList: []
-  soundSE1: {fileID: 8300000, guid: f5c3ff069cdfdc14eb9af8c8956482e8, type: 3}
   totalItemList: []
+  soundSE1: {fileID: 8300000, guid: f5c3ff069cdfdc14eb9af8c8956482e8, type: 3}
   soundSE2: {fileID: 8300000, guid: 475d72f144db63844b07315899919ce2, type: 3}
   soundSE3: {fileID: 8300000, guid: 04aabf5253f07f84bb09425dd4cb2c5c, type: 3}
   isMoveInertia: 0

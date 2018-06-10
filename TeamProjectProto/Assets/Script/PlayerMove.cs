@@ -290,8 +290,8 @@ public class PlayerMove : MonoBehaviour
             jumpCount++;
 
             //上限設定
-            if (jumpCount > 2)
-                jumpCount = 2;
+            if (jumpCount > 1)
+                jumpCount = 1;
         }
     }
 
@@ -382,26 +382,26 @@ public class PlayerMove : MonoBehaviour
         }
 
         //ヒップドロップ中
-        if(jumpCount == 2)
-        {
-            //一定時間空中で停止
-            hipDropTime -= Time.deltaTime;
-            if (hipDropTime > 0)
-            {
-                //移動量ゼロ
-                rigid.velocity = Vector3.zero;
-                //位置保存
-                transform.position = hipDropPosition;
-            }
-            //左右移動ゼロ化
-            moveJoy.x = 0;
-            moveJoy.y = 0;
+        //if(jumpCount == 2)
+        //{
+        //    //一定時間空中で停止
+        //    hipDropTime -= Time.deltaTime;
+        //    if (hipDropTime > 0)
+        //    {
+        //        //移動量ゼロ
+        //        rigid.velocity = Vector3.zero;
+        //        //位置保存
+        //        transform.position = hipDropPosition;
+        //    }
+        //    //左右移動ゼロ化
+        //    moveJoy.x = 0;
+        //    moveJoy.y = 0;
 
-            //重力設定
-            gravPower = 9.8f * 2;
-            //ヒップドロップ中
-            isHipDrop = true;
-        }
+        //    //重力設定
+        //    gravPower = 9.8f * 2;
+        //    //ヒップドロップ中
+        //    isHipDrop = true;
+        //}
 
         //あたり判定用配列
         /*
