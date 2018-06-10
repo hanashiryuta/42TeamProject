@@ -112,6 +112,8 @@ public class PlayerMove : MonoBehaviour
     public AudioClip soundSE5;//ヒップドロップ直前の回転時の効果音
     public AudioClip soundSE6;//ダッシュした時の効果音
     bool dashStart = true;//ダッシュしたかどうか
+    
+    public float shockWavePower = 100;//衝撃波で吹き飛ぶ強さ
 
     // Use this for initialization
     void Start()
@@ -623,6 +625,9 @@ public class PlayerMove : MonoBehaviour
                 //isStop = true;
                 isStan = true;
                 ItemBlast(1);
+                
+                //衝撃波からプレイヤーの方向に向かって吹き飛ぶ
+                rigid.AddForce((col.transform.position - transform.position) * -shockWavePower);
             }
         }
     }
