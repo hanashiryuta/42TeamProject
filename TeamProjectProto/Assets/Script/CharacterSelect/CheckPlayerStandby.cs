@@ -61,13 +61,16 @@ public class CheckPlayerStandby : MonoBehaviour
 
         if (_isCanPressBtn)
         {
-            CheckStandBy();
+            CheckSpawn();
         }
 
         _previousState = _currentState;
     }
 
-    void CheckStandBy()
+    /// <summary>
+    /// プレイヤー生成チェック
+    /// </summary>
+    void CheckSpawn()
     {
         if (!_isSpawn)//生成してない時
         {
