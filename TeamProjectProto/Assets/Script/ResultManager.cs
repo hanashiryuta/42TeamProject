@@ -80,11 +80,11 @@ public class ResultManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 「もう1度遊ぶ」を選んだらゲームシーンに戻す処理
+    /// 「もう1度遊ぶ」を選んだらキャラ生成シーンに戻す処理
     /// </summary>
     public void BackGame()
     {
-        SceneManager.LoadScene("main");
+        SceneManager.LoadScene("CharacterSelect");
     }
 
     /// <summary>

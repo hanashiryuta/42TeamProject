@@ -1455,6 +1455,8 @@ MonoBehaviour:
   - {fileID: 617939378}
   mainText: {fileID: 2039620058}
   fadePanel: {fileID: 1120177109}
+  connectedPlayerStatusObj: {fileID: 1935583922275122, guid: f9e98f74e66fbbe48b8f9be64f72edd9,
+    type: 2}
 --- !u!114 &2067282213
 MonoBehaviour:
   m_ObjectHideFlags: 0
