@@ -74,8 +74,5 @@ public class RespawnController : MonoBehaviour {
 
             spawnPoint++;
         }
-
-        //プレイヤーが生成し終わったら受け取りオブジェを削除
-        Destroy(connectedPlayerStatus.transform.gameObject);
     }
 }

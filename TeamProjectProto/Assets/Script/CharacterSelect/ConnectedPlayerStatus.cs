@@ -1,4 +1,9 @@
-﻿using System.Collections;
+﻿/*
+ * 作成日時：180611
+ * 接続したプレイヤーのステータスを保管するクラス
+ * 作成者：何承恩
+ */
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -25,13 +30,6 @@ public class ConnectedPlayerStatus : MonoBehaviour
         else
         {
             Destroy(this.gameObject);
-        }
-    }
-
-    private void Update()
-    {
-        if (SceneManager.GetActiveScene().name == "main")
-        {
         }
     }
 }
