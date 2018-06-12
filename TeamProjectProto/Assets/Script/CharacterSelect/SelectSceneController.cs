@@ -146,18 +146,16 @@ public class SelectSceneController : MonoBehaviour
         mainText.text = "ゲーム\nスタートだ！";
         mainText.color = Color.yellow;
 
-        Invoke("GameSceneLoad", _delayTime + 1f);
+        Invoke("SceneLoad", _delayTime + 1f);
     }
 
 
-    void GameSceneLoad()
+    void SceneLoad()
     {
         fadeController.ChangeAlpha();
-        Debug.Log(fadeController.IsFadeFinish);
         if (fadeController.IsFadeFinish && !isFaded)
         {
             gameload.LoadingStart();
-            Debug.Log(isFaded);
             isFaded = true;
         }
     }
@@ -168,7 +166,7 @@ public class SelectSceneController : MonoBehaviour
     void SavePlayerStatus()
     {
         connectedPlayerStatus = Instantiate(connectedPlayerStatusObj).GetComponent<ConnectedPlayerStatus>();
-
+        Debug.Log(connectedPlayerStatus);
         for (int i = 0; i < standbyCheck.Length; i++)
         {
             if (standbyCheck[i].IsSpawn)
