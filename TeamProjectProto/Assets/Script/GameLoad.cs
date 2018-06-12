@@ -16,6 +16,7 @@ public class GameLoad : MonoBehaviour
     {
         Tilte,
         CharacterSelect,
+        StageSelect,
         Main,
         Result
     }

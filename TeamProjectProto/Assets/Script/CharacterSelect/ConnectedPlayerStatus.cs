@@ -17,7 +17,19 @@ public class ConnectedPlayerStatus : MonoBehaviour
         set { _connectedPlayer = value; }
     }
 
+    string _stageName;
+    public string StageName
+    {
+        get { return _stageName; }
+        set { _stageName = value; }
+    }
+
     static bool created = false;
+    public bool Created
+    {
+        get { return created; }
+        set { created = value; }
+    }
 
     void Awake()
     {
@@ -31,5 +43,9 @@ public class ConnectedPlayerStatus : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
+    }
+
+    private void Update()
+    {
     }
 }
