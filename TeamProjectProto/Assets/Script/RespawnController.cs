@@ -34,7 +34,23 @@ public class RespawnController : MonoBehaviour {
             new Color(0 / 255f, 255 / 255f, 65 / 255f)//緑
         };
 
-        if (connectedPlayerStatus == null) 
+        if(GameObject.FindGameObjectWithTag("PlayerStatus") == null)
+        {
+            DebugMode();
+        }
+        else
+        {
+            SpawnPlayerByStatus();
+        }
+
+    }
+
+    /// <summary>
+    /// SelectシーンからもらったStatusでキャラ生成
+    /// </summary>
+    void SpawnPlayerByStatus()
+    {
+        if (connectedPlayerStatus == null)
         {
             // ConnectedPlayerStatusで接続しているプレイヤーを受け取る
             connectedPlayerStatus = GameObject.FindGameObjectWithTag("PlayerStatus").GetComponent<ConnectedPlayerStatus>();
@@ -73,6 +89,31 @@ public class RespawnController : MonoBehaviour {
             Destroy(transform.GetChild(positionAry[spawnPoint]).gameObject);
 
             spawnPoint++;
+        }
+    }
+
+    /// <summary>
+    /// デバッグ用
+    /// </summary>
+    void DebugMode()
+    {
+        //生成位置を数だけプレイヤーを生成する
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            GameObject p = Instantiate(player, transform.GetChild(i).transform.position, Quaternion.identity);//プレイヤー生成
+            playerList.Add(p);//リストに追加
+            p.name = "Player" + (i + 1);//名前変更
+            p.GetComponent<XInputConfig>().playerIndex = (PlayerIndex)i; //XInput指定
+
+            p.GetComponentInChildren<SkinnedMeshRenderer>().materials[0].mainTexture = texList[i];//テクスチャ変更
+            p.GetComponentInChildren<SkinnedMeshRenderer>().materials[0].SetColor("_EmissionColor", new Color(0.2f, 0.2f, 0.2f));
+            p.GetComponentInChildren<SkinnedMeshRenderer>().materials[0].SetTexture("_EmissionMap", texList[i]);
+            p.GetComponentInChildren<SkinnedMeshRenderer>().materials[0].EnableKeyword("_EMISSION");
+
+            p.GetComponentInChildren<Outline>().color = i;
+
+            //影をPlayerの子にして生成
+            GameObject s = Instantiate(shadow, p.transform.position - Vector3.down, Quaternion.identity, p.transform);
         }
     }
 }
