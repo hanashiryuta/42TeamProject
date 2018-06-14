@@ -19,12 +19,20 @@ public class Pauser : MonoBehaviour
         // ポーズ対象に追加する
         targets.Add(this);
     }
-
     // 破棄されるとき
     void OnDestory()
     {
         // ポーズ対象から除外する
         targets.Remove(this);
+    }
+
+    /// <summary>
+    /// ポーズ対象除外処理
+    /// </summary>
+    /// <param name="pauser">除外対象</param>
+    public static void targetsRemove(Pauser pauser)
+    {
+        targets.Remove(pauser);
     }
 
     public static void Remove()

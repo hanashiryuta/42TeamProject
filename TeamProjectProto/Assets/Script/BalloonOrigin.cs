@@ -366,7 +366,11 @@ public class BalloonOrigin : MonoBehaviour
     /// </summary>
     public virtual void BlastAction()
     {
+        //ポーズ対象から外す
+        Pauser.targetsRemove(GetComponent<Pauser>());
         _isBlast = true;//爆発した
+        //ルーレットフラグをtrueに
+        balloonMaster.isRoulette = true;
         balloonMaster.IsBlast = true;//爆発した
         player.GetComponent<PlayerMove>().isStan = true;
         GetComponent<AudioSource>().PlayOneShot(soundSE2);

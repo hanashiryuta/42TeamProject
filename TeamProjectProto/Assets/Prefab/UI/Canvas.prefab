@@ -611,7 +611,7 @@ GameObject:
   - component: {fileID: 114495441257690072}
   m_Layer: 5
   m_Name: Canvas
-  m_TagString: Untagged
+  m_TagString: Canvas
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1696,11 +1696,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b7f7c01a6a3fc8438894df9eced52fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameTime: 120
+  gameTime: 90
   timeTextObject: {fileID: 1140438260434992}
   isEnd: 0
   startCntDown: {fileID: 1875694462023930}
   finishCall: {fileID: 1959631603841844}
+  isPause: 0
 --- !u!114 &114996124163908212
 MonoBehaviour:
   m_ObjectHideFlags: 1
