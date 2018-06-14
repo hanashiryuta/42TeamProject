@@ -13,6 +13,10 @@ public class RespawnController : MonoBehaviour {
 
     public GameObject player;//プレイヤー
     List<GameObject> playerList;//プレイヤーリスト
+    public List<GameObject> PlayerList
+    {
+        get { return playerList; }
+    }
     List<Color> colorList;//カラーリスト
     [SerializeField]
     List<Texture> texList;//テクスチャリスト

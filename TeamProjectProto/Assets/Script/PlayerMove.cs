@@ -29,6 +29,11 @@ public class PlayerMove : MonoBehaviour
     [HideInInspector]
     public float holdItemCount = 0;//内容物所持数
     Text holdItemCountText;//内容物所持数テキスト
+    public Text HoldItemCountText
+    {
+        get { return holdItemCountText; }
+        set { holdItemCountText = value; }
+    }
     Text totalItemCountText;//内容物所持数累計テキスト
     [HideInInspector]
     public float totalItemCount = 0;//内容物所持数累計
@@ -127,7 +132,7 @@ public class PlayerMove : MonoBehaviour
         rigid = GetComponent<Rigidbody>();
         rotationPosition = transform.position;
 
-        holdItemCountText = GameObject.Find(transform.name + "ItemCount").GetComponent<Text>();//内容物所持数テキスト取得
+        //holdItemCountText = GameObject.Find(transform.name + "ItemCount").GetComponent<Text>();//内容物所持数テキスト取得
         totalItemCountText = GameObject.Find(transform.name + "TotalCount").GetComponent<Text>(); 
         itemList = new List<string>();
         totalItemList = new List<string>();
@@ -149,8 +154,8 @@ public class PlayerMove : MonoBehaviour
 
     void Update()
     {
-        holdItemCountText.text = holdItemCount.ToString();//内容物取得数表示処理 
-        totalItemCountText.text = "Total:" + totalItemCount.ToString();
+        holdItemCountText.text = HalfWidth2FullWidth.Set2FullWidth(holdItemCount.ToString());//内容物取得数表示処理 
+        totalItemCountText.text = HalfWidth2FullWidth.Set2FullWidth(totalItemCount.ToString());
         
         PlayerAnim(playerAnim);
         
@@ -598,7 +603,7 @@ public class PlayerMove : MonoBehaviour
             {
                 effect.GetComponent<ScoreEffect>().playerName = transform.name; //プレイヤーの名前を代入
                 //エフェクトを生成
-                Instantiate(effect, RectTransformUtility.WorldToScreenPoint(Camera.main, transform.position), Quaternion.identity, GameObject.Find("Canvas").transform);
+                Instantiate(effect, RectTransformUtility.WorldToScreenPoint(Camera.main, transform.position), Quaternion.identity, GameObject.Find("PlayerScoreUI").transform);
                 GetComponent<AudioSource>().PlayOneShot(soundSE3);
             }
             col.GetComponent<PostController>().blastCount += holdItemCount;//中心物体に内容物総数を渡す
