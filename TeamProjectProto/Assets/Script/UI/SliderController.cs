@@ -14,7 +14,8 @@ public class SliderController : MonoBehaviour
 
     //ダッシュゲージ関連
     [SerializeField]
-    GameObject dashSliderOBJ;//ダッシュ用スライダー
+    GameObject origin_dashSliderOBJ;//ダッシュ用スライダー
+    GameObject dashSliderOBJ;
     Slider dashSlider;
     RectTransform dashSliderTfm;
     CanvasGroup dashCanvas;
@@ -29,12 +30,13 @@ public class SliderController : MonoBehaviour
         player = transform.GetComponent<PlayerMove>();
 
         //DashSlider
-        GameObject ds = Instantiate(dashSliderOBJ);//生成
-        ds.name = player.name + ds.name;//対応プレイヤーの名前を付ける
-        ds.transform.SetParent(GameObject.FindGameObjectWithTag("Canvas").transform);//キャンバスに移る
-        dashCanvas = ds.transform.GetComponent<CanvasGroup>();//キャンバスグループ(表示用)
-        countDownText = ds.GetComponentInChildren<Text>();
-        dashSlider = ds.transform.GetComponent<Slider>();
+        dashSliderOBJ = Instantiate(origin_dashSliderOBJ);//生成
+        dashSliderOBJ.name = player.name + dashSliderOBJ.name;//対応プレイヤーの名前を付ける
+        dashSliderOBJ.transform.SetParent(GameObject.FindGameObjectWithTag("Canvas").transform);//キャンバスに移る
+        dashCanvas = dashSliderOBJ.transform.GetComponent<CanvasGroup>();//キャンバスグループ(表示用)
+        countDownText = dashSliderOBJ.GetComponentInChildren<Text>();
+        player.HoldItemCountText = countDownText;//プレイヤー所持アイテム数
+        dashSlider = dashSliderOBJ.transform.GetComponent<Slider>();
 
         //DashSliderTransform
         dashSliderTfm = dashSlider.GetComponent<RectTransform>();
@@ -43,16 +45,10 @@ public class SliderController : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-        ////ダッシュゲージ表示
-        //if (player.IsDash) dashCanvas.alpha = 1;
-        //else dashCanvas.alpha = 0;
-
         //ダッシュゲージ位置設定
         SetSliderPosition(dashSliderTfm, dashOffset);
         //ダッシュゲージ値設定
         SetSliderValue(dashSlider, player.DashLimitTime, player.DashCountDown);
-        //カウントダウンテキスト
-        countDownText.text = player.DashCountDown.ToString("00.0");
 	}
 
     /// <summary>
@@ -66,7 +62,7 @@ public class SliderController : MonoBehaviour
             = RectTransformUtility.WorldToScreenPoint(Camera.main, transform.position + offset);
     }
     /// <summary>
-    /// ダッシュゲージ値設定
+    /// ゲージ値設定
     /// </summary>
     /// <param name="slider">ゲージ</param>
     /// <param name="limitValue">上限</param>
@@ -76,4 +72,13 @@ public class SliderController : MonoBehaviour
         slider.maxValue = limitValue;
         slider.value = currentValue;
     }
+
+    /// <summary>
+    /// 表示を隠す
+    /// </summary>
+    public void InvisibleSlider()
+    {
+        dashSliderOBJ.GetComponent<CanvasGroup>().alpha = 0;
+    }
+
 }

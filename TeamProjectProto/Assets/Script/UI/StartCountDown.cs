@@ -54,11 +54,11 @@ public class StartCountDown : MonoBehaviour
 
         for(int i = _cntDownTime; i > 0; i--)
         {
-            _textCntDown.text = i.ToString();
+            _textCntDown.text = HalfWidth2FullWidth.Set2FullWidth(i.ToString());
             yield return new WaitForSeconds(1.0f);
         }
 
-        _textCntDown.text = "GO!";
+        _textCntDown.text = "ＧＯ！";
         yield return new WaitForSeconds(1.0f);
 
         _textCntDown.text = "";

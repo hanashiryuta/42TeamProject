@@ -626,7 +626,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ab0b71356c23a44f97baddb943ca0d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dashSliderOBJ: {fileID: 1785252829080750, guid: cd246b47764bcec4288e6f3badbf508a,
+  origin_dashSliderOBJ: {fileID: 1785252829080750, guid: cd246b47764bcec4288e6f3badbf508a,
     type: 2}
   dashOffset: {x: 0, y: -2, z: 0}
 --- !u!114 &114583404204353246
