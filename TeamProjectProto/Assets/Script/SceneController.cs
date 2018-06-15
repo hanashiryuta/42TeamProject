@@ -22,6 +22,10 @@ public class SceneController : MonoBehaviour {
     //180614 何
     List<GameObject> playerList = new List<GameObject>();
 
+    //fade
+    FadeController fadeController;
+    float cnt = 0;
+
     // Use this for initialization
     void Start () {
         //balloon = GameObject.FindGameObjectWithTag("Balloon");//爆発物取得
@@ -37,11 +41,20 @@ public class SceneController : MonoBehaviour {
 
         //players
         playerList = GameObject.Find("PlayerRespawns").GetComponent<RespawnController>().PlayerList;
+
+        //fade
+        fadeController = GameObject.Find("FadePanel").GetComponent<FadeController>();
     }
 	
 	// Update is called once per frame
-	void Update () {
-        if(timeController.GetComponent<TimeController>().isEnd)
+	void Update ()
+    {
+        if (fadeController.IsFadeInFinish == false)
+        {
+            fadeController.FadeIn();
+        }
+
+        if (timeController.GetComponent<TimeController>().isEnd)
         {
             isEnd();
         }
@@ -79,6 +92,14 @@ public class SceneController : MonoBehaviour {
         }
         //DOTween全削除
         DOTween.KillAll();
+
+        cnt += Time.deltaTime;
+        //fadeout
+        if (fadeController.IsFadeOutFinish == false && cnt >= 3)
+        {
+            fadeController.FadeOut();
+        }
+
 
         //シーン遷移
         Invoke("LoadResult", finishCall._waitTime);

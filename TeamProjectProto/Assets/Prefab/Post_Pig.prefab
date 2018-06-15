@@ -11,18 +11,19 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 1960808050330346}
   m_IsPrefabParent: 1
---- !u!1 &1222747311375812
+--- !u!1 &1208568520587310
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
   m_Component:
-  - component: {fileID: 4405998849438810}
-  - component: {fileID: 33237290463234432}
-  - component: {fileID: 23720509126358976}
+  - component: {fileID: 4021672174674986}
+  - component: {fileID: 33155313997668954}
+  - component: {fileID: 23625358062647564}
+  - component: {fileID: 114541811686759412}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: pig
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -37,7 +38,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4867857188830516}
   - component: {fileID: 33017652297411032}
-  - component: {fileID: 65584731115395732}
+  - component: {fileID: 135722135796868558}
   - component: {fileID: 114966098671964068}
   m_Layer: 0
   m_Name: Post_Pig
@@ -46,15 +47,15 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4405998849438810
+--- !u!4 &4021672174674986
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1222747311375812}
-  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: -0.1, z: 0}
-  m_LocalScale: {x: 75, y: 50, z: 25}
+  m_GameObject: {fileID: 1208568520587310}
+  m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0.15, z: 0}
+  m_LocalScale: {x: 40, y: 40, z: 20}
   m_Children: []
   m_Father: {fileID: 4867857188830516}
   m_RootOrder: 0
@@ -66,19 +67,19 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1960808050330346}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 2, z: 1}
   m_Children:
-  - {fileID: 4405998849438810}
+  - {fileID: 4021672174674986}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!23 &23720509126358976
+--- !u!23 &23625358062647564
 MeshRenderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1222747311375812}
+  m_GameObject: {fileID: 1208568520587310}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -87,7 +88,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 1aede21e503d294459a3d94fa5906956, type: 3}
+  - {fileID: 2100000, guid: 9206a8729a60501458d09e354d769871, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -114,25 +115,25 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1960808050330346}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!33 &33237290463234432
+--- !u!33 &33155313997668954
 MeshFilter:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1222747311375812}
-  m_Mesh: {fileID: 4300000, guid: 1aede21e503d294459a3d94fa5906956, type: 3}
---- !u!65 &65584731115395732
-BoxCollider:
+  m_GameObject: {fileID: 1208568520587310}
+  m_Mesh: {fileID: 4300000, guid: 9206a8729a60501458d09e354d769871, type: 3}
+--- !u!114 &114541811686759412
+MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1960808050330346}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_GameObject: {fileID: 1208568520587310}
   m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1.5, y: 0.65, z: 1}
-  m_Center: {x: 0, y: -0.17, z: 0}
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 679a8474353971649a08209976416113, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetTex: {fileID: 2800000, guid: 2875e05660df82343a04d09ccaf22bc1, type: 3}
 --- !u!114 &114966098671964068
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -159,3 +160,15 @@ MonoBehaviour:
   inflateObj: 1
   origin_Pig_ToCoin_Particle: {fileID: 1505978016423842, guid: 5c7c7a53d225b70479f33864f08a9f76,
     type: 2}
+--- !u!135 &135722135796868558
+SphereCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1960808050330346}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.65
+  m_Center: {x: 0.2, y: 0, z: 0}

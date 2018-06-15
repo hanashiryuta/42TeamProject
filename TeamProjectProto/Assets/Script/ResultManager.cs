@@ -13,7 +13,7 @@ using UnityEngine.UI;
 public class ResultManager : MonoBehaviour
 {
     GameObject playerRank;//Playerの名前取得用
-    Button backtoGame, endGame;//各ボタンの情報
+    Button oneMore, endGame;//各ボタンの情報
     float count;//選んでいるボタンの取得用
     [SerializeField]
     float movingTime = 2f;
@@ -29,12 +29,23 @@ public class ResultManager : MonoBehaviour
     ConnectedPlayerStatus connectedPlayerStatus;//接続したプレイヤー
     SpawnUIPlayer spawnUIPlayer;//UIプレイヤースポーン
 
+    //fade
+    FadeController fadeController;
+    bool isFadeOuted = false;
+
+    bool isOneMore = false;
+    bool isTitle = false;
+
+    //load
+    GameLoad gameLoad;
+    bool isSceneChange = false;
+
     // Use this for initialization
     void Awake ()
     {
 		playerRank = GameObject.Find ("PlayerRankController");
 
-        backtoGame = GameObject.Find("BacktoGame").GetComponent<Button>();
+        oneMore = GameObject.Find("OneMore").GetComponent<Button>();
         endGame = GameObject.Find("EndGame").GetComponent<Button>();
 
         for(int i = 0; i < playerRankTexts.Length; i++)
@@ -66,11 +77,22 @@ public class ResultManager : MonoBehaviour
         spawnUIPlayer.ConnectedPLStatus = connectedPlayerStatus;
         spawnUIPlayer.PList = playerRank.GetComponent<PlayerRank>().ResultRank;
 
+        //fade
+        fadeController = GameObject.Find("FadePanel").GetComponent<FadeController>();
+
+        //load
+        gameLoad = transform.GetComponent<GameLoad>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        //fadein
+        if (fadeController.IsFadeInFinish == false)
+        {
+            fadeController.FadeIn();
+        }
+
         if (_isAnim)
         {
             StartCoroutine(ShowRankCoroutine());
@@ -90,30 +112,44 @@ public class ResultManager : MonoBehaviour
 
             if (count == -1)
             {
-                backtoGame.Select();//-1の時、ゲームに戻るを選択状態にする
+                oneMore.Select();//-1の時、ゲームに戻るを選択状態にする
             }
             else if (count == 1)
             {
                 endGame.Select();//1の時、ゲーム終了を選択状態にする
             }
         }
+
+        //fadeout
+        if (isSceneChange)
+        {
+            fadeController.FadeOut();
+
+            if (fadeController.IsFadeOutFinish && !isFadeOuted)
+            {
+                gameLoad.LoadingStartWithOBJ();
+                isFadeOuted = true;
+            }
+        }
+
     }
 
     /// <summary>
     /// 「もう1度遊ぶ」を選んだらキャラ生成シーンに戻す処理
     /// </summary>
-    public void BackGame()
+    public void OneMoreBtn()
     {
-        SceneManager.LoadScene("CharacterSelect");
+        gameLoad.NextScene = GameLoad.Scene.CharacterSelect;
+        isSceneChange = true;
     }
 
     /// <summary>
-    /// 「ゲーム終了」を選んだらウィンドウを閉じる処理（.exe形式のみ）
+    /// 「タイトルへ」を選んだらウィンドウを閉じる処理（.exe形式のみ）
     /// </summary>
-    public void EndGame()
+    public void ToTitleBtn()
     {
-        //Application.Quit ();
-        SceneManager.LoadScene("Title");
+        gameLoad.NextScene = GameLoad.Scene.Tilte;
+        isSceneChange = true;
     }
 
     /// <summary>
@@ -132,5 +168,17 @@ public class ResultManager : MonoBehaviour
         }
         yield return new WaitForSeconds(1f);
         _isAnim = false;
+    }
+
+
+
+    void ToCharaSelectScene()
+    {
+        SceneManager.LoadScene("CharacterSelect");
+    }
+
+    void ToGameTitle()
+    {
+        SceneManager.LoadScene("Title");
     }
 }

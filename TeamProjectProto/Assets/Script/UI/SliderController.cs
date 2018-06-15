@@ -32,7 +32,7 @@ public class SliderController : MonoBehaviour
         //DashSlider
         dashSliderOBJ = Instantiate(origin_dashSliderOBJ);//生成
         dashSliderOBJ.name = player.name + dashSliderOBJ.name;//対応プレイヤーの名前を付ける
-        dashSliderOBJ.transform.SetParent(GameObject.FindGameObjectWithTag("Canvas").transform);//キャンバスに移る
+        dashSliderOBJ.transform.SetParent(GameObject.Find("DashSliders").transform);//キャンバスに移る
         dashCanvas = dashSliderOBJ.transform.GetComponent<CanvasGroup>();//キャンバスグループ(表示用)
         countDownText = dashSliderOBJ.GetComponentInChildren<Text>();
         player.HoldItemCountText = countDownText;//プレイヤー所持アイテム数

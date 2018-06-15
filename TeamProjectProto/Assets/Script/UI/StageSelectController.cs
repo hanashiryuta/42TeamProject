@@ -66,6 +66,11 @@ public class StageSelectController : MonoBehaviour
     // Update is called once per frame
     void Update ()
     {
+        if (fadeController.IsFadeInFinish == false)
+        {
+            fadeController.FadeIn();
+        }
+
         SetControllablePlayer();
 
         currentState = GamePad.GetState(playerIndex);
@@ -238,10 +243,10 @@ public class StageSelectController : MonoBehaviour
 
     void SceneLoad()
     {
-        fadeController.ChangeAlpha();
-        if (fadeController.IsFadeFinish && !isFaded)
+        fadeController.FadeOut();
+        if (fadeController.IsFadeOutFinish && !isFaded)
         {
-            gameload.LoadingStart();
+            gameload.LoadingStartWithOBJ();
             isFaded = true;
         }
     }

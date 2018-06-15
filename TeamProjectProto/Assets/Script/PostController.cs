@@ -32,7 +32,7 @@ public class PostController : MonoBehaviour {
     //public int activeCount;//activityが切り替わるまでのアイテムの個数
     [HideInInspector]
     public MeshRenderer mesh;//ポストを透明化させるためのもの
-    public BoxCollider bc;//あたり判定をなくす
+    public SphereCollider bc;//あたり判定をなくす
 
     float interval;//表示するまでの間隔
 
@@ -61,7 +61,7 @@ public class PostController : MonoBehaviour {
         activity = false;
         //activeCount = 0;
         mesh = GetComponentInChildren<MeshRenderer>();
-        bc = GetComponent<BoxCollider>();
+        bc = GetComponent<SphereCollider>();
         startCountDown = GameObject.Find("StartCountDown").GetComponent<StartCountDown>();
         finishCall = GameObject.Find("FinishCall").GetComponent<FinishCall>();
     }

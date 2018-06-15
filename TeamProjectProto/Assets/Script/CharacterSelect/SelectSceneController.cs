@@ -37,11 +37,17 @@ public class SelectSceneController : MonoBehaviour
     {
         gameload = this.GetComponent<GameLoad>();
         fadeController = fadePanel.GetComponent<FadeController>();
+        fadeController.FadeIn();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (fadeController.IsFadeInFinish == false)
+        {
+            fadeController.FadeIn();
+        }
+
         if (IsPlayerStandby())
         {
             //AI無し
@@ -91,7 +97,7 @@ public class SelectSceneController : MonoBehaviour
         }
         else
         {
-            mainText.text = "Aボタンを押して\n入場";
+            mainText.text = "Ａボタンを押して\n入場";
         }
 
         return allReady;
@@ -143,7 +149,7 @@ public class SelectSceneController : MonoBehaviour
 
         SavePlayerStatus();
 
-        mainText.text = "ゲーム\nスタートだ！";
+        mainText.text = "準備完了！";
         mainText.color = Color.yellow;
 
         Invoke("SceneLoad", _delayTime + 1f);
@@ -152,10 +158,10 @@ public class SelectSceneController : MonoBehaviour
 
     void SceneLoad()
     {
-        fadeController.ChangeAlpha();
-        if (fadeController.IsFadeFinish && !isFaded)
+        fadeController.FadeOut();
+        if (fadeController.IsFadeOutFinish && !isFaded)
         {
-            gameload.LoadingStart();
+            gameload.LoadingStartWithOBJ();
             isFaded = true;
         }
     }

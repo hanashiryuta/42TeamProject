@@ -9,6 +9,7 @@ using UnityEngine;
 
 public class TurningSelf : MonoBehaviour
 {
+    public Vector3 rotate;
     // Use this for initialization
     void Start () {
 		
@@ -17,6 +18,6 @@ public class TurningSelf : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-        transform.Rotate(0, 0.5f, 0);
+        transform.Rotate(rotate.x, rotate.y, rotate.z);
 	}
 }

@@ -1024,7 +1024,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   loadObj: {fileID: 304744047}
   slider: {fileID: 1194716995}
-  _NextScene: 1
+  _nextScene: 1
 --- !u!114 &1218557529
 MonoBehaviour:
   m_ObjectHideFlags: 0

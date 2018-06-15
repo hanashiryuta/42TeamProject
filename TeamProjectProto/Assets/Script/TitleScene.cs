@@ -9,33 +9,37 @@ public class TitleScene : MonoBehaviour
 
     [SerializeField]
     GameObject fadePanel;
-    FadeController fadeCon;
+    FadeController fadeController;
     public bool isSceneChange = false;
-    bool isFaded = false;
+    bool isFadeOuted = false;
     
     // Use this for initialization
     void Start()
     {
         gameload = this.GetComponent<GameLoad>();
 
-        fadeCon = fadePanel.GetComponent<FadeController>();
+        fadeController = fadePanel.GetComponent<FadeController>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (isSceneChange)
+        if (fadeController.IsFadeInFinish == false)
         {
-            //SceneManager.LoadScene("main");
-
-            fadeCon.ChangeAlpha();
-            Debug.Log("changeAlpha");
-
-            if (fadeCon.IsFadeFinish && !isFaded)
+            fadeController.FadeIn();
+        }
+        else
+        {
+            if (isSceneChange)
             {
-                gameload.LoadingStart();
-                isFaded = true;
+                fadeController.FadeOut();
             }
+        }
+
+        if (fadeController.IsFadeOutFinish && !isFadeOuted)
+        {
+            gameload.LoadingStartWithOBJ();
+            isFadeOuted = true;
         }
     }
 }

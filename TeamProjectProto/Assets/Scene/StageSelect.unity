@@ -1117,7 +1117,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   loadObj: {fileID: 1690050841}
   slider: {fileID: 1690050840}
-  _NextScene: 3
+  _nextScene: 3
 --- !u!114 &2067282214
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1133,9 +1133,11 @@ MonoBehaviour:
   - {fileID: 1751453022488230, guid: 2b18fdd524184134fbb7dead429cbfb0, type: 2}
   - {fileID: 1721875416640072, guid: 7308f3c6a4810da42a58299e23c2254f, type: 2}
   - {fileID: 1938844289950496, guid: 5fc19723fe9e996488fa08c7379bab81, type: 2}
+  - {fileID: 1207088734636020, guid: cf7d2b112ed1018449762f9f3826571a, type: 2}
   fadePanel: {fileID: 1120177109}
   leftB: {fileID: 1220915094}
   rightB: {fileID: 1334476595}
+  isDelay: 0
 --- !u!114 &2067282216
 MonoBehaviour:
   m_ObjectHideFlags: 0
