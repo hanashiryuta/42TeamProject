@@ -13,6 +13,8 @@ public class GameMaster : MonoBehaviour {
 
     Dictionary<string, float> gameParameter;//パラメーター管理ディクショナリ―
 
+    int playerCount = 0;
+
 	// Use this for initialization
 	void Start () {
         //初期化
@@ -21,8 +23,9 @@ public class GameMaster : MonoBehaviour {
 
         //プレイヤーリスト取得
         GameObject[] playerList = GameObject.FindGameObjectsWithTag("Player");
+        playerCount = GameObject.FindGameObjectsWithTag("Player").Length;
 
-        for(int i = 0; i < 4; i++)
+        for (int i = 0; i < playerList.Length; i++)
         {
             //オブジェクトディクショナリ―にプレイヤー追加
             gameObjectMaster.Add(playerList[i].name, playerList[i]);
@@ -58,7 +61,7 @@ public class GameMaster : MonoBehaviour {
         */
 
         //プレイヤーのパラメーターを追加
-        for(int i = 1; i < 5; i++)
+        for (int i = 1; i < playerCount + 1; i++)
         {
             gameParameter.Add("Player" + i + "ポイント", gameObjectMaster["Player" + i].GetComponent<PlayerMove>().holdItemCount);
             gameParameter.Add("Player" + i + "総ポイント", gameObjectMaster["Player" + i].GetComponent<PlayerMove>().totalItemCount);
@@ -73,7 +76,7 @@ public class GameMaster : MonoBehaviour {
 	void Update () {
 
         //パラメーター更新
-        for(int i = 1; i < 5; i++)
+        for (int i = 1; i < playerCount + 1; i++) 
         {
             gameParameter["Player" + i + "ポイント"] = gameObjectMaster["Player" + i].GetComponent<PlayerMove>().holdItemCount;
             gameParameter["Player" + i + "総ポイント"] = gameObjectMaster["Player" + i].GetComponent<PlayerMove>().totalItemCount;

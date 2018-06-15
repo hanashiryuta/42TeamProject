@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using XInputDotNetPure;
-
+using DG.Tweening;
 
 public class SceneController : MonoBehaviour {
 
@@ -19,8 +19,11 @@ public class SceneController : MonoBehaviour {
     //180601 何
     FinishCall finishCall;
 
-	// Use this for initialization
-	void Start () {
+    //180614 何
+    List<GameObject> playerList = new List<GameObject>();
+
+    // Use this for initialization
+    void Start () {
         //balloon = GameObject.FindGameObjectWithTag("Balloon");//爆発物取得
         timeController = GameObject.Find("TimeController");
 
@@ -31,6 +34,9 @@ public class SceneController : MonoBehaviour {
 
         //終了関連
         finishCall = GameObject.Find("FinishCall").GetComponent<FinishCall>();
+
+        //players
+        playerList = GameObject.Find("PlayerRespawns").GetComponent<RespawnController>().PlayerList;
     }
 	
 	// Update is called once per frame
@@ -39,20 +45,6 @@ public class SceneController : MonoBehaviour {
         {
             isEnd();
         }
-        ////爆発物がなければ探す
-        //if(balloon == null)
-        //{
-        //    balloon = GameObject.FindGameObjectWithTag("Balloon");
-        //    return;
-        //}
-
-
-        ////プレイヤーの人数が1人になったらシーンをリロードする
-        //if (balloon.GetComponent<BalloonController>().isEnd)
-        //{
-        //    SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        //}
-		
 	}
 
     /// <summary>
@@ -79,6 +71,14 @@ public class SceneController : MonoBehaviour {
 
         //終了合図
         finishCall.ShowUp();
+
+        //ダッシュスライダーを隠す
+        foreach(var p in playerList)
+        {
+            p.GetComponent<SliderController>().InvisibleSlider();
+        }
+        //DOTween全削除
+        DOTween.KillAll();
 
         //シーン遷移
         Invoke("LoadResult", finishCall._waitTime);

@@ -118,7 +118,7 @@ public class PortalCircle : MonoBehaviour
     /// </summary>
     void ClosePortal()
     {
-        DOTween.KillAll();
+        //DOTween.KillAll();
         DOTween.To(() => currentPortalRadius, SetPortalRadius, range, seconds).SetEase(Ease.OutCubic);
     }
 

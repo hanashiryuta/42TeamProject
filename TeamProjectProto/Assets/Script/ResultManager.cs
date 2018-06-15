@@ -26,8 +26,11 @@ public class ResultManager : MonoBehaviour
 
     bool _isAnim = true;//アニメ中か
 
-	// Use this for initialization
-	void Start ()
+    ConnectedPlayerStatus connectedPlayerStatus;//接続したプレイヤー
+    SpawnUIPlayer spawnUIPlayer;//UIプレイヤースポーン
+
+    // Use this for initialization
+    void Awake ()
     {
 		playerRank = GameObject.Find ("PlayerRankController");
 
@@ -41,11 +44,28 @@ public class ResultManager : MonoBehaviour
 
         count = -1;
 
-        //上から順位順に名前表示
+        if (connectedPlayerStatus == null)
+        {
+            // ConnectedPlayerStatusで接続しているプレイヤーを受け取る
+            connectedPlayerStatus = GameObject.FindGameObjectWithTag("PlayerStatus").GetComponent<ConnectedPlayerStatus>();
+        }
+
         for (int i = 0; i < playerRankTexts.Length; i++)
+        {
+            playerRankTexts[i].text = "";
+        }
+        //上から順位順に名前表示
+        //接続しているプレイヤー数だけ表示する
+        for (int i = 0; i < connectedPlayerStatus.ConnectedPlayer.Count; i++)
         {
             playerRankTexts[i].text = (i + 1) + "位:" + playerRank.GetComponent<PlayerRank>().ResultRank[i];
         }
+
+        //スポーンUIプレイヤー
+        spawnUIPlayer = transform.GetComponent<SpawnUIPlayer>();
+        spawnUIPlayer.ConnectedPLStatus = connectedPlayerStatus;
+        spawnUIPlayer.PList = playerRank.GetComponent<PlayerRank>().ResultRank;
+
     }
 
     // Update is called once per frame
@@ -80,11 +100,11 @@ public class ResultManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 「もう1度遊ぶ」を選んだらゲームシーンに戻す処理
+    /// 「もう1度遊ぶ」を選んだらキャラ生成シーンに戻す処理
     /// </summary>
     public void BackGame()
     {
-        SceneManager.LoadScene("main");
+        SceneManager.LoadScene("CharacterSelect");
     }
 
     /// <summary>
@@ -113,8 +133,4 @@ public class ResultManager : MonoBehaviour
         yield return new WaitForSeconds(1f);
         _isAnim = false;
     }
-
-
-
-
 }

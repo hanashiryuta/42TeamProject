@@ -38,7 +38,7 @@ public class TimeController : MonoBehaviour {
 	void Update () {
         //時間表示
         //timeText.text = "time "+gameTime.ToString("0.0");
-        timeText.text = gameTime.ToString("0.0"); 
+        timeText.text = HalfWidth2FullWidth.Set2FullWidth(gameTime.ToString("0.0")); 
         //5月19日
         //ポーズ画面の表示に合わせてgameTimeの処理を止める
         //追記者：安部崇寛
