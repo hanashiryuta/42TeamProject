@@ -680,6 +680,7 @@ MonoBehaviour:
   jump: Jump
   isStan: 0
   isBalloonShrink: 1
+  jumpCount: 0
   hipDropCircle:
   - {fileID: 1598151434304912, guid: 6bcf0921d5888c544b35e4673c0bbc40, type: 2}
   - {fileID: 1578071290630430, guid: bf2bbcaf45753ce449f6c3843771c7e3, type: 2}
@@ -705,7 +706,11 @@ MonoBehaviour:
   soundSE4: {fileID: 8300000, guid: a8c23cd303a620d4ea481ba4058b6f1f, type: 3}
   soundSE5: {fileID: 8300000, guid: 326474d3a1aee7144bb04f2591955df0, type: 3}
   soundSE6: {fileID: 8300000, guid: 2235b27092d1cd14682903feadae2b33, type: 3}
-  shockWavePower: 100
+  shockWavePower: 150
+  canHipDrop: 0
+  attackPower: 25
+  hitHipDrop: 0
+  isHit: 0
   playerIndex: 0
   dashTiredTime: 1
 --- !u!136 &136683905432024742
