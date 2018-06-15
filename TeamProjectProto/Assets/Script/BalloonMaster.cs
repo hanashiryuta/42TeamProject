@@ -77,6 +77,12 @@ public class BalloonMaster : MonoBehaviour {
     [HideInInspector]
     public float blastCount = 0;//内容物総数
 
+    [HideInInspector]
+    public bool isRoulette;//ルーレット状態かどうか
+
+    public GameObject originRouletteObject;//ルーレット元オブジェクト
+    GameObject rouletteObject;//ルーレットオブジェクト
+
     // Use this for initialization
     void Start ()
     {
@@ -109,12 +115,17 @@ public class BalloonMaster : MonoBehaviour {
         if (startCntDown.IsCntDown || finishCall.IsCalling)
             return;
 
+        //ルーレット呼び出し処理
+        RouletteSet();
+
         //バルーンがなければ
         if (nowBalloon == null)
         {
+            //ルーレットがあるなら何もしない
+            if (isRoulette)
+                return;
             blastCount = 0;
             _nowBalloonState = NowBalloonState.NONE;
-
 
             //時間経過
             balloonRespawnTime -= Time.deltaTime;
@@ -165,5 +176,49 @@ public class BalloonMaster : MonoBehaviour {
             portalCircle_ToOutside.TargetCenter = balloonEffectCenter;
             portalCircle_ToInside.TargetCenter = balloonEffectCenter;
         }
+    }
+
+    /// <summary>
+    /// ルーレット生成メソッド
+    /// </summary>
+    void RouletteSet()
+    {
+        if(isRoulette)
+        {
+            //ルーレットがないのなら
+            if(rouletteObject == null)
+            {
+                //Canvasの下にルーレット生成
+                rouletteObject = Instantiate(originRouletteObject,GameObject.FindGameObjectWithTag("Canvas").transform);
+                //回すプレイヤーを渡す
+                rouletteObject.GetComponent<RouletteController>().jugglerPlayer = nowPlayer;
+                //自分を渡す
+                rouletteObject.GetComponent<RouletteController>().balloonMaster = gameObject;
+            }
+        }
+    }
+
+    /// <summary>
+    /// 次回生成バルーン設定
+    /// </summary>
+    /// <param name="second">秒数</param>
+    /// <param name="isTotal">爆発タイプ</param>
+    /// <param name="player">次のプレイヤー</param>
+    public void NextBalloonSet(float second,bool isTotal,GameObject player)
+    {
+        //トータルから減らすバルーン
+        if (isTotal)
+            nextSpawnBalloon = balloonList[1];
+        //手持ちから減らすバルーン
+        else
+            nextSpawnBalloon = balloonList[0];
+
+        //秒数設定
+        nextSpawnBalloon.GetComponent<BalloonOrigin>().blastLimit = second;
+        //プレイヤー設定
+        nextPlayer = player;
+        Debug.Log("Second" + second);
+        Debug.Log("isTotal" + isTotal);
+        Debug.Log("Player" + player);
     }
 }

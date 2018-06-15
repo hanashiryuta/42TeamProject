@@ -32,6 +32,16 @@ public class RBPauser : MonoBehaviour
         targets.Remove(this);
     }
 
+
+    /// <summary>
+    /// ポーズ対象除外処理
+    /// </summary>
+    /// <param name="pauser">除外対象</param>
+    public static void targetsRemove(RBPauser pauser)
+    {
+        targets.Remove(pauser);
+    }
+
     public static void Remove()
     {
         targets.Clear();

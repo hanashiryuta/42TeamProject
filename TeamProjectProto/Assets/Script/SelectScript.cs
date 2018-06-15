@@ -17,10 +17,15 @@ public class SelectScript : MonoBehaviour
 
     public GameObject pausepanel;
 
+    //制限時間オブジェクト
+    GameObject timeController;
+
     // Use this for initialization
     void Start()
     {
         Title.Select();
+        //時間オブジェクト取得
+        timeController = GameObject.Find("TimeController");
     }
 
     // Update is called once per frame
@@ -30,6 +35,8 @@ public class SelectScript : MonoBehaviour
         {
             if (pausepanel.active == false)
             {
+                //時間を止める
+                timeController.GetComponent<TimeController>().isPause = true;
                 pausepanel.active = true;
                 Pauser.Pause();
                 RBPauser.Pause();
@@ -41,6 +48,8 @@ public class SelectScript : MonoBehaviour
             }
             else
             {
+                //時間を動かす
+                timeController.GetComponent<TimeController>().isPause = false;
                 pausepanel.active = false;
                 Pauser.Resume();
                 RBPauser.Resume();

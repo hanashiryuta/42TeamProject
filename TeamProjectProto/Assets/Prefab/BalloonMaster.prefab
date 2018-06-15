@@ -62,3 +62,6 @@ MonoBehaviour:
   origin_BalloonEffectCenter: {fileID: 1263330718962570, guid: 4e5866f69cdd80a4aa51ba1da64adbbf,
     type: 2}
   blastCount: 0
+  isRoulette: 0
+  originRouletteObject: {fileID: 1901371632001438, guid: 58fb41e0a921e9a4eb1c0b39300d7fb3,
+    type: 2}

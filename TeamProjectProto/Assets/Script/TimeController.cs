@@ -24,7 +24,10 @@ public class TimeController : MonoBehaviour {
     GameObject startCntDown; //スタートカウントダウン
     [SerializeField]
     GameObject finishCall;
-    
+
+    [HideInInspector]
+    public bool isPause;//時間を止めるかどうか
+
     // Use this for initialization
     void Start ()
     {
@@ -46,10 +49,15 @@ public class TimeController : MonoBehaviour {
         }
 
         //ポーズ画面のactive状態でタイムを進めるか判定   //startCountDown中タイム進まない
-        if ((PausePanel == null ||!PausePanel.active) &&
+        //if ((PausePanel == null ||!PausePanel.active) &&
+        //    !startCntDown.GetComponent<StartCountDown>().IsCntDown &&
+        //    !finishCall.GetComponent<FinishCall>().IsCalling)
+
+        //時間フラグがfalseなら//startCountDown中タイム進まない
+        if (!isPause &&
             !startCntDown.GetComponent<StartCountDown>().IsCntDown &&
             !finishCall.GetComponent<FinishCall>().IsCalling)
-        {
+            {
             gameTime -= Time.deltaTime;
             if(gameTime <= 0)
             {

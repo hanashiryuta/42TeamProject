@@ -1701,6 +1701,7 @@ MonoBehaviour:
   isEnd: 0
   startCntDown: {fileID: 1875694462023930}
   finishCall: {fileID: 1959631603841844}
+  isPause: 0
 --- !u!114 &114996124163908212
 MonoBehaviour:
   m_ObjectHideFlags: 1
