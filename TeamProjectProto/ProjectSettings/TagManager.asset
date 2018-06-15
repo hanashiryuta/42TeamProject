@@ -14,6 +14,7 @@ TagManager:
   - Undefined
   - Canvas
   - PlayerStatus
+  - Pausable
   layers:
   - Default
   - TransparentFX

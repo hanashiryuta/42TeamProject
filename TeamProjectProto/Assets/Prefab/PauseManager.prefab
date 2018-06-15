@@ -361,6 +361,14 @@ MonoBehaviour:
   Exit: {fileID: 114002097412663176}
   Title: {fileID: 114667478190165450}
   pausepanel: {fileID: 1556470253379250}
+  tagNameList:
+  - Player
+  - Balloon
+  - Item
+  - Post
+  - Pausable
+  pauseState: 0
+  isRoulette: 0
 --- !u!114 &114667478190165450
 MonoBehaviour:
   m_ObjectHideFlags: 1

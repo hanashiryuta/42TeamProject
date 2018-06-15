@@ -21,9 +21,11 @@ public class PostRespawn : MonoBehaviour {
     public bool isLimitReset = false;//アイテム生成上限リセット判定用
 
 	// Use this for initialization
-	void Start () {
-		//初期化処理
-		postList = new List<GameObject>();
+	void Start ()
+    {
+        transform.tag = "Pausable";//タグ設定
+        //初期化処理
+        postList = new List<GameObject>();
 		childList = new List<GameObject>();
 
         isLimitReset = false;

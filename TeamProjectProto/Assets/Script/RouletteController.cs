@@ -58,12 +58,14 @@ public class RouletteController : MonoBehaviour {
     RectTransform rectTransform;//レクトトランスフォーム
 
     float waitTime = 1;//各待ち時間
+    SelectScript selectScript;
 
     // Use this for initialization
     void Start () {
-        //ゲームを一時的に止める
-        Pauser.Pause();
-        RBPauser.Pause();
+        ////ゲームを一時的に止める
+        selectScript = GameObject.Find("PauseCtrl").GetComponent<SelectScript>();
+        selectScript.pauseState = PauseState.OBJECTSET;
+        selectScript.isRoulette = true;
         //時間を止める
         GameObject.Find("TimeController").GetComponent<TimeController>().isPause = true;
         //各リール取得
@@ -200,8 +202,8 @@ public class RouletteController : MonoBehaviour {
                 break;
             case RouletteState.EXIT://ルーレット退場
                 //ゲームの停止状態を解除
-                Pauser.Resume();
-                RBPauser.Resume();
+                selectScript.pauseState = PauseState.PAUSEEND;
+                selectScript.isRoulette = false;
                 //時間の停止状態解除
                 GameObject.Find("TimeController").GetComponent<TimeController>().isPause = false;
                 //画面外へ移動

@@ -20,7 +20,9 @@ public class ItemRespawn : MonoBehaviour {
     FinishCall finishCall;//終了合図Script
 
     // Use this for initialization
-    void Start () {
+    void Start ()
+    {
+        transform.tag = "Pausable";//タグ設定
         itemRespawnLimit = GameObject.Find("ItemRespawnLimit(Clone)");
         respawnTime = 3.0f;
         startCntDown = GameObject.Find("StartCountDown").GetComponent<StartCountDown>();

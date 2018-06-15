@@ -24,7 +24,8 @@ public abstract class ReelSpin : MonoBehaviour {
 
     [HideInInspector]
     public GameObject centerSprite;//中心画像
-    Vector3 centerPosition;//中心位置
+    [HideInInspector]
+    public Vector3 centerPosition;//中心位置
 
     public string reelName;//リール種類名
 

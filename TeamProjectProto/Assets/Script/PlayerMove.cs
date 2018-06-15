@@ -46,11 +46,11 @@ public class PlayerMove : MonoBehaviour
     public string jump = "Jump1";//Inputのジャンプボタン取得名前
 
     public bool isStan = false;//動けるかどうか
-    float stanTime = 3.0f;//動けるようになるまでの時間
+    public float originStanTime = 1.5f;//動けるようになるまでの時間
+    float stanTime;
 
     public bool isBalloonShrink = true;//爆発物が縮むかどうか
-
-    bool isGround = true;//地面にいるかどうか
+    
     bool isHipDrop = false;//ヒップドロップしているかどうか
     float jumpCount = 0;//ジャンプ回数
     public GameObject[] hipDropCircle;//衝撃波範囲→0515何変更　色別の4種
@@ -126,11 +126,11 @@ public class PlayerMove : MonoBehaviour
         //初期化処理
         isJump = false;
         holdItemCount = 0;
-        isGround = true;
         isHipDrop = false;
         jumpCount = 0;
         rigid = GetComponent<Rigidbody>();
         rotationPosition = transform.position;
+        stanTime = originStanTime;
 
         //holdItemCountText = GameObject.Find(transform.name + "ItemCount").GetComponent<Text>();//内容物所持数テキスト取得
         totalItemCountText = GameObject.Find(transform.name + "TotalCount").GetComponent<Text>(); 
@@ -200,7 +200,7 @@ public class PlayerMove : MonoBehaviour
         if (isStan)
         {
             //最初に移動量をゼロに
-            if (stanTime >= 3.0f)
+            if (stanTime >= originStanTime)
             {
                 rigid.velocity = Vector3.zero;
                 GamePad.SetVibration(XDInput[(int)(playerIndex)], 0.0f, 1.0f);
@@ -217,7 +217,7 @@ public class PlayerMove : MonoBehaviour
             if (stanTime < 0)
             {
                 isStan = false;
-                stanTime = 3.0f;
+                stanTime = originStanTime;
                 if(stan_Star_Particle != null)
                 {
                     //星型パーティクル削除
