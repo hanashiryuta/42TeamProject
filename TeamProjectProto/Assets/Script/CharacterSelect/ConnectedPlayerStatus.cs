@@ -10,14 +10,14 @@ using UnityEngine.SceneManagement;
 
 public class ConnectedPlayerStatus : MonoBehaviour
 {
-    Dictionary<string, int> _connectedPlayer = new Dictionary< string, int>();
+    Dictionary<string, int> _connectedPlayer = new Dictionary< string, int>();//繋がているプレイヤー
     public Dictionary<string, int> ConnectedPlayer
     {
         get { return _connectedPlayer; }
         set { _connectedPlayer = value; }
     }
 
-    string _stageName;
+    string _stageName;//ステージの名前
     public string StageName
     {
         get { return _stageName; }
@@ -35,7 +35,7 @@ public class ConnectedPlayerStatus : MonoBehaviour
     {
         if (!created)
         {
-            //SelectシーンからMainシーン
+            //SelectシーンからMain.Resultシーン
             DontDestroyOnLoad(this.gameObject);
             created = true;
         }

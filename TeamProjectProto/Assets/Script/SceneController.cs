@@ -26,6 +26,13 @@ public class SceneController : MonoBehaviour {
     FadeController fadeController;
     float cnt = 0;
 
+    //pause->toTitle
+    bool isToTitle = false;
+    public bool IsToTitle
+    {
+        set { isToTitle = value; }
+    }
+
     // Use this for initialization
     void Start () {
         //balloon = GameObject.FindGameObjectWithTag("Balloon");//爆発物取得
@@ -56,14 +63,19 @@ public class SceneController : MonoBehaviour {
 
         if (timeController.GetComponent<TimeController>().isEnd)
         {
-            isEnd();
+            isEnd_ToResult();
+        }
+
+        if (isToTitle)
+        {
+            isEnd_ToTitle();
         }
 	}
 
     /// <summary>
-    /// 終了処理
+    /// 終了処理(Result)
     /// </summary>
-    public void isEnd()
+    public void isEnd_ToResult()
     {
         // PlayerRankの順位更新を停止
         playerRank.GetComponent<PlayerRank>().IsInPlay = false;
@@ -112,5 +124,40 @@ public class SceneController : MonoBehaviour {
     void LoadResult()
     {
         SceneManager.LoadScene("Result");
+    }
+
+    
+    /// <summary>
+    /// 終了処理(Title)
+    /// </summary>
+    public void isEnd_ToTitle()
+    {
+        // PlayerRankの順位更新を停止
+        playerRank.GetComponent<PlayerRank>().IsInPlay = false;
+
+        //万が一シーンが切り替わると同時にコントローラーが振動し始めたときにコントローラーの振動を停止する処理
+        GamePad.SetVibration(PlayerIndex.One, 0.0f, 0.0f);
+        GamePad.SetVibration(PlayerIndex.Two, 0.0f, 0.0f);
+        GamePad.SetVibration(PlayerIndex.Three, 0.0f, 0.0f);
+        GamePad.SetVibration(PlayerIndex.Four, 0.0f, 0.0f);
+
+        //DOTween全削除
+        DOTween.KillAll();
+
+        //fadeout
+        fadeController.FadeOut();
+
+
+        //シーン遷移
+        Invoke("LoadTitle", finishCall._waitTime - 3);
+    }
+
+    /// <summary>
+    /// 追加日：180601 追加者：何
+    /// リザルトシーン遷移
+    /// </summary>
+    void LoadTitle()
+    {
+        SceneManager.LoadScene("Title");
     }
 }
