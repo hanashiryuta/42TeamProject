@@ -23,8 +23,9 @@ public enum PauseState
 
 public class SelectScript : MonoBehaviour
 {
-    public Button Exit;
-    public Button Title;
+    public Button backToGame;
+    public Button toTitle;
+    Button nowSelectedBtn;
 
     public GameObject pausepanel;
     
@@ -41,10 +42,30 @@ public class SelectScript : MonoBehaviour
     //制限時間オブジェクト
     GameObject timeController;
 
+    GamePadState previousState;
+    GamePadState currentState;
+
+    float moveY;
+
+    PlayerIndex pausePlayerIndex = 0;//プレイヤーインデックス
+    public PlayerIndex PausePlayerIndex
+    {
+        get { return pausePlayerIndex; }
+        set { pausePlayerIndex = value; }
+    }
+    bool isStartBtnPushed;//ポーズボタン押されたか
+    public bool IsStartBtnPushed
+    {
+        get { return isStartBtnPushed; }
+        set { isStartBtnPushed = value; }
+    }
+
+    //途中終了用シーンコントローラー
+    SceneController scenecontroller;
+
     // Use this for initialization
     void Start()
     {
-        Title.Select();
         //時間オブジェクト取得
         timeController = GameObject.Find("TimeController");
         pauseList = new List<GameObject>();
@@ -53,6 +74,8 @@ public class SelectScript : MonoBehaviour
         startCntDown = GameObject.Find("StartCountDown").GetComponent<StartCountDown>();
         // 終了合図
         finishCall = GameObject.Find("FinishCall").GetComponent<FinishCall>();
+        //途中終了用シーンコントローラー
+        scenecontroller = GameObject.Find("SceneController(Clone)").GetComponent<SceneController>();
     }
 
     // Update is called once per frame
@@ -62,9 +85,12 @@ public class SelectScript : MonoBehaviour
         if (startCntDown.IsCntDown || finishCall.IsCalling)
             return;
 
+        if(pauseState != PauseState.NONEPAUSE)
+            HandleXInput();
+
         switch (pauseState)
         {
-            case PauseState.NONEPAUSE://ポーズ中では
+            case PauseState.NONEPAUSE://非ポーズ中では
                 if (PushStart())
                 {
                     pausepanel.SetActive(true);//パネル出現
@@ -119,6 +145,68 @@ public class SelectScript : MonoBehaviour
     }
 
     /// <summary>
+    /// 追加日：180529 追加者：何
+    /// XBoxコントローラー入力
+    /// </summary>
+    void HandleXInput()
+    {
+        currentState = GamePad.GetState(pausePlayerIndex);
+
+        if (!currentState.IsConnected)
+        {
+            return;
+        }
+
+        moveY = currentState.ThumbSticks.Left.Y;
+
+        if (pauseState == PauseState.PAUSING)
+            PausingXInput();
+
+        previousState = currentState;
+    }
+
+    /// <summary>
+    /// 追加日：180616 追加者：何
+    /// ポーズ中入力
+    /// </summary>
+    void PausingXInput()
+    {
+        //STARTボタンを押したら（ポーズ解除）開始
+        isStartBtnPushed = (previousState.Buttons.Start == ButtonState.Released &&
+                            currentState.Buttons.Start == ButtonState.Pressed);
+        //up
+        if (moveY >=0.8f && nowSelectedBtn != toTitle)
+        {
+            toTitle.Select();
+            nowSelectedBtn = toTitle;
+        }
+
+        //down
+        if (moveY <= -0.8f && nowSelectedBtn != backToGame)
+        {
+            backToGame.Select();
+            nowSelectedBtn = backToGame;
+        }
+
+        //A
+        if (previousState.Buttons.A == ButtonState.Released &&
+            currentState.Buttons.A == ButtonState.Pressed)
+        {
+            BtnPushed(nowSelectedBtn);
+        }
+
+    }
+
+    /// <summary>
+    /// 選択しているボタンを押す
+    /// </summary>
+    /// <param name="btn"></param>
+    void BtnPushed(Button btn)
+    {
+        btn.onClick.Invoke();
+    }
+
+    /// <summary>
     /// スタートボタン押したとき
     /// </summary>
     /// <returns></returns>
@@ -126,18 +214,24 @@ public class SelectScript : MonoBehaviour
     {
         if (isRoulette)
             return false;
-        return (Input.GetKeyDown("p") || Input.GetButtonDown("Action"));
+        return (isStartBtnPushed);
     }
 
-    // Update is called once per frame
-    public void ResetTime()
+    /// <summary>
+    /// ポーズ状態解除ボタン
+    /// </summary>
+    public void BackToGame()
     {
-        pausepanel.active = false;
+        pauseState = PauseState.PAUSEEND;
     }
 
-    public void OnClick()
+    /// <summary>
+    /// タイトルに戻るボタン
+    /// </summary>
+    public void BackToTitle()
     {
-        SceneManager.LoadScene("Title");
+        //SceneManager.LoadScene("Title");
+        scenecontroller.IsToTitle = true;
     }
 
     /// <summary>
@@ -192,6 +286,8 @@ public class SelectScript : MonoBehaviour
                 }
             }
         }
+        toTitle.Select();
+        nowSelectedBtn = toTitle;
         pauseState = PauseState.PAUSING;
     }
 

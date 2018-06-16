@@ -50,7 +50,7 @@ public class PlayerMove : MonoBehaviour
     float stanTime;
 
     public bool isBalloonShrink = true;//爆発物が縮むかどうか
-    
+
     bool isHipDrop = false;//ヒップドロップしているかどうか
     [HideInInspector]
     public float jumpCount = 0;//ジャンプ回数
@@ -63,14 +63,14 @@ public class PlayerMove : MonoBehaviour
     [HideInInspector]
     public List<string> totalItemList;//累計取得アイテム管理リスト
 
-	public AudioClip soundSE1;//ジャンプ時の音
-	public AudioClip soundSE2;//アイテム取得時の音
-	public AudioClip soundSE3;//ポスト投函時の音
+    public AudioClip soundSE1;//ジャンプ時の音
+    public AudioClip soundSE2;//アイテム取得時の音
+    public AudioClip soundSE3;//ポスト投函時の音
 
     Rigidbody rigid;//リジットボディ
     float hipDropTime = 0.3f;//ヒップドロップ空中待機時間
     Vector3 hipDropPosition = Vector3.zero;//ヒップドロップ空中待機場所
-    
+
     Vector3 rotationPosition;//プレイヤー回転用ポジション
 
     //180516 何
@@ -118,7 +118,7 @@ public class PlayerMove : MonoBehaviour
     public AudioClip soundSE5;//ヒップドロップ直前の回転時の効果音
     public AudioClip soundSE6;//ダッシュした時の効果音
     bool dashStart = true;//ダッシュしたかどうか
-    
+
     public float shockWavePower = 100;//衝撃波で吹き飛ぶ強さ
 
     public bool canHipDrop = false;//ヒップドロップできるようにするかどうか
@@ -146,7 +146,7 @@ public class PlayerMove : MonoBehaviour
         stanTime = originStanTime;
 
         //holdItemCountText = GameObject.Find(transform.name + "ItemCount").GetComponent<Text>();//内容物所持数テキスト取得
-        totalItemCountText = GameObject.Find(transform.name + "TotalCount").GetComponent<Text>(); 
+        totalItemCountText = GameObject.Find(transform.name + "TotalCount").GetComponent<Text>();
         itemList = new List<string>();
         totalItemList = new List<string>();
         //180516 アニメーター
@@ -169,9 +169,9 @@ public class PlayerMove : MonoBehaviour
     {
         holdItemCountText.text = HalfWidth2FullWidth.Set2FullWidth(holdItemCount.ToString());//内容物取得数表示処理 
         totalItemCountText.text = HalfWidth2FullWidth.Set2FullWidth(totalItemCount.ToString());
-        
+
         PlayerAnim(playerAnim);
-        
+
         if (isStop)
         {
             if (stopTime < 0)
@@ -186,7 +186,7 @@ public class PlayerMove : MonoBehaviour
             }
         }
 
-        if(isStan)
+        if (isStan)
         {
             return;
         }
@@ -241,7 +241,7 @@ public class PlayerMove : MonoBehaviour
             {
                 isStan = false;
                 stanTime = originStanTime;
-                if(stan_Star_Particle != null)
+                if (stan_Star_Particle != null)
                 {
                     //星型パーティクル削除
                     Destroy(stan_Star_Particle);
@@ -272,7 +272,7 @@ public class PlayerMove : MonoBehaviour
         if (diff.magnitude > 0.01f)
         {
             transform.rotation = Quaternion.LookRotation(diff);
-        }       
+        }
     }
 
     /// <summary>
@@ -342,7 +342,7 @@ public class PlayerMove : MonoBehaviour
         moveVector.x = moveSpeed * moveJoy.x;
         moveVector.z = moveSpeed * moveJoy.y;
 
-            
+
         //y方向無しの現在のvelocity保存
         Vector3 rigidVelocity = new Vector3(rigid.velocity.x, 0, rigid.velocity.z);
 
@@ -389,7 +389,7 @@ public class PlayerMove : MonoBehaviour
     void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), new Vector3(transform.localScale.x*2, transform.localScale.x*2*2, transform.localScale.x*2));
+        Gizmos.DrawWireCube(new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), new Vector3(transform.localScale.x * 2, transform.localScale.x * 2 * 2, transform.localScale.x * 2));
     }
 
     /// <summary>
@@ -398,14 +398,14 @@ public class PlayerMove : MonoBehaviour
     void Jump()
     {
         //地面にいるとき
-        if(jumpCount == 0)
+        if (jumpCount == 0)
         {
             //重力設定
             gravPower = 9.8f;
         }
 
         //空中にいるとき
-        if(jumpCount == 1)
+        if (jumpCount == 1)
         {
             //ジャンプ中
             isJump = true;
@@ -450,7 +450,7 @@ public class PlayerMove : MonoBehaviour
         //RaycastHit[] colArray = rigid.SweepTestAll(-transform.up, 10.0f);
 
         //重力追加
-        rigid.AddForce(new Vector3(0, -gravPower*5, 0));
+        rigid.AddForce(new Vector3(0, -gravPower * 5, 0));
 
         //地面いるか判定
         bool isField = false;
@@ -461,7 +461,7 @@ public class PlayerMove : MonoBehaviour
             //当たっているものが床かプレイヤーだったら
             //if ((cx.transform.tag == "Field")||(cx.transform.tag == "Player"&&cx.transform.gameObject != gameObject))
             //あたり判定を別のオブジェクトに任せた
-            if(playerJumpHit.isJumpHit)
+            if (playerJumpHit.isJumpHit)
             {
                 //位置を少し浮かす
                 transform.position = new Vector3(transform.position.x, transform.position.y + 0.01f, transform.position.z);
@@ -470,7 +470,7 @@ public class PlayerMove : MonoBehaviour
                 //ジャンプ終える
                 isJump = false;
                 //ヒップドロップ中だったら
-                if (isHipDrop&&hipDropTime <= 0)
+                if (isHipDrop && hipDropTime <= 0)
                 {
                     //衝撃波生成
                     InstantiateHipDrop();
@@ -485,7 +485,7 @@ public class PlayerMove : MonoBehaviour
         }
 
         //地面にいる状態　かつ　地面にいない判定だったら（壁から落ちる）
-        if (!isField&&jumpCount == 0)
+        if (!isField && jumpCount == 0)
         {
             //ジャンプ状態に変更
             jumpCount = 1;
@@ -508,7 +508,7 @@ public class PlayerMove : MonoBehaviour
         if (Input.GetAxis(horizontal) > 0)
         {
             //移動先で当たっているもの
-            foreach (var cx in Physics.OverlapBox(transform.position + new Vector3(0.01f, 0.01f, 0) + new Vector3(0,1,0), new Vector3(transform.localScale.x * 2 / 2, transform.localScale.y * 2, transform.localScale.z * 2 / 2), transform.localRotation))
+            foreach (var cx in Physics.OverlapBox(transform.position + new Vector3(0.01f, 0.01f, 0) + new Vector3(0, 1, 0), new Vector3(transform.localScale.x * 2 / 2, transform.localScale.y * 2, transform.localScale.z * 2 / 2), transform.localRotation))
             {
                 //当たっているものが床か特殊壁だったら
                 if (cx.tag == "Field")
@@ -603,18 +603,18 @@ public class PlayerMove : MonoBehaviour
 
     void OnTriggerEnter(Collider col)
     {
-    //    //内容物に当たったら
-    //    if (col.gameObject.name.Contains("PointItem"))
-    //    {
-    //        if (col.gameObject.GetComponent<ItemController>().isGet&&balloon == null)
-    //        {
-    //            itemList.Add(col.name);//リスト追加
-    //            Destroy(col.gameObject);//内容物破棄
-    //            blastCount += col.GetComponent<ItemController>().point; //内容物所持数を増やす  
-				//GetComponent<AudioSource> ().PlayOneShot (soundSE2);
-    //            //totalBlastCount += col.GetComponent<ItemController>().point;//内容物所持数累計を増やす
-    //        }
-    //    }
+        //    //内容物に当たったら
+        //    if (col.gameObject.name.Contains("PointItem"))
+        //    {
+        //        if (col.gameObject.GetComponent<ItemController>().isGet&&balloon == null)
+        //        {
+        //            itemList.Add(col.name);//リスト追加
+        //            Destroy(col.gameObject);//内容物破棄
+        //            blastCount += col.GetComponent<ItemController>().point; //内容物所持数を増やす  
+        //GetComponent<AudioSource> ().PlayOneShot (soundSE2);
+        //            //totalBlastCount += col.GetComponent<ItemController>().point;//内容物所持数累計を増やす
+        //        }
+        //    }
         //強制交換アイテムに当たったら
         if (col.gameObject.name.Contains("ExChangeItem"))
         {
@@ -626,7 +626,7 @@ public class PlayerMove : MonoBehaviour
             b.GetComponent<BalloonOrigin>().BalloonExChange(pList, gameObject);
         }
         //中心物体に当たったら
-        if (col.gameObject.tag == "Post"&&balloon == null)
+        if (col.gameObject.tag == "Post" && balloon == null)
         {
             totalItemCount += holdItemCount;
 
@@ -649,7 +649,7 @@ public class PlayerMove : MonoBehaviour
             col.GetComponent<PostController>().blastCount += holdItemCount;//中心物体に内容物総数を渡す
             col.GetComponent<PostController>().respawnCount += holdItemCount;
             col.GetComponent<PostController>().player = gameObject;
-            foreach(var cx in itemList)
+            foreach (var cx in itemList)
             {
                 totalItemList.Add(cx);
             }
@@ -657,14 +657,14 @@ public class PlayerMove : MonoBehaviour
             holdItemCount = 0;//内容物所持数を0にする
             //ポストパーティクル生成
             col.GetComponent<PostController>().Pig_ToCoin_Particle();
-			//GetComponent<AudioSource> ().PlayOneShot (soundSE3);
+            //GetComponent<AudioSource> ().PlayOneShot (soundSE3);
         }
 
         //衝撃波に当たったら
         if (col.gameObject.tag == "HipDropCircle")
         {
             //衝撃波ヒット時振動
-            if (!col.transform.name.Contains(transform.name)&&!isStan)
+            if (!col.transform.name.Contains(transform.name) && !isStan)
             {
                 //GamePad.SetVibration(XDInput[(int)(playerIndex)], 0.0f, 1.0f);
                 //isStop = true;
@@ -708,11 +708,11 @@ public class PlayerMove : MonoBehaviour
         //        spawnItem.GetComponent<ItemController>().isGet = false;
         //    }
         //}
-        
+
         //排出ポイント割合
         int itemRatio = (int)(holdItemCount * (count / 10));
         //排出ポイント割合が0になるまで排出
-        while(itemRatio > 0)
+        while (itemRatio > 0)
         {
             //排出アイテム設定
             GameObject item = originItem;
@@ -724,19 +724,19 @@ public class PlayerMove : MonoBehaviour
                 int TwoOrOne = Random.Range(0, 2);
 
                 //1/2の確率で、排出ポイント割合が2で、2ポイントアイテムをもっていたら
-                if (TwoOrOne == 0&&itemRatio == 2&&itemList.Contains("2CoinPointItem(Clone)"))
+                if (TwoOrOne == 0 && itemRatio == 2 && itemList.Contains("2CoinPointItem(Clone)"))
                 {
                     holdItemCount -= 2;//2ポイント減
                     itemRatio -= 2;//排出ポイント割合2ポイント減
-                     item = originHighItem;//2ポイントアイテム排出
+                    item = originHighItem;//2ポイントアイテム排出
                     spawnItem = Instantiate(item, transform.position + new Vector3(0, item.transform.localScale.y + 3, 0), Quaternion.Euler(90, 0, 0));//生成
                     spawnItem.GetComponent<ItemController>().SetMovePosition();//移動設定
                     spawnItem.GetComponent<ItemController>().isGet = false;//取れない設定
                     itemList.Remove("2CoinPointItem(Clone)");//2ポイントアイテム削除
                     break;
                 }
-                holdItemCount --;//ポイント減
-                itemRatio --;//排出ポイント割合ポイント減
+                holdItemCount--;//ポイント減
+                itemRatio--;//排出ポイント割合ポイント減
                 item = originItem;//ポイントアイテム排出
                 spawnItem = Instantiate(item, transform.position + new Vector3(0, item.transform.localScale.y + 3, 0), Quaternion.Euler(90, 0, 0));//生成
                 spawnItem.GetComponent<ItemController>().SetMovePosition();//移動設定
@@ -765,7 +765,7 @@ public class PlayerMove : MonoBehaviour
                 spawnItem.GetComponent<ItemController>().isGet = false;//取れない設定
                 itemList.RemoveAt(itemNum);//排出アイテム削除
             }
-        } 
+        }
     }
 
     /// <summary>
@@ -778,7 +778,7 @@ public class PlayerMove : MonoBehaviour
         switch (transform.name)
         {
             case "Player1":
-                GameObject hipDrop1 = Instantiate(hipDropCircle[0], transform.position+new Vector3(0,0.2f,0), Quaternion.identity);
+                GameObject hipDrop1 = Instantiate(hipDropCircle[0], transform.position + new Vector3(0, 0.2f, 0), Quaternion.identity);
                 hipDrop1.name = hipDrop1.name + transform.name;
                 break;
             case "Player2":
@@ -858,6 +858,7 @@ public class PlayerMove : MonoBehaviour
             else moveSpeed = balloonMoveSpeed;
         }
 
+        PauseXInput();
         JumpXInput();
         DashXInput();
 
@@ -922,7 +923,7 @@ public class PlayerMove : MonoBehaviour
         else
         {
             SetDashLimitTime(holdItemCount, dashTimePerItem);
-            
+
             //ダッシュ中ではない時パーティクルを削除
             if (dash_Particle != null) Destroy(dash_Particle);
         }
@@ -987,6 +988,33 @@ public class PlayerMove : MonoBehaviour
         _dashLimitTime = (itemAmount + 1) * time;
     }
 
+    SelectScript pauseScript;//ポーズ関連
+
+    /// <summary>
+    /// 追加日：180616 追加者：何
+    /// ポーズ入力
+    /// </summary>
+    void PauseXInput()
+    {
+        if(pauseScript == null)
+            pauseScript = GameObject.Find("PauseCtrl").GetComponent<SelectScript>();
+
+        //ポーズ中じゃなかった
+        if(pauseScript.pauseState == PauseState.NONEPAUSE)
+        {
+            //STARTボタンを押したら（ポーズ開始）解除->SelectScript
+            if (previousState.Buttons.Start == ButtonState.Released &&
+                currentState.Buttons.Start == ButtonState.Pressed)
+            {
+                pauseScript.PausePlayerIndex = playerIndex;//自分がポーズプレイヤー
+                pauseScript.IsStartBtnPushed = true;
+            }
+            else
+            {
+                pauseScript.IsStartBtnPushed = false;
+            }
+        }
+    }
     /// <summary>
     /// 他プレイヤーからタックルされたとき
     /// </summary>

@@ -39,9 +39,15 @@ public class GameSetting : MonoBehaviour {
 
         for (int i = 0;i<gameObjectList.Count;i++)
         {
-            Instantiate(gameObjectList[i]);//生成
+            GameObject obj = Instantiate(gameObjectList[i]);//生成
+            if (gameObjectList[i].name == "PauseManager")
+            {
+                obj.transform.SetParent(GameObject.Find("PausePanel").transform);//キャンバスに移る
+                obj.transform.localPosition = Vector3.zero;
+
+            }
         }
-	}
+    }
 	
 	// Update is called once per frame
 	void Update () {
