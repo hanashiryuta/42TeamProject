@@ -69,7 +69,7 @@ public class ResultManager : MonoBehaviour
         //接続しているプレイヤー数だけ表示する
         for (int i = 0; i < connectedPlayerStatus.ConnectedPlayer.Count; i++)
         {
-            playerRankTexts[i].text = (i + 1) + "位:" + playerRank.GetComponent<PlayerRank>().ResultRank[i];
+            playerRankTexts[i].text = HalfWidth2FullWidth.Set2FullWidth((i + 1).ToString()) + " 位:";// + playerRank.GetComponent<PlayerRank>().ResultRank[i];
         }
 
         //スポーンUIプレイヤー

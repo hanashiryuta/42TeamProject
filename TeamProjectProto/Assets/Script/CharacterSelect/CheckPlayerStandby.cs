@@ -29,6 +29,9 @@ public class CheckPlayerStandby : MonoBehaviour
         get { return _playrLabel; }
         set { _playrLabel = value; }
     }
+    [SerializeField]
+    GameObject orgin_playerBG;//Player背景
+    GameObject playerBG;
 
     GameObject player;
     bool _isSpawn = false;//キャラ生成したか
@@ -98,6 +101,7 @@ public class CheckPlayerStandby : MonoBehaviour
     {
         player = GameObject.Instantiate(playerPrefabs, transform.position, Quaternion.Euler(0, 180, 0));
         player.GetComponentInChildren<SkinnedMeshRenderer>().materials[0].mainTexture = tex;//テクスチャ変更
+        playerBG = GameObject.Instantiate(orgin_playerBG, this.transform);
 
         _playrLabel.enabled = true;
     }
@@ -109,6 +113,8 @@ public class CheckPlayerStandby : MonoBehaviour
     {
         GameObject.Destroy(player);
         player = null;
+        GameObject.Destroy(playerBG);
+        playerBG = null;
         _playrLabel.enabled = false;
     }
 

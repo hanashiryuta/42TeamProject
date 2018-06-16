@@ -9,6 +9,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using XInputDotNetPure;
+using DG.Tweening;
 
 public class StageSelectController : MonoBehaviour
 {
@@ -29,18 +30,26 @@ public class StageSelectController : MonoBehaviour
     bool isSceneChage = false;
 
     [SerializeField]
-    Button leftB;
+    Button leftBtn;
     [SerializeField]
-    Button rightB;
+    Button rightBtn;
 
     float cnt = 0;
-    float delayTime = 1f;
+    float delayTime = 1f;//長押しの時の遅延
     public bool isDelay = false;
 
     PlayerIndex playerIndex;
     GamePadState previousState;
     GamePadState currentState;
     float moveX = 0;
+    
+    [SerializeField]
+    GameObject stagePointsSet;//ポイント生成場所
+    [SerializeField]
+    GameObject stagePoint;//プレハブ
+    List<GameObject> stagePointsList;
+    public float pointsOffset = 40f;
+    float firstPointX = 0;
 
     // Use this for initialization
     void Start ()
@@ -61,6 +70,33 @@ public class StageSelectController : MonoBehaviour
 
         gameload = this.GetComponent<GameLoad>();
         fadeController = fadePanel.GetComponent<FadeController>();
+
+        SetStagePoints();
+    }
+
+    /// <summary>
+    /// ステージのポイント生成
+    /// </summary>
+    void SetStagePoints()
+    {
+        stagePointsList = new List<GameObject>();
+
+        for(int i = 0; i < stageList.Length; i++)
+        {
+            if(i == 0)//一回目だけ
+            {
+                firstPointX = (stageList.Length / 2) * (-pointsOffset);//最初の位置を設定
+                if (stageList.Length % 2 == 0)//偶数だったら
+                {
+                    firstPointX += pointsOffset / 2;//半分ずらす
+                }
+            }
+            //ステージのポイント生成
+            stagePointsList.Add(Instantiate(stagePoint, stagePointsSet.transform));
+            stagePointsList[i].transform.GetComponent<RectTransform>().anchoredPosition = new Vector3(firstPointX + i * pointsOffset, 0, 0);
+        }
+
+        PointToSelected(nowStageIndex);
     }
 
     // Update is called once per frame
@@ -122,7 +158,7 @@ public class StageSelectController : MonoBehaviour
     /// <summary>
     /// 選択したステージを表示
     /// </summary>
-    void SelectStage(float rotate)
+    void ShowSeletedStage(float rotate)
     {
         if(stage != null)
         {
@@ -137,13 +173,28 @@ public class StageSelectController : MonoBehaviour
     /// </summary>
     void ShowBtnSelected()
     {
-        if(moveX >= 0.5f)
+        if (nowStageIndex <= 0)
         {
-            rightB.Select();
+            leftBtn.gameObject.SetActive(false);
+        }
+        else if (nowStageIndex >= stageList.Length - 1)
+        {
+            rightBtn.gameObject.SetActive(false);
+        }
+        else
+        {
+            leftBtn.gameObject.SetActive(true);
+            rightBtn.gameObject.SetActive(true);
+        }
+
+        if (moveX >= 0.5f)
+        {
+            rightBtn.Select();
         }
         if(moveX <= -0.5f)
         {
-            leftB.Select();
+            leftBtn.Select();
+
         }
         if (moveX > -0.05f ||
             moveX < 0.05f)
@@ -163,8 +214,12 @@ public class StageSelectController : MonoBehaviour
             if (!isDelay)
             {
                 cnt = delayTime;
-                rightB.onClick.Invoke();
-
+                rightBtn.onClick.Invoke();
+                DOTween.Punch(() => rightBtn.gameObject.transform.position,
+                                x => rightBtn.gameObject.transform.position = x,
+                                new Vector3(5, 0, 0),
+                                delayTime,
+                                5);
                 isDelay = true;
             }
             else
@@ -183,8 +238,12 @@ public class StageSelectController : MonoBehaviour
             if (!isDelay)
             {
                 cnt = delayTime;
-                leftB.onClick.Invoke();
-
+                leftBtn.onClick.Invoke();
+                DOTween.Punch(() => leftBtn.gameObject.transform.position,
+                                x => leftBtn.gameObject.transform.position = x,
+                                new Vector3(-5, 0, 0),
+                                delayTime,
+                                5);
                 isDelay = true;
             }
             else
@@ -213,9 +272,13 @@ public class StageSelectController : MonoBehaviour
     {
         if (nowStageIndex != stageList.Length - 1)
         {
+            PointToDefalt(nowStageIndex);
+
             float rotate = stage.transform.eulerAngles.y;
             nowStageIndex++;
-            SelectStage(rotate);
+            ShowSeletedStage(rotate);
+
+            PointToSelected(nowStageIndex);
         }
     }
 
@@ -226,10 +289,37 @@ public class StageSelectController : MonoBehaviour
     {
         if(nowStageIndex != 0)
         {
+            PointToDefalt(nowStageIndex);
+
             float rotate = stage.transform.eulerAngles.y;
             nowStageIndex--;
-            SelectStage(rotate);
+            ShowSeletedStage(rotate);
+
+            PointToSelected(nowStageIndex);
         }
+    }
+
+    /// <summary>
+    /// ポイントの外見を元に
+    /// </summary>
+    /// <param name="index"></param>
+    void PointToDefalt(int index)
+    {
+        //色
+        stagePointsList[nowStageIndex].transform.GetComponent<Image>().color = Color.white;
+        //大きさ
+        stagePointsList[nowStageIndex].transform.GetComponent<RectTransform>().sizeDelta = new Vector2(20, 20);
+    }
+    /// <summary>
+    /// ポイントの外見を選択状態に
+    /// </summary>
+    /// <param name="index"></param>
+    void PointToSelected(int index)
+    {
+        //色
+        stagePointsList[nowStageIndex].transform.GetComponent<Image>().color = Color.yellow;
+        //大きさ
+        stagePointsList[nowStageIndex].transform.GetComponent<RectTransform>().sizeDelta = new Vector2(30, 30);
     }
 
     /// <summary>
@@ -244,6 +334,7 @@ public class StageSelectController : MonoBehaviour
     void SceneLoad()
     {
         fadeController.FadeOut();
+        DOTween.KillAll();
         if (fadeController.IsFadeOutFinish && !isFaded)
         {
             gameload.LoadingStartWithOBJ();
