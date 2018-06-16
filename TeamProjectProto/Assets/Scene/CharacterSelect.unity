@@ -145,8 +145,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 385, y: 180}
-  m_SizeDelta: {x: 350, y: 270}
+  m_AnchoredPosition: {x: 400, y: 180}
+  m_SizeDelta: {x: 300, y: 270}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &422591049
 GameObject:
@@ -267,6 +267,8 @@ MonoBehaviour:
     type: 2}
   tex: {fileID: 2800000, guid: a84c2e86edc95be49942785b7cc7ee56, type: 3}
   _playrLabel: {fileID: 883106869}
+  orgin_playerBG: {fileID: 1737467874320062, guid: d43ec765d458f8942bacb222ae11f69c,
+    type: 2}
 --- !u!1 &533777714
 GameObject:
   m_ObjectHideFlags: 0
@@ -386,6 +388,8 @@ MonoBehaviour:
     type: 2}
   tex: {fileID: 2800000, guid: b90f9ccad4815494787a95fe34389d8e, type: 3}
   _playrLabel: {fileID: 533777716}
+  orgin_playerBG: {fileID: 1737467874320062, guid: d43ec765d458f8942bacb222ae11f69c,
+    type: 2}
 --- !u!1 &744071836
 GameObject:
   m_ObjectHideFlags: 0
@@ -417,8 +421,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -385, y: 180}
-  m_SizeDelta: {x: 350, y: 270}
+  m_AnchoredPosition: {x: -400, y: 180}
+  m_SizeDelta: {x: 300, y: 270}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &834371164
 GameObject:
@@ -685,6 +689,8 @@ MonoBehaviour:
     type: 2}
   tex: {fileID: 2800000, guid: 68711883e125ef04eb5781202e6520b5, type: 3}
   _playrLabel: {fileID: 422591051}
+  orgin_playerBG: {fileID: 1737467874320062, guid: d43ec765d458f8942bacb222ae11f69c,
+    type: 2}
 --- !u!1001 &1120177107
 Prefab:
   m_ObjectHideFlags: 0
@@ -830,8 +836,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 385, y: -180}
-  m_SizeDelta: {x: 350, y: 270}
+  m_AnchoredPosition: {x: 400, y: -180}
+  m_SizeDelta: {x: 300, y: 270}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1624122834
 GameObject:
@@ -1126,8 +1132,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -385, y: -180}
-  m_SizeDelta: {x: 350, y: 270}
+  m_AnchoredPosition: {x: -400, y: -180}
+  m_SizeDelta: {x: 300, y: 270}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1973423918
 GameObject:
@@ -1248,6 +1254,8 @@ MonoBehaviour:
     type: 2}
   tex: {fileID: 2800000, guid: 327d27672235e6f4792e6685379e40a3, type: 3}
   _playrLabel: {fileID: 1973423920}
+  orgin_playerBG: {fileID: 1737467874320062, guid: d43ec765d458f8942bacb222ae11f69c,
+    type: 2}
 --- !u!1 &2039620056
 GameObject:
   m_ObjectHideFlags: 0
