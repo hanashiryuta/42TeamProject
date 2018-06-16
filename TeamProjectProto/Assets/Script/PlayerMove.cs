@@ -52,7 +52,8 @@ public class PlayerMove : MonoBehaviour
     public bool isBalloonShrink = true;//爆発物が縮むかどうか
 
     bool isHipDrop = false;//ヒップドロップしているかどうか
-    float jumpCount = 0;//ジャンプ回数
+    [HideInInspector]
+    public float jumpCount = 0;//ジャンプ回数
     public GameObject[] hipDropCircle;//衝撃波範囲→0515何変更　色別の4種
     public GameObject originItem;//アイテム
     public GameObject originHighItem;//ハイアイテム
@@ -119,6 +120,18 @@ public class PlayerMove : MonoBehaviour
     bool dashStart = true;//ダッシュしたかどうか
 
     public float shockWavePower = 100;//衝撃波で吹き飛ぶ強さ
+
+    public bool canHipDrop = false;//ヒップドロップできるようにするかどうか
+    public float attackPower = 25;//プレイヤーにダッシュで体当たりして吹き飛ばす強さ
+    [HideInInspector]
+    public bool hitHipDrop = false;//ヒップドロップサークルに当たったか
+    [HideInInspector]
+    public bool isHit = false;//ダッシュしていない他プレイヤーに当たったか
+    float hitTime = 0.1f;//BoxColliderを付けなおすまでの時間
+    
+    float playerPos_X;//X座標の移動制限（ステージセレクトで選ばれたステージに応じて、変更）
+    float playerPos_Y;//Y座標の移動制限
+    float playerPos_Z;//Z座標の移動制限（ステージセレクトで選ばれたステージに応じて、変更）
 
     // Use this for initialization
     void Start()
@@ -191,6 +204,10 @@ public class PlayerMove : MonoBehaviour
         {
             dashStart = true;
         }
+
+        //タックル関係
+        IsTackle();
+        Clamp();
     }
 
     // Update is called once per frame
@@ -199,10 +216,16 @@ public class PlayerMove : MonoBehaviour
         //動けないなら
         if (isStan)
         {
+            //スタン中に動かないように修正
+            if (!hitHipDrop)
+            {
+                rigid.velocity = Vector3.zero;
+            }
+
             //最初に移動量をゼロに
             if (stanTime >= originStanTime)
             {
-                rigid.velocity = Vector3.zero;
+                //rigid.velocity = Vector3.zero;
                 GamePad.SetVibration(XDInput[(int)(playerIndex)], 0.0f, 1.0f);
                 isStop = true;
                 //星型パーティクル生成
@@ -299,8 +322,8 @@ public class PlayerMove : MonoBehaviour
             jumpCount++;
 
             //上限設定
-            if (jumpCount > 1)
-                jumpCount = 1;
+            if (jumpCount > 2)
+                jumpCount = 2;
         }
     }
 
@@ -390,27 +413,30 @@ public class PlayerMove : MonoBehaviour
             gravPower = 9.8f;
         }
 
-        //ヒップドロップ中
-        //if(jumpCount == 2)
-        //{
-        //    //一定時間空中で停止
-        //    hipDropTime -= Time.deltaTime;
-        //    if (hipDropTime > 0)
-        //    {
-        //        //移動量ゼロ
-        //        rigid.velocity = Vector3.zero;
-        //        //位置保存
-        //        transform.position = hipDropPosition;
-        //    }
-        //    //左右移動ゼロ化
-        //    moveJoy.x = 0;
-        //    moveJoy.y = 0;
+        if (canHipDrop)
+        {
+            //ヒップドロップ中
+            if (jumpCount == 2)
+            {
+                //一定時間空中で停止
+                hipDropTime -= Time.deltaTime;
+                if (hipDropTime > 0)
+                {
+                    //移動量ゼロ
+                    rigid.velocity = Vector3.zero;
+                    //位置保存
+                    transform.position = hipDropPosition;
+                }
+                //左右移動ゼロ化
+                moveJoy.x = 0;
+                moveJoy.y = 0;
 
-        //    //重力設定
-        //    gravPower = 9.8f * 2;
-        //    //ヒップドロップ中
-        //    isHipDrop = true;
-        //}
+                //重力設定
+                gravPower = 9.8f * 2;
+                //ヒップドロップ中
+                isHipDrop = true;
+            }
+        }
 
         //あたり判定用配列
         /*
@@ -558,6 +584,20 @@ public class PlayerMove : MonoBehaviour
                 GamePad.SetVibration(XDInput[(int)(playerIndex)], 0.0f, 1.0f);
                 isStop = true;
             }
+            
+            //自身がダッシュ中であり、ジャンプしていないとき
+            if (_isDash && jumpCount == 0)
+            {
+                //相手のプレイヤーがスタン中でない、かつ、ダッシュ中でない、又は、ジャンプしていなければ
+                if (!col.gameObject.GetComponent<PlayerMove>().isStan &&
+                    (!col.gameObject.GetComponent<PlayerMove>().IsDash || col.gameObject.GetComponent<PlayerMove>().jumpCount == 0))
+                {
+                    //相手のプレイヤーを弾く
+                    col.gameObject.GetComponent<PlayerMove>().isHit = true;
+                    col.gameObject.GetComponent<Rigidbody>().AddForce((transform.position - col.transform.position + new Vector3(0, 0.1f, 0)) * attackPower,
+                        ForceMode.Impulse);
+                }
+            }
         }
     }
 
@@ -633,6 +673,7 @@ public class PlayerMove : MonoBehaviour
 
                 //衝撃波からプレイヤーの方向に向かって吹き飛ぶ
                 rigid.AddForce((col.transform.position - transform.position) * -shockWavePower);
+                hitHipDrop = true;
             }
         }
     }
@@ -850,8 +891,11 @@ public class PlayerMove : MonoBehaviour
                 rigid.velocity = Vector3.zero;
                 hipDropPosition = transform.position;
 
-                //効果音追加
-                GetComponent<AudioSource>().PlayOneShot(soundSE5);
+                if (canHipDrop)
+                {
+                    //効果音追加
+                    GetComponent<AudioSource>().PlayOneShot(soundSE5);
+                }
             }
 
             //ジャンプカウント増加
@@ -969,6 +1013,65 @@ public class PlayerMove : MonoBehaviour
             {
                 pauseScript.IsStartBtnPushed = false;
             }
+        }
+    }
+    /// <summary>
+    /// 他プレイヤーからタックルされたとき
+    /// </summary>
+    private void IsTackle()
+    {
+        //当たっていなければ
+        if (!isHit)
+        {
+            transform.GetComponent<BoxCollider>().enabled = true;
+            transform.GetChild(2).GetComponent<BoxCollider>().enabled = true;
+            transform.GetChild(3).GetComponent<BoxCollider>().enabled = true;
+        }
+        else
+        {
+            transform.GetComponent<BoxCollider>().enabled = false;
+            transform.GetChild(2).GetComponent<BoxCollider>().enabled = false;
+            transform.GetChild(3).GetComponent<BoxCollider>().enabled = false;
+            hitTime -= Time.deltaTime;
+            if (hitTime <= 0)
+            {
+                isHit = false;
+                hitTime = 0.1f;
+            }
+        }
+    }
+
+    /// <summary>
+    /// 移動制限
+    /// </summary>
+    private void Clamp()
+    {
+        //playerPos_X=Mathf.Clamp(transform.position.x,,);
+        playerPos_Y = Mathf.Clamp(transform.position.y, 0.5f, 8f);
+        //playerPos_Z=Mathf.Clamp(transform.position.z,,);
+
+        if (GameObject.Find("SmallStage(Clone)"))
+        {
+            transform.position = new Vector3(
+                Mathf.Clamp(transform.position.x, -11.5f, 11.5f),
+                playerPos_Y,
+                Mathf.Clamp(transform.position.z, -11.5f, 11.5f));
+        }
+
+        if (GameObject.Find("SmallStage 1(Clone)"))
+        {
+            transform.position = new Vector3(
+                Mathf.Clamp(transform.position.x, -9.5f, 9.5f),
+                playerPos_Y,
+                Mathf.Clamp(transform.position.z, -9.5f, 9.5f));
+        }
+
+        if (GameObject.Find("SmallStage2(Clone)"))
+        {
+            transform.position = new Vector3(
+                Mathf.Clamp(transform.position.x, -7.5f, 7.5f),
+                playerPos_Y,
+                Mathf.Clamp(transform.position.z, -7.5f, 7.5f));
         }
     }
 }
