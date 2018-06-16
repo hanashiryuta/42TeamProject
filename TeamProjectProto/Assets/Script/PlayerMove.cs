@@ -1007,11 +1007,11 @@ public class PlayerMove : MonoBehaviour
                 currentState.Buttons.Start == ButtonState.Pressed)
             {
                 pauseScript.PausePlayerIndex = playerIndex;//自分がポーズプレイヤー
-                pauseScript.IsStartBtnPushed = true;
+                //pauseScript.IsStartBtnPushed = true;
             }
             else
             {
-                pauseScript.IsStartBtnPushed = false;
+                //pauseScript.IsStartBtnPushed = false;
             }
         }
     }

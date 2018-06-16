@@ -81,11 +81,12 @@ public class SelectScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Debug.Log(isStartBtnPushed);
         //スタート、エンドのカウント中だったら
         if (startCntDown.IsCntDown || finishCall.IsCalling)
             return;
 
-        if(pauseState != PauseState.NONEPAUSE)
+        //if(pauseState != PauseState.NONEPAUSE)
             HandleXInput();
 
         switch (pauseState)
@@ -157,10 +158,15 @@ public class SelectScript : MonoBehaviour
             return;
         }
 
-        moveY = currentState.ThumbSticks.Left.Y;
+        //STARTボタンを押したら（ポーズ解除）開始
+        isStartBtnPushed = (previousState.Buttons.Start == ButtonState.Released &&
+                            currentState.Buttons.Start == ButtonState.Pressed);
 
         if (pauseState == PauseState.PAUSING)
+        {
+            moveY = currentState.ThumbSticks.Left.Y;
             PausingXInput();
+        }
 
         previousState = currentState;
     }
@@ -172,8 +178,9 @@ public class SelectScript : MonoBehaviour
     void PausingXInput()
     {
         //STARTボタンを押したら（ポーズ解除）開始
-        isStartBtnPushed = (previousState.Buttons.Start == ButtonState.Released &&
-                            currentState.Buttons.Start == ButtonState.Pressed);
+        //isStartBtnPushed = (previousState.Buttons.Start == ButtonState.Released &&
+        //                    currentState.Buttons.Start == ButtonState.Pressed);
+
         //up
         if (moveY >=0.8f && nowSelectedBtn != toTitle)
         {
@@ -194,7 +201,6 @@ public class SelectScript : MonoBehaviour
         {
             BtnPushed(nowSelectedBtn);
         }
-
     }
 
     /// <summary>
