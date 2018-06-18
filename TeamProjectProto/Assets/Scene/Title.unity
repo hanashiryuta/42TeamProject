@@ -1050,7 +1050,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d11a4e3c567ae543854d532c44976e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bg: {fileID: 1649151401271458, guid: 4b86ac0388961b345848e1139261e831, type: 2}
+  bg: {fileID: 1387371117130210, guid: 4b86ac0388961b345848e1139261e831, type: 2}
   zDistance: 20
 --- !u!1 &1252063943
 GameObject:

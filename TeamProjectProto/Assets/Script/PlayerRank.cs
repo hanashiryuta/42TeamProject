@@ -126,7 +126,7 @@ public class PlayerRank : MonoBehaviour
             if (_playerRankArray[0].GetComponent<PlayerMove>().totalItemCount == 0)
             {
                 //全プレイヤーの王冠は消す
-                player.transform.Find("Armature/Bone/Bone.001/Bone.002/Bone.003/Bone.004/Bone.004_end/Crown").GetComponent<MeshRenderer>().enabled = false;
+                player.transform.Find("Armature/Bone/Bone.001/Bone.002/Bone.003/Bone.004/Bone.004_end/Crown").gameObject.SetActive(false);//GetComponent<MeshRenderer>().enabled = false;
             }
             else
             {
@@ -134,12 +134,12 @@ public class PlayerRank : MonoBehaviour
                 //1位タイも王冠を見えるようにする
                 if (player.GetComponent<PlayerMove>().totalItemCount >= _playerRankArray[0].GetComponent<PlayerMove>().totalItemCount)
                 {
-                    player.transform.Find("Armature/Bone/Bone.001/Bone.002/Bone.003/Bone.004/Bone.004_end/Crown").GetComponent<MeshRenderer>().enabled = true;
+                    player.transform.Find("Armature/Bone/Bone.001/Bone.002/Bone.003/Bone.004/Bone.004_end/Crown").gameObject.SetActive(true);//GetComponent<MeshRenderer>().enabled = true;
                 }
                 //それ以外のプレイヤーの王冠は消す
                 else
                 {
-                    player.transform.Find("Armature/Bone/Bone.001/Bone.002/Bone.003/Bone.004/Bone.004_end/Crown").GetComponent<MeshRenderer>().enabled = false;
+                    player.transform.Find("Armature/Bone/Bone.001/Bone.002/Bone.003/Bone.004/Bone.004_end/Crown").gameObject.SetActive(false);//GetComponent<MeshRenderer>().enabled = false;
                 }
             }
 
