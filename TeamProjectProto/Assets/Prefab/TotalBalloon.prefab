@@ -207,6 +207,9 @@ MonoBehaviour:
   coutionColor: {r: 1, g: 0.64137936, b: 0, a: 0}
   dangerColor: {r: 0.625, g: 0, b: 0, a: 0}
   detonationList: []
+  detonationRadius: 4
+  originDetonationArea: {fileID: 1034089992292260, guid: 66080d96a304c644fb05c5bc203621c2,
+    type: 2}
 --- !u!135 &135630039118017900
 SphereCollider:
   m_ObjectHideFlags: 1
