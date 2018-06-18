@@ -84,7 +84,10 @@ public class RespawnController : MonoBehaviour {
             p.GetComponentInChildren<SkinnedMeshRenderer>().materials[0].EnableKeyword("_EMISSION");
 
             //180508 何　追加　アウトラインの色
-            p.GetComponentInChildren<Outline>().color = cntPlSta.Value;
+            foreach (var outline in p.GetComponentsInChildren<Outline>())
+            {
+                outline.color = cntPlSta.Value;
+            }
 
             //影をPlayerの子にして生成
             GameObject s = Instantiate(shadow, p.transform.position - Vector3.down, Quaternion.identity, p.transform);
@@ -101,6 +104,7 @@ public class RespawnController : MonoBehaviour {
     /// </summary>
     void DebugMode()
     {
+        Debug.Log("PlayerSpawn_Debug");
         //生成位置を数だけプレイヤーを生成する
         for (int i = 0; i < transform.childCount; i++)
         {
@@ -114,7 +118,10 @@ public class RespawnController : MonoBehaviour {
             p.GetComponentInChildren<SkinnedMeshRenderer>().materials[0].SetTexture("_EmissionMap", texList[i]);
             p.GetComponentInChildren<SkinnedMeshRenderer>().materials[0].EnableKeyword("_EMISSION");
 
-            p.GetComponentInChildren<Outline>().color = i;
+            foreach(var outline in p.GetComponentsInChildren<Outline>())
+            {
+                outline.color = i;
+            }
 
             //影をPlayerの子にして生成
             GameObject s = Instantiate(shadow, p.transform.position - Vector3.down, Quaternion.identity, p.transform);

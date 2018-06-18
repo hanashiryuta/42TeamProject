@@ -95,7 +95,10 @@ public class StageSelectController : MonoBehaviour
             stagePointsList.Add(Instantiate(stagePoint, stagePointsSet.transform));
             stagePointsList[i].transform.GetComponent<RectTransform>().anchoredPosition = new Vector3(firstPointX + i * pointsOffset, 0, 0);
         }
-
+        //セットの大きさ
+        Vector2 setSize = stagePointsSet.transform.GetComponent<RectTransform>().sizeDelta;
+        stagePointsSet.transform.GetComponent<RectTransform>().sizeDelta = new Vector2(Mathf.Abs(firstPointX), setSize.y);
+        //最初表示するポイント
         PointToSelected(nowStageIndex);
     }
 
@@ -165,7 +168,7 @@ public class StageSelectController : MonoBehaviour
             Destroy(stage);
         }
 
-        stage = Instantiate(stageList[nowStageIndex], Vector3.zero, Quaternion.Euler(0, rotate, 0));
+        stage = Instantiate(stageList[nowStageIndex], new Vector3(0, 0.5f, 0), Quaternion.Euler(0, rotate, 0));
     }
 
     /// <summary>

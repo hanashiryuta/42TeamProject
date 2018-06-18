@@ -36,8 +36,8 @@ public class ScoreEffect : MonoBehaviour {
             isCreat = true;
         }
 
-        //UIの位置（UIの右端）まで行ったら
-        if (effect.anchoredPosition.y >= 360 - targetUI.rect.height)
+        //UIの位置（UIの下端）まで行ったら
+        if (effect.anchoredPosition.y >= 360 - (targetUI.rect.height + 2))
         {
             Debug.Log(effect.anchoredPosition.y);
             Destroy(gameObject); //破棄する
