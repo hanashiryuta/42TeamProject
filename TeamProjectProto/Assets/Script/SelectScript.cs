@@ -81,7 +81,6 @@ public class SelectScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(isStartBtnPushed);
         //スタート、エンドのカウント中だったら
         if (startCntDown.IsCntDown || finishCall.IsCalling)
             return;
@@ -162,7 +161,7 @@ public class SelectScript : MonoBehaviour
         isStartBtnPushed = (previousState.Buttons.Start == ButtonState.Released &&
                             currentState.Buttons.Start == ButtonState.Pressed);
 
-        if (pauseState == PauseState.PAUSING)
+        if (pauseState == PauseState.PAUSING&&!isRoulette)
         {
             moveY = currentState.ThumbSticks.Left.Y;
             PausingXInput();

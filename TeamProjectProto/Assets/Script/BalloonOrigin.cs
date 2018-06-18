@@ -319,6 +319,20 @@ public class BalloonOrigin : MonoBehaviour
             BlastAction();
         }
     }
+    /// <summary>
+    /// 爆発物拡大処理
+    /// </summary>
+    public void BalloonBlast(float air)
+    {
+        blastCount+=air;
+        scaleCount += scaleRate*air;
+        isDestroy = false;//破棄できないようにする
+        //内容物の数が限界を超えたら
+        if (blastCount >= blastLimit)
+        {
+            BlastAction();
+        }
+    }
 
     /// <summary>
     /// 爆発物拡大処理(中心物体用)
@@ -367,12 +381,13 @@ public class BalloonOrigin : MonoBehaviour
     public virtual void BlastAction()
     {
         //ポーズ対象から外す
-        Pauser.targetsRemove(GetComponent<Pauser>());
+        //Pauser.targetsRemove(GetComponent<Pauser>());
         _isBlast = true;//爆発した
         //ルーレットフラグをtrueに
-        balloonMaster.isRoulette = true;
+        //balloonMaster.isRoulette = true;
         balloonMaster.IsBlast = true;//爆発した
         player.GetComponent<PlayerMove>().isStan = true;
+        player.GetComponent<PlayerMove>().isBlastStan = true;
         GetComponent<AudioSource>().PlayOneShot(soundSE2);
         //次のプレイヤー指定
         balloonMaster.nextPlayer = BalloonExChangeByDistance(balloonMaster.pList, player);

@@ -489,15 +489,14 @@ MonoBehaviour:
   spriteList:
   - {fileID: 21300000, guid: 99f7503045159e849acfacc2137f9edc, type: 3}
   - {fileID: 21300000, guid: 0772c0ae67332d8448ab51265065d12f, type: 3}
-  - {fileID: 21300000, guid: aad39ac2297ee634baa5410be6b73c46, type: 3}
   spriteObjList: []
   centerSprite: {fileID: 0}
+  centerPosition: {x: 0, y: 0, z: 0}
   reelName: time
   reelSpeed: 10
   timeList:
   - 20
   - 15
-  - 5
 --- !u!114 &114140410734554226
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -882,6 +881,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 633e44a462f7972408d913d64e4bf835, type: 3}
   spriteObjList: []
   centerSprite: {fileID: 0}
+  centerPosition: {x: 0, y: 0, z: 0}
   reelName: blastType
   reelSpeed: 10
   blastTypeList: 0100
@@ -905,6 +905,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 96b00b655b18eed4fae15540a29d207d, type: 3}
   spriteObjList: []
   centerSprite: {fileID: 0}
+  centerPosition: {x: 0, y: 0, z: 0}
   reelName: nextPlayer
   reelSpeed: 10
   Roulette: {fileID: 1901371632001438}
