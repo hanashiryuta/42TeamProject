@@ -36,7 +36,7 @@ public class BalloonOrigin : MonoBehaviour
     public float blastCount = 0;//内容物総数
     public float blastLimit = 30;//内容物総数限界
 
-    float moveTime = 3.0f;//爆発物が移る際のインターバル
+    float moveTime = 2;//爆発物が移る際のインターバル
     bool isMove = true;//爆発物が移れるかどうか
 
     public float setStopTime; //Unity側でのコントローラー振動停止までの時間設定用
@@ -93,7 +93,12 @@ public class BalloonOrigin : MonoBehaviour
     public Color coutionColor;
     public Color dangerColor;
 
+    [HideInInspector]
     public Collider[] detonationList;//誘爆範囲に入ったプレイヤーリスト
+    [HideInInspector]
+    public float detonationRadius = 4.0f;//誘爆半径
+    public GameObject originDetonationArea;//誘爆半径表示オブジェクト
+    GameObject detonationArea;
 
     // Use this for initialization
     void Start()
@@ -146,7 +151,7 @@ public class BalloonOrigin : MonoBehaviour
             moveTime -= Time.deltaTime;
             if (moveTime < 0)
             {
-                moveTime = 3.0f;
+                moveTime = 2;
                 isMove = true;
             }
         }
@@ -155,8 +160,9 @@ public class BalloonOrigin : MonoBehaviour
 
         _isColorChaged = CheckColorChange();
 
-
-        detonationList = Physics.OverlapSphere(player.transform.position + new Vector3(0, 1, 0), 4, 1 << LayerMask.NameToLayer("Player"));//円形のあたり判定で誘爆範囲指定して入ったプレイヤー設定
+        detonationList = Physics.OverlapSphere(player.transform.position + new Vector3(0, 1, 0), detonationRadius, 1 << LayerMask.NameToLayer("Player"));//円形のあたり判定で誘爆範囲指定して入ったプレイヤー設定
+        if (detonationArea != null)//プレイヤーに誘爆半径を追従
+            detonationArea.transform.parent = player.transform;
     }
 
     void FixedUpdate()
@@ -205,7 +211,7 @@ public class BalloonOrigin : MonoBehaviour
     /// </summary>
     void ColorChange()
     {
-        if (blastCount < 10) //1.7以下なら安全状態
+        if (blastCount < blastLimit * 1 / 3) //1.7以下なら安全状態
             _balloonState = BalloonState.SAFETY;
 
         switch (_balloonState)
@@ -213,9 +219,9 @@ public class BalloonOrigin : MonoBehaviour
             //1.7以下なら安全状態
             //色は緑
             case BalloonState.SAFETY:
-                //gameObject.GetComponent<Renderer>().material.color = new Color(34 / 255f, 195 / 255f, 80 / 255f);
+                //gameObject.GetComponent<Renderer>().material.color = new Color(34 / 255f, 195 / 255f, 80 / 255f);\
                 gameObject.GetComponent<Renderer>().material.color = safeColor;
-                if (blastCount > 10)
+                if (blastCount > blastLimit * 1 / 3)
                     _balloonState = BalloonState.CAUTION;
                 break;
 
@@ -224,7 +230,7 @@ public class BalloonOrigin : MonoBehaviour
             case BalloonState.CAUTION:
                 //gameObject.GetComponent<Renderer>().material.color = new Color(255 / 255f, 241 / 255f, 15 / 255f);
                 gameObject.GetComponent<Renderer>().material.color = coutionColor;
-                if (blastCount > 20)
+                if (blastCount > blastLimit * 2 / 3)
                     _balloonState = BalloonState.DANGER;
                 break;
 
@@ -232,6 +238,12 @@ public class BalloonOrigin : MonoBehaviour
             //色は赤
             case BalloonState.DANGER:
                 //gameObject.GetComponent<Renderer>().material.color = new Color(229 / 255f, 0 / 255f, 11 / 255f);
+                if (detonationArea == null)
+                {
+                    //誘爆半径表示オブジェクト生成
+                    detonationArea = Instantiate(originDetonationArea, player.transform.position + new Vector3(0, 1, 0), Quaternion.identity, player.transform);
+                    detonationArea.transform.localScale = new Vector3(detonationRadius * 4, detonationRadius * 4, detonationRadius * 4);
+                }
                 gameObject.GetComponent<Renderer>().material.color = dangerColor;
                 break;
         }
@@ -392,7 +404,8 @@ public class BalloonOrigin : MonoBehaviour
         //次のプレイヤー指定
         balloonMaster.nextPlayer = BalloonExChangeByDistance(balloonMaster.pList, player);
         isDestroy = true;//破棄できるようにする
-                
+        if (detonationArea != null)//誘爆半径削除
+            Destroy(detonationArea);
         Destroy(this.gameObject);
     }
 
