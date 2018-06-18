@@ -133,6 +133,11 @@ public class PlayerMove : MonoBehaviour
     float playerPos_Y;//Y座標の移動制限
     float playerPos_Z;//Z座標の移動制限（ステージセレクトで選ばれたステージに応じて、変更）
 
+    [HideInInspector]
+    public bool isBlastStan;
+    [HideInInspector]
+    public GameObject balloonMaster;
+
     // Use this for initialization
     void Start()
     {
@@ -241,6 +246,11 @@ public class PlayerMove : MonoBehaviour
             {
                 isStan = false;
                 stanTime = originStanTime;
+                if(isBlastStan)
+                {
+                    isBlastStan = false;
+                    balloonMaster.GetComponent<BalloonMaster>().isRoulette = true;
+                }
                 if (stan_Star_Particle != null)
                 {
                     //星型パーティクル削除
@@ -585,19 +595,19 @@ public class PlayerMove : MonoBehaviour
                 isStop = true;
             }
             
-            //自身がダッシュ中であり、ジャンプしていないとき
-            if (_isDash && jumpCount == 0)
-            {
-                //相手のプレイヤーがスタン中でない、かつ、ダッシュ中でない、又は、ジャンプしていなければ
-                if (!col.gameObject.GetComponent<PlayerMove>().isStan &&
-                    (!col.gameObject.GetComponent<PlayerMove>().IsDash || col.gameObject.GetComponent<PlayerMove>().jumpCount == 0))
-                {
-                    //相手のプレイヤーを弾く
-                    col.gameObject.GetComponent<PlayerMove>().isHit = true;
-                    col.gameObject.GetComponent<Rigidbody>().AddForce((transform.position - col.transform.position + new Vector3(0, 0.1f, 0)) * attackPower,
-                        ForceMode.Impulse);
-                }
-            }
+            ////自身がダッシュ中であり、ジャンプしていないとき
+            //if (_isDash && jumpCount == 0)
+            //{
+            //    //相手のプレイヤーがスタン中でない、かつ、ダッシュ中でない、又は、ジャンプしていなければ
+            //    if (!col.gameObject.GetComponent<PlayerMove>().isStan &&
+            //        (!col.gameObject.GetComponent<PlayerMove>().IsDash || col.gameObject.GetComponent<PlayerMove>().jumpCount == 0))
+            //    {
+            //        //相手のプレイヤーを弾く
+            //        col.gameObject.GetComponent<PlayerMove>().isHit = true;
+            //        col.gameObject.GetComponent<Rigidbody>().AddForce((col.transform.position - transform.position + new Vector3(0, 0.1f, 0)) * attackPower,
+            //            ForceMode.Impulse);
+            //    }
+            //}
         }
     }
 

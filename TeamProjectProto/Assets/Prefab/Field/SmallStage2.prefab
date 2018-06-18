@@ -2824,10 +2824,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1515882103006162, guid: 72aae454a9f6d9a498447c4ae7d216b1, type: 2}
   texList:
-  - {fileID: 2800000, guid: a84c2e86edc95be49942785b7cc7ee56, type: 3}
-  - {fileID: 2800000, guid: 68711883e125ef04eb5781202e6520b5, type: 3}
-  - {fileID: 2800000, guid: 327d27672235e6f4792e6685379e40a3, type: 3}
-  - {fileID: 2800000, guid: b90f9ccad4815494787a95fe34389d8e, type: 3}
+  - {fileID: 2800000, guid: 7c1240d7826fb6b468f05d825557fa63, type: 3}
+  - {fileID: 2800000, guid: 4ab645dd0aeeb8c4d8995fd03a8db096, type: 3}
+  - {fileID: 2800000, guid: db257a06d9e9b544aaabd9b4ebea241c, type: 3}
+  - {fileID: 2800000, guid: bbb8512d3de7b0244a20e8675977357d, type: 3}
   shadow: {fileID: 1559431038006236, guid: b534d641b217ad14f80c647df005f9b8, type: 2}
 --- !u!114 &114679386247057690
 MonoBehaviour:

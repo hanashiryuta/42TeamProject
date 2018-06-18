@@ -6,6 +6,7 @@ public class Air : MonoBehaviour {
     public float power = 10;//移動速度
     GameObject balloon;
     public AudioClip soundSE1;//生成時の効果音
+    public float airValue;
 
     // Use this for initialization
     void Start () {
@@ -14,7 +15,8 @@ public class Air : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () { if (balloon == null)
+	void Update () {
+        if (balloon == null)
         {
             balloon = GameObject.FindGameObjectWithTag("Balloon");
             Destroy(gameObject);
@@ -40,7 +42,7 @@ public class Air : MonoBehaviour {
         //風船に当たったら膨らませる
         if (col.gameObject.tag == "Balloon")
         {
-            balloon.GetComponent<BalloonOrigin>().BalloonBlast();
+            balloon.GetComponent<BalloonOrigin>().BalloonBlast(airValue);
             Destroy(gameObject);
         }
     }

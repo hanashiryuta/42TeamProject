@@ -88,6 +88,10 @@ public class BalloonMaster : MonoBehaviour {
     {
         //初期化処理
         pList = GameObject.FindGameObjectsWithTag("Player");
+        foreach(var player in pList)
+        {
+            player.GetComponent<PlayerMove>().balloonMaster = gameObject;
+        }
         nextPlayer = pList[Random.Range(0, pList.Length)];
         nowBalloon = null;
         balloonRespawnTime = originBalloonRespawnTime;
@@ -135,6 +139,10 @@ public class BalloonMaster : MonoBehaviour {
                 nowPlayer = nextPlayer;
                 //バルーン生成
                 nowBalloon = Instantiate(nextSpawnBalloon,nowPlayer.transform.position,Quaternion.identity);
+                foreach(var cx in GameObject.FindGameObjectsWithTag("Post"))
+                {
+                    cx.GetComponent<PostController>().isBalloon = true;
+                }
                 //自分指定
                 nowBalloon.GetComponent<BalloonOrigin>().balloonMaster = this;
                 //バルーンにプレイヤー指定

@@ -52,6 +52,9 @@ public class PostController : MonoBehaviour {
     public GameObject origin_Pig_ToCoin_Particle;
     GameObject pig_ToCoin_Particle;
 
+    [HideInInspector]
+    public bool isBalloon;
+
     // Use this for initialization
     void Start () {
 		//初期化処理
@@ -70,7 +73,7 @@ public class PostController : MonoBehaviour {
     void Update () {
 
 		//5ポイント貯めたら特殊壁出して移動する
-		if (respawnCount >= 5)
+		if (respawnCount >= 1)
         {
             limitCount = respawnCount;//ポストに5ポイント以上入ったときに移動できるようにする
             respawnCount = 0;
@@ -85,7 +88,7 @@ public class PostController : MonoBehaviour {
         {
             inflateTime -= Time.deltaTime;
             //5個以上あったとき
-            if (limitCount >= 5)
+            if (limitCount >= 1)
             {
                 if (inflateTime < 0)
                 {
@@ -153,7 +156,7 @@ public class PostController : MonoBehaviour {
             if(!startCountDown.IsCntDown && !finishCall.IsCalling)
                 interval++;
             //約5秒後に再出現させる。その際に移動させるために必要なものを初期化
-            if (interval >= intervalLimit * 60)
+            if (isBalloon)
             {
                 interval = 0;
                 limitCount = 0;
@@ -162,6 +165,7 @@ public class PostController : MonoBehaviour {
                 activity = true;
                 gameObject.GetComponentInParent<PostRespawn>().isLimitReset = true;
                 Instantiate(marker, gameObject.transform.position + new Vector3(0, 19.5f, 0), Quaternion.identity);//ポストが出現したらマーカーを出す
+                isBalloon = false;
             }
         }
 
