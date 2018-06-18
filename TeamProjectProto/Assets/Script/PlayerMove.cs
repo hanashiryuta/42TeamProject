@@ -138,6 +138,8 @@ public class PlayerMove : MonoBehaviour
     [HideInInspector]
     public GameObject balloonMaster;
 
+    float dashParticleTime = 0.0f;
+
     // Use this for initialization
     void Start()
     {
@@ -212,7 +214,7 @@ public class PlayerMove : MonoBehaviour
 
         //タックル関係
         IsTackle();
-        Clamp();
+        //Clamp();
     }
 
     // Update is called once per frame
@@ -928,14 +930,20 @@ public class PlayerMove : MonoBehaviour
         if (_isDash)
         {
             //ダッシュ中にパーティクルを生成
-            if (dash_Particle == null) dash_Particle = Instantiate(origin_Dash_Particle, transform);
+            //if (dash_Particle == null) dash_Particle = Instantiate(origin_Dash_Particle, transform);
+            dashParticleTime -= Time.deltaTime;
+            if (dashParticleTime <= 0)
+            {
+                Instantiate(origin_Dash_Particle, transform.position, Quaternion.identity);
+                dashParticleTime = 0.1f;
+            }
         }
         else
         {
             SetDashLimitTime(holdItemCount, dashTimePerItem);
 
             //ダッシュ中ではない時パーティクルを削除
-            if (dash_Particle != null) Destroy(dash_Particle);
+            //if (dash_Particle != null) Destroy(dash_Particle);
         }
 
         // RBボタン押している間
