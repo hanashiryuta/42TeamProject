@@ -562,7 +562,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: -100, y: 0}
+  m_AnchoredPosition: {x: -150, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1220915094
@@ -683,7 +683,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 100, y: 0}
+  m_AnchoredPosition: {x: 150, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &1334476595
@@ -1250,10 +1250,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stageList:
-  - {fileID: 1751453022488230, guid: 2b18fdd524184134fbb7dead429cbfb0, type: 2}
-  - {fileID: 1721875416640072, guid: 7308f3c6a4810da42a58299e23c2254f, type: 2}
+  - {fileID: 1525785347346968, guid: 2b18fdd524184134fbb7dead429cbfb0, type: 2}
   - {fileID: 1938844289950496, guid: 5fc19723fe9e996488fa08c7379bab81, type: 2}
   - {fileID: 1207088734636020, guid: cf7d2b112ed1018449762f9f3826571a, type: 2}
+  - {fileID: 1496311600425282, guid: 3989c9496649bd94f92de994f4551eac, type: 2}
   fadePanel: {fileID: 1120177109}
   leftBtn: {fileID: 1220915094}
   rightBtn: {fileID: 1334476595}
