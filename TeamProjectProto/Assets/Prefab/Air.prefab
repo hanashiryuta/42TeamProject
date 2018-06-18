@@ -194,7 +194,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   power: 10
   soundSE1: {fileID: 8300000, guid: 92f83f44a9af02e47a0b5c7cb4ee8e51, type: 3}
-  airValue: 0.2
+  airValue: 0.5
 --- !u!135 &135463251191035860
 SphereCollider:
   m_ObjectHideFlags: 1

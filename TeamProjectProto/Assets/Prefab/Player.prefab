@@ -655,7 +655,7 @@ MonoBehaviour:
   vertical: Vertical1
   jump: Jump
   isStan: 0
-  originStanTime: 1.5
+  originStanTime: 2
   isBalloonShrink: 1
   jumpCount: 0
   hipDropCircle:
@@ -678,7 +678,7 @@ MonoBehaviour:
   effect: {fileID: 1347281360223456, guid: dcb6dca670cc92248bf25501f9bcbea7, type: 2}
   dashSpeedScale: 2
   dashTimePerItem: 0.5
-  origin_Dash_Particle: {fileID: 1858700151214336, guid: 2a0474e26149afc48859d826b9e9a250,
+  origin_Dash_Particle: {fileID: 1976135854806902, guid: 36f3ef134f070c54a8e31cbb0f55d9e6,
     type: 2}
   soundSE4: {fileID: 8300000, guid: a8c23cd303a620d4ea481ba4058b6f1f, type: 3}
   soundSE5: {fileID: 8300000, guid: 326474d3a1aee7144bb04f2591955df0, type: 3}
@@ -688,6 +688,8 @@ MonoBehaviour:
   attackPower: 25
   hitHipDrop: 0
   isHit: 0
+  isBlastStan: 0
+  balloonMaster: {fileID: 0}
   playerIndex: 0
   dashTiredTime: 1
 --- !u!136 &136683905432024742

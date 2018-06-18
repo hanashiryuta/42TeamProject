@@ -32,6 +32,7 @@ public class PostController : MonoBehaviour {
     //public int activeCount;//activityが切り替わるまでのアイテムの個数
     [HideInInspector]
     public MeshRenderer mesh;//ポストを透明化させるためのもの
+    [HideInInspector]
     public SphereCollider bc;//あたり判定をなくす
 
     float interval;//表示するまでの間隔
