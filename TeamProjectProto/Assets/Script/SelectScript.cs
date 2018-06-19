@@ -158,7 +158,6 @@ public class SelectScript : MonoBehaviour
     void HandleXInput()
     {
         currentState = GamePad.GetState(pausePlayerIndex);
-
         if (!currentState.IsConnected)
         {
             return;
