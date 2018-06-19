@@ -537,6 +537,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   jugglerPlayer: {fileID: 0}
   balloonMaster: {fileID: 0}
+  rouletteState: 0
   playerIndex: 0
   firstReelObj: {fileID: 1002312567685626}
   secondReelObj: {fileID: 1854740464419318}
@@ -557,6 +558,9 @@ MonoBehaviour:
   reelStopButtonsState:
   - {fileID: 21300000, guid: e8d161024460fa5469457bc3b9c286aa, type: 3}
   - {fileID: 21300000, guid: 49d70ca48f4deba4f8a3c53886abcf35, type: 3}
+  pList: []
+  originHaveItemCount: {fileID: 1872624729988194, guid: 080fa0de951624e4683a6e176c4cbfd1,
+    type: 2}
 --- !u!114 &114154127446205436
 MonoBehaviour:
   m_ObjectHideFlags: 1
