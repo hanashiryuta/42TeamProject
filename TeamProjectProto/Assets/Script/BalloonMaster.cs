@@ -131,7 +131,7 @@ public class BalloonMaster : MonoBehaviour {
         if (nowBalloon == null)
         {
             //ルーレットがあるなら何もしない
-            if (isRoulette)
+            if (rouletteObject != null)
                 return;
             blastCount = 0;
             _nowBalloonState = NowBalloonState.NONE;

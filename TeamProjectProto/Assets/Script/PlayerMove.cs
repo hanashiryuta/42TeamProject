@@ -642,13 +642,13 @@ public class PlayerMove : MonoBehaviour
         {
             totalItemCount += holdItemCount;
 
-            if (balloon != null && isBalloonShrink)
-            {
-                col.GetComponent<PostController>().blastCount -= holdItemCount;
-                itemList.Clear();
-                holdItemCount = 0;//内容物所持数を0にする
-                return;
-            }
+            //if (balloon != null && isBalloonShrink)
+            //{
+            //    col.GetComponent<PostController>().blastCount -= holdItemCount;
+            //    itemList.Clear();
+            //    holdItemCount = 0;//内容物所持数を0にする
+            //    return;
+            //}
 
             //ポイントが1つでもあったとき
             if (holdItemCount >= 1)
@@ -657,6 +657,8 @@ public class PlayerMove : MonoBehaviour
                 //エフェクトを生成
                 Instantiate(effect, RectTransformUtility.WorldToScreenPoint(Camera.main, transform.position), Quaternion.identity, GameObject.Find("PlayerScoreUI").transform);
                 GetComponent<AudioSource>().PlayOneShot(soundSE3);
+                //ポストパーティクル生成
+                col.GetComponent<PostController>().Pig_ToCoin_Particle();
             }
             col.GetComponent<PostController>().blastCount += holdItemCount;//中心物体に内容物総数を渡す
             col.GetComponent<PostController>().respawnCount += holdItemCount;
@@ -667,8 +669,6 @@ public class PlayerMove : MonoBehaviour
             }
             itemList.Clear();
             holdItemCount = 0;//内容物所持数を0にする
-            //ポストパーティクル生成
-            col.GetComponent<PostController>().Pig_ToCoin_Particle();
             //GetComponent<AudioSource> ().PlayOneShot (soundSE3);
         }
 

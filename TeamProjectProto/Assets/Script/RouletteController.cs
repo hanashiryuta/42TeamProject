@@ -210,6 +210,8 @@ public class RouletteController : MonoBehaviour {
                 if (waitTime < 0)
                 {
                     waitTime = 1;
+                    //ルーレット終了
+                    balloonMaster.GetComponent<BalloonMaster>().isRoulette = false;
                     //状態変更
                     rouletteState = RouletteState.EXIT;
                 }
@@ -225,8 +227,6 @@ public class RouletteController : MonoBehaviour {
                 //画面外まで行ったら
                 if (rectTransform.localPosition.y < -650)
                 {
-                    //ルーレット終了
-                    balloonMaster.GetComponent<BalloonMaster>().isRoulette = false;
                     //所持アイテム表示オブジェクト削除
                     Destroy(haveItemCount);
                     //デストロイ

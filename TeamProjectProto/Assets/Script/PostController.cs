@@ -78,10 +78,8 @@ public class PostController : MonoBehaviour {
         {
             limitCount = respawnCount;//ポストに5ポイント以上入ったときに移動できるようにする
             respawnCount = 0;
-            //specialWallPoint.GetComponent<SpecialWallRespawn>().SpecialRespawn(player);
             Debug.Log("移る");
             activity = false;
-            //isRespawn = true;
         }
 
 		//内容物が一つでもあれば
@@ -110,41 +108,7 @@ public class PostController : MonoBehaviour {
                     }
                 }
             }
-
-            //if (giveTime < 0)//一定時間ごとに
-            //{
-            //    //balloon.GetComponent<BalloonController>().blastCount += 0.05f;//内容物を爆発物に移す
-            //    balloon.GetComponent<BalloonController>().BalloonBlast(gameObject);
-            //    blastCount--;//内容物の総数を減らす
-            //    giveTime = 0.2f;
-            //    activeCount++;
-            //}
         }
-		else if(blastCount<0)
-		{
-			giveTime -= Time.deltaTime;
-			if (giveTime < 0)//一定時間ごとに
-			{
-				//爆発物縮小
-				//balloon.GetComponent<BalloonOrigin>().BalloonShrink(gameObject);
-				blastCount++;//内容物の総数を増やす
-				giveTime = 0.2f;
-			}
-		}
-		else
-		{
-			giveTime = 0.2f;
-		}
-
-        //if (activeCount >= 5 && blastCount<=0)
-        //{
-        //    Debug.Log("移る");
-        //    bc.enabled = false;
-        //    mesh.enabled = false;
-        //    activity = false;
-        //    isRespawn = true;
-        //    activeCount = 0;
-        //}
 
         //activityがfalseのとき
         if (activity == false)
@@ -169,9 +133,6 @@ public class PostController : MonoBehaviour {
                 isBalloon = false;
             }
         }
-
-        //activityに応じて表示
-        //this.gameObject.SetActive (activity);
 	}
 
     /// <summary>
