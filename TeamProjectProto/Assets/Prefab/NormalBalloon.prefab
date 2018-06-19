@@ -194,7 +194,7 @@ MonoBehaviour:
   scaleCount: 1
   scaleLimit: 3
   blastCount: 0
-  blastLimit: 15
+  blastLimit: 20
   setStopTime: 5
   isTimeBlast: 1
   originBlastTime: 1

@@ -79,8 +79,7 @@ public class BalloonOrigin : MonoBehaviour
     {
         get { return _isColorChaged; }
     }
-
-    StartCountDown startCntDown;//カウントダウンScript
+    
     FinishCall finishCall;//終了合図Script
 
     public bool isCameraDistance = false;
@@ -121,6 +120,8 @@ public class BalloonOrigin : MonoBehaviour
 
         preState = _balloonState;
         curState = _balloonState;
+
+        finishCall = GameObject.Find("FinishCall").GetComponent<FinishCall>();//終了処理オブジェクト取得
     }
 
     // Update is called once per frame
@@ -131,15 +132,19 @@ public class BalloonOrigin : MonoBehaviour
         {
             BalloonBlast();
         }
-        
-        //時間経過で膨らむ処理
-        if (isTimeBlast)
+
+        //スタートカウントダウン中＆終了処理時膨らまない
+        if (!finishCall.IsCalling)
         {
-            blastTime -= Time.deltaTime;
-            if (blastTime <= 0)
+            //時間経過で膨らむ処理
+            if (isTimeBlast)
             {
-                BalloonBlast();
-                blastTime = originBlastTime;
+                blastTime -= Time.deltaTime;
+                if (blastTime <= 0)
+                {
+                    BalloonBlast();
+                    blastTime = originBlastTime;
+                }
             }
         }
 
