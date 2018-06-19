@@ -63,6 +63,10 @@ public class SelectScript : MonoBehaviour
     //途中終了用シーンコントローラー
     SceneController scenecontroller;
 
+    //ポーズ背景
+    Image panelBG;
+    List<Color> panelColor = new List<Color>() { Color.red, Color.blue, Color.yellow, Color.green };
+
     // Use this for initialization
     void Start()
     {
@@ -76,6 +80,8 @@ public class SelectScript : MonoBehaviour
         finishCall = GameObject.Find("FinishCall").GetComponent<FinishCall>();
         //途中終了用シーンコントローラー
         scenecontroller = GameObject.Find("SceneController(Clone)").GetComponent<SceneController>();
+        //ポーズ背景
+        panelBG = pausepanel.transform.Find("Panel").GetComponent<Image>();
     }
 
     // Update is called once per frame
@@ -94,6 +100,7 @@ public class SelectScript : MonoBehaviour
                 if (PushStart())
                 {
                     pausepanel.SetActive(true);//パネル出現
+                    SetPanelColorWithPlayerIndex(pausePlayerIndex);//パネル色合わせ
                     pauseState = PauseState.OBJECTSET;//状態変化
                 }
                 break;
@@ -327,5 +334,14 @@ public class SelectScript : MonoBehaviour
         }
 
         pauseState = PauseState.NONEPAUSE;
+    }
+
+    /// <summary>
+    /// パネルの色をポーズ押したプレイヤーに合わせる
+    /// </summary>
+    /// <param name="playeIndex"></param>
+    void SetPanelColorWithPlayerIndex(PlayerIndex playeIndex)
+    {
+        panelBG.color = panelColor[(int)playeIndex];
     }
 }
