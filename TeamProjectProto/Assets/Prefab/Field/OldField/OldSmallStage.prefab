@@ -89,7 +89,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4843067660397082}
   m_Layer: 0
-  m_Name: SmallStage
+  m_Name: OldSmallStage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
