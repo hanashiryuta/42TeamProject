@@ -1251,7 +1251,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stageList:
   - {fileID: 1525785347346968, guid: 2b18fdd524184134fbb7dead429cbfb0, type: 2}
-  - {fileID: 1938844289950496, guid: 7308f3c6a4810da42a58299e23c2254f, type: 2}
+  - {fileID: 1938844289950496, guid: 5fc19723fe9e996488fa08c7379bab81, type: 2}
   - {fileID: 1207088734636020, guid: cf7d2b112ed1018449762f9f3826571a, type: 2}
   - {fileID: 1496311600425282, guid: 3989c9496649bd94f92de994f4551eac, type: 2}
   fadePanel: {fileID: 1120177109}
