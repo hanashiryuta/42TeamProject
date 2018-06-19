@@ -131,7 +131,7 @@ public class BalloonMaster : MonoBehaviour {
         if (nowBalloon == null)
         {
             //ルーレットがあるなら何もしない
-            if (isRoulette)
+            if (rouletteObject != null)
                 return;
             blastCount = 0;
             _nowBalloonState = NowBalloonState.NONE;
@@ -207,6 +207,8 @@ public class BalloonMaster : MonoBehaviour {
                 rouletteObject.GetComponent<RouletteController>().jugglerPlayer = nowPlayer;
                 //自分を渡す
                 rouletteObject.GetComponent<RouletteController>().balloonMaster = gameObject;
+                //プレイヤーリストを渡す
+                rouletteObject.GetComponent<RouletteController>().pList = pList;
             }
         }
     }

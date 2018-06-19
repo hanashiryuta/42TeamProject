@@ -11,7 +11,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 
 //ルーレット状態
-enum RouletteState
+public enum RouletteState
 {
     ENTRY,//ルーレット出現
     START,//ルーレット開始
@@ -29,7 +29,8 @@ public class RouletteController : MonoBehaviour {
     [HideInInspector]
     public GameObject balloonMaster;//バルーン管理クラス
 
-    RouletteState rouletteState = RouletteState.ENTRY;//ルーレット状態
+    [HideInInspector]
+    public RouletteState rouletteState = RouletteState.ENTRY;//ルーレット状態
 
     [HideInInspector]
     public PlayerIndex playerIndex;//回すプレイヤー番号
@@ -60,6 +61,12 @@ public class RouletteController : MonoBehaviour {
     float waitTime = 1;//各待ち時間
     SelectScript selectScript;
 
+    [HideInInspector]
+    public GameObject[] pList;//プレイヤーリスト
+    
+    public GameObject originHaveItemCount;//所持アイテム表示オブジェクト
+    GameObject haveItemCount;
+
     // Use this for initialization
     void Start () {
         ////ゲームを一時的に止める
@@ -77,7 +84,7 @@ public class RouletteController : MonoBehaviour {
         //playerIndex = 0;
         //プレイヤーリスト生成
         playerList = new List<GameObject>();
-        foreach(var player in GameObject.FindGameObjectsWithTag("Player"))
+        foreach(var player in pList)
         {
             //爆破したプレイヤーは除く
             if (player != jugglerPlayer)
@@ -114,8 +121,15 @@ public class RouletteController : MonoBehaviour {
         switch (rouletteState)
         {
             case RouletteState.ENTRY://ルーレット出現
+                //所持アイテム表示オブジェクト生成
+                if (haveItemCount == null)
+                {
+                    haveItemCount = Instantiate(originHaveItemCount, GameObject.FindGameObjectWithTag("Canvas").transform);
+                    //初期化処理
+                    haveItemCount.GetComponent<HaveItemCounts>().RouletteStart(pList, this);
+                }
                 //中心に向けて移動
-                rectTransform.DOLocalMoveY(Vector3.zero.y, 1);
+                rectTransform.DOLocalMoveY(-80, 1);
                 waitTime -= Time.deltaTime;
                 if (waitTime < 0)
                 {
@@ -196,6 +210,8 @@ public class RouletteController : MonoBehaviour {
                 if (waitTime < 0)
                 {
                     waitTime = 1;
+                    //ルーレット終了
+                    balloonMaster.GetComponent<BalloonMaster>().isRoulette = false;
                     //状態変更
                     rouletteState = RouletteState.EXIT;
                 }
@@ -211,8 +227,8 @@ public class RouletteController : MonoBehaviour {
                 //画面外まで行ったら
                 if (rectTransform.localPosition.y < -650)
                 {
-                    //ルーレット終了
-                    balloonMaster.GetComponent<BalloonMaster>().isRoulette = false;
+                    //所持アイテム表示オブジェクト削除
+                    Destroy(haveItemCount);
                     //デストロイ
                     Destroy(gameObject);
                 }

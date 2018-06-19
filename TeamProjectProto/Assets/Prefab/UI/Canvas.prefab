@@ -527,6 +527,10 @@ GameObject:
   - component: {fileID: 114565534593426292}
   - component: {fileID: 114704320626826868}
   - component: {fileID: 114093972657419566}
+  - component: {fileID: 114688171169536240}
+  - component: {fileID: 114987337988684194}
+  - component: {fileID: 114504505111943508}
+  - component: {fileID: 114141742861060170}
   m_Layer: 5
   m_Name: Player3TotalCount
   m_TagString: Untagged
@@ -925,6 +929,20 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: "\uFF10"
+--- !u!114 &114141742861060170
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1721883130042694}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1573420865, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 1}
+  m_EffectDistance: {x: 3, y: 0}
+  m_UseGraphicAlpha: 1
 --- !u!114 &114149071070518546
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1402,6 +1420,20 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &114504505111943508
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1721883130042694}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1573420865, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 1}
+  m_EffectDistance: {x: -3, y: 0}
+  m_UseGraphicAlpha: 1
 --- !u!114 &114536630739809360
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1631,6 +1663,20 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114688171169536240
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1721883130042694}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1573420865, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 0, y: -3}
+  m_UseGraphicAlpha: 1
 --- !u!114 &114693034782551258
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2186,10 +2232,26 @@ MonoBehaviour:
   isPause: 0
   timeState: 0
   balloonMaster: {fileID: 0}
-  lossTimeCutIn: {fileID: 1305404780444528}
-  lossTimeText: {fileID: 1269745939246950}
-  lossTimeCutIn2: {fileID: 1026365492321950}
-  lossTimeText2: {fileID: 1813082216652006}
+  cutInList:
+  - {fileID: 1305404780444528}
+  - {fileID: 1026365492321950}
+  textList:
+  - {fileID: 1269745939246950}
+  - {fileID: 1813082216652006}
+--- !u!114 &114987337988684194
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1721883130042694}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1573420865, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 0, y: 3}
+  m_UseGraphicAlpha: 1
 --- !u!114 &114989633360205912
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2861,7 +2923,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 224635974328648524}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2994,8 +3056,8 @@ RectTransform:
   - {fileID: 224382538628511684}
   - {fileID: 224894306214891502}
   - {fileID: 224316443517188142}
-  - {fileID: 224408361762627122}
   - {fileID: 224878029304841426}
+  - {fileID: 224408361762627122}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3265,7 +3327,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 224635974328648524}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}

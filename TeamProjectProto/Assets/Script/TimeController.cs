@@ -42,11 +42,8 @@ public class TimeController : MonoBehaviour {
     [HideInInspector]
     public GameObject balloonMaster;//バルーン管理クラス
 
-    public GameObject lossTimeCutIn;//カットインイメージ
-    public GameObject lossTimeText;//カットインテキスト
-
-    public GameObject lossTimeCutIn2;//カットインイメージ
-    public GameObject lossTimeText2;//カットインテキスト
+    public List<GameObject> cutInList;
+    public List<GameObject> textList;
 
     // Use this for initialization
     void Start()
@@ -140,23 +137,21 @@ public class TimeController : MonoBehaviour {
         float fillSpeed = 0.05f;//画像fillスピード
         Vector3 textSpeed = new Vector3(-7, 0, 0);//テキストスピード
 
-        
-        if (lossTimeText.GetComponent<RectTransform>().localPosition.x >= -550)
+        for (int i = 0; i < cutInList.Count; i++)
         {
-            //画像fill増加処理
-            lossTimeCutIn.GetComponent<Image>().fillAmount+= fillSpeed;
-            //テキスト移動処理
-            lossTimeText.GetComponent<RectTransform>().localPosition += textSpeed;
-            lossTimeCutIn2.GetComponent<Image>().fillAmount += fillSpeed;
-            lossTimeText2.GetComponent<RectTransform>().localPosition += textSpeed;
-        }
-        else
-        {
-            //画像fill減少処理
-            lossTimeCutIn.GetComponent<Image>().fillOrigin = 0;
-            lossTimeCutIn.GetComponent<Image>().fillAmount-= fillSpeed;
-            lossTimeCutIn2.GetComponent<Image>().fillOrigin = 0;
-            lossTimeCutIn2.GetComponent<Image>().fillAmount -= fillSpeed;
+            if (textList[i].GetComponent<RectTransform>().localPosition.x >= -550)
+            {
+                //画像fill増加処理
+                cutInList[i].GetComponent<Image>().fillAmount += fillSpeed;
+                //テキスト移動処理
+                textList[i].GetComponent<RectTransform>().localPosition += textSpeed;
+            }
+            else
+            {
+                //画像fill減少処理
+                cutInList[i].GetComponent<Image>().fillOrigin = 0;
+                cutInList[i].GetComponent<Image>().fillAmount -= fillSpeed;
+            }
         }
     }
 }
