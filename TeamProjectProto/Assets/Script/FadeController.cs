@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class FadeController : MonoBehaviour
 {
@@ -39,6 +40,8 @@ public class FadeController : MonoBehaviour
                                       _tmpValue / 255f);
             if (_tmpValue >= 255)
             {
+                //DOTween全削除
+                DOTween.KillAll();
                 _tmpValue = 255;
                 _isFadeOutFinish = true;
             }

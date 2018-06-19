@@ -35,7 +35,8 @@ public class BalloonMaster : MonoBehaviour {
     public GameObject nowPlayer;//今バルーンがついているプレイヤー
 
     public float originBalloonRespawnTime;//バルーン出現時間インターバル
-    float balloonRespawnTime;
+    [HideInInspector]
+    public float balloonRespawnTime;
 
     [HideInInspector]
     public GameObject[] pList;//プレイヤーリスト
@@ -83,6 +84,8 @@ public class BalloonMaster : MonoBehaviour {
     public GameObject originRouletteObject;//ルーレット元オブジェクト
     GameObject rouletteObject;//ルーレットオブジェクト
 
+    TimeController timeController;//タイムコントローラー
+
     // Use this for initialization
     void Start ()
     {
@@ -110,6 +113,8 @@ public class BalloonMaster : MonoBehaviour {
 
         cameraShake = Camera.main.GetComponent<CameraShake>();
         cameraShake.BalloonM = this;
+
+        timeController = GameObject.Find("TimeController").GetComponent<TimeController>();
     }
 
     // Update is called once per frame
@@ -225,8 +230,8 @@ public class BalloonMaster : MonoBehaviour {
         nextSpawnBalloon.GetComponent<BalloonOrigin>().blastLimit = second;
         //プレイヤー設定
         nextPlayer = player;
-        Debug.Log("Second" + second);
-        Debug.Log("isTotal" + isTotal);
-        Debug.Log("Player" + player);
+
+        timeController.LossTimeStart(second, this);//ロスタイム判定
     }
+    
 }

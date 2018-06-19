@@ -102,8 +102,6 @@ public class SceneController : MonoBehaviour {
         {
             p.GetComponent<SliderController>().InvisibleSlider();
         }
-        //DOTween全削除
-        DOTween.KillAll();
 
         cnt += Time.deltaTime;
         //fadeout
