@@ -15,9 +15,9 @@ public class StageSelectController : MonoBehaviour
 {
     [SerializeField]
     GameObject[] stageList;
-    Dictionary<string, GameObject> stageDictionary = new Dictionary<string, GameObject>();
-    GameObject stage;
-    int nowStageIndex = 0;
+    //Dictionary<string, GameObject> stageDictionary = new Dictionary<string, GameObject>();
+    GameObject stage;//今表示しているステージ
+    int nowStageIndex = 0;//今表示しているステージのインデックス
 
     ConnectedPlayerStatus connectedPlayerStatus;//プレイヤーステータス(選択したステージをここに渡す)
 
@@ -35,7 +35,7 @@ public class StageSelectController : MonoBehaviour
     Button rightBtn;
 
     float cnt = 0;
-    float delayTime = 1f;//長押しの時の遅延
+    public float delayTime = 0.5f;//長押しの時の遅延
     public bool isDelay = false;
 
     PlayerIndex playerIndex;
@@ -60,10 +60,10 @@ public class StageSelectController : MonoBehaviour
             connectedPlayerStatus = GameObject.FindGameObjectWithTag("PlayerStatus").GetComponent<ConnectedPlayerStatus>();
         }
 
-        for (int i = 0;i < stageList.Length; i++)
-        {
-            stageDictionary.Add(stageList[i].name, stageList[i]);
-        }
+        //for (int i = 0;i < stageList.Length; i++)
+        //{
+        //    stageDictionary.Add(stageList[i].name, stageList[i]);
+        //}
 
         //一つ目のステージを出す
         stage = Instantiate(stageList[0]);
@@ -105,16 +105,24 @@ public class StageSelectController : MonoBehaviour
     // Update is called once per frame
     void Update ()
     {
+        SetControllablePlayer();
+
+        //フェードイン中か
         if (fadeController.IsFadeInFinish == false)
         {
             fadeController.FadeIn();
         }
+        else
+        {
+            //XInput
+            currentState = GamePad.GetState(playerIndex);
+            moveX = currentState.ThumbSticks.Left.X;
 
-        SetControllablePlayer();
-
-        currentState = GamePad.GetState(playerIndex);
-
-        moveX = currentState.ThumbSticks.Left.X;
+            if (isSceneChage)
+            {
+                SceneLoad();
+            }
+        }
 
         //ステージを選択（Aボタン）
         if (previousState.Buttons.A == ButtonState.Released &&
@@ -127,10 +135,6 @@ public class StageSelectController : MonoBehaviour
         //表示しているステージを変更
         ShowStageChage();
 
-        if (isSceneChage)
-        {
-            SceneLoad();
-        }
 
         previousState = currentState;
     }
@@ -227,11 +231,7 @@ public class StageSelectController : MonoBehaviour
             }
             else
             {
-                cnt -= Time.deltaTime;
-                if (cnt <= 0)
-                {
-                    isDelay = false;
-                }
+                DelayTimeCountDown();
             }
         }
 
@@ -251,11 +251,7 @@ public class StageSelectController : MonoBehaviour
             }
             else
             {
-                cnt -= Time.deltaTime;
-                if (cnt <= 0)
-                {
-                    isDelay = false;
-                }
+                DelayTimeCountDown();
             }
         }
 
@@ -352,5 +348,17 @@ public class StageSelectController : MonoBehaviour
     {
         SetStage();
         isSceneChage = true;
+    }
+
+    /// <summary>
+    /// 遅延カウントダウン
+    /// </summary>
+    void DelayTimeCountDown()
+    {
+        cnt -= Time.deltaTime;
+        if (cnt <= 0)
+        {
+            isDelay = false;
+        }
     }
 }

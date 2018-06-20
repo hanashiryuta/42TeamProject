@@ -25,7 +25,8 @@ public class SelectSceneController : MonoBehaviour
     [SerializeField]
     GameObject fadePanel;
     FadeController fadeController;
-    bool isFaded = false;
+    bool isFadedOut = false;
+    bool isFadedIn = false;
 
     //接続したプレイヤー
     [SerializeField]
@@ -43,9 +44,21 @@ public class SelectSceneController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //フェードイン中か
         if (fadeController.IsFadeInFinish == false)
         {
             fadeController.FadeIn();
+        }
+        else
+        {
+            if (!isFadedIn)
+            {
+                for (int i = 0; i < ConnectedPlayerCount(); i++)
+                {
+                    standbyCheck[i].IsCanPressBtn = true;
+                }
+                isFadedIn = true;
+            }
         }
 
         if (IsPlayerStandby())
@@ -159,10 +172,10 @@ public class SelectSceneController : MonoBehaviour
     void SceneLoad()
     {
         fadeController.FadeOut();
-        if (fadeController.IsFadeOutFinish && !isFaded)
+        if (fadeController.IsFadeOutFinish && !isFadedOut)
         {
             gameload.LoadingStartWithOBJ();
-            isFaded = true;
+            isFadedOut = true;
         }
     }
 
@@ -172,7 +185,6 @@ public class SelectSceneController : MonoBehaviour
     void SavePlayerStatus()
     {
         connectedPlayerStatus = Instantiate(connectedPlayerStatusObj).GetComponent<ConnectedPlayerStatus>();
-        Debug.Log(connectedPlayerStatus);
         for (int i = 0; i < standbyCheck.Length; i++)
         {
             if (standbyCheck[i].IsSpawn)

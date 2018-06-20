@@ -9,14 +9,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using XInputDotNetPure;
 
 public class ResultManager : MonoBehaviour
 {
     GameObject playerRank;//Playerの名前取得用
-    Button oneMore, endGame;//各ボタンの情報
-    float count;//選んでいるボタンの取得用
     [SerializeField]
-    float movingTime = 2f;
+    Button oneMoreBtn, toTitleBtn;//各ボタンの情報
+    Button nowSelectedBtn;
+
+    [SerializeField]
+    float textMovingTime = 2f;//順位テキストの移動スピード
     [SerializeField]
     Text[] playerRankTexts;//順位表示のテキスト
     [SerializeField]
@@ -40,20 +43,21 @@ public class ResultManager : MonoBehaviour
     GameLoad gameLoad;
     bool isSceneChange = false;
 
+    //Input
+    PlayerIndex playerIndex;
+    GamePadState previousState;
+    GamePadState currentState;
+    float moveX = 0;
+
     // Use this for initialization
-    void Awake ()
+    void Awake()
     {
-		playerRank = GameObject.Find ("PlayerRankController");
+        playerRank = GameObject.Find("PlayerRankController");
 
-        oneMore = GameObject.Find("OneMore").GetComponent<Button>();
-        endGame = GameObject.Find("EndGame").GetComponent<Button>();
-
-        for(int i = 0; i < playerRankTexts.Length; i++)
+        for (int i = 0; i < playerRankTexts.Length; i++)
         {
             playerRankTexts[i].transform.position = DefaltPosition[i].transform.position;
         }
-
-        count = -1;
 
         if (connectedPlayerStatus == null)
         {
@@ -76,79 +80,112 @@ public class ResultManager : MonoBehaviour
         spawnUIPlayer = transform.GetComponent<SpawnUIPlayer>();
         spawnUIPlayer.ConnectedPLStatus = connectedPlayerStatus;
         spawnUIPlayer.PList = playerRank.GetComponent<PlayerRank>().ResultRank;
-
         //fade
         fadeController = GameObject.Find("FadePanel").GetComponent<FadeController>();
-
         //load
         gameLoad = transform.GetComponent<GameLoad>();
+        //現在接続しているプレイヤーの中で番号が一番小さいやつを選択プレイヤーにする
+        SetControllablePlayer();
+
     }
 
     // Update is called once per frame
     void Update()
     {
+        SetControllablePlayer();
+
         //fadein
         if (fadeController.IsFadeInFinish == false)
         {
             fadeController.FadeIn();
         }
+        else
+        {
+            //fadeout
+            if (isSceneChange)
+            {
+                fadeController.FadeOut();
+            }
+        }
 
+        //順位アニメ中か
         if (_isAnim)
         {
             StartCoroutine(ShowRankCoroutine());
         }
         else
         {
-            count += Input.GetAxisRaw("Horizontal1");
-
-            if (count > 0.1f)
-            {
-                count = 1;//0.1を超えたら1にする
-            }
-            else if (count < -0.1f)
-            {
-                count = -1;//-0.1を超えたら-1にする
-            }
-
-            if (count == -1)
-            {
-                oneMore.Select();//-1の時、ゲームに戻るを選択状態にする
-            }
-            else if (count == 1)
-            {
-                endGame.Select();//1の時、ゲーム終了を選択状態にする
-            }
+            //XInput
+            currentState = GamePad.GetState(playerIndex);
+            moveX = currentState.ThumbSticks.Left.X;
+            ResultXInput();
+            Debug.Log("moveX =" + moveX); 
         }
 
-        //fadeout
-        if (isSceneChange)
+        //NextSceneLoad
+        if (fadeController.IsFadeOutFinish && !isFadeOuted)
         {
-            fadeController.FadeOut();
-
-            if (fadeController.IsFadeOutFinish && !isFadeOuted)
-            {
-                gameLoad.LoadingStartWithOBJ();
-                isFadeOuted = true;
-            }
+            gameLoad.LoadingStartWithOBJ();
+            isFadeOuted = true;
         }
 
+        previousState = currentState;
+    }
+
+    void ResultXInput()
+    {
+        //right
+        if (moveX >= 0.8f && nowSelectedBtn != toTitleBtn)
+        {
+            toTitleBtn.Select();
+            nowSelectedBtn = toTitleBtn;
+        }
+
+        //left
+        if (moveX <= -0.8f && nowSelectedBtn != oneMoreBtn)
+        {
+            oneMoreBtn.Select();
+            nowSelectedBtn = oneMoreBtn;
+        }
+
+        //A
+        if (previousState.Buttons.A == ButtonState.Released &&
+            currentState.Buttons.A == ButtonState.Pressed)
+        {
+            BtnPushed(nowSelectedBtn);
+        }
+    }
+
+
+    /// <summary>
+    /// 選択しているボタンのonClickイベントを呼ぶ
+    /// </summary>
+    /// <param name="btn"></param>
+    void BtnPushed(Button btn)
+    {
+        btn.onClick.Invoke();
     }
 
     /// <summary>
-    /// 「もう1度遊ぶ」を選んだらキャラ生成シーンに戻す処理
+    /// 「もう1度遊ぶ」を選んだらステージ生成シーンへ
     /// </summary>
     public void OneMoreBtn()
     {
-        gameLoad.NextScene = GameLoad.Scene.CharacterSelect;
+        gameLoad.NextScene = GameLoad.Scene.StageSelect;
         isSceneChange = true;
     }
 
     /// <summary>
-    /// 「タイトルへ」を選んだらウィンドウを閉じる処理（.exe形式のみ）
+    /// 「タイトルへ」を選んだらタイトルシーンへ
     /// </summary>
     public void ToTitleBtn()
     {
         gameLoad.NextScene = GameLoad.Scene.Tilte;
+
+        //接続プレイヤーステータス受け取りオブジェを削除
+        connectedPlayerStatus.Created = false;
+        Destroy(connectedPlayerStatus.transform.gameObject);
+
         isSceneChange = true;
     }
 
@@ -161,24 +198,39 @@ public class ResultManager : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f);
 
-        for(int i = 0; i < playerRankTexts.Length; i++)
+        for (int i = 0; i < playerRankTexts.Length; i++)
         {
-            playerRankTexts[i].transform.DOMove(FinishPosition[i].transform.position, movingTime);
+            playerRankTexts[i].transform.DOMove(FinishPosition[i].transform.position, textMovingTime);
             yield return new WaitForSeconds(0.5f);
         }
-        yield return new WaitForSeconds(1f);
+        //yield return new WaitForSeconds(1f);
+        //アニメ終わったらoneMore選択
+        oneMoreBtn.Select();
+        nowSelectedBtn = oneMoreBtn;
+
         _isAnim = false;
     }
 
-
-
-    void ToCharaSelectScene()
+    /// <summary>
+    /// 操作可能なプレイヤーを選択
+    /// /// </summary>
+    void SetControllablePlayer()
     {
-        SceneManager.LoadScene("CharacterSelect");
-    }
-
-    void ToGameTitle()
-    {
-        SceneManager.LoadScene("Title");
+        if (GamePad.GetState(PlayerIndex.One).IsConnected)
+        {
+            playerIndex = PlayerIndex.One;
+        }
+        else if (GamePad.GetState(PlayerIndex.Two).IsConnected)
+        {
+            playerIndex = PlayerIndex.Two;
+        }
+        else if (GamePad.GetState(PlayerIndex.Three).IsConnected)
+        {
+            playerIndex = PlayerIndex.Three;
+        }
+        else if (GamePad.GetState(PlayerIndex.Four).IsConnected)
+        {
+            playerIndex = PlayerIndex.Four;
+        }
     }
 }
