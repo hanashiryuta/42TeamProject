@@ -156,6 +156,8 @@ public class BalloonMaster : MonoBehaviour {
                 nowPlayer.GetComponent<PlayerMove>().balloon = nowBalloon;
                 //次の爆弾指定
                 nextSpawnBalloon = balloonList[Random.Range(0, balloonList.Count)];
+                //ダッシュ回復
+                nowPlayer.GetComponent<PlayerMove>().DashCountDown = nowPlayer.GetComponent<PlayerMove>().DashLimitTime;
 
                 balloonRespawnTime = originBalloonRespawnTime;
 

@@ -110,6 +110,7 @@ public class PlayerMove : MonoBehaviour
     public float DashCountDown
     {
         get { return _dashCountDown; }
+        set { _dashCountDown = value; }
     }
     public GameObject origin_Dash_Particle;//ダッシュパーティクル生成元
     GameObject dash_Particle;//ダッシュパーティクル
@@ -586,9 +587,7 @@ public class PlayerMove : MonoBehaviour
     }
 
     void OnCollisionEnter(Collision col)
-    {
-       
-            
+    {           
             ////自身がダッシュ中であり、ジャンプしていないとき
             //if (_isDash && jumpCount == 0)
             //{
@@ -607,18 +606,6 @@ public class PlayerMove : MonoBehaviour
 
     void OnTriggerEnter(Collider col)
     {
-        //    //内容物に当たったら
-        //    if (col.gameObject.name.Contains("PointItem"))
-        //    {
-        //        if (col.gameObject.GetComponent<ItemController>().isGet&&balloon == null)
-        //        {
-        //            itemList.Add(col.name);//リスト追加
-        //            Destroy(col.gameObject);//内容物破棄
-        //            blastCount += col.GetComponent<ItemController>().point; //内容物所持数を増やす  
-        //GetComponent<AudioSource> ().PlayOneShot (soundSE2);
-        //            //totalBlastCount += col.GetComponent<ItemController>().point;//内容物所持数累計を増やす
-        //        }
-        //    }
         //プレイヤーに当たったら
         if (col.gameObject.tag == "Player")
         {
