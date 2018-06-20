@@ -498,7 +498,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1218557529}
+      - m_Target: {fileID: 1218557527}
         m_MethodName: GameStart
         m_Mode: 1
         m_Arguments:
@@ -762,7 +762,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1218557529}
+      - m_Target: {fileID: 1218557527}
         m_MethodName: GameCredit
         m_Mode: 1
         m_Arguments:
@@ -872,7 +872,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1218557529}
+      - m_Target: {fileID: 1218557527}
         m_MethodName: GameExit
         m_Mode: 1
         m_Arguments:
@@ -948,7 +948,6 @@ GameObject:
   - component: {fileID: 1218557524}
   - component: {fileID: 1218557527}
   - component: {fileID: 1218557528}
-  - component: {fileID: 1218557529}
   - component: {fileID: 1218557530}
   m_Layer: 0
   m_Name: EventSystem
@@ -963,7 +962,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1218557523}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 1077351063, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
@@ -1014,7 +1013,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fadePanel: {fileID: 748016649}
-  isSceneChange: 0
+  gameStartBtn: {fileID: 649383090}
+  creditBtn: {fileID: 1022773030}
+  gameExitBtn: {fileID: 1206159788}
+  delayTime: 0.5
+  isDelay: 0
 --- !u!114 &1218557528
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1029,19 +1032,6 @@ MonoBehaviour:
   loadObj: {fileID: 304744047}
   slider: {fileID: 1194716995}
   _nextScene: 1
---- !u!114 &1218557529
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1218557523}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e897a88bada56014b930c48a36ba1058, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  exit: {fileID: 1206159788}
-  gameStart: {fileID: 649383090}
 --- !u!114 &1218557530
 MonoBehaviour:
   m_ObjectHideFlags: 0

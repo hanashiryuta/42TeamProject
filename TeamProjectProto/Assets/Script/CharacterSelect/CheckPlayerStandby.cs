@@ -39,7 +39,7 @@ public class CheckPlayerStandby : MonoBehaviour
     {
         get { return _isSpawn; }
     }
-    bool _isCanPressBtn = true;//ボタン入力受け付けているか
+    bool _isCanPressBtn = false;//ボタン入力受け付けているか
     public bool IsCanPressBtn
     {
         get { return _isCanPressBtn; }
