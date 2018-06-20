@@ -43,9 +43,9 @@ public class HaveItemCounts : MonoBehaviour {
         //取得
         this.rouletteController = rouletteController;
         //テキスト設定
-        for (int i = 0; i < haveItemCounts.Count; i++)
+        for (int i = 0; i < pList.Length; i++)
         {
-            haveItemCounts[i].text = HalfWidth2FullWidth.Set2FullWidth(pList[i].GetComponent<PlayerMove>().holdItemCount.ToString());
+            haveItemCounts[i].text = HalfWidth2FullWidth.Set2FullWidth(pList[i].GetComponent<PlayerMove>().holdItemCount);
         }
     }
 }
