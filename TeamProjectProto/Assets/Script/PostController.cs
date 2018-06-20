@@ -56,6 +56,8 @@ public class PostController : MonoBehaviour {
     [HideInInspector]
     public bool isBalloon;
 
+    GameObject timeController;
+
     // Use this for initialization
     void Start () {
 		//初期化処理
@@ -68,13 +70,16 @@ public class PostController : MonoBehaviour {
         bc = GetComponent<SphereCollider>();
         startCountDown = GameObject.Find("StartCountDown").GetComponent<StartCountDown>();
         finishCall = GameObject.Find("FinishCall").GetComponent<FinishCall>();
+
+        timeController = GameObject.Find("TimeController");
     }
 
     // Update is called once per frame
     void Update () {
 
 		//5ポイント貯めたら特殊壁出して移動する
-		if (respawnCount >= 1)
+        //ロスタイムだったら移動しない
+		if (respawnCount >= 1&&timeController.GetComponent<TimeController>().timeState != TimeState.LOSSTIME)
         {
             limitCount = respawnCount;//ポストに5ポイント以上入ったときに移動できるようにする
             respawnCount = 0;
@@ -121,7 +126,8 @@ public class PostController : MonoBehaviour {
             if(!startCountDown.IsCntDown && !finishCall.IsCalling)
                 interval++;
             //約5秒後に再出現させる。その際に移動させるために必要なものを初期化
-            if (isBalloon)
+            //ロスタイムだったらすぐ出す
+            if (isBalloon||timeController.GetComponent<TimeController>().timeState == TimeState.LOSSTIME)
             {
                 interval = 0;
                 limitCount = 0;

@@ -69,7 +69,7 @@ public class RespawnController : MonoBehaviour {
         //接続しているプレイヤー数だけプレイヤーを生成する
         foreach (var cntPlSta in connectedPlayerStatus.ConnectedPlayer)
         {
-            GameObject p = Instantiate(player, transform.GetChild(positionAry[spawnPoint]).transform.position, Quaternion.identity);//プレイヤー生成
+            GameObject p = Instantiate(player, transform.GetChild(positionAry[spawnPoint]).transform.position, Quaternion.Euler(0,180,0));//プレイヤー生成
             Debug.Log("rndSpawnPoint =" + transform.GetChild(positionAry[spawnPoint]).name);
 
             playerList.Add(p);//リストに追加
@@ -108,7 +108,7 @@ public class RespawnController : MonoBehaviour {
         //生成位置を数だけプレイヤーを生成する
         for (int i = 0; i < transform.childCount; i++)
         {
-            GameObject p = Instantiate(player, transform.GetChild(i).transform.position, Quaternion.identity);//プレイヤー生成
+            GameObject p = Instantiate(player, transform.GetChild(i).transform.position, Quaternion.Euler(0,180,0));//プレイヤー生成
             playerList.Add(p);//リストに追加
             p.name = "Player" + (i + 1);//名前変更
             p.GetComponent<XInputConfig>().playerIndex = (PlayerIndex)i; //XInput指定

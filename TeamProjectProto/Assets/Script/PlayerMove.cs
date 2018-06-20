@@ -47,7 +47,8 @@ public class PlayerMove : MonoBehaviour
 
     public bool isStan = false;//動けるかどうか
     public float originStanTime = 1.5f;//動けるようになるまでの時間
-    float stanTime;
+    [HideInInspector]
+    public float stanTime;
 
     public bool isBalloonShrink = true;//爆発物が縮むかどうか
 
@@ -861,7 +862,8 @@ public class PlayerMove : MonoBehaviour
 
         PauseXInput();
         JumpXInput();
-        DashXInput();
+        if (!startCntDown.IsCntDown && !finishCall.IsCalling)
+            DashXInput();
 
         previousState = currentState;
     }
@@ -889,7 +891,7 @@ public class PlayerMove : MonoBehaviour
             else if (jumpCount == 1)
             {
                 hipDropTime = 0.3f;
-                rigid.velocity = Vector3.zero;
+                //rigid.velocity = Vector3.zero;
                 hipDropPosition = transform.position;
 
                 if (canHipDrop)
@@ -903,8 +905,8 @@ public class PlayerMove : MonoBehaviour
             jumpCount++;
 
             //上限設定
-            if (jumpCount > 2)
-                jumpCount = 2;
+            if (jumpCount > 1)
+                jumpCount = 1;
         }
     }
 

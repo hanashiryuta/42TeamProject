@@ -407,6 +407,8 @@ public class BalloonOrigin : MonoBehaviour
         balloonMaster.IsBlast = true;//爆発した
         player.GetComponent<PlayerMove>().isStan = true;
         player.GetComponent<PlayerMove>().isBlastStan = true;
+        //スタン時間更新
+        player.GetComponent<PlayerMove>().stanTime = player.GetComponent<PlayerMove>().originStanTime;
         GetComponent<AudioSource>().PlayOneShot(soundSE2);
         //次のプレイヤー指定
         balloonMaster.nextPlayer = BalloonExChangeByDistance(balloonMaster.pList, player);
