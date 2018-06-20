@@ -37,41 +37,43 @@ public class ItemController : MonoBehaviour {
             moveTime -= Time.deltaTime;
             if (moveTime <= 0)
             {
+
+                rigid.velocity = new Vector3(0, 0, 0);
                 isGet = true;
             }
-        }
-        //x軸あたり判定
-        foreach (var cx in Physics.OverlapBox(transform.position, new Vector3(transform.localScale.x / 2, transform.localScale.y - 0.01f, transform.localScale.z / 2 - 0.01f), Quaternion.identity))
-        {
-            //当たっているものが床だったら
-            if (cx.tag == "Field")
-            {
-                //移動しない
-                rigid.velocity = new Vector3(0,rigid.velocity.y,rigid.velocity.z);
-                break;
-            }
-        }
-        //y軸あたり判定
-        foreach (var cx in Physics.OverlapBox(transform.position, new Vector3(transform.localScale.x / 2 - 0.01f, transform.localScale.y, transform.localScale.z / 2 - 0.01f), Quaternion.identity))
-        {
-            //当たっているものが床だったら
-            if (cx.tag == "Field")
-            {
-                //移動しない
-                rigid.velocity = new Vector3(rigid.velocity.x, 0, rigid.velocity.z);
-                break;
-            }
-        }
-        //Z軸あたり判定
-        foreach (var cx in Physics.OverlapBox(transform.position, new Vector3(transform.localScale.x / 2 - 0.01f, transform.localScale.y - 0.01f, transform.localScale.z / 2), Quaternion.identity))
-        {
-            //当たっているものが床だったら
-            if (cx.tag == "Field")
-            {
-                //移動しない
-                rigid.velocity = new Vector3(rigid.velocity.x, rigid.velocity.y, 0);
-                break;
-            }
+        //}
+        ////x軸あたり判定
+        //foreach (var cx in Physics.OverlapBox(transform.position, new Vector3(transform.localScale.x / 2, transform.localScale.y - 0.01f, transform.localScale.z / 2 - 0.01f), Quaternion.identity))
+        //{
+        //    //当たっているものが床だったら
+        //    if (cx.tag == "Field")
+        //    {
+        //        //移動しない
+        //        rigid.velocity = new Vector3(0,rigid.velocity.y,rigid.velocity.z);
+        //        break;
+        //    }
+        //}
+        ////y軸あたり判定
+        //foreach (var cx in Physics.OverlapBox(transform.position, new Vector3(transform.localScale.x / 2 - 0.01f, transform.localScale.y, transform.localScale.z / 2 - 0.01f), Quaternion.identity))
+        //{
+        //    //当たっているものが床だったら
+        //    if (cx.tag == "Field")
+        //    {
+        //        //移動しない
+        //        rigid.velocity = new Vector3(rigid.velocity.x, 0, rigid.velocity.z);
+        //        break;
+        //    }
+        //}
+        ////Z軸あたり判定
+        //foreach (var cx in Physics.OverlapBox(transform.position, new Vector3(transform.localScale.x / 2 - 0.01f, transform.localScale.y - 0.01f, transform.localScale.z / 2), Quaternion.identity))
+        //{
+        //    //当たっているものが床だったら
+        //    if (cx.tag == "Field")
+        //    {
+        //        //移動しない
+        //        rigid.velocity = new Vector3(rigid.velocity.x, rigid.velocity.y, 0);
+        //        break;
+        //    }
         }
     }
 
@@ -85,11 +87,11 @@ public class ItemController : MonoBehaviour {
         //float rand = Random.Range(0, 361);
         //moveX = Mathf.Cos(rand);
         //moveZ = Mathf.Sin(rand);
-        moveX = (float)Random.Range(0, 11) / 10;//xランダム設定
-        moveZ = (float)Random.Range(0, 11) / 10;//yランダム設定
+        moveX = (float)Random.Range(-10, 11) / 10;//xランダム設定
+        moveZ = (float)Random.Range(-10, 11) / 10;//yランダム設定
         moveY = (float)Random.Range(0, 11) / 10;//Zランダム設定
 
-        rigid.AddForce(300*new Vector3(moveX, moveY, moveZ).normalized);//移動処理
+        rigid.AddForce(500*new Vector3(moveX, moveY, moveZ).normalized);//移動処理
     }
 
     /// <summary>

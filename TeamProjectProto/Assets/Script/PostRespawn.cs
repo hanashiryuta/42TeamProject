@@ -46,7 +46,7 @@ public class PostRespawn : MonoBehaviour {
 			} while(childList[rand].transform.childCount >= 1);
             
 			//リスト追加
-			postList.Add(Instantiate(originPost, childList[rand].transform.position+new Vector3(0,0.5f,0), Quaternion.Euler(0,-45,0), childList[rand].transform));
+			postList.Add(Instantiate(originPost, childList[rand].transform.position+new Vector3(0,0.5f,0), Quaternion.Euler(0,45+90,0), childList[rand].transform));
 			//移動先候補から現在の位置を除外
 			//childList.RemoveAt(rand);
 		}
