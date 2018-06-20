@@ -77,7 +77,9 @@ public class SpawnUIPlayer : MonoBehaviour
             if (i == 0)
             {
                 //拡大
-                player[i].transform.localScale = new Vector3(1, 1, 1);
+                player[i].transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
+                //王冠を表示
+                player[i].transform.Find("Armature/Bone/Bone.001/Bone.002/Bone.003/Bone.004/Bone.004_end/Crown").gameObject.SetActive(true);
             }
         }
     }
