@@ -15,6 +15,7 @@ public abstract class ReelSpin : MonoBehaviour {
 
     [HideInInspector]
     public bool isSpin;//スピンしているかどうか
+    [HideInInspector]
     public bool isEnd;//リールが止められたかどうか
     
     public List<Sprite> spriteList;//リール画像リスト

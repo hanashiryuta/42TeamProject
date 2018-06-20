@@ -264,11 +264,13 @@ public class BalloonOrigin : MonoBehaviour
         if (isMove)
         {
             player1.GetComponent<PlayerMove>().balloon = null;//移動元の爆発物をNULLに
-            player2.GetComponent<PlayerMove>().balloon = transform.gameObject;//移動先に自信を指定
+            player2.GetComponent<PlayerMove>().balloon = transform.gameObject;//移動先に自身を指定
             player = player2;
             balloonMaster.nowPlayer = player2;
             isMove = false;
-            player2.gameObject.GetComponent<PlayerMove>().isStan = true;
+            player.GetComponent<PlayerMove>().isStan = true;
+            //ダッシュ回復
+            player.GetComponent<PlayerMove>().DashCountDown = player.GetComponent<PlayerMove>().DashLimitTime;
             GetComponent<AudioSource>().PlayOneShot(soundSE1);
         }
     }
