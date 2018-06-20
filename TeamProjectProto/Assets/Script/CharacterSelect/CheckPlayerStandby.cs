@@ -12,7 +12,17 @@ using UnityEngine.UI;
 public class CheckPlayerStandby : MonoBehaviour
 {
     public PlayerIndex playerIndex;// ゲームパッド用インデックス
+    PlayerIndex controllablePlayerIndex;//ゲーム進行操作プレイヤーインデックス
+    public PlayerIndex ControllablePlayerIndex
+    {
+        set { controllablePlayerIndex = value; }
+    }
     GamePadState _previousState;
+    public GamePadState PreviousState
+    {
+        get { return _currentState; }
+    }
+
     GamePadState _currentState;
     public GamePadState CurrentState
     {
@@ -29,6 +39,8 @@ public class CheckPlayerStandby : MonoBehaviour
         get { return _playrLabel; }
         set { _playrLabel = value; }
     }
+    [SerializeField]
+    Text _btnText;//ボタンテキスト（Aボタンを押して入場）
     [SerializeField]
     GameObject orgin_playerBG;//Player背景
     GameObject playerBG;
@@ -52,19 +64,29 @@ public class CheckPlayerStandby : MonoBehaviour
         set { _isAI = value; }
     }
 
+    bool _isStartPressed = false;//Start押されたか
+    public bool IsStartPressed
+    {
+        get { return _isStartPressed; }
+        set { _isStartPressed = value; }
+    }
+
+
     // Use this for initialization
     void Start ()
-    {		
-	}
-	
-	// Update is called once per frame
-	void Update ()
+    {
+        playerBG = GameObject.Instantiate(orgin_playerBG, this.transform);
+    }
+
+    // Update is called once per frame
+    void Update ()
     {
         _currentState = GamePad.GetState(playerIndex);
 
         if (_isCanPressBtn)
         {
             CheckSpawn();
+
         }
 
         _previousState = _currentState;
@@ -77,7 +99,7 @@ public class CheckPlayerStandby : MonoBehaviour
     {
         if (!_isSpawn)//生成してない時
         {
-            if (Is_Abtn_Pressed())//Aボタン押してら
+            if (Is_Abtn_Pressed())//Aボタン押したら
             {
                 SpawnPlayerCharacter();
                 _isSpawn = true;
@@ -85,10 +107,19 @@ public class CheckPlayerStandby : MonoBehaviour
         }
         else//生成していた時
         {
-            if (Is_Bbtn_Pressed())//Bボタン押してら
+            if (Is_Bbtn_Pressed())//Bボタン押したら
             {
                 RemovePlayerCharacter();
                 _isSpawn = false;
+            }
+        }
+
+        //自分がゲーム進行操作プレイヤーだったら
+        if (playerIndex == controllablePlayerIndex && _isSpawn)
+        {
+            if (Is_StartBtn_Pressed())//STARTボタン押したら
+            {
+                _isStartPressed = true;
             }
         }
     }
@@ -101,9 +132,10 @@ public class CheckPlayerStandby : MonoBehaviour
     {
         player = GameObject.Instantiate(playerPrefabs, transform.position, Quaternion.Euler(0, 180, 0));
         player.GetComponentInChildren<SkinnedMeshRenderer>().materials[0].mainTexture = tex;//テクスチャ変更
-        playerBG = GameObject.Instantiate(orgin_playerBG, this.transform);
+        //playerBG = GameObject.Instantiate(orgin_playerBG, this.transform);
 
         _playrLabel.enabled = true;
+        _btnText.enabled = false;
     }
 
     /// <summary>
@@ -113,9 +145,10 @@ public class CheckPlayerStandby : MonoBehaviour
     {
         GameObject.Destroy(player);
         player = null;
-        GameObject.Destroy(playerBG);
-        playerBG = null;
+        //GameObject.Destroy(playerBG);
+        //playerBG = null;
         _playrLabel.enabled = false;
+        _btnText.enabled = true;
     }
 
     /// <summary>
@@ -155,6 +188,21 @@ public class CheckPlayerStandby : MonoBehaviour
     {
         if (_previousState.Buttons.B == ButtonState.Released &&
             _currentState.Buttons.B == ButtonState.Pressed)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// STARTボタンを押したかをチェック
+    /// </summary>
+    /// <param name="playerIndex"></param>
+    /// <returns></returns>
+    bool Is_StartBtn_Pressed()
+    {
+        if (_previousState.Buttons.Start == ButtonState.Released &&
+            _currentState.Buttons.Start == ButtonState.Pressed)
         {
             return true;
         }
