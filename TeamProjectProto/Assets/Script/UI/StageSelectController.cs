@@ -14,7 +14,7 @@ using DG.Tweening;
 public class StageSelectController : MonoBehaviour
 {
     [SerializeField]
-    GameObject[] stageList;
+    GameObject[] stagesList;
     //Dictionary<string, GameObject> stageDictionary = new Dictionary<string, GameObject>();
     GameObject stage;//今表示しているステージ
     int nowStageIndex = 0;//今表示しているステージのインデックス
@@ -66,7 +66,7 @@ public class StageSelectController : MonoBehaviour
         //}
 
         //一つ目のステージを出す
-        stage = Instantiate(stageList[0]);
+        stage = Instantiate(stagesList[0]);
 
         gameload = this.GetComponent<GameLoad>();
         fadeController = fadePanel.GetComponent<FadeController>();
@@ -81,12 +81,12 @@ public class StageSelectController : MonoBehaviour
     {
         stagePointsList = new List<GameObject>();
 
-        for(int i = 0; i < stageList.Length; i++)
+        for(int i = 0; i < stagesList.Length; i++)
         {
             if(i == 0)//一回目だけ
             {
-                firstPointX = (stageList.Length / 2) * (-pointsOffset);//最初の位置を設定
-                if (stageList.Length % 2 == 0)//偶数だったら
+                firstPointX = (stagesList.Length / 2) * (-pointsOffset);//最初の位置を設定
+                if (stagesList.Length % 2 == 0)//偶数だったら
                 {
                     firstPointX += pointsOffset / 2;//半分ずらす
                 }
@@ -172,7 +172,7 @@ public class StageSelectController : MonoBehaviour
             Destroy(stage);
         }
 
-        stage = Instantiate(stageList[nowStageIndex], new Vector3(0, 0.5f, 0), Quaternion.Euler(0, rotate, 0));
+        stage = Instantiate(stagesList[nowStageIndex], new Vector3(0, 0.5f, 0), Quaternion.Euler(0, rotate, 0));
     }
 
     /// <summary>
@@ -184,7 +184,7 @@ public class StageSelectController : MonoBehaviour
         {
             leftBtn.gameObject.SetActive(false);
         }
-        else if (nowStageIndex >= stageList.Length - 1)
+        else if (nowStageIndex >= stagesList.Length - 1)
         {
             rightBtn.gameObject.SetActive(false);
         }
@@ -269,7 +269,7 @@ public class StageSelectController : MonoBehaviour
     /// </summary>
     public void R_Btn()
     {
-        if (nowStageIndex != stageList.Length - 1)
+        if (nowStageIndex != stagesList.Length - 1)
         {
             PointToDefalt(nowStageIndex);
 
@@ -326,7 +326,7 @@ public class StageSelectController : MonoBehaviour
     /// </summary>
     void SetStage()
     {
-        string stageName = stageList[nowStageIndex].name;
+        string stageName = stagesList[nowStageIndex].name;
         connectedPlayerStatus.StageName = stageName;
     }
 

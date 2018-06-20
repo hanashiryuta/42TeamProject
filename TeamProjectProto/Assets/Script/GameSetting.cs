@@ -11,7 +11,7 @@ public class GameSetting : MonoBehaviour {
 
     public List<GameObject> gameObjectList;//ゲーム開始時配置するオブジェクト
 
-    public List<GameObject> stageList;//ステージリスト
+    public List<GameObject> stagesList;//ステージリスト
 
     ConnectedPlayerStatus connectedPlayerStatus;//プレイヤーステータス(選択したステージをここに渡す)
 
@@ -27,7 +27,7 @@ public class GameSetting : MonoBehaviour {
             }
 
             //ステージシーンで選んだステージを選出
-            foreach (var s in stageList)
+            foreach (var s in stagesList)
             {
                 if (s.name == connectedPlayerStatus.StageName)
                 {
