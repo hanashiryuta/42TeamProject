@@ -32,6 +32,14 @@ public abstract class ReelSpin : MonoBehaviour {
 
     public float reelSpeed = 1;//リール回転速度
     
+    public static readonly float reelCount = 10;//各リール要素数
+
+    [HideInInspector]
+    public List<Sprite> reelSpriteList;//リール画像リスト(割合配置後)
+
+    [HideInInspector]
+    public List<float> reelRateCountList;//リール各要素割合
+    
     // Use this for initialization
     void Start () {
         //初期処理
@@ -43,7 +51,7 @@ public abstract class ReelSpin : MonoBehaviour {
         //スピン中かつ止められていない
         if (isSpin&&!isEnd)
         {
-            //画像オブジェクトリスト空1つずつ
+            //画像オブジェクトリストから1つずつ
             foreach (var sprite in spriteObjList)
             {
                 //回転処理
@@ -88,20 +96,20 @@ public abstract class ReelSpin : MonoBehaviour {
     {
         //初期化処理
         spriteObjList = new List<GameObject>();
+        ReelSpriteSet(spriteList);
 
-        //画像分リール生成
-        foreach (var sprite in spriteList)
+        for (int i = 0; i < reelCount; i++)
         {
             //生成
-            GameObject reel = new GameObject(reelName + spriteList.IndexOf(sprite));
+            GameObject reel = new GameObject(reelName + (i+1));
             //リスト追加
             spriteObjList.Add(reel);
             //子に設定
             reel.transform.parent = transform;
             //画像設定
-            reel.AddComponent<Image>().sprite = sprite;
+            reel.AddComponent<Image>().sprite = SpriteRandomReturn();
             //位置設定
-            reel.GetComponent<RectTransform>().localPosition =  new Vector3(0, GetComponent<RectTransform>().sizeDelta.y * spriteList.IndexOf(sprite), 0);
+            reel.GetComponent<RectTransform>().localPosition = new Vector3(0, GetComponent<RectTransform>().sizeDelta.y * i, 0);
         }
         //初期中心画像設定
         centerSprite = spriteObjList[0];
@@ -110,33 +118,42 @@ public abstract class ReelSpin : MonoBehaviour {
     }
 
     /// <summary>
-    /// 画像オブジェクトリスト作成メソッド（一つ除外）
+    /// 割合に応じたリール作成メソッド
     /// </summary>
-    /// <param name="Excusion"></param>
-    public void MakeSpriteObjList(int Excusion)
+    /// <param name="sList">画像リスト</param>
+    public void ReelSpriteSet(List<Sprite> sList)
     {
-        //初期化処理
-        spriteObjList = new List<GameObject>();
-        //一つ分除外
-        spriteList.RemoveAt(Excusion);
-        //画像分リール生成
-        foreach (var sprite in spriteList)
+        reelSpriteList = new List<Sprite>();
+        foreach (var sprite in sList)
         {
-            //生成
-            GameObject reel = new GameObject(reelName + spriteList.IndexOf(sprite));
-            //リスト追加
-            spriteObjList.Add(reel);
-            //子に設定
-            reel.transform.parent = transform;
-            //画像設定
-            reel.AddComponent<Image>().sprite = sprite;
-            //位置設定
-            reel.GetComponent<RectTransform>().localPosition = new Vector3(0, GetComponent<RectTransform>().sizeDelta.y * spriteList.IndexOf(sprite), 0);
+            //各要素を割合に応じて生成
+            for (int i = 0; i < reelCount*(reelRateCountList[sList.IndexOf(sprite)]/10); i++)
+            {
+                reelSpriteList.Add(sprite);
+            }
         }
-        //初期中心画像設定
-        centerSprite = spriteObjList[0];
-        //中心位置設定
-        centerPosition = Vector3.zero;
+    }
+
+    /// <summary>
+    /// リールランダムに返すメソッド
+    /// </summary>
+    /// <returns></returns>
+    public Sprite SpriteRandomReturn()
+    {
+        int spriteNum = UnityEngine.Random.Range(0, reelSpriteList.Count-1);
+        Sprite sprite = reelSpriteList[spriteNum];
+        reelSpriteList.RemoveAt(spriteNum);
+        return sprite;
+    }
+    /// <summary>
+    /// リール指定して返すメソッド
+    /// </summary>
+    /// <param name="index"></param>
+    /// <returns></returns>
+    public Sprite SpriteRandomReturn(int index)
+    {
+        Sprite sprite = reelSpriteList[index];
+        return sprite;
     }
 
     /// <summary>

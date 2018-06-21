@@ -205,7 +205,7 @@ MonoBehaviour:
   balloonMaster: {fileID: 0}
   safeColor: {r: 0, g: 0.7931032, b: 1, a: 0}
   coutionColor: {r: 1, g: 0.64137936, b: 0, a: 0}
-  dangerColor: {r: 0.625, g: 0, b: 0, a: 0}
+  dangerColor: {r: 1, g: 0, b: 0.76551723, a: 0}
   detonationList: []
   detonationRadius: 4
   originDetonationArea: {fileID: 1034089992292260, guid: 66080d96a304c644fb05c5bc203621c2,

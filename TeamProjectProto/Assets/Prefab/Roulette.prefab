@@ -493,7 +493,9 @@ MonoBehaviour:
   centerSprite: {fileID: 0}
   centerPosition: {x: 0, y: 0, z: 0}
   reelName: time
-  reelSpeed: 10
+  reelSpeed: 15
+  reelSpriteList: []
+  reelRateCountList: []
   timeList:
   - 20
   - 15
@@ -887,7 +889,9 @@ MonoBehaviour:
   centerSprite: {fileID: 0}
   centerPosition: {x: 0, y: 0, z: 0}
   reelName: blastType
-  reelSpeed: 10
+  reelSpeed: 15
+  reelSpriteList: []
+  reelRateCountList: []
   blastTypeList: 0100
 --- !u!114 &114872574359778636
 MonoBehaviour:
@@ -911,7 +915,9 @@ MonoBehaviour:
   centerSprite: {fileID: 0}
   centerPosition: {x: 0, y: 0, z: 0}
   reelName: nextPlayer
-  reelSpeed: 10
+  reelSpeed: 15
+  reelSpriteList: []
+  reelRateCountList: []
   Roulette: {fileID: 1901371632001438}
 --- !u!114 &114961303262701778
 MonoBehaviour:
