@@ -76,8 +76,16 @@ public class CharacterSelectSceneController : MonoBehaviour
             //    Invoke("AICharacterSpawn", _delayTime);
             //    _isAISpawned = true;
             //}
-            ToGameScene();
+            ToStageSelectScene();
         }
+
+        //Back押されたら
+        if (Is_ControllablePlayer_Pressed_Back())
+        {
+            Debug.Log("Back");
+            ToTitleScene();
+        }
+
     }
 
     /// <summary>
@@ -149,15 +157,14 @@ public class CharacterSelectSceneController : MonoBehaviour
         {
             //ゲーム進行操作プレイヤーがSTART押したら
             if (standbyCheck[(int)controllablePlayerIndex].IsStartPressed &&
-                ConnectedPlayerCount() != 1)
+                readyPlayers != 1)
             {
                 isAllReady = true;//準備完了
             }
         }
 
         //プレイヤーが一人の時
-        if (readyPlayers == ConnectedPlayerCount() &&
-            ConnectedPlayerCount() == 1)
+        if (readyPlayers == 1)
         {
             mainText.text = "一人は遊べない！";
         }
@@ -170,6 +177,16 @@ public class CharacterSelectSceneController : MonoBehaviour
 
         return isAllReady;
     }
+
+    /// <summary>
+    /// ゲーム進行操作可能なプレイヤーがSTARTボタン押したか
+    /// </summary>
+    /// <returns></returns>
+    bool Is_ControllablePlayer_Pressed_Back()
+    {
+        return standbyCheck[(int)controllablePlayerIndex].IsBackPressed;
+    }
+
 
     /// <summary>
     /// 接続しているプレイヤーの人数をカウント
@@ -205,9 +222,9 @@ public class CharacterSelectSceneController : MonoBehaviour
     }
 
     /// <summary>
-    /// GameSceneに移転
+    /// StageSelectSceneに移転
     /// </summary>
-    void ToGameScene()
+    void ToStageSelectScene()
     {
         isStandbied = true;
 
@@ -222,10 +239,13 @@ public class CharacterSelectSceneController : MonoBehaviour
         mainText.text = "準備完了！";
         mainText.color = Color.yellow;
 
+        gameload.NextScene = GameLoad.Scene.StageSelect;
         Invoke("SceneLoad", _delayTime + 1f);
     }
 
-
+    /// <summary>
+    /// シーンロード
+    /// </summary>
     void SceneLoad()
     {
         fadeController.FadeOut();
@@ -235,6 +255,22 @@ public class CharacterSelectSceneController : MonoBehaviour
             isFadedOut = true;
         }
     }
+
+    /// <summary>
+    /// TitleSceneに移転
+    /// </summary>
+    void ToTitleScene()
+    {
+        //移転時ボタン押せないように
+        for (int i = 0; i < ConnectedPlayerCount(); i++)
+        {
+            standbyCheck[i].IsCanPressBtn = false;
+        }
+
+        gameload.NextScene = GameLoad.Scene.Tilte;
+        Invoke("SceneLoad", 0f);
+    }
+
 
     /// <summary>
     /// 参戦しているプレイヤーを記録
