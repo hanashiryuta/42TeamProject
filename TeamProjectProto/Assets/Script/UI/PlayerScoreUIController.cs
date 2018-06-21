@@ -1,5 +1,5 @@
 ﻿/*
- * 作成日時：180523
+ * 作成日時：180621
  * プレイヤーのスコアUI関連処理
  * 作成者：何承恩
  */
@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.UI;
 
 public class PlayerScoreUIController : MonoBehaviour
 {
@@ -14,100 +15,62 @@ public class PlayerScoreUIController : MonoBehaviour
     GameObject[] playerScoreUI; // player UI prefabs
 
     [SerializeField]
-    RectTransform[] UIposition;
+    Sprite[] offlineTexs;//不参加テクスチャ
 
-    GameObject[] _pList; // Player's Rank List
-
-    GameObject playerRank; //PlayerRankオブジェ
+    RespawnController playerRespawn;
+    List<GameObject> _pList = new List<GameObject>(); // Player List
 
     // Use this for initialization
     void Start()
     {
-        playerRank = GameObject.Find("PlayerRankController");
-        _pList = playerRank.GetComponent<PlayerRank>().PlayerRankArray;
+        playerRespawn = GameObject.Find("PlayerRespawns").GetComponent<RespawnController>();
+        _pList = playerRespawn.PlayerList;//現在いるプレイヤーのリストをもらう
+
+        SetOfflinePlayerImage();
     }
 
     // Update is called once per frame
     void Update()
     {
-        SetRankUIPositionWithAnim();
     }
 
     /// <summary>
-    /// ランクに合わせてUIの位置を変更
+    /// オフラインプレイヤーのUIを変える
     /// </summary>
-    void SetRankUIPosition()
+    void SetOfflinePlayerImage()
     {
-        for (int i = 0; i < _pList.Length; i++)
+        //プレイヤーがオンラインかどうかを格納する
+        Dictionary<string, bool> playerOnlineStatus = new Dictionary<string, bool>();
+        //最初全員オフライン認定
+        for (int i = 1; i <= 4; i++)
         {
-            Vector3 tmp = Vector3.zero;
+            playerOnlineStatus.Add("Player" + i, false);
+        }
 
-            switch (_pList[i].name) //Rank
+        //プレイヤーリストにいるならオンライン認定
+        List<string> keyList = new List<string>(playerOnlineStatus.Keys);//KeyList
+        for (int i = 0;i < _pList.Count; i++)
+        {
+            foreach(var ps in keyList)
             {
-                case "Player1":
-                    playerScoreUI[0].transform.position = UIposition[i].position;
-                    break;
-                case "Player2":
-                    playerScoreUI[1].transform.position = UIposition[i].position;
-                    break;
-                case "Player3":
-                    playerScoreUI[2].transform.position = UIposition[i].position;
-                    break;
-                case "Player4":
-                    playerScoreUI[3].transform.position = UIposition[i].position;
-                    break;
+                if(_pList[i].name == ps)
+                {
+                    playerOnlineStatus[ps] = true;
+                }
+            }
+        }
+
+        //プレイヤーがオフラインだったら
+        for(int i = 0; i < playerScoreUI.Length; i++)
+        {
+            if (playerOnlineStatus["Player" + (i + 1)] == false)
+            {
+                //表示画像がオフライン用に変わる
+                playerScoreUI[i].GetComponent<Image>().sprite = offlineTexs[i];
+                //該当するtotalCountオブジェを非表示
+                playerScoreUI[i].transform.Find("TotalCountBackGround" + (i + 1)).gameObject.SetActive(false);
             }
         }
     }
 
-    /// <summary>
-    /// ランクに合わせてUIの位置を変更(Anim)
-    /// </summary>
-    void SetRankUIPositionWithAnim()
-    {
-        for (int i = 0; i < _pList.Length; i++)
-        {
-            Vector3 tmp = Vector3.zero;
-
-            switch (_pList[i].name) //Rank
-            {
-                case "Player1":
-                    DOTween.To
-                        (
-                            () => playerScoreUI[0].transform.position,
-                            (x) => playerScoreUI[0].transform.position = x,
-                            UIposition[i].position,
-                            1f
-                        );
-                    break;
-                case "Player2":
-                    DOTween.To
-                        (
-                            () => playerScoreUI[1].transform.position,
-                            (x) => playerScoreUI[1].transform.position = x,
-                            UIposition[i].position,
-                            1f
-                        );
-                    break;
-                case "Player3":
-                    DOTween.To
-                        (
-                            () => playerScoreUI[2].transform.position,
-                            (x) => playerScoreUI[2].transform.position = x,
-                            UIposition[i].position,
-                            1f
-                        );
-                    break;
-                case "Player4":
-                    DOTween.To
-                        (
-                            () => playerScoreUI[3].transform.position,
-                            (x) => playerScoreUI[3].transform.position = x,
-                            UIposition[i].position,
-                            1f
-                        );
-                    break;
-            }
-        }
-    }
 }

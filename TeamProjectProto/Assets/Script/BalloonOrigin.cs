@@ -165,7 +165,10 @@ public class BalloonOrigin : MonoBehaviour
 
         _isColorChaged = CheckColorChange();
 
-        detonationList = Physics.OverlapSphere(player.transform.position + new Vector3(0, 1, 0), detonationRadius, 1 << LayerMask.NameToLayer("Player"));//円形のあたり判定で誘爆範囲指定して入ったプレイヤー設定
+        detonationList = Physics.OverlapCapsule(player.transform.position + new Vector3(0, 1, 0),
+                                                player.transform.position + new Vector3(0, 3, 0),
+                                                detonationRadius,
+                                                1 << LayerMask.NameToLayer("Player"));//円形のあたり判定で誘爆範囲指定して入ったプレイヤー設定
         if (detonationArea != null)//プレイヤーに誘爆半径を追従
             detonationArea.transform.parent = player.transform;
     }
