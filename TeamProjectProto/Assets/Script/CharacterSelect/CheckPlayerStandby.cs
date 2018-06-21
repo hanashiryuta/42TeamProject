@@ -71,6 +71,13 @@ public class CheckPlayerStandby : MonoBehaviour
         set { _isStartPressed = value; }
     }
 
+    bool _isBackPressed = false;//Back押されたか
+    public bool IsBackPressed
+    {
+        get { return _isBackPressed; }
+        set { _isBackPressed = value; }
+    }
+
 
     // Use this for initialization
     void Start ()
@@ -115,13 +122,17 @@ public class CheckPlayerStandby : MonoBehaviour
         }
 
         //自分がゲーム進行操作プレイヤーだったら
-        if (playerIndex == controllablePlayerIndex && _isSpawn)
+        if (playerIndex == controllablePlayerIndex)
         {
-            if (Is_StartBtn_Pressed())//STARTボタン押したら
+            //生成している時
+            if (_isSpawn)
             {
-                _isStartPressed = true;
+                _isStartPressed = Is_StartBtn_Pressed(); //STARTボタン押したか
             }
+
+            _isBackPressed = Is_BackBtn_Pressed(); //Backボタン押したか
         }
+
     }
 
     /// <summary>
@@ -203,6 +214,21 @@ public class CheckPlayerStandby : MonoBehaviour
     {
         if (_previousState.Buttons.Start == ButtonState.Released &&
             _currentState.Buttons.Start == ButtonState.Pressed)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// BACKボタンを押したかをチェック
+    /// </summary>
+    /// <param name="playerIndex"></param>
+    /// <returns></returns>
+    bool Is_BackBtn_Pressed()
+    {
+        if (_previousState.Buttons.Back == ButtonState.Released &&
+            _currentState.Buttons.Back == ButtonState.Pressed)
         {
             return true;
         }

@@ -124,17 +124,23 @@ public class StageSelectController : MonoBehaviour
             }
         }
 
-        //ステージを選択（Aボタン）
+        //今のステージを選択してゲームへ（Aボタン）
         if (previousState.Buttons.A == ButtonState.Released &&
             currentState.Buttons.A == ButtonState.Pressed)
         {
-            Start_Btn();
+            GameStart();
         }
         //左右ボタンの選択状態表示
         ShowBtnSelected();
         //表示しているステージを変更
         ShowStageChage();
 
+        //前のシーンへ（Backボタン）
+        if (previousState.Buttons.Back == ButtonState.Released &&
+            currentState.Buttons.Back == ButtonState.Pressed)
+        {
+            ToCharacterSelectScene();
+        }
 
         previousState = currentState;
     }
@@ -342,11 +348,21 @@ public class StageSelectController : MonoBehaviour
     }
 
     /// <summary>
-    /// スタートボタン
+    /// 今のステージを選択してゲームへ
     /// </summary>
-    public void Start_Btn()
+    public void GameStart()
     {
         SetStage();
+        gameload.NextScene = GameLoad.Scene.Main;
+        isSceneChage = true;
+    }
+
+    /// <summary>
+    /// Backボタン
+    /// </summary>
+    public void ToCharacterSelectScene()
+    {
+        gameload.NextScene = GameLoad.Scene.CharacterSelect;
         isSceneChage = true;
     }
 
