@@ -278,8 +278,8 @@ public class PlayerMove : MonoBehaviour
         {
             rigid.velocity = Vector3.zero;
         }
-
-        Vector3 diff = transform.position + new Vector3(moveJoy.x, 0, moveJoy.y) - transform.position;
+    
+        Vector3 diff = new Vector3(moveJoy.x, 0, moveJoy.y);
 
         diff.y = 0;
 

@@ -75,21 +75,25 @@ public class RouletteController : MonoBehaviour {
         selectScript.isRoulette = true;
         //時間を止める
         GameObject.Find("TimeController").GetComponent<TimeController>().isPause = true;
-        //各リール取得
-        firstReel = firstReelObj.GetComponent<ReelSpin>();
-        secondReel = secondReelObj.GetComponent<ReelSpin>();
-        thirdReel = thirdReelObj.GetComponent<ReelSpin>();
         //爆破したプレイヤーの番号取得
         playerIndex = jugglerPlayer.GetComponent<PlayerMove>().playerIndex;
         //playerIndex = 0;
         //プレイヤーリスト生成
         playerList = new List<GameObject>();
-        foreach(var player in pList)
+        foreach (var player in pList)
         {
             //爆破したプレイヤーは除く
             if (player != jugglerPlayer)
                 playerList.Add(player);
         }
+        //各リール設定
+        //各リールに対応した割合を渡す
+        firstReel = firstReelObj.GetComponent<ReelSpin>();
+        firstReel.reelRateCountList = balloonMaster.GetComponent<BalloonMaster>().reelRateLists[0];
+        secondReel = secondReelObj.GetComponent<ReelSpin>();
+        secondReel.reelRateCountList = balloonMaster.GetComponent<BalloonMaster>().reelRateLists[1];
+        thirdReel = thirdReelObj.GetComponent<ReelSpin>();
+        thirdReel.reelRateCountList = balloonMaster.GetComponent<BalloonMaster>().reelRateLists[2];
         //回すプレイヤーの画像表示
         leverPlayer.GetComponent<Image>().sprite = jugglerSpriteList[(int)playerIndex];
         //Aボタン表示

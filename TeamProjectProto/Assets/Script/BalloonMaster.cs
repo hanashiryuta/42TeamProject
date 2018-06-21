@@ -86,20 +86,29 @@ public class BalloonMaster : MonoBehaviour {
 
     TimeController timeController;//タイムコントローラー
 
+    PlayerRank playerRank;//プレイヤーランク
+
+    [HideInInspector]
+    public List<List<float>> reelRateLists;//ルーレット各リール要素割合
+
     // Use this for initialization
     void Start ()
-    {
-        //初期化処理
-        pList = GameObject.FindGameObjectsWithTag("Player");
+    {   
+        //プレイヤーランク取得     
+        playerRank = GameObject.Find("PlayerRankController").GetComponent<PlayerRank>();
+        pList = playerRank.PlayerRankArray;
         foreach(var player in pList)
         {
+            //各プレイヤーに自身を設定
             player.GetComponent<PlayerMove>().balloonMaster = gameObject;
         }
+        //最初のプレイヤーを設定
         nextPlayer = pList[Random.Range(0, pList.Length)];
+        //バルーン設定
         nowBalloon = null;
         balloonRespawnTime = originBalloonRespawnTime;
         nextSpawnBalloon = balloonList[0];
-
+        //スタートカウント、終了オブジェ取得
         startCntDown = GameObject.Find("StartCountDown").GetComponent<StartCountDown>();
         finishCall = GameObject.Find("FinishCall").GetComponent<FinishCall>();
 
@@ -114,7 +123,16 @@ public class BalloonMaster : MonoBehaviour {
         cameraShake = Camera.main.GetComponent<CameraShake>();
         cameraShake.BalloonM = this;
 
+        //時間オブジェ取得
         timeController = GameObject.Find("TimeController").GetComponent<TimeController>();
+
+        //ルーレット各リール要素割合初期値設定
+        reelRateLists = new List<List<float>>
+        {
+            new List<float> {5,5},
+            new List<float> {3,7},
+            new List<float> {5,3,2},
+        };
     }
 
     // Update is called once per frame
@@ -203,6 +221,8 @@ public class BalloonMaster : MonoBehaviour {
             //ルーレットがないのなら
             if(rouletteObject == null)
             {
+                //バルーンタイプリールの割合を時間で設定
+                reelRateLists[1] = timeController.ReelRateSet();
                 //Canvasの下にルーレット生成
                 rouletteObject = Instantiate(originRouletteObject,GameObject.FindGameObjectWithTag("Canvas").transform);
                 //回すプレイヤーを渡す
@@ -210,7 +230,7 @@ public class BalloonMaster : MonoBehaviour {
                 //自分を渡す
                 rouletteObject.GetComponent<RouletteController>().balloonMaster = gameObject;
                 //プレイヤーリストを渡す
-                rouletteObject.GetComponent<RouletteController>().pList = pList;
+                rouletteObject.GetComponent<RouletteController>().pList = playerRank.PlayerRankArray;
             }
         }
     }

@@ -21,6 +21,7 @@ public enum TimeState
 public class TimeController : MonoBehaviour {
 
     public float gameTime = 60;//ゲーム時間
+    float maxGameTime;//最大ゲーム時間
     Text timeText;//時間表示テキスト
     public GameObject timeTextObject;//時間表示テキストオブジェクト
     [HideInInspector]
@@ -45,9 +46,14 @@ public class TimeController : MonoBehaviour {
     public List<GameObject> cutInList;
     public List<GameObject> textList;
 
+    [HideInInspector]
+    public List<float> reelRate;//時間対応リール割合
+
     // Use this for initialization
     void Start()
     {
+        maxGameTime = gameTime;//最大ゲーム時間設定
+        reelRate = new List<float>();
         timeText = timeTextObject.GetComponent<Text>();//テキスト取得
     }
 
@@ -95,6 +101,21 @@ public class TimeController : MonoBehaviour {
         {
             timeText.color = Color.red;
         }
+    }
+
+    /// <summary>
+    /// 時間に応じたリール割合セットメソッド
+    /// </summary>
+    /// <returns></returns>
+    public List<float> ReelRateSet()
+    {
+        //ゲーム時間でリール割合を決める
+        int rate = (int)(ReelSpin.reelCount * (gameTime / maxGameTime));
+        reelRate = new List<float>
+        {
+            ReelSpin.reelCount-rate,rate
+        };
+        return reelRate;
     }
 
     /// <summary>
