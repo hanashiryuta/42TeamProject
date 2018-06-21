@@ -176,8 +176,8 @@ public class PlayerMove : MonoBehaviour
 
     void Update()
     {
-        holdItemCountText.text = HalfWidth2FullWidth.Set2FullWidth(holdItemCount.ToString());//内容物取得数表示処理 
-        totalItemCountText.text = HalfWidth2FullWidth.Set2FullWidth(totalItemCount.ToString());
+        holdItemCountText.text = HalfWidth2FullWidth.Set2FullWidth(holdItemCount);//内容物取得数表示処理 
+        totalItemCountText.text = HalfWidth2FullWidth.Set2FullWidth(totalItemCount);
 
         PlayerAnim(playerAnim);
 

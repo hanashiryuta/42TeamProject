@@ -180,7 +180,6 @@ public class TitleScene : MonoBehaviour
                 nowSelectedBtn = titleBtnList[nowSelectedBtnIndex];
                 break;
         }
-        Debug.Log(nowSelectedBtn.name);
     }
 
     /// <summary>
