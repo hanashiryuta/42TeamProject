@@ -21,10 +21,10 @@ GameObject:
   - component: {fileID: 4502366252479330}
   - component: {fileID: 33521600797437666}
   - component: {fileID: 135865304641634474}
-  - component: {fileID: 23592554076041770}
   - component: {fileID: 114874660468447146}
   - component: {fileID: 82444682962577440}
   - component: {fileID: 114362153054455316}
+  - component: {fileID: 23684210001377786}
   m_Layer: 0
   m_Name: NormalBalloon
   m_TagString: Balloon
@@ -45,7 +45,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!23 &23592554076041770
+--- !u!23 &23684210001377786
 MeshRenderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -59,7 +59,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 70f3a79a75aa758458e79783805f1f67, type: 2}
+  - {fileID: 2100000, guid: 19fe666054757c24f88adc77d6fcca4d, type: 2}
   - {fileID: 2100000, guid: d9e698e4cc4fb1948a843c9ef3f020e6, type: 2}
   - {fileID: 2100000, guid: d31883d181ac1734cbeac6e5b4f3c1b3, type: 2}
   m_StaticBatchInfo:
@@ -69,7 +69,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
-  m_PreserveUVs: 1
+  m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
   m_StitchLightmapSeams: 0
@@ -203,9 +203,10 @@ MonoBehaviour:
   isDestroy: 0
   isCameraDistance: 0
   balloonMaster: {fileID: 0}
-  safeColor: {r: 0, g: 1, b: 0.13103461, a: 0}
-  coutionColor: {r: 0.90344834, g: 1, b: 0, a: 0}
-  dangerColor: {r: 1, g: 0, b: 0, a: 0}
+  balloonStateTexture:
+  - {fileID: 2800000, guid: b76bbc9b6724d3d43914268b0052a1a7, type: 3}
+  - {fileID: 2800000, guid: 25616c4fe656442498296d71fc8cfd45, type: 3}
+  - {fileID: 2800000, guid: 9860e99106b1f054e995af10ae74c2df, type: 3}
   detonationList: []
   detonationRadius: 4
   originDetonationArea: {fileID: 1034089992292260, guid: 66080d96a304c644fb05c5bc203621c2,

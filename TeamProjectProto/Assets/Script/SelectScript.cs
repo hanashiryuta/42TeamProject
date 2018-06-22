@@ -122,33 +122,6 @@ public class SelectScript : MonoBehaviour
                 PauseEnd();//ポーズ終了
                 break;
         }
-
-        //if (Input.GetKeyDown("p") || Input.GetButtonDown("Action"))
-        //{
-        //    if (pausepanel.active == false)
-        //    {
-        //        //時間を止める
-        //        timeController.GetComponent<TimeController>().isPause = true;
-        //        pausepanel.active = true;
-        //        isObjSet = true;
-        //        //Pauser.Pause();
-        //        //RBPauser.Pause();
-
-        //        GamePad.SetVibration(PlayerIndex.One, 0.0f, 0.0f);
-        //        GamePad.SetVibration(PlayerIndex.Two, 0.0f, 0.0f);
-        //        GamePad.SetVibration(PlayerIndex.Three, 0.0f, 0.0f);
-        //        GamePad.SetVibration(PlayerIndex.Four, 0.0f, 0.0f);
-        //    }
-        //    else
-        //    {
-        //        //時間を動かす
-        //        timeController.GetComponent<TimeController>().isPause = false;
-        //        pausepanel.active = false;
-        //        isPause = false;
-        //        //Pauser.Resume();
-        //        //RBPauser.Resume();
-        //    }
-        //}
     }
 
     /// <summary>
@@ -182,10 +155,6 @@ public class SelectScript : MonoBehaviour
     /// </summary>
     void PausingXInput()
     {
-        //STARTボタンを押したら（ポーズ解除）開始
-        //isStartBtnPushed = (previousState.Buttons.Start == ButtonState.Released &&
-        //                    currentState.Buttons.Start == ButtonState.Pressed);
-
         //up
         if (moveY >=0.8f && nowSelectedBtn != toTitle)
         {
@@ -209,7 +178,7 @@ public class SelectScript : MonoBehaviour
     }
 
     /// <summary>
-    /// 選択しているボタンを押す
+    /// 選択しているボタンのonClickイベントを呼ぶ
     /// </summary>
     /// <param name="btn"></param>
     void BtnPushed(Button btn)

@@ -88,9 +88,11 @@ public class BalloonOrigin : MonoBehaviour
     public BalloonMaster balloonMaster;//バルーン総合管理クラス
 
     //各状態の色
-    public Color safeColor;
-    public Color coutionColor;
-    public Color dangerColor;
+    //public Color safeColor;
+    //public Color coutionColor;
+    //public Color dangerColor;
+
+    public List<Texture> balloonStateTexture;//バルーン状態テクスチャリスト
 
     [HideInInspector]
     public Collider[] detonationList;//誘爆範囲に入ったプレイヤーリスト
@@ -98,6 +100,8 @@ public class BalloonOrigin : MonoBehaviour
     public float detonationRadius = 4.0f;//誘爆半径
     public GameObject originDetonationArea;//誘爆半径表示オブジェクト
     GameObject detonationArea;
+
+    bool isTexSet = true;//テクスチャ設定用bool
 
     // Use this for initialization
     void Start()
@@ -122,6 +126,7 @@ public class BalloonOrigin : MonoBehaviour
         curState = _balloonState;
 
         finishCall = GameObject.Find("FinishCall").GetComponent<FinishCall>();//終了処理オブジェクト取得
+        
     }
 
     // Update is called once per frame
@@ -165,9 +170,14 @@ public class BalloonOrigin : MonoBehaviour
 
         _isColorChaged = CheckColorChange();
 
-        detonationList = Physics.OverlapSphere(player.transform.position + new Vector3(0, 1, 0), detonationRadius, 1 << LayerMask.NameToLayer("Player"));//円形のあたり判定で誘爆範囲指定して入ったプレイヤー設定
+        detonationList = Physics.OverlapCapsule(player.transform.position + new Vector3(0, 1, 0),
+                                                player.transform.position + new Vector3(0, 3, 0),
+                                                detonationRadius,
+                                                1 << LayerMask.NameToLayer("Player"));//円形のあたり判定で誘爆範囲指定して入ったプレイヤー設定
         if (detonationArea != null)//プレイヤーに誘爆半径を追従
             detonationArea.transform.parent = player.transform;
+
+        transform.rotation = player.transform.rotation;
     }
 
     void FixedUpdate()
@@ -221,35 +231,65 @@ public class BalloonOrigin : MonoBehaviour
 
         switch (_balloonState)
         {
-            //1.7以下なら安全状態
+            //1/3以下なら安全状態
             //色は緑
             case BalloonState.SAFETY:
-                //gameObject.GetComponent<Renderer>().material.color = new Color(34 / 255f, 195 / 255f, 80 / 255f);\
-                gameObject.GetComponent<Renderer>().material.color = safeColor;
+                if(isTexSet)
+                {
+                    //テクスチャ設定
+                    gameObject.GetComponentInChildren<MeshRenderer>().materials[0].mainTexture = balloonStateTexture[0];
+                    //明るさ
+                    transform.GetComponentInChildren<MeshRenderer>().materials[0].SetColor("_EmissionColor", new Color(0.2f, 0.2f, 0.2f));
+                    transform.GetComponentInChildren<MeshRenderer>().materials[0].SetTexture("_EmissionMap", balloonStateTexture[0]);
+                    transform.GetComponentInChildren<MeshRenderer>().materials[0].EnableKeyword("_EMISSION");
+                    isTexSet = false;
+                }
                 if (blastCount > blastLimit * 1 / 3)
+                {
+                    //次の状態へ
+                    isTexSet = true;
                     _balloonState = BalloonState.CAUTION;
+                }
                 break;
 
-            //1.7以上なら注意状態
+            //1/3以上なら注意状態
             //色は黄色
             case BalloonState.CAUTION:
-                //gameObject.GetComponent<Renderer>().material.color = new Color(255 / 255f, 241 / 255f, 15 / 255f);
-                gameObject.GetComponent<Renderer>().material.color = coutionColor;
+                if (isTexSet)
+                {
+                    //テクスチャ設定
+                    gameObject.GetComponentInChildren<MeshRenderer>().materials[0].mainTexture = balloonStateTexture[1];
+                    //明るさ
+                    transform.GetComponentInChildren<MeshRenderer>().materials[0].SetColor("_EmissionColor", new Color(0.2f, 0.2f, 0.2f));
+                    transform.GetComponentInChildren<MeshRenderer>().materials[0].SetTexture("_EmissionMap", balloonStateTexture[1]);
+                    transform.GetComponentInChildren<MeshRenderer>().materials[0].EnableKeyword("_EMISSION");
+                    isTexSet = false;
+                }
                 if (blastCount > blastLimit * 2 / 3)
+                {
+                    isTexSet = true;
                     _balloonState = BalloonState.DANGER;
+                }
                 break;
 
-            //2.4以上なら危険状態
+            //2/3以上なら危険状態
             //色は赤
             case BalloonState.DANGER:
-                //gameObject.GetComponent<Renderer>().material.color = new Color(229 / 255f, 0 / 255f, 11 / 255f);
                 if (detonationArea == null)
                 {
+                    //テクスチャ設定
                     //誘爆半径表示オブジェクト生成
                     detonationArea = Instantiate(originDetonationArea, player.transform.position + new Vector3(0, 1, 0), Quaternion.identity, player.transform);
                     detonationArea.transform.localScale = new Vector3(detonationRadius * 4, detonationRadius * 4, detonationRadius * 4);
                 }
-                gameObject.GetComponent<Renderer>().material.color = dangerColor;
+                {
+                    gameObject.GetComponentInChildren<MeshRenderer>().materials[0].mainTexture = balloonStateTexture[2];
+                    //明るさ
+                    transform.GetComponentInChildren<MeshRenderer>().materials[0].SetColor("_EmissionColor", new Color(0.2f, 0.2f, 0.2f));
+                    transform.GetComponentInChildren<MeshRenderer>().materials[0].SetTexture("_EmissionMap", balloonStateTexture[2]);
+                    transform.GetComponentInChildren<MeshRenderer>().materials[0].EnableKeyword("_EMISSION");
+                    isTexSet = false;
+                }
                 break;
         }
     }
@@ -264,11 +304,13 @@ public class BalloonOrigin : MonoBehaviour
         if (isMove)
         {
             player1.GetComponent<PlayerMove>().balloon = null;//移動元の爆発物をNULLに
-            player2.GetComponent<PlayerMove>().balloon = transform.gameObject;//移動先に自信を指定
+            player2.GetComponent<PlayerMove>().balloon = transform.gameObject;//移動先に自身を指定
             player = player2;
             balloonMaster.nowPlayer = player2;
             isMove = false;
-            player2.gameObject.GetComponent<PlayerMove>().isStan = true;
+            player.GetComponent<PlayerMove>().isStan = true;
+            //ダッシュ回復
+            player.GetComponent<PlayerMove>().DashCountDown = player.GetComponent<PlayerMove>().DashLimitTime;
             GetComponent<AudioSource>().PlayOneShot(soundSE1);
         }
     }
@@ -405,6 +447,8 @@ public class BalloonOrigin : MonoBehaviour
         balloonMaster.IsBlast = true;//爆発した
         player.GetComponent<PlayerMove>().isStan = true;
         player.GetComponent<PlayerMove>().isBlastStan = true;
+        //スタン時間更新
+        player.GetComponent<PlayerMove>().stanTime = player.GetComponent<PlayerMove>().originStanTime;
         GetComponent<AudioSource>().PlayOneShot(soundSE2);
         //次のプレイヤー指定
         balloonMaster.nextPlayer = BalloonExChangeByDistance(balloonMaster.pList, player);

@@ -47,7 +47,8 @@ public class PlayerMove : MonoBehaviour
 
     public bool isStan = false;//動けるかどうか
     public float originStanTime = 1.5f;//動けるようになるまでの時間
-    float stanTime;
+    [HideInInspector]
+    public float stanTime;
 
     public bool isBalloonShrink = true;//爆発物が縮むかどうか
 
@@ -110,6 +111,7 @@ public class PlayerMove : MonoBehaviour
     public float DashCountDown
     {
         get { return _dashCountDown; }
+        set { _dashCountDown = value; }
     }
     public GameObject origin_Dash_Particle;//ダッシュパーティクル生成元
     GameObject dash_Particle;//ダッシュパーティクル
@@ -174,8 +176,8 @@ public class PlayerMove : MonoBehaviour
 
     void Update()
     {
-        holdItemCountText.text = HalfWidth2FullWidth.Set2FullWidth(holdItemCount.ToString());//内容物取得数表示処理 
-        totalItemCountText.text = HalfWidth2FullWidth.Set2FullWidth(totalItemCount.ToString());
+        holdItemCountText.text = HalfWidth2FullWidth.Set2FullWidth(holdItemCount);//内容物取得数表示処理 
+        totalItemCountText.text = HalfWidth2FullWidth.Set2FullWidth(totalItemCount);
 
         PlayerAnim(playerAnim);
 
@@ -276,8 +278,8 @@ public class PlayerMove : MonoBehaviour
         {
             rigid.velocity = Vector3.zero;
         }
-
-        Vector3 diff = transform.position + new Vector3(moveJoy.x, 0, moveJoy.y) - transform.position;
+    
+        Vector3 diff = new Vector3(moveJoy.x, 0, moveJoy.y);
 
         diff.y = 0;
 
@@ -586,17 +588,7 @@ public class PlayerMove : MonoBehaviour
     }
 
     void OnCollisionEnter(Collision col)
-    {
-        //プレイヤーに当たったら
-        if (col.gameObject.tag == "Player")
-        {
-            if (balloon != null)//爆発物があれば
-            {
-                balloon.GetComponent<BalloonOrigin>().BalloonMove(transform.gameObject, col.gameObject);//爆発物の移動処理
-                GamePad.SetVibration(XDInput[(int)(playerIndex)], 0.0f, 1.0f);
-                isStop = true;
-            }
-            
+    {           
             ////自身がダッシュ中であり、ジャンプしていないとき
             //if (_isDash && jumpCount == 0)
             //{
@@ -610,25 +602,23 @@ public class PlayerMove : MonoBehaviour
             //            ForceMode.Impulse);
             //    }
             //}
-        }
+        
     }
 
     void OnTriggerEnter(Collider col)
     {
-        //    //内容物に当たったら
-        //    if (col.gameObject.name.Contains("PointItem"))
-        //    {
-        //        if (col.gameObject.GetComponent<ItemController>().isGet&&balloon == null)
-        //        {
-        //            itemList.Add(col.name);//リスト追加
-        //            Destroy(col.gameObject);//内容物破棄
-        //            blastCount += col.GetComponent<ItemController>().point; //内容物所持数を増やす  
-        //GetComponent<AudioSource> ().PlayOneShot (soundSE2);
-        //            //totalBlastCount += col.GetComponent<ItemController>().point;//内容物所持数累計を増やす
-        //        }
-        //    }
-        //強制交換アイテムに当たったら
-        if (col.gameObject.name.Contains("ExChangeItem"))
+        //プレイヤーに当たったら
+        if (col.gameObject.tag == "Player")
+        {
+            if (balloon != null)//爆発物があれば
+            {
+                balloon.GetComponent<BalloonOrigin>().BalloonMove(transform.gameObject, col.gameObject);//爆発物の移動処理
+                GamePad.SetVibration(XDInput[(int)(playerIndex)], 0.0f, 1.0f);
+                isStop = true;
+            }
+        }
+            //強制交換アイテムに当たったら
+            if (col.gameObject.name.Contains("ExChangeItem"))
         {
             if (balloon != null)
                 balloon = null;
@@ -872,7 +862,8 @@ public class PlayerMove : MonoBehaviour
 
         PauseXInput();
         JumpXInput();
-        DashXInput();
+        if (!startCntDown.IsCntDown && !finishCall.IsCalling)
+            DashXInput();
 
         previousState = currentState;
     }
@@ -900,7 +891,7 @@ public class PlayerMove : MonoBehaviour
             else if (jumpCount == 1)
             {
                 hipDropTime = 0.3f;
-                rigid.velocity = Vector3.zero;
+                //rigid.velocity = Vector3.zero;
                 hipDropPosition = transform.position;
 
                 if (canHipDrop)
@@ -914,8 +905,8 @@ public class PlayerMove : MonoBehaviour
             jumpCount++;
 
             //上限設定
-            if (jumpCount > 2)
-                jumpCount = 2;
+            if (jumpCount > 1)
+                jumpCount = 1;
         }
     }
 
