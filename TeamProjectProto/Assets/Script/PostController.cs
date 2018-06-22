@@ -56,6 +56,7 @@ public class PostController : MonoBehaviour {
     [HideInInspector]
     public bool isBalloon;
 
+    bool isMove = false;//出現したときに画面外から動かすかどうか
     GameObject timeController;
 
     // Use this for initialization
@@ -132,14 +133,39 @@ public class PostController : MonoBehaviour {
                 interval = 0;
                 limitCount = 0;
                 mesh.enabled = true;
-                bc.enabled = true;
+                //bc.enabled = true;
                 activity = true;
                 gameObject.GetComponentInParent<PostRespawn>().isLimitReset = true;
                 Instantiate(marker, gameObject.transform.position + new Vector3(0, 19.5f, 0), Quaternion.identity);//ポストが出現したらマーカーを出す
                 isBalloon = false;
+                isMove = false;
             }
         }
-	}
+
+        //acivityがtrueのとき
+        else
+        {
+
+            if (!isMove)
+            {
+                //目標の座標点の上空に配置する
+                transform.position = transform.parent.position + new Vector3(0, 30, 0);
+                isMove = true;//目標の座標点に動かさせる
+            }
+            else
+            {
+                //目標の座標点までの距離を求め、一定以下になるまで近づける
+                var pos = (transform.parent.position + new Vector3(0, 0.5f, 0)) - transform.position;
+                if (pos.y <= 0.5f && pos.y >= -0.5f)
+                {
+                    //一定以下になったら、あたり判定を付けなおす
+                    bc.enabled = true;
+                    return;
+                }
+                transform.position += pos * Time.deltaTime * 3.5f;
+            }
+        }
+    }
 
     /// <summary>
     /// アイテムを入れた際のパーティクル生成メソッド

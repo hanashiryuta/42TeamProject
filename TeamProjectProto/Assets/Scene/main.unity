@@ -135,8 +135,8 @@ RenderTexture:
     Hash: 00000000000000000000000000000000
   m_ForcedFallbackFormat: 4
   m_DownscaleFallback: 0
-  m_Width: 1280
-  m_Height: 720
+  m_Width: 951
+  m_Height: 535
   m_AntiAliasing: 1
   m_DepthFormat: 1
   m_ColorFormat: 0
@@ -148,7 +148,7 @@ RenderTexture:
   m_TextureSettings:
     serializedVersion: 2
     m_FilterMode: 1
-    m_Aniso: 0
+    m_Aniso: 1
     m_MipBias: 0
     m_WrapU: 1
     m_WrapV: 1
@@ -913,7 +913,7 @@ Camera:
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 0
-  m_RenderingPath: 1
+  m_RenderingPath: 
   m_TargetTexture: {fileID: 292346169}
   m_TargetDisplay: 0
   m_TargetEye: 3
@@ -1034,6 +1034,7 @@ GameObject:
   - component: {fileID: 2094600267}
   - component: {fileID: 2094600269}
   - component: {fileID: 2094600268}
+  - component: {fileID: 2094600266}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1139,8 +1140,20 @@ MonoBehaviour:
   sourceCamera: {fileID: 2094600263}
   outlineCamera: {fileID: 1846411882}
   outlineShaderMaterial: {fileID: 0}
-  renderTexture: {fileID: 292346169}
-  extraRenderTexture: {fileID: 2127836295}
+  renderTexture: {fileID: 280725906}
+  extraRenderTexture: {fileID: 529996138}
+--- !u!114 &2094600266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2094600260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff26db721962cdf4a8edcdfa9a767d2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  profile: {fileID: 11400000, guid: a91eb630a22895842818b42cfa96f5f9, type: 2}
 --- !u!114 &2094600267
 MonoBehaviour:
   m_ObjectHideFlags: 0
