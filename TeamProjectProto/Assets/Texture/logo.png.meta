@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 5ca18a567203c4744b39bd9b25abf621
-timeCreated: 1529642612
+guid: 475582607b6a0bc48bc37ade27a85b46
+timeCreated: 1529649734
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName: {}
@@ -68,6 +68,16 @@ TextureImporter:
     overridden: 0
     androidETC2FallbackOverride: 0
   - buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+  - buildTarget: Android
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1

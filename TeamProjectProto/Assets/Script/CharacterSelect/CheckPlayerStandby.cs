@@ -143,7 +143,6 @@ public class CheckPlayerStandby : MonoBehaviour
     {
         player = GameObject.Instantiate(playerPrefabs, transform.position, Quaternion.Euler(0, 180, 0));
         player.GetComponentInChildren<SkinnedMeshRenderer>().materials[0].mainTexture = tex;//テクスチャ変更
-        //playerBG = GameObject.Instantiate(orgin_playerBG, this.transform);
 
         _playrLabel.enabled = true;
         _btnText.enabled = false;
@@ -156,8 +155,6 @@ public class CheckPlayerStandby : MonoBehaviour
     {
         GameObject.Destroy(player);
         player = null;
-        //GameObject.Destroy(playerBG);
-        //playerBG = null;
         _playrLabel.enabled = false;
         _btnText.enabled = true;
     }
