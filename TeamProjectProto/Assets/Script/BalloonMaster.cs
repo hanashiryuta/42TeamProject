@@ -223,6 +223,11 @@ public class BalloonMaster : MonoBehaviour {
             {
                 //バルーンタイプリールの割合を時間で設定
                 reelRateLists[1] = timeController.ReelRateSet();
+                //プレイヤー数により割合変更
+                if (pList.Length == 3)
+                    reelRateLists[2] = new List<float> { 6, 4 };
+                else
+                    reelRateLists[2] = new List<float> { 5, 3, 2 };
                 //Canvasの下にルーレット生成
                 rouletteObject = Instantiate(originRouletteObject,GameObject.FindGameObjectWithTag("Canvas").transform);
                 //回すプレイヤーを渡す
