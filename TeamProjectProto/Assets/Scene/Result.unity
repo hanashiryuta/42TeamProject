@@ -244,6 +244,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 130474216}
+  - component: {fileID: 130474220}
   - component: {fileID: 130474215}
   - component: {fileID: 130474217}
   - component: {fileID: 130474218}
@@ -347,6 +348,20 @@ MonoBehaviour:
   loadObj: {fileID: 1191586910}
   slider: {fileID: 1191586908}
   _nextScene: 0
+--- !u!114 &130474220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 130474214}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 434ef7c2efc70214d83492c3ec534bf7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  systemSEList:
+  - {fileID: 8300000, guid: a847c8ed900b3e94d93ce47e074de5c9, type: 3}
+  - {fileID: 8300000, guid: e6aa74c45aaee6a488bd71765f491fb7, type: 3}
 --- !u!1 &327894035
 GameObject:
   m_ObjectHideFlags: 0
