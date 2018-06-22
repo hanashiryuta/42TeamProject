@@ -727,7 +727,12 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1178841107629970, guid: b643a883259f6a343af7796b24b6bfaa, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 82328160874931812, guid: b643a883259f6a343af7796b24b6bfaa,
+        type: 2}
+      propertyPath: m_Volume
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b643a883259f6a343af7796b24b6bfaa, type: 2}
@@ -1093,6 +1098,9 @@ MonoBehaviour:
   systemSEList:
   - {fileID: 8300000, guid: a847c8ed900b3e94d93ce47e074de5c9, type: 3}
   - {fileID: 8300000, guid: e6aa74c45aaee6a488bd71765f491fb7, type: 3}
+  playerSEList: []
+  balloonSEList: []
+  rouletteSEList: []
 --- !u!114 &1218557530
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -25,6 +25,8 @@ public class BGMController : MonoBehaviour
     static bool created = false;
     bool isFading = false;
 
+    string preScene;//前のシーン
+
     /// <summary>
     /// BGM順番
     /// </summary>
@@ -65,15 +67,15 @@ public class BGMController : MonoBehaviour
     {
         //FadeOut();
 
-        if(nowClipVolume <= 0.1f)
-        {
-            if (!nextClipPlaying)
-            {
-                audio.clip = nextClip;
-                audio.Play();
-                nextClipPlaying = true;
-            }
-        }
+        //if(nowClipVolume <= 0.1f)
+        //{
+        //    if (!nextClipPlaying)
+        //    {
+        //        audio.clip = nextClip;
+        //        audio.Play();
+        //        nextClipPlaying = true;
+        //    }
+        //}
 
         //FadeIn();
 	}
@@ -83,19 +85,36 @@ public class BGMController : MonoBehaviour
         audio.clip = nextBGM;
     }
 
-    void SetSceneBGM(Scene newScene)
+    void SetSceneBGM(Scene newScene, string preScene)
     {
         if (newScene.name == "Title")
         {
             SetNowAndNextClip((int)BGM.Title);
+            audio.clip = nowClip;
+            audio.Play();
+        }
+        else if (newScene.name == "CharacterSelect")
+        {
+        }
+        else if (newScene.name == "StageSelect" && preScene == "Result")//もう一回で来たら
+        {
+            SetNowAndNextClip((int)BGM.Title);
+            audio.clip = nowClip;
+            audio.Play();
+
         }
         else if (newScene.name == "main")
         {
             SetNowAndNextClip((int)BGM.Main);
+            audio.clip = nowClip;
+            audio.Play();
+
         }
         else if (newScene.name == "Result")
         {
             SetNowAndNextClip((int)BGM.Result);
+            audio.clip = nowClip;
+            audio.Play();
         }
     }
 
@@ -160,27 +179,16 @@ public class BGMController : MonoBehaviour
     }
 
     /// <summary>
-    /// シーン切り替えた時呼ばれるメソッド
-    /// </summary>
-    /// <param name="prevScene"></param>
-    /// <param name="nextScene"></param>
-    void OnActiveSceneChanged(Scene prevScene, Scene nextScene)
-    {
-        Debug.Log(prevScene.name + "->" + nextScene.name);
-        //BGM設定
-        SetSceneBGM(nextScene);
-    }
-
-    /// <summary>
     /// シーンが廃棄された時呼ばれるメソッド
     /// </summary>
     /// <param name="scene"></param>
     /// <param name="mode"></param>
     private void SceneUnloaded(Scene scene)
     {
-        Debug.Log(scene.name + "Unoaded");
+        Debug.Log(scene.name + "Unloaded");
         //音フェード
-        StartCoroutine(Fade());
+        //StartCoroutine(Fade());
+        preScene = scene.name;
     }
 
     /// <summary>
@@ -192,6 +200,8 @@ public class BGMController : MonoBehaviour
     {
         Debug.Log(scene.name + "Loaded");
         //BGM設定
-        SetSceneBGM(scene);
+        Debug.Log(preScene + "が前の進");
+
+        SetSceneBGM(scene, preScene);
     }
 }
