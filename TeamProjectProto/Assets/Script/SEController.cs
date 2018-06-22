@@ -12,7 +12,10 @@ public class SEController : MonoBehaviour
     [SerializeField]
     List<AudioClip> systemSEList = new List<AudioClip>();//SE格納リスト
     [SerializeField]
-    List<AudioClip> plsyerSEList = new List<AudioClip>();//playerSE格納リスト
+    List<AudioClip> playerSEList = new List<AudioClip>();//playerSE格納リスト
+    [SerializeField]
+    List<AudioClip> balloonSEList = new List<AudioClip>();//balloonSE格納リスト
+
     AudioSource _audio;// AudioSource
     public AudioSource Audio
     {
@@ -36,10 +39,21 @@ public class SEController : MonoBehaviour
     /// </summary>
     public enum PlayerSE
     {
-        Jump,           //ジャンプ時
-        GetItem,        //アイテム取得時
-        SendPost,       //ポスト投函時
-        Dash            //ダッシュした時
+        Jump,       //ジャンプ時
+        GetItem,    //アイテム取得時
+        SendPost,   //ポスト投函時
+        Dash,       //ダッシュした時
+    }
+
+    /// <summary>
+    /// 風船SE
+    /// </summary>
+    public enum BalloonSE
+    {
+        Spawn,          //生成
+        ChangeTarget,   //風船が移る時
+        BlowUp,         //膨らむ
+        Blast           //破裂
     }
 
     // Use this for initialization
@@ -70,17 +84,18 @@ public class SEController : MonoBehaviour
     /// プレイヤーSEを鳴らす
     /// </summary>
     /// <param name="index"></param>
-    public void PlayerPlayreSEOnce(int index)
+    public void PlayPlayerSEOnce(int index)
     {
-        _audio.PlayOneShot(plsyerSEList[index]);
+        _audio.PlayOneShot(playerSEList[index]);
     }
 
     /// <summary>
-    /// キャンセルSE
+    /// 風船SEを鳴らす
     /// </summary>
-    public void Cancel_SE()
+    /// <param name="index"></param>
+    public void PlayBalloonSE(int index)
     {
-        _audio.PlayOneShot(systemSEList[(int)SystemSE.Cancel]);
+        _audio.PlayOneShot(balloonSEList[index]);
     }
 
     /// <summary>

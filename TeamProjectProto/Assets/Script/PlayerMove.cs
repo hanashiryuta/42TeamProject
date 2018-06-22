@@ -319,7 +319,7 @@ public class PlayerMove : MonoBehaviour
             if (jumpCount == 0)
             {
                 rigid.AddForce(new Vector3(0, jumpPower, 0));
-                playerSE.PlayerPlayreSEOnce((int)SEController.PlayerSE.Jump);
+                playerSE.PlayPlayerSEOnce((int)SEController.PlayerSE.Jump);
                 //GetComponent<AudioSource>().PlayOneShot(soundSE1);
             }
 
@@ -645,7 +645,7 @@ public class PlayerMove : MonoBehaviour
                 effect.GetComponent<ScoreEffect>().playerName = transform.name; //プレイヤーの名前を代入
                 //エフェクトを生成
                 Instantiate(effect, RectTransformUtility.WorldToScreenPoint(Camera.main, transform.position), Quaternion.identity, GameObject.Find("PlayerScoreUI").transform);
-                playerSE.PlayerPlayreSEOnce((int)SEController.PlayerSE.SendPost);
+                playerSE.PlayPlayerSEOnce((int)SEController.PlayerSE.SendPost);
                 //GetComponent<AudioSource>().PlayOneShot(soundSE3);
                 //ポストパーティクル生成
                 col.GetComponent<PostController>().Pig_ToCoin_Particle();
@@ -885,7 +885,7 @@ public class PlayerMove : MonoBehaviour
             if (jumpCount == 0)
             {
                 rigid.AddForce(new Vector3(0, jumpPower, 0));
-                playerSE.PlayerPlayreSEOnce((int)SEController.PlayerSE.Jump);
+                playerSE.PlayPlayerSEOnce((int)SEController.PlayerSE.Jump);
                 //GetComponent<AudioSource>().PlayOneShot(soundSE1);
             }
             //空中にいたら
@@ -952,7 +952,7 @@ public class PlayerMove : MonoBehaviour
                 if (dashStart)
                 {
                     //効果音追加
-                    playerSE.PlayerPlayreSEOnce((int)SEController.PlayerSE.Dash);
+                    playerSE.PlayPlayerSEOnce((int)SEController.PlayerSE.Dash);
                     //GetComponent<AudioSource>().PlayOneShot(soundSE6);
                 }
                 dashStart = false;

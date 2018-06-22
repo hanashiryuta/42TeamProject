@@ -752,11 +752,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   systemSEList: []
-  plsyerSEList:
+  playerSEList:
   - {fileID: 8300000, guid: f5c3ff069cdfdc14eb9af8c8956482e8, type: 3}
   - {fileID: 8300000, guid: 475d72f144db63844b07315899919ce2, type: 3}
-  - {fileID: 8300000, guid: 04aabf5253f07f84bb09425dd4cb2c5c, type: 3}
+  - {fileID: 8300000, guid: d55b50dfedb205c4f85b62fcbdf5cfb1, type: 3}
   - {fileID: 8300000, guid: 2235b27092d1cd14682903feadae2b33, type: 3}
+  balloonSEList: []
 --- !u!114 &114583404204353246
 MonoBehaviour:
   m_ObjectHideFlags: 1

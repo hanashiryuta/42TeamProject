@@ -86,6 +86,8 @@ public class BalloonMaster : MonoBehaviour {
 
     TimeController timeController;//タイムコントローラー
 
+    SEController se;//SEコントローラー
+
     // Use this for initialization
     void Start ()
     {
@@ -115,6 +117,8 @@ public class BalloonMaster : MonoBehaviour {
         cameraShake.BalloonM = this;
 
         timeController = GameObject.Find("TimeController").GetComponent<TimeController>();
+
+        se = transform.GetComponent<SEController>();
     }
 
     // Update is called once per frame
@@ -144,6 +148,7 @@ public class BalloonMaster : MonoBehaviour {
                 nowPlayer = nextPlayer;
                 //バルーン生成
                 nowBalloon = Instantiate(nextSpawnBalloon,nowPlayer.transform.position,Quaternion.identity);
+                se.PlayBalloonSE((int)SEController.BalloonSE.Spawn);
                 foreach(var cx in GameObject.FindGameObjectsWithTag("Post"))
                 {
                     cx.GetComponent<PostController>().isBalloon = true;
