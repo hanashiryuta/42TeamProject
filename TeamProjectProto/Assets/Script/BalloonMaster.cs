@@ -86,6 +86,8 @@ public class BalloonMaster : MonoBehaviour {
 
     TimeController timeController;//タイムコントローラー
 
+    SEController se;//SEコントローラー
+
     PlayerRank playerRank;//プレイヤーランク
 
     [HideInInspector]
@@ -126,6 +128,8 @@ public class BalloonMaster : MonoBehaviour {
         //時間オブジェ取得
         timeController = GameObject.Find("TimeController").GetComponent<TimeController>();
 
+        se = transform.GetComponent<SEController>();
+        
         //ルーレット各リール要素割合初期値設定
         reelRateLists = new List<List<float>>
         {
@@ -162,6 +166,7 @@ public class BalloonMaster : MonoBehaviour {
                 nowPlayer = nextPlayer;
                 //バルーン生成
                 nowBalloon = Instantiate(nextSpawnBalloon,nowPlayer.transform.position,Quaternion.identity);
+                se.PlayBalloonSE((int)SEController.BalloonSE.Spawn);
                 foreach(var cx in GameObject.FindGameObjectsWithTag("Post"))
                 {
                     cx.GetComponent<PostController>().isBalloon = true;

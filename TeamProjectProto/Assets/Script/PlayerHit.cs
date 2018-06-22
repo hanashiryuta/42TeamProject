@@ -32,7 +32,7 @@ public class PlayerHit : MonoBehaviour {
                 playerMove.itemList.Add(col.name);//リスト追加
                 Destroy(col.gameObject);//内容物破棄
                 playerMove.holdItemCount += col.GetComponent<ItemController>().point; //内容物所持数を増やす  
-                GetComponentInParent<AudioSource>().PlayOneShot(playerMove.soundSE2);
+                GetComponentInParent<PlayerMove>().playerSE.PlayPlayerSEOnce((int)SEController.PlayerSE.GetItem);
                 //totalBlastCount += col.GetComponent<ItemController>().point;//内容物所持数累計を増やす
             }
         }

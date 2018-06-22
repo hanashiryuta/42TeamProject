@@ -26,12 +26,17 @@ public class StartCountDown : MonoBehaviour
     }
     bool _isCntDownStarted = false;
 
+    //SE
+    AudioSource audio;
+    public AudioClip countDownSE;
 
 	// Use this for initialization
 	void Start ()
     {
         _textCntDown = GetComponent<Text>();
         _textCntDown.text = "";
+
+        audio = transform.GetComponent<AudioSource>();
 	}
 	
 	// Update is called once per frame
@@ -52,7 +57,8 @@ public class StartCountDown : MonoBehaviour
         _textCntDown.enabled = true;
         _bg.enabled = true;
 
-        for(int i = _cntDownTime; i > 0; i--)
+        audio.PlayOneShot(countDownSE);
+        for (int i = _cntDownTime; i > 0; i--)
         {
             _textCntDown.text = HalfWidth2FullWidth.Set2FullWidth(i.ToString());
             yield return new WaitForSeconds(1.0f);

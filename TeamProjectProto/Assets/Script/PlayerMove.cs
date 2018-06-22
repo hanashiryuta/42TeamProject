@@ -64,10 +64,6 @@ public class PlayerMove : MonoBehaviour
     [HideInInspector]
     public List<string> totalItemList;//累計取得アイテム管理リスト
 
-    public AudioClip soundSE1;//ジャンプ時の音
-    public AudioClip soundSE2;//アイテム取得時の音
-    public AudioClip soundSE3;//ポスト投函時の音
-
     Rigidbody rigid;//リジットボディ
     float hipDropTime = 0.3f;//ヒップドロップ空中待機時間
     Vector3 hipDropPosition = Vector3.zero;//ヒップドロップ空中待機場所
@@ -116,9 +112,6 @@ public class PlayerMove : MonoBehaviour
     public GameObject origin_Dash_Particle;//ダッシュパーティクル生成元
     GameObject dash_Particle;//ダッシュパーティクル
 
-    public AudioClip soundSE4;//ヒップドロップ時の効果音
-    public AudioClip soundSE5;//ヒップドロップ直前の回転時の効果音
-    public AudioClip soundSE6;//ダッシュした時の効果音
     bool dashStart = true;//ダッシュしたかどうか
 
     public float shockWavePower = 100;//衝撃波で吹き飛ぶ強さ
@@ -141,6 +134,8 @@ public class PlayerMove : MonoBehaviour
     public GameObject balloonMaster;
 
     float dashParticleTime = 0.0f;
+
+    public SEController playerSE;//SEコントローラー
 
     // Use this for initialization
     void Start()
@@ -172,6 +167,9 @@ public class PlayerMove : MonoBehaviour
         //180607 ダッシュ
         SetDashLimitTime(holdItemCount, dashTimePerItem);
         _dashCountDown = _dashLimitTime;
+
+        //180622 SE
+        playerSE = transform.GetComponent<SEController>();
     }
 
     void Update()
@@ -321,7 +319,8 @@ public class PlayerMove : MonoBehaviour
             if (jumpCount == 0)
             {
                 rigid.AddForce(new Vector3(0, jumpPower, 0));
-                GetComponent<AudioSource>().PlayOneShot(soundSE1);
+                playerSE.PlayPlayerSEOnce((int)SEController.PlayerSE.Jump);
+                //GetComponent<AudioSource>().PlayOneShot(soundSE1);
             }
 
             //空中にいたら
@@ -646,7 +645,8 @@ public class PlayerMove : MonoBehaviour
                 effect.GetComponent<ScoreEffect>().playerName = transform.name; //プレイヤーの名前を代入
                 //エフェクトを生成
                 Instantiate(effect, RectTransformUtility.WorldToScreenPoint(Camera.main, transform.position), Quaternion.identity, GameObject.Find("PlayerScoreUI").transform);
-                GetComponent<AudioSource>().PlayOneShot(soundSE3);
+                playerSE.PlayPlayerSEOnce((int)SEController.PlayerSE.SendPost);
+                //GetComponent<AudioSource>().PlayOneShot(soundSE3);
                 //ポストパーティクル生成
                 col.GetComponent<PostController>().Pig_ToCoin_Particle();
             }
@@ -798,7 +798,7 @@ public class PlayerMove : MonoBehaviour
         }
 
         //効果音追加
-        GetComponent<AudioSource>().PlayOneShot(soundSE4);
+        //playerSE.PlayerPlayreSEOnce((int)SEController.PlayerSE.HipDrop);
     }
 
     /// <summary>
@@ -885,7 +885,8 @@ public class PlayerMove : MonoBehaviour
             if (jumpCount == 0)
             {
                 rigid.AddForce(new Vector3(0, jumpPower, 0));
-                GetComponent<AudioSource>().PlayOneShot(soundSE1);
+                playerSE.PlayPlayerSEOnce((int)SEController.PlayerSE.Jump);
+                //GetComponent<AudioSource>().PlayOneShot(soundSE1);
             }
             //空中にいたら
             else if (jumpCount == 1)
@@ -897,7 +898,7 @@ public class PlayerMove : MonoBehaviour
                 if (canHipDrop)
                 {
                     //効果音追加
-                    GetComponent<AudioSource>().PlayOneShot(soundSE5);
+                    //playerSE.PlayerPlayreSEOnce((int)SEController.PlayerSE.HipDropTurnInAir);
                 }
             }
 
@@ -951,7 +952,8 @@ public class PlayerMove : MonoBehaviour
                 if (dashStart)
                 {
                     //効果音追加
-                    GetComponent<AudioSource>().PlayOneShot(soundSE6);
+                    playerSE.PlayPlayerSEOnce((int)SEController.PlayerSE.Dash);
+                    //GetComponent<AudioSource>().PlayOneShot(soundSE6);
                 }
                 dashStart = false;
             }

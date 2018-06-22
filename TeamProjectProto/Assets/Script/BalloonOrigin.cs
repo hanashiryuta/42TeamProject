@@ -53,9 +53,6 @@ public class BalloonOrigin : MonoBehaviour
     public float originBlastTime = 1.0f;//爆発物が膨らむ間隔
     float blastTime;
 
-    public AudioClip soundSE1;//風船が移るときの音
-    public AudioClip soundSE2;//破裂時の音
-
     bool _isBlast = false;//爆発したか（エフェクト用）
     public bool IsBlast
     {
@@ -101,6 +98,9 @@ public class BalloonOrigin : MonoBehaviour
     public GameObject originDetonationArea;//誘爆半径表示オブジェクト
     GameObject detonationArea;
 
+    //SE
+    SEController se;
+
     bool isTexSet = true;//テクスチャ設定用bool
 
     // Use this for initialization
@@ -126,7 +126,8 @@ public class BalloonOrigin : MonoBehaviour
         curState = _balloonState;
 
         finishCall = GameObject.Find("FinishCall").GetComponent<FinishCall>();//終了処理オブジェクト取得
-        
+
+        se = balloonMaster.transform.GetComponent<SEController>();
     }
 
     // Update is called once per frame
@@ -311,7 +312,7 @@ public class BalloonOrigin : MonoBehaviour
             player.GetComponent<PlayerMove>().isStan = true;
             //ダッシュ回復
             player.GetComponent<PlayerMove>().DashCountDown = player.GetComponent<PlayerMove>().DashLimitTime;
-            GetComponent<AudioSource>().PlayOneShot(soundSE1);
+            se.PlayBalloonSE((int)SEController.BalloonSE.ChangeTarget);
         }
     }
     /// <summary>
@@ -427,6 +428,7 @@ public class BalloonOrigin : MonoBehaviour
         {
             if (preState != curState)
             {
+                se.PlayBalloonSE((int)SEController.BalloonSE.BlowUp);
                 return true;
             }
         }
@@ -449,7 +451,7 @@ public class BalloonOrigin : MonoBehaviour
         player.GetComponent<PlayerMove>().isBlastStan = true;
         //スタン時間更新
         player.GetComponent<PlayerMove>().stanTime = player.GetComponent<PlayerMove>().originStanTime;
-        GetComponent<AudioSource>().PlayOneShot(soundSE2);
+        se.PlayBalloonSE((int)SEController.BalloonSE.Blast);
         //次のプレイヤー指定
         balloonMaster.nextPlayer = BalloonExChangeByDistance(balloonMaster.pList, player);
         isDestroy = true;//破棄できるようにする
