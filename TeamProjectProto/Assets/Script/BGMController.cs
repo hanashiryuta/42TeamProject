@@ -1,4 +1,9 @@
-﻿using System.Collections;
+﻿/*
+ * 作成日時：180621
+ * BGMコントローラー
+ * 作成者：何承恩
+ */
+ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
