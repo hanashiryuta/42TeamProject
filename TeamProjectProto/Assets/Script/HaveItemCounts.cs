@@ -29,13 +29,13 @@ public class HaveItemCounts : MonoBehaviour {
             if (rouletteController.rouletteState == RouletteState.ENTRY)
             {
                 //出てくる
-                GetComponent<RectTransform>().DOLocalMoveY(200, 1);
+                GetComponent<RectTransform>().DOLocalMoveY(-310, 1);
             }
             //ルーレットが退場状態なら
             else if (rouletteController.rouletteState == RouletteState.EXIT)
             {
                 //引っ込む
-                GetComponent<RectTransform>().DOLocalMoveY(275, 1);
+                GetComponent<RectTransform>().DOLocalMoveY(-410, 1);
             }
         }
 
