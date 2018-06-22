@@ -15,6 +15,8 @@ public class SEController : MonoBehaviour
     List<AudioClip> playerSEList = new List<AudioClip>();//playerSE格納リスト
     [SerializeField]
     List<AudioClip> balloonSEList = new List<AudioClip>();//balloonSE格納リスト
+    [SerializeField]
+    List<AudioClip> rouletteSEList = new List<AudioClip>();//ルーレットSE格納リスト
 
     AudioSource _audio;// AudioSource
     public AudioSource Audio
@@ -54,6 +56,15 @@ public class SEController : MonoBehaviour
         ChangeTarget,   //風船が移る時
         BlowUp,         //膨らむ
         Blast           //破裂
+    }
+
+    /// <summary>
+    /// ルーレットSE
+    /// </summary>
+    public enum RouletteSE
+    {
+        Lever,  //レバー引くとき
+        PressA  //Aボタン押した時
     }
 
     // Use this for initialization
@@ -96,6 +107,15 @@ public class SEController : MonoBehaviour
     public void PlayBalloonSE(int index)
     {
         _audio.PlayOneShot(balloonSEList[index]);
+    }
+
+    /// <summary>
+    /// ルーレットSEを鳴らす
+    /// </summary>
+    /// <param name="index"></param>
+    public void PlayRouletteSE(int index)
+    {
+        _audio.PlayOneShot(rouletteSEList[index]);
     }
 
     /// <summary>
