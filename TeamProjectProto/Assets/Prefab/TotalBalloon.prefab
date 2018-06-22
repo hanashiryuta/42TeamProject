@@ -11,23 +11,6 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 1308906432338030}
   m_IsPrefabParent: 1
---- !u!1 &1199866021562052
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 4537320181551242}
-  - component: {fileID: 33975802636572024}
-  - component: {fileID: 23728364714694576}
-  m_Layer: 0
-  m_Name: pigballoon
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
 --- !u!1 &1308906432338030
 GameObject:
   m_ObjectHideFlags: 0
@@ -38,6 +21,7 @@ GameObject:
   - component: {fileID: 4460950571311170}
   - component: {fileID: 33514470575450970}
   - component: {fileID: 135630039118017900}
+  - component: {fileID: 23802952965877712}
   - component: {fileID: 114995564923581068}
   - component: {fileID: 82203800212815476}
   - component: {fileID: 114476665854601180}
@@ -57,30 +41,16 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 4537320181551242}
+  m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &4537320181551242
-Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1199866021562052}
-  m_LocalRotation: {x: 0.579228, y: 0.579228, z: 0.40557975, w: -0.40557975}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 50, y: 50, z: 50}
-  m_Children: []
-  m_Father: {fileID: 4460950571311170}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: -70, y: 180, z: 90}
---- !u!23 &23728364714694576
+--- !u!23 &23802952965877712
 MeshRenderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1199866021562052}
+  m_GameObject: {fileID: 1308906432338030}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 1
@@ -89,7 +59,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 33dd3283634dcc34e8bddc1d29344103, type: 3}
+  - {fileID: 2100000, guid: 70f3a79a75aa758458e79783805f1f67, type: 2}
   - {fileID: 2100000, guid: d9e698e4cc4fb1948a843c9ef3f020e6, type: 2}
   - {fileID: 2100000, guid: d31883d181ac1734cbeac6e5b4f3c1b3, type: 2}
   m_StaticBatchInfo:
@@ -99,7 +69,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
-  m_PreserveUVs: 0
+  m_PreserveUVs: 1
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
   m_StitchLightmapSeams: 0
@@ -118,13 +88,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1308906432338030}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!33 &33975802636572024
-MeshFilter:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1199866021562052}
-  m_Mesh: {fileID: 4300000, guid: 33dd3283634dcc34e8bddc1d29344103, type: 3}
 --- !u!82 &82203800212815476
 AudioSource:
   m_ObjectHideFlags: 1
@@ -231,7 +194,7 @@ MonoBehaviour:
   scaleCount: 1
   scaleLimit: 3
   blastCount: 0
-  blastLimit: 20
+  blastLimit: 15
   setStopTime: 5
   isTimeBlast: 1
   originBlastTime: 1
@@ -240,10 +203,9 @@ MonoBehaviour:
   isDestroy: 0
   isCameraDistance: 0
   balloonMaster: {fileID: 0}
-  balloonStateTexture:
-  - {fileID: 2800000, guid: 5cd0bb4cd23f75f4ab60a0f5ebcd5219, type: 3}
-  - {fileID: 2800000, guid: 069a05879a64d06429d13aef71790931, type: 3}
-  - {fileID: 2800000, guid: 34defdd6106ecf64eb75aba9a0b88d47, type: 3}
+  safeColor: {r: 0, g: 0.7931032, b: 1, a: 0}
+  coutionColor: {r: 1, g: 0.64137936, b: 0, a: 0}
+  dangerColor: {r: 1, g: 0, b: 0.76551723, a: 0}
   detonationList: []
   detonationRadius: 4
   originDetonationArea: {fileID: 1034089992292260, guid: 66080d96a304c644fb05c5bc203621c2,
