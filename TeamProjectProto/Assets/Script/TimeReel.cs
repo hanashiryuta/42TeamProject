@@ -7,6 +7,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TimeReel : ReelSpin {
 
@@ -15,6 +16,6 @@ public class TimeReel : ReelSpin {
     public override T ReelValue<T>()
     {
         //決まった爆破時間を返す
-        return (T)(object)timeList[spriteObjList.IndexOf(centerSprite)];
+        return (T)(object)timeList[spriteList.IndexOf(centerSprite.GetComponent<Image>().sprite)];
     }    
 }

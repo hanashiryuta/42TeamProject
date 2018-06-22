@@ -69,6 +69,9 @@ public class RouletteController : MonoBehaviour {
 
     SEController se;//SE
 
+    public GameObject originRoulettePanel;//ルーレット背景フェード
+    GameObject roulettePanel;
+
     // Use this for initialization
     void Start () {
         ////ゲームを一時的に止める
@@ -77,21 +80,25 @@ public class RouletteController : MonoBehaviour {
         selectScript.isRoulette = true;
         //時間を止める
         GameObject.Find("TimeController").GetComponent<TimeController>().isPause = true;
-        //各リール取得
-        firstReel = firstReelObj.GetComponent<ReelSpin>();
-        secondReel = secondReelObj.GetComponent<ReelSpin>();
-        thirdReel = thirdReelObj.GetComponent<ReelSpin>();
         //爆破したプレイヤーの番号取得
         playerIndex = jugglerPlayer.GetComponent<PlayerMove>().playerIndex;
         //playerIndex = 0;
         //プレイヤーリスト生成
         playerList = new List<GameObject>();
-        foreach(var player in pList)
+        foreach (var player in pList)
         {
             //爆破したプレイヤーは除く
             if (player != jugglerPlayer)
                 playerList.Add(player);
         }
+        //各リール設定
+        //各リールに対応した割合を渡す
+        firstReel = firstReelObj.GetComponent<ReelSpin>();
+        firstReel.reelRateCountList = balloonMaster.GetComponent<BalloonMaster>().reelRateLists[0];
+        secondReel = secondReelObj.GetComponent<ReelSpin>();
+        secondReel.reelRateCountList = balloonMaster.GetComponent<BalloonMaster>().reelRateLists[1];
+        thirdReel = thirdReelObj.GetComponent<ReelSpin>();
+        thirdReel.reelRateCountList = balloonMaster.GetComponent<BalloonMaster>().reelRateLists[2];
         //回すプレイヤーの画像表示
         leverPlayer.GetComponent<Image>().sprite = jugglerSpriteList[(int)playerIndex];
         //Aボタン表示
@@ -107,6 +114,10 @@ public class RouletteController : MonoBehaviour {
 
         //SE
         se = transform.GetComponent<SEController>();
+
+        roulettePanel = Instantiate(originRoulettePanel,GameObject.FindGameObjectWithTag("Canvas").transform);
+
+        roulettePanel.transform.SetAsLastSibling();
     }
 	
 	// Update is called once per frame
@@ -134,7 +145,7 @@ public class RouletteController : MonoBehaviour {
                     haveItemCount.GetComponent<HaveItemCounts>().RouletteStart(pList, this);
                 }
                 //中心に向けて移動
-                rectTransform.DOLocalMoveY(-80, 1);
+                rectTransform.DOLocalMoveY(-15, 1);
                 waitTime -= Time.deltaTime;
                 if (waitTime < 0)
                 {
@@ -225,6 +236,8 @@ public class RouletteController : MonoBehaviour {
                     waitTime = 1;
                     //ルーレット終了
                     balloonMaster.GetComponent<BalloonMaster>().isRoulette = false;
+                    //終了フェード
+                    roulettePanel.GetComponent<RouletteFade>().isEnd = true;
                     //状態変更
                     rouletteState = RouletteState.EXIT;
                 }

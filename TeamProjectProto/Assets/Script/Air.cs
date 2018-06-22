@@ -28,7 +28,7 @@ public class Air : MonoBehaviour {
         //GetComponent<Rigidbody>().AddForce(direction.normalized * power);
 
         Vector3 pos = (balloon.transform.position - transform.position).normalized; //balloonとの距離を求める
-        transform.position += pos; //距離分足していく
+        transform.position += pos * Time.deltaTime * 30; //距離分足していく
 
        
         if (balloon.GetComponent<BalloonOrigin>().isDestroy)

@@ -136,7 +136,6 @@ public class TitleScene : MonoBehaviour
                 DelayTimeCountDown();
             }
         }
-
         //down
         if (moveY <= -0.8f && nowSelectedBtn != gameExitBtn)
         {
@@ -152,7 +151,6 @@ public class TitleScene : MonoBehaviour
                 DelayTimeCountDown();
             }
         }
-
         //A
         if (previousState.Buttons.A == ButtonState.Released &&
             currentState.Buttons.A == ButtonState.Pressed)

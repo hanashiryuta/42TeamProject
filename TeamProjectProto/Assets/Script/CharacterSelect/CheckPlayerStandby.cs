@@ -146,9 +146,8 @@ public class CheckPlayerStandby : MonoBehaviour
     {
         player = GameObject.Instantiate(playerPrefabs, transform.position, Quaternion.Euler(0, 180, 0));
         player.GetComponentInChildren<SkinnedMeshRenderer>().materials[0].mainTexture = tex;//テクスチャ変更
-        se.PlaySystemSE((int)SEController.SystemSE.CharacterSpawn);
-
-        _playrLabel.enabled = true;
+        se.PlaySystemSE((int)SEController.SystemSE.CharacterSpawn);    
+　       _playrLabel.enabled = true;
         _btnText.enabled = false;
     }
 
