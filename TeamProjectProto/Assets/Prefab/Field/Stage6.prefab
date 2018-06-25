@@ -1857,7 +1857,7 @@ Transform:
   m_GameObject: {fileID: 1457479448503538}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 2, y: 1.5, z: 6}
-  m_LocalScale: {x: 100, y: 100.0001, z: 100.0001}
+  m_LocalScale: {x: 100, y: 100, z: 100}
   m_Children: []
   m_Father: {fileID: 4635209745677300}
   m_RootOrder: 7
@@ -2224,7 +2224,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1432705746010544}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 6, y: 3.7, z: -8}
+  m_LocalPosition: {x: 6, y: 2.74, z: -8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4787386405818106}
@@ -2250,7 +2250,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1485953559439394}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -6, y: 3.7, z: 8}
+  m_LocalPosition: {x: -6, y: 2.74, z: 8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4787386405818106}
@@ -2277,7 +2277,7 @@ Transform:
   m_GameObject: {fileID: 1516642832541658}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: -6, y: 1.5, z: 2}
-  m_LocalScale: {x: 100, y: 100.0001, z: 100.0001}
+  m_LocalScale: {x: 100, y: 100, z: 100}
   m_Children: []
   m_Father: {fileID: 4635209745677300}
   m_RootOrder: 18
@@ -2534,7 +2534,7 @@ Transform:
   m_GameObject: {fileID: 1695402668702830}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: -2, y: 1.5, z: -6}
-  m_LocalScale: {x: 100, y: 100.0001, z: 100.0001}
+  m_LocalScale: {x: 100, y: 100, z: 100}
   m_Children: []
   m_Father: {fileID: 4635209745677300}
   m_RootOrder: 41
@@ -2546,7 +2546,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1345336609374440}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 8, y: 3.7, z: 6}
+  m_LocalPosition: {x: 8, y: 2.74, z: 6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4787386405818106}
@@ -2617,7 +2617,7 @@ Transform:
   m_GameObject: {fileID: 1922416315335386}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 6, y: 1.5, z: -2}
-  m_LocalScale: {x: 100, y: 100.0001, z: 100.0001}
+  m_LocalScale: {x: 100, y: 100, z: 100}
   m_Children: []
   m_Father: {fileID: 4635209745677300}
   m_RootOrder: 30
@@ -2629,7 +2629,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1957148208071436}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -8, y: 3.7, z: -6}
+  m_LocalPosition: {x: -8, y: 2.74, z: -6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4787386405818106}
@@ -2850,7 +2850,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1379999424144442}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 3.7, z: 0}
+  m_LocalPosition: {x: 0, y: 2.74, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4787386405818106}
@@ -6182,6 +6182,7 @@ MonoBehaviour:
   itemList:
   - {fileID: 1272410322635724, guid: 2ff4604ad3f9c284bb6682811d6c4424, type: 2}
   - {fileID: 1787082520497464, guid: c96169cf033f68d48b4cdeffe9ed0122, type: 2}
+  setRespawnTiem: 8
 --- !u!114 &114112289990178988
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6214,6 +6215,7 @@ MonoBehaviour:
   itemList:
   - {fileID: 1272410322635724, guid: 2ff4604ad3f9c284bb6682811d6c4424, type: 2}
   - {fileID: 1787082520497464, guid: c96169cf033f68d48b4cdeffe9ed0122, type: 2}
+  setRespawnTiem: 12
 --- !u!114 &114218893798043642
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6228,6 +6230,7 @@ MonoBehaviour:
   itemList:
   - {fileID: 1272410322635724, guid: 2ff4604ad3f9c284bb6682811d6c4424, type: 2}
   - {fileID: 1787082520497464, guid: c96169cf033f68d48b4cdeffe9ed0122, type: 2}
+  setRespawnTiem: 8
 --- !u!114 &114267740555362734
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6242,6 +6245,7 @@ MonoBehaviour:
   itemList:
   - {fileID: 1272410322635724, guid: 2ff4604ad3f9c284bb6682811d6c4424, type: 2}
   - {fileID: 1787082520497464, guid: c96169cf033f68d48b4cdeffe9ed0122, type: 2}
+  setRespawnTiem: 12
 --- !u!114 &114356242046977644
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6256,6 +6260,7 @@ MonoBehaviour:
   itemList:
   - {fileID: 1272410322635724, guid: 2ff4604ad3f9c284bb6682811d6c4424, type: 2}
   - {fileID: 1787082520497464, guid: c96169cf033f68d48b4cdeffe9ed0122, type: 2}
+  setRespawnTiem: 12
 --- !u!114 &114363032416219756
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6270,6 +6275,7 @@ MonoBehaviour:
   itemList:
   - {fileID: 1272410322635724, guid: 2ff4604ad3f9c284bb6682811d6c4424, type: 2}
   - {fileID: 1787082520497464, guid: c96169cf033f68d48b4cdeffe9ed0122, type: 2}
+  setRespawnTiem: 12
 --- !u!114 &114552496871966914
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6284,6 +6290,7 @@ MonoBehaviour:
   itemList:
   - {fileID: 1272410322635724, guid: 2ff4604ad3f9c284bb6682811d6c4424, type: 2}
   - {fileID: 1787082520497464, guid: c96169cf033f68d48b4cdeffe9ed0122, type: 2}
+  setRespawnTiem: 12
 --- !u!114 &114664878610154568
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6298,6 +6305,7 @@ MonoBehaviour:
   itemList:
   - {fileID: 1272410322635724, guid: 2ff4604ad3f9c284bb6682811d6c4424, type: 2}
   - {fileID: 1787082520497464, guid: c96169cf033f68d48b4cdeffe9ed0122, type: 2}
+  setRespawnTiem: 8
 --- !u!114 &114666838201295452
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6312,6 +6320,7 @@ MonoBehaviour:
   itemList:
   - {fileID: 1272410322635724, guid: 2ff4604ad3f9c284bb6682811d6c4424, type: 2}
   - {fileID: 1787082520497464, guid: c96169cf033f68d48b4cdeffe9ed0122, type: 2}
+  setRespawnTiem: 12
 --- !u!114 &114670928035365032
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6326,6 +6335,7 @@ MonoBehaviour:
   itemList:
   - {fileID: 1272410322635724, guid: 2ff4604ad3f9c284bb6682811d6c4424, type: 2}
   - {fileID: 1787082520497464, guid: c96169cf033f68d48b4cdeffe9ed0122, type: 2}
+  setRespawnTiem: 12
 --- !u!114 &114715250883951150
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6355,6 +6365,7 @@ MonoBehaviour:
   itemList:
   - {fileID: 1272410322635724, guid: 2ff4604ad3f9c284bb6682811d6c4424, type: 2}
   - {fileID: 1787082520497464, guid: c96169cf033f68d48b4cdeffe9ed0122, type: 2}
+  setRespawnTiem: 8
 --- !u!114 &114861106065536660
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6369,6 +6380,7 @@ MonoBehaviour:
   itemList:
   - {fileID: 1272410322635724, guid: 2ff4604ad3f9c284bb6682811d6c4424, type: 2}
   - {fileID: 1787082520497464, guid: c96169cf033f68d48b4cdeffe9ed0122, type: 2}
+  setRespawnTiem: 12
 --- !u!114 &114886180491167808
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6383,6 +6395,7 @@ MonoBehaviour:
   itemList:
   - {fileID: 1272410322635724, guid: 2ff4604ad3f9c284bb6682811d6c4424, type: 2}
   - {fileID: 1787082520497464, guid: c96169cf033f68d48b4cdeffe9ed0122, type: 2}
+  setRespawnTiem: 8
 --- !u!114 &114894876582742138
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6397,6 +6410,7 @@ MonoBehaviour:
   itemList:
   - {fileID: 1272410322635724, guid: 2ff4604ad3f9c284bb6682811d6c4424, type: 2}
   - {fileID: 1787082520497464, guid: c96169cf033f68d48b4cdeffe9ed0122, type: 2}
+  setRespawnTiem: 8
 --- !u!114 &114924034588832998
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6411,6 +6425,7 @@ MonoBehaviour:
   itemList:
   - {fileID: 1272410322635724, guid: 2ff4604ad3f9c284bb6682811d6c4424, type: 2}
   - {fileID: 1787082520497464, guid: c96169cf033f68d48b4cdeffe9ed0122, type: 2}
+  setRespawnTiem: 12
 --- !u!114 &114996472085752040
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6425,3 +6440,4 @@ MonoBehaviour:
   itemList:
   - {fileID: 1272410322635724, guid: 2ff4604ad3f9c284bb6682811d6c4424, type: 2}
   - {fileID: 1787082520497464, guid: c96169cf033f68d48b4cdeffe9ed0122, type: 2}
+  setRespawnTiem: 12
