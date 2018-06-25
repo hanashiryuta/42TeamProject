@@ -31,7 +31,7 @@ public class PostController : MonoBehaviour {
     //[HideInInspector]
     //public int activeCount;//activityが切り替わるまでのアイテムの個数
     [HideInInspector]
-    public MeshRenderer mesh;//ポストを透明化させるためのもの
+    public SkinnedMeshRenderer mesh;//ポストを透明化させるためのもの
     [HideInInspector]
     public SphereCollider bc;//あたり判定をなくす
 
@@ -67,7 +67,7 @@ public class PostController : MonoBehaviour {
 		specialWallPoint = GameObject.Find("SpecialWallPoint(Clone)");//特殊壁移動ポイント取得
         activity = false;
         //activeCount = 0;
-        mesh = GetComponentInChildren<MeshRenderer>();
+        mesh = GetComponentInChildren<SkinnedMeshRenderer>();
         bc = GetComponent<SphereCollider>();
         startCountDown = GameObject.Find("StartCountDown").GetComponent<StartCountDown>();
         finishCall = GameObject.Find("FinishCall").GetComponent<FinishCall>();
