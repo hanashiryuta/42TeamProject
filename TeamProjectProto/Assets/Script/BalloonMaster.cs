@@ -137,7 +137,7 @@ public class BalloonMaster : MonoBehaviour {
         //ルーレット各リール要素割合初期値設定
         reelRateLists = new List<List<float>>
         {
-            new List<float> {5,5},
+            new List<float> {3,4,3},
             new List<float> {3,7},
             new List<float> {5,3,2},
         };
