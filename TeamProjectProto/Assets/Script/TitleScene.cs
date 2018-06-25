@@ -37,6 +37,9 @@ public class TitleScene : MonoBehaviour
     public float delayTime = 0.5f;//長押しの時の遅延
     public bool isDelay = false;
 
+    //SE
+    SEController se;
+
     // Use this for initialization
     void Start()
     {
@@ -52,6 +55,9 @@ public class TitleScene : MonoBehaviour
         nowSelectedBtn = titleBtnList[nowSelectedBtnIndex];
         //現在接続しているプレイヤーの中で番号が一番小さいやつを選択プレイヤーにする
         SetControllablePlayer();
+
+        //SE
+        se = transform.GetComponent<SEController>();
     }
 
     // Update is called once per frame
@@ -122,6 +128,7 @@ public class TitleScene : MonoBehaviour
             {
                 cnt = delayTime;
                 ChooseNextBtn("up");
+                se.PlaySystemSE((int)SEController.SystemSE.CursorMove);
                 isDelay = true;
             }
             else
@@ -129,7 +136,6 @@ public class TitleScene : MonoBehaviour
                 DelayTimeCountDown();
             }
         }
-
         //down
         if (moveY <= -0.8f && nowSelectedBtn != gameExitBtn)
         {
@@ -137,6 +143,7 @@ public class TitleScene : MonoBehaviour
             {
                 cnt = delayTime;
                 ChooseNextBtn("down");
+                se.PlaySystemSE((int)SEController.SystemSE.CursorMove);
                 isDelay = true;
             }
             else
@@ -144,12 +151,12 @@ public class TitleScene : MonoBehaviour
                 DelayTimeCountDown();
             }
         }
-
         //A
         if (previousState.Buttons.A == ButtonState.Released &&
             currentState.Buttons.A == ButtonState.Pressed)
         {
             BtnPushed(nowSelectedBtn);
+            se.PlaySystemSE((int)SEController.SystemSE.OK);
         }
 
         //遅延初期化

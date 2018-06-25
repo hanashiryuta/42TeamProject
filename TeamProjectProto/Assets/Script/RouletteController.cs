@@ -67,6 +67,8 @@ public class RouletteController : MonoBehaviour {
     public GameObject originHaveItemCount;//所持アイテム表示オブジェクト
     GameObject haveItemCount;
 
+    SEController se;//SE
+
     public GameObject originRoulettePanel;//ルーレット背景フェード
     GameObject roulettePanel;
 
@@ -109,6 +111,9 @@ public class RouletteController : MonoBehaviour {
 
         //レクト取得
         rectTransform = GetComponent<RectTransform>();
+
+        //SE
+        se = transform.GetComponent<SEController>();
 
         roulettePanel = Instantiate(originRoulettePanel,GameObject.FindGameObjectWithTag("Canvas").transform);
 
@@ -168,12 +173,16 @@ public class RouletteController : MonoBehaviour {
                     jugglerA.SetActive(false);
                     //状態変化
                     rouletteState = RouletteState.REEL1;
+                    //SE
+                    se.PlayRouletteSE((int)SEController.RouletteSE.Lever);
                 }
                 break;
             case RouletteState.REEL1://1つ目のリール
                 //Aボタンが押されたら
                 if (PushA())
                 {
+                    //SE
+                    se.PlayRouletteSE((int)SEController.RouletteSE.PressA);
                     //1つ目のリール停止
                     firstReel.SpinEnd();
                     //停止ボタン押した状態の画像に変更
@@ -186,6 +195,8 @@ public class RouletteController : MonoBehaviour {
                 //Aボタンが押されたら
                 if (PushA())
                 {
+                    //SE
+                    se.PlayRouletteSE((int)SEController.RouletteSE.PressA);
                     //2つ目のリール停止
                     secondReel.SpinEnd();
                     //停止ボタン押した状態の画像に変更
@@ -198,6 +209,8 @@ public class RouletteController : MonoBehaviour {
                 //Aボタンが押されたら
                 if (PushA())
                 {
+                    //SE
+                    se.PlayRouletteSE((int)SEController.RouletteSE.PressA);
                     //3つ目のリール停止
                     thirdReel.SpinEnd();
                     //停止ボタン押した状態の画像に変更

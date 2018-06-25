@@ -15,7 +15,6 @@ public class StageSelectController : MonoBehaviour
 {
     [SerializeField]
     GameObject[] stagesList;
-    //Dictionary<string, GameObject> stageDictionary = new Dictionary<string, GameObject>();
     GameObject stage;//今表示しているステージ
     int nowStageIndex = 0;//今表示しているステージのインデックス
 
@@ -51,6 +50,9 @@ public class StageSelectController : MonoBehaviour
     public float pointsOffset = 40f;
     float firstPointX = 0;
 
+    //SE
+    SEController se;
+
     // Use this for initialization
     void Start ()
     {
@@ -60,11 +62,6 @@ public class StageSelectController : MonoBehaviour
             connectedPlayerStatus = GameObject.FindGameObjectWithTag("PlayerStatus").GetComponent<ConnectedPlayerStatus>();
         }
 
-        //for (int i = 0;i < stageList.Length; i++)
-        //{
-        //    stageDictionary.Add(stageList[i].name, stageList[i]);
-        //}
-
         //一つ目のステージを出す
         stage = Instantiate(stagesList[0]);
 
@@ -72,6 +69,8 @@ public class StageSelectController : MonoBehaviour
         fadeController = fadePanel.GetComponent<FadeController>();
 
         SetStagePoints();
+
+        se = transform.GetComponent<SEController>();
     }
 
     /// <summary>
@@ -128,6 +127,7 @@ public class StageSelectController : MonoBehaviour
         if (previousState.Buttons.A == ButtonState.Released &&
             currentState.Buttons.A == ButtonState.Pressed)
         {
+            se.PlaySystemSE((int)SEController.SystemSE.OK);
             GameStart();
         }
         //左右ボタンの選択状態表示
@@ -139,6 +139,7 @@ public class StageSelectController : MonoBehaviour
         if (previousState.Buttons.B == ButtonState.Released &&
             currentState.Buttons.B == ButtonState.Pressed)
         {
+            se.PlaySystemSE((int)SEController.SystemSE.Cancel);
             ToCharacterSelectScene();
         }
 
@@ -284,6 +285,8 @@ public class StageSelectController : MonoBehaviour
             ShowSeletedStage(rotate);
 
             PointToSelected(nowStageIndex);
+
+            se.PlaySystemSE((int)SEController.SystemSE.CursorMove);
         }
     }
 
@@ -301,6 +304,8 @@ public class StageSelectController : MonoBehaviour
             ShowSeletedStage(rotate);
 
             PointToSelected(nowStageIndex);
+
+            se.PlaySystemSE((int)SEController.SystemSE.CursorMove);
         }
     }
 

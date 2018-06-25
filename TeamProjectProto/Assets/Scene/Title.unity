@@ -659,6 +659,57 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 779030661}
+--- !u!1001 &788310095
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4622910048632058, guid: b643a883259f6a343af7796b24b6bfaa, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4622910048632058, guid: b643a883259f6a343af7796b24b6bfaa, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4622910048632058, guid: b643a883259f6a343af7796b24b6bfaa, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4622910048632058, guid: b643a883259f6a343af7796b24b6bfaa, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4622910048632058, guid: b643a883259f6a343af7796b24b6bfaa, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4622910048632058, guid: b643a883259f6a343af7796b24b6bfaa, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4622910048632058, guid: b643a883259f6a343af7796b24b6bfaa, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4622910048632058, guid: b643a883259f6a343af7796b24b6bfaa, type: 2}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1178841107629970, guid: b643a883259f6a343af7796b24b6bfaa, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 82328160874931812, guid: b643a883259f6a343af7796b24b6bfaa,
+        type: 2}
+      propertyPath: m_Volume
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: b643a883259f6a343af7796b24b6bfaa, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1 &823123464
 GameObject:
   m_ObjectHideFlags: 0
@@ -713,7 +764,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 5ca18a567203c4744b39bd9b25abf621, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 475582607b6a0bc48bc37ade27a85b46, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -987,6 +1038,7 @@ GameObject:
   - component: {fileID: 1218557526}
   - component: {fileID: 1218557525}
   - component: {fileID: 1218557524}
+  - component: {fileID: 1218557529}
   - component: {fileID: 1218557527}
   - component: {fileID: 1218557528}
   - component: {fileID: 1218557530}
@@ -1073,6 +1125,23 @@ MonoBehaviour:
   loadObj: {fileID: 304744047}
   slider: {fileID: 1194716995}
   _nextScene: 1
+--- !u!114 &1218557529
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1218557523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 434ef7c2efc70214d83492c3ec534bf7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  systemSEList:
+  - {fileID: 8300000, guid: a847c8ed900b3e94d93ce47e074de5c9, type: 3}
+  - {fileID: 8300000, guid: e6aa74c45aaee6a488bd71765f491fb7, type: 3}
+  playerSEList: []
+  balloonSEList: []
+  rouletteSEList: []
 --- !u!114 &1218557530
 MonoBehaviour:
   m_ObjectHideFlags: 0

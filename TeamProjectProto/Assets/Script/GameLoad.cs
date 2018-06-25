@@ -1,4 +1,9 @@
-﻿using System.Collections;
+﻿/*
+ * 作成日：180604
+ * ゲーム非同期ロード
+ * 作成者：阿部→何承恩
+ */
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -31,6 +36,9 @@ public class GameLoad : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// ロードオブジ付きの非同期ロード
+    /// </summary>
     public void LoadingStartWithOBJ()
     {
         //　ロード画面UIをアクティブにする
@@ -39,6 +47,10 @@ public class GameLoad : MonoBehaviour
         StartCoroutine(LoadData());
     }
 
+    /// <summary>
+    /// 非同期ロード
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator LoadData()
     {
         AsyncOperation async = SceneManager.LoadSceneAsync((int)_nextScene);

@@ -569,6 +569,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 528892726}
+  - component: {fileID: 528892728}
   - component: {fileID: 528892727}
   m_Layer: 0
   m_Name: point1
@@ -609,6 +610,22 @@ MonoBehaviour:
   _btnText: {fileID: 701063545}
   orgin_playerBG: {fileID: 1737467874320062, guid: d43ec765d458f8942bacb222ae11f69c,
     type: 2}
+--- !u!114 &528892728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 528892725}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 434ef7c2efc70214d83492c3ec534bf7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  systemSEList:
+  - {fileID: 8300000, guid: a847c8ed900b3e94d93ce47e074de5c9, type: 3}
+  - {fileID: 8300000, guid: e6aa74c45aaee6a488bd71765f491fb7, type: 3}
+  - {fileID: 8300000, guid: e70aa1dde11946645a7767531f2df49b, type: 3}
+  - {fileID: 8300000, guid: 3178c794ec97c474aa072d4fb002f8bf, type: 3}
 --- !u!1 &533777714
 GameObject:
   m_ObjectHideFlags: 0
@@ -706,6 +723,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 617939377}
+  - component: {fileID: 617939379}
   - component: {fileID: 617939378}
   m_Layer: 0
   m_Name: point4
@@ -746,6 +764,22 @@ MonoBehaviour:
   _btnText: {fileID: 1549980165}
   orgin_playerBG: {fileID: 1737467874320062, guid: d43ec765d458f8942bacb222ae11f69c,
     type: 2}
+--- !u!114 &617939379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 617939376}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 434ef7c2efc70214d83492c3ec534bf7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  systemSEList:
+  - {fileID: 8300000, guid: a847c8ed900b3e94d93ce47e074de5c9, type: 3}
+  - {fileID: 8300000, guid: e6aa74c45aaee6a488bd71765f491fb7, type: 3}
+  - {fileID: 8300000, guid: e70aa1dde11946645a7767531f2df49b, type: 3}
+  - {fileID: 8300000, guid: 3178c794ec97c474aa072d4fb002f8bf, type: 3}
 --- !u!1 &701063543
 GameObject:
   m_ObjectHideFlags: 0
@@ -1113,6 +1147,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 899641793}
+  - component: {fileID: 899641795}
   - component: {fileID: 899641794}
   m_Layer: 0
   m_Name: point2
@@ -1153,6 +1188,22 @@ MonoBehaviour:
   _btnText: {fileID: 1205046065}
   orgin_playerBG: {fileID: 1737467874320062, guid: d43ec765d458f8942bacb222ae11f69c,
     type: 2}
+--- !u!114 &899641795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 899641792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 434ef7c2efc70214d83492c3ec534bf7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  systemSEList:
+  - {fileID: 8300000, guid: a847c8ed900b3e94d93ce47e074de5c9, type: 3}
+  - {fileID: 8300000, guid: e6aa74c45aaee6a488bd71765f491fb7, type: 3}
+  - {fileID: 8300000, guid: e70aa1dde11946645a7767531f2df49b, type: 3}
+  - {fileID: 8300000, guid: 3178c794ec97c474aa072d4fb002f8bf, type: 3}
 --- !u!1001 &1120177107
 Prefab:
   m_ObjectHideFlags: 0
@@ -1969,6 +2020,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 2032704984}
+  - component: {fileID: 2032704986}
   - component: {fileID: 2032704985}
   m_Layer: 0
   m_Name: point3
@@ -2009,6 +2061,22 @@ MonoBehaviour:
   _btnText: {fileID: 520952367}
   orgin_playerBG: {fileID: 1737467874320062, guid: d43ec765d458f8942bacb222ae11f69c,
     type: 2}
+--- !u!114 &2032704986
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2032704983}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 434ef7c2efc70214d83492c3ec534bf7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  systemSEList:
+  - {fileID: 8300000, guid: a847c8ed900b3e94d93ce47e074de5c9, type: 3}
+  - {fileID: 8300000, guid: e6aa74c45aaee6a488bd71765f491fb7, type: 3}
+  - {fileID: 8300000, guid: e70aa1dde11946645a7767531f2df49b, type: 3}
+  - {fileID: 8300000, guid: 3178c794ec97c474aa072d4fb002f8bf, type: 3}
 --- !u!1 &2039620056
 GameObject:
   m_ObjectHideFlags: 0
@@ -2110,6 +2178,7 @@ GameObject:
   - component: {fileID: 2067282211}
   - component: {fileID: 2067282210}
   - component: {fileID: 2067282209}
+  - component: {fileID: 2067282214}
   - component: {fileID: 2067282216}
   - component: {fileID: 2067282212}
   - component: {fileID: 2067282213}
@@ -2201,6 +2270,22 @@ MonoBehaviour:
   loadObj: {fileID: 1690050841}
   slider: {fileID: 1690050840}
   _nextScene: 2
+--- !u!114 &2067282214
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2067282208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 434ef7c2efc70214d83492c3ec534bf7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  systemSEList:
+  - {fileID: 8300000, guid: a847c8ed900b3e94d93ce47e074de5c9, type: 3}
+  - {fileID: 8300000, guid: e6aa74c45aaee6a488bd71765f491fb7, type: 3}
+  - {fileID: 8300000, guid: e70aa1dde11946645a7767531f2df49b, type: 3}
+  - {fileID: 8300000, guid: 3178c794ec97c474aa072d4fb002f8bf, type: 3}
 --- !u!114 &2067282216
 MonoBehaviour:
   m_ObjectHideFlags: 0
