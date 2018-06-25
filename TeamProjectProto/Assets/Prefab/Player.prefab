@@ -838,6 +838,8 @@ MonoBehaviour:
   isHit: 0
   isBlastStan: 0
   balloonMaster: {fileID: 0}
+  isConstant: 1
+  originDashLimit: 5
   playerSE: {fileID: 0}
   playerIndex: 0
   dashTiredTime: 1
