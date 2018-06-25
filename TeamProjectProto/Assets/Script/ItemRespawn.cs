@@ -10,43 +10,35 @@ using UnityEngine;
 public class ItemRespawn : MonoBehaviour {
 
     public List<GameObject> itemList;//内容物リスト
-    
-    float respawnTime = 3.0f;//生成間隔
+
+    public float setRespawnTiem = 0.0f;
+    float respawnTime;//生成間隔
     GameObject item;//内容物
 
     GameObject itemRespawnLimit; //アイテムのリスポーン上限管理オブジェクト
 
     StartCountDown startCntDown;//カウントダウンScript
     FinishCall finishCall;//終了合図Script
-
+    
     // Use this for initialization
-    void Start ()
-    {
+    void Start () {
         transform.tag = "Pausable";//タグ設定
         itemRespawnLimit = GameObject.Find("ItemRespawnLimit(Clone)");
-        respawnTime = 3.0f;
+        respawnTime = 0;
         startCntDown = GameObject.Find("StartCountDown").GetComponent<StartCountDown>();
         finishCall = GameObject.Find("FinishCall").GetComponent<FinishCall>();
-
-        //初期生成時に上限を超えていれば上限数以上生成できないようにする
-        //if (itemRespawnLimit.GetComponent<ItemRespawnLimit>().isRespawn()) {
-        //    item = Instantiate(itemList[Random.Range(0, itemList.Count)], transform.position + new Vector3(0, 0.5f, 0), Quaternion.identity, transform);//内容物生成
-
-        //    itemRespawnLimit.GetComponent<ItemRespawnLimit>().Count(); //アイテム生成数をカウント
-        //}
     }
 
     // Update is called once per frame
     void Update () {
         //内容物がなければ
         // 追加：アイテム上限以上の場合は生成できない
-        if (item == null && itemRespawnLimit.GetComponent<ItemRespawnLimit>().isRespawn())
-        {
-            respawnTime -= Time.deltaTime;
-            if (respawnTime < 0 && !startCntDown.IsCntDown && !finishCall.IsCalling)
-            {
+        respawnTime -= Time.deltaTime;
+        if (item == null && itemRespawnLimit.GetComponent<ItemRespawnLimit>().isRespawn()) {
+            //respawnTime -= Time.deltaTime;
+            if (respawnTime < 0 && !startCntDown.IsCntDown && !finishCall.IsCalling) {
                 item = Instantiate(itemList[Random.Range(0, itemList.Count)], transform.position + new Vector3(0,0.5f,0), Quaternion.Euler(90,0,0), transform);//内容物を生成する
-                respawnTime = 3.0f;
+                respawnTime = setRespawnTiem;
 
                 itemRespawnLimit.GetComponent<ItemRespawnLimit>().Count();　//アイテム生成数をカウント
             }
