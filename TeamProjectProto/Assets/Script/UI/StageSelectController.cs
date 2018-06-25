@@ -136,8 +136,8 @@ public class StageSelectController : MonoBehaviour
         ShowStageChage();
 
         //前のシーンへ（Backボタン）
-        if (previousState.Buttons.Back == ButtonState.Released &&
-            currentState.Buttons.Back == ButtonState.Pressed)
+        if (previousState.Buttons.B == ButtonState.Released &&
+            currentState.Buttons.B == ButtonState.Pressed)
         {
             ToCharacterSelectScene();
         }

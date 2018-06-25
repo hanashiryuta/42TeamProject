@@ -111,6 +111,10 @@ public class CheckPlayerStandby : MonoBehaviour
                 SpawnPlayerCharacter();
                 _isSpawn = true;
             }
+            else if (Is_Bbtn_Pressed())
+            {
+                IsBackPressed = true;
+            }
         }
         else//生成していた時
         {
@@ -130,7 +134,7 @@ public class CheckPlayerStandby : MonoBehaviour
                 _isStartPressed = Is_StartBtn_Pressed(); //STARTボタン押したか
             }
 
-            _isBackPressed = Is_BackBtn_Pressed(); //Backボタン押したか
+            //_isBackPressed = Is_BackBtn_Pressed(); //Backボタン押したか
         }
 
     }

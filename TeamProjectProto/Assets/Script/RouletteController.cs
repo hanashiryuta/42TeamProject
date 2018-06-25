@@ -228,6 +228,8 @@ public class RouletteController : MonoBehaviour {
                     //状態変更
                     rouletteState = RouletteState.EXIT;
                 }
+                //振動停止
+                GamePad.SetVibration(balloonMaster.GetComponent<BalloonMaster>().nextPlayerIndex, 0.0f, 0.0f);
                 break;
             case RouletteState.EXIT://ルーレット退場
                 //ゲームの停止状態を解除

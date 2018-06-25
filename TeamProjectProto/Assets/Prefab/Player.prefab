@@ -790,6 +790,7 @@ MonoBehaviour:
   jump: Jump
   isStan: 0
   originStanTime: 2
+  stanTime: 0
   isBalloonShrink: 1
   jumpCount: 0
   hipDropCircle:
@@ -824,6 +825,8 @@ MonoBehaviour:
   isHit: 0
   isBlastStan: 0
   balloonMaster: {fileID: 0}
+  isConstant: 1
+  originDashLimit: 5
   playerIndex: 0
   dashTiredTime: 1
 --- !u!136 &136683905432024742
