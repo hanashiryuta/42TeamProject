@@ -6,6 +6,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using XInputDotNetPure;
 
     public enum NowBalloonState
 {
@@ -92,6 +93,9 @@ public class BalloonMaster : MonoBehaviour {
 
     [HideInInspector]
     public List<List<float>> reelRateLists;//ルーレット各リール要素割合
+
+    [HideInInspector]
+    public PlayerIndex nextPlayerIndex;//次に風船を持つプレイヤーのコントローラー
 
     // Use this for initialization
     void Start ()
@@ -266,6 +270,9 @@ public class BalloonMaster : MonoBehaviour {
         nextPlayer = player;
 
         timeController.LossTimeStart(second, this);//ロスタイム判定
+
+        nextPlayerIndex = nextPlayer.GetComponent<PlayerMove>().playerIndex;
+        GamePad.SetVibration(nextPlayerIndex, 0.0f, 1.0f);
     }
     
 }

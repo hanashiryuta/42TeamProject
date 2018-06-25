@@ -135,6 +135,8 @@ public class PlayerMove : MonoBehaviour
 
     float dashParticleTime = 0.0f;
 
+    public bool isConstant = false;//ダッシュ上限を固定するか
+    public float originDashLimit = 3.0f;//ダッシュ可能の最大時間の設定
     public SEController playerSE;//SEコントローラー
 
     // Use this for initialization
@@ -996,7 +998,17 @@ public class PlayerMove : MonoBehaviour
     /// <param name="time"></param>
     void SetDashLimitTime(float itemAmount, float time)
     {
-        _dashLimitTime = (itemAmount + 1) * time;
+        //上限固定をしなければアイテムの個数に応じて上限を設定する
+        if (!isConstant)
+            _dashLimitTime = (itemAmount + 1) * time;
+        //上限を固定する
+        else
+        {
+            if (balloon == null)
+                _dashLimitTime = originDashLimit;
+            else
+                _dashLimitTime = originDashLimit + 2.0f;
+        }
     }
 
     SelectScript pauseScript;//ポーズ関連
