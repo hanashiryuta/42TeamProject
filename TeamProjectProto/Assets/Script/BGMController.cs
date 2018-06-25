@@ -200,7 +200,7 @@ public class BGMController : MonoBehaviour
     {
         Debug.Log(scene.name + "Loaded");
         //BGM設定
-        Debug.Log(preScene + "が前の進");
+        Debug.Log(preScene + "が前のシーン");
 
         SetSceneBGM(scene, preScene);
     }

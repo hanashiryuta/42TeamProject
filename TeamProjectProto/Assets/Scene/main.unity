@@ -119,7 +119,12 @@ GameObject:
   m_PrefabParentObject: {fileID: 1895807702763236, guid: 91347e7381ca01b46b64cae46052ffeb,
     type: 2}
   m_PrefabInternal: {fileID: 817720324}
---- !u!84 &98742060
+--- !u!1 &402976472 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1753210076928182, guid: 91347e7381ca01b46b64cae46052ffeb,
+    type: 2}
+  m_PrefabInternal: {fileID: 817720324}
+--- !u!84 &650795661
 RenderTexture:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -150,11 +155,6 @@ RenderTexture:
     m_WrapW: 1
   m_Dimension: 2
   m_VolumeDepth: 1
---- !u!1 &402976472 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1753210076928182, guid: 91347e7381ca01b46b64cae46052ffeb,
-    type: 2}
-  m_PrefabInternal: {fileID: 817720324}
 --- !u!1 &781306835
 GameObject:
   m_ObjectHideFlags: 0
@@ -473,12 +473,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
---- !u!4 &1235523766 stripped
-Transform:
-  m_PrefabParentObject: {fileID: 4865645227401938, guid: 4e5866f69cdd80a4aa51ba1da64adbbf,
-    type: 2}
-  m_PrefabInternal: {fileID: 1983581890}
---- !u!84 &1317621608
+--- !u!84 &1219087327
 RenderTexture:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -509,6 +504,11 @@ RenderTexture:
     m_WrapW: 1
   m_Dimension: 2
   m_VolumeDepth: 1
+--- !u!4 &1235523766 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 4865645227401938, guid: 4e5866f69cdd80a4aa51ba1da64adbbf,
+    type: 2}
+  m_PrefabInternal: {fileID: 1983581890}
 --- !u!1 &1362678592
 GameObject:
   m_ObjectHideFlags: 0
@@ -873,7 +873,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 0
   m_RenderingPath: 1
-  m_TargetTexture: {fileID: 1317621608}
+  m_TargetTexture: {fileID: 1219087327}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 0
@@ -1099,8 +1099,8 @@ MonoBehaviour:
   sourceCamera: {fileID: 2094600263}
   outlineCamera: {fileID: 1846411882}
   outlineShaderMaterial: {fileID: 0}
-  renderTexture: {fileID: 1317621608}
-  extraRenderTexture: {fileID: 98742060}
+  renderTexture: {fileID: 1219087327}
+  extraRenderTexture: {fileID: 650795661}
 --- !u!114 &2094600266
 MonoBehaviour:
   m_ObjectHideFlags: 0
