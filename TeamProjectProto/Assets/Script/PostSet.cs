@@ -17,6 +17,8 @@ public class PostSet : MonoBehaviour {
     public bool isRespawn = false;//リスポーンしてるかどうか
     StartCountDown startCntDown;//カウントダウンScript
     FinishCall finishCall;//終了合図Script
+    GameObject origin_Post_Target_Particle;
+    GameObject post_Target_Particle;
 
     // Use this for initialization
     void Start () {
@@ -32,12 +34,13 @@ public class PostSet : MonoBehaviour {
     /// </summary>
     /// <param name="respawnTime"></param>
     /// <param name="post"></param>
-    public void StartSet(float respawnTime,GameObject post)
+    public void StartSet(float respawnTime,GameObject post,GameObject post_Target_Particle)
     {
         //時間設定
         originRespawnTime = respawnTime;
         //ポスト設定
         originPost = post;
+        origin_Post_Target_Particle = post_Target_Particle;
     }
 	
 	// Update is called once per frame
@@ -49,6 +52,10 @@ public class PostSet : MonoBehaviour {
         //生成でき、ポストがなければ
         if (isRespawn&&post == null)
         {
+            if (post_Target_Particle == null)
+            {
+                post_Target_Particle = Instantiate(origin_Post_Target_Particle, transform.position - new Vector3(0, 0.5f, 0), Quaternion.identity);
+            }
             respawnTime -= Time.deltaTime;
             if(respawnTime <= 0)
             {
@@ -57,6 +64,7 @@ public class PostSet : MonoBehaviour {
                 //自身指定
                 post.GetComponent<PostController>().postPoint = gameObject;
                 respawnTime = originRespawnTime;
+                Destroy(post_Target_Particle);
             }
         }
 	}

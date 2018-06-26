@@ -313,7 +313,7 @@ public class BalloonOrigin : MonoBehaviour
             isMove = false;
             player.GetComponent<PlayerMove>().isStan = true;
             //ダッシュ回復
-            player.GetComponent<PlayerMove>().DashCountDown = player.GetComponent<PlayerMove>().DashLimitTime;
+            //player.GetComponent<PlayerMove>().DashCountDown = player.GetComponent<PlayerMove>().DashLimitTime;
             se.PlayBalloonSE((int)SEController.BalloonSE.ChangeTarget);
         }
     }

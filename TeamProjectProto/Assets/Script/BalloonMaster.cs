@@ -269,6 +269,7 @@ public class BalloonMaster : MonoBehaviour {
 
         nextPlayerIndex = nextPlayer.GetComponent<PlayerMove>().playerIndex;
         GamePad.SetVibration(nextPlayerIndex, 0.0f, 1.0f);
+        GameObject.Find("PostRespawnPoint").GetComponent<PostRespawn>().isBalloon = true;
     }
     
 }

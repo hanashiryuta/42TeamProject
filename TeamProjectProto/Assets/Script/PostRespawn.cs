@@ -18,6 +18,11 @@ public class PostRespawn : MonoBehaviour {
     public float originRespawnTime = 5.0f;//生成間隔
     List<GameObject> isPostList;//ポストがある生成位置リスト
 
+    public GameObject origin_Post_Target_Particle;
+
+    [HideInInspector]
+    public bool isBalloon;
+
     // Use this for initialization
     void Start ()
     {
@@ -33,7 +38,7 @@ public class PostRespawn : MonoBehaviour {
             GameObject child = transform.GetChild(i).gameObject;
             childList.Add(child);
             //コンポーネント追加
-            child.AddComponent<PostSet>().StartSet(originRespawnTime,originPost);           
+            child.AddComponent<PostSet>().StartSet(originRespawnTime,originPost, origin_Post_Target_Particle);           
 		}
 
         ////中心物体生成
@@ -43,21 +48,33 @@ public class PostRespawn : MonoBehaviour {
         }
     }
 
-	// Update is called once per frame
-	void Update () {
+    // Update is called once per frame
+    void Update()
+    {
         isLimitReset = false; //アイテム生成上限リセット判定をリセット
 
+        if (!isBalloon)
+            return;
+
+        bool balloons = false;
+
         //ポストがいなければ
-        for(int i = 0;i<isPostList.Count;i++)
+        for (int i = 0; i < isPostList.Count; i++)
         {
-            if(!isPostList[i].GetComponent<PostSet>().isRespawn)
+            if (!isPostList[i].GetComponent<PostSet>().isRespawn)
             {
                 isPostList.RemoveAt(i);
                 //生成許可
                 PostRespawnSet();
+                balloons = true;
             }
         }
-	}
+
+        if(!balloons)
+        {
+            isBalloon = true;
+        }
+    }
 
     /// <summary>
     /// ポスト生成許可メソッド
