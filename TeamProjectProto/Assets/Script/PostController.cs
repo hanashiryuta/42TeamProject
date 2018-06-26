@@ -64,16 +64,22 @@ public class PostController : MonoBehaviour {
 
     float flyAngle = 405;//回転角度
 
-    public GameObject post_Fly_Particle;//飛翔パーティクル
+    public GameObject origin_Post_Fly_Particle;//飛翔パーティクル
+    GameObject post_Fly_Particle;
     float particleTime = 0.1f;//パーティクル生成間隔
 
     //float Xangle = 0;
+
+    Animator postAnim;
+    float animSpeed = 1.0f;
 
     // Use this for initialization
     void Start () {
 		//初期化処理
 		blastCount = 0;
         bc = GetComponent<SphereCollider>();
+        bc.enabled = false;
+        postAnim = GetComponentInChildren<Animator>();
         
         timeController = GameObject.Find("TimeController");
     }
@@ -127,12 +133,9 @@ public class PostController : MonoBehaviour {
     /// </summary>
     void Post_Fly_Particle()
     {
-        //一定間隔で生成
-        particleTime -= Time.deltaTime;
-        if (particleTime <= 0)
+        if (post_Fly_Particle == null)
         {
-            Instantiate(post_Fly_Particle, transform.position, Quaternion.identity);
-            particleTime = 0.2f;
+            post_Fly_Particle = Instantiate(origin_Post_Fly_Particle, transform.position, Quaternion.identity,transform);
         }
     }
 
@@ -152,7 +155,11 @@ public class PostController : MonoBehaviour {
         //入場
         transform.position += posEntry * Time.deltaTime * 3.5f;
         if (Mathf.Abs(posEntry.y) <= 0.1f)
+        {
+            AnimSpeedSet(0);
+            bc.enabled = true;
             postState = PostState.STAY;//状態遷移
+        }
     }
 
     /// <summary>
@@ -197,7 +204,14 @@ public class PostController : MonoBehaviour {
                 blastCount = 0;
                 //ロスタイム以外なら状態遷移
                 if (timeController.GetComponent<TimeController>().timeState != TimeState.LOSSTIME)
+                {
+                    AnimSpeedSet(animSpeed);
                     postState = PostState.SPIN;
+                }
+                else
+                {
+                    postState = PostState.STAY;
+                }
             }
         }
     }
@@ -253,6 +267,16 @@ public class PostController : MonoBehaviour {
             Vector3 forward = (target - transform.position).normalized;
             //徐々にその方向を向く
             DOTween.To(
+                () => transform.forward.x,
+                (x) => transform.forward = new Vector3(x, transform.forward.y,transform.forward.z),
+                forward.x,
+                setTime);
+            DOTween.To(
+                () => transform.forward.y,
+                (y) => transform.forward = new Vector3(transform.forward.x, y,transform.forward.z),
+                forward.y,
+                setTime);
+            DOTween.To(
                 () => transform.forward.z,
                 (z) => transform.forward = new Vector3(transform.forward.x, transform.forward.y, z),
                 forward.z,
@@ -272,7 +296,6 @@ public class PostController : MonoBehaviour {
     /// <param name="flyTime"></param>
     void Fly(float flyTime)
     {
-        Post_Fly_Particle();
         if (stayTime <= 0.0f)
         {
             //ターゲット指定
@@ -284,8 +307,13 @@ public class PostController : MonoBehaviour {
         if (stayTime>= flyTime)
         {
             //真横向く
-            transform.DORotate(new Vector3(0, -90, -45), 1.0f).SetEase(Ease.OutQuint);
+            if (player.name.Contains("1") || player.name.Contains("2"))
+                transform.DORotate(new Vector3(0, -90, -45), 1.0f).SetEase(Ease.OutQuint);
+            else
+                transform.DORotate(new Vector3(0, 90, 45), 1.0f).SetEase(Ease.OutQuint);
+
             stayTime = 0.0f;
+            AnimSpeedSet(0);
             postState = PostState.ITEM_UI;//状態遷移
         }
     }
@@ -310,6 +338,7 @@ public class PostController : MonoBehaviour {
         if (coinCount <= 0)
         {
             stayTime = 0.0f;
+            AnimSpeedSet(animSpeed);
             postState = PostState.EXIT;//状態遷移
         }
     }
@@ -323,7 +352,10 @@ public class PostController : MonoBehaviour {
         if (stayTime <= 0.0f)
         {
             //移動処理
-            transform.DOMove(Camera.main.ScreenToWorldPoint(new Vector3(-100, targetUI.transform.position.y)), exitTime);
+            if (player.name.Contains("1") || player.name.Contains("2"))
+                transform.DOMove(Camera.main.ScreenToWorldPoint(new Vector3(0-50, targetUI.transform.position.y)), exitTime);
+            else
+                transform.DOMove(Camera.main.ScreenToWorldPoint(new Vector3(1280+50, targetUI.transform.position.y)), exitTime);
         }
         stayTime += Time.deltaTime;
         if (stayTime >= exitTime)
@@ -333,5 +365,10 @@ public class PostController : MonoBehaviour {
             //削除
             Destroy(gameObject);
         }
+    }
+
+    void AnimSpeedSet(float animspeed)
+    {
+        postAnim.speed = animspeed;
     }
 }

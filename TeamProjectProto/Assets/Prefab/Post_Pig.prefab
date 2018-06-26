@@ -989,7 +989,7 @@ Animator:
   m_GameObject: {fileID: 1183412679620390}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 4e799b2c4bb3d1942841eddac73b925d, type: 3}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 973a4be886fd4224ba75be4ad772e53c, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1036,7 +1036,7 @@ MonoBehaviour:
   player: {fileID: 0}
   postPoint: {fileID: 0}
   effect: {fileID: 1347281360223456, guid: dcb6dca670cc92248bf25501f9bcbea7, type: 2}
-  post_Fly_Particle: {fileID: 1079747323469674, guid: 5be0b2932ec54cb40959e208ffc51cfb,
+  origin_Post_Fly_Particle: {fileID: 1079747323469674, guid: 5be0b2932ec54cb40959e208ffc51cfb,
     type: 2}
 --- !u!135 &135722135796868558
 SphereCollider:
@@ -1049,7 +1049,7 @@ SphereCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.65
-  m_Center: {x: 0, y: 0, z: 0.2}
+  m_Center: {x: 0, y: 0, z: 0.34}
 --- !u!137 &137268581689840244
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1
