@@ -363,7 +363,7 @@ Prefab:
     - target: {fileID: 224352929606835416, guid: 72a1eb46541340b468d5d35f259ef2eb,
         type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: -45
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224175022878427984, guid: 72a1eb46541340b468d5d35f259ef2eb,
         type: 2}
@@ -378,7 +378,32 @@ Prefab:
     - target: {fileID: 224175022878427984, guid: 72a1eb46541340b468d5d35f259ef2eb,
         type: 2}
       propertyPath: m_SizeDelta.x
-      value: 300
+      value: 225
+      objectReference: {fileID: 0}
+    - target: {fileID: 224175022878427984, guid: 72a1eb46541340b468d5d35f259ef2eb,
+        type: 2}
+      propertyPath: m_AnchorMin.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 224175022878427984, guid: 72a1eb46541340b468d5d35f259ef2eb,
+        type: 2}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 224175022878427984, guid: 72a1eb46541340b468d5d35f259ef2eb,
+        type: 2}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114213236736437926, guid: 72a1eb46541340b468d5d35f259ef2eb,
+        type: 2}
+      propertyPath: m_FontData.m_Alignment
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 224352929606835416, guid: 72a1eb46541340b468d5d35f259ef2eb,
+        type: 2}
+      propertyPath: m_SizeDelta.x
+      value: 50
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 72a1eb46541340b468d5d35f259ef2eb, type: 2}
@@ -626,6 +651,9 @@ MonoBehaviour:
   - {fileID: 8300000, guid: e6aa74c45aaee6a488bd71765f491fb7, type: 3}
   - {fileID: 8300000, guid: e70aa1dde11946645a7767531f2df49b, type: 3}
   - {fileID: 8300000, guid: 3178c794ec97c474aa072d4fb002f8bf, type: 3}
+  playerSEList: []
+  balloonSEList: []
+  rouletteSEList: []
 --- !u!1 &533777714
 GameObject:
   m_ObjectHideFlags: 0
@@ -780,6 +808,9 @@ MonoBehaviour:
   - {fileID: 8300000, guid: e6aa74c45aaee6a488bd71765f491fb7, type: 3}
   - {fileID: 8300000, guid: e70aa1dde11946645a7767531f2df49b, type: 3}
   - {fileID: 8300000, guid: 3178c794ec97c474aa072d4fb002f8bf, type: 3}
+  playerSEList: []
+  balloonSEList: []
+  rouletteSEList: []
 --- !u!1 &701063543
 GameObject:
   m_ObjectHideFlags: 0
@@ -1204,6 +1235,9 @@ MonoBehaviour:
   - {fileID: 8300000, guid: e6aa74c45aaee6a488bd71765f491fb7, type: 3}
   - {fileID: 8300000, guid: e70aa1dde11946645a7767531f2df49b, type: 3}
   - {fileID: 8300000, guid: 3178c794ec97c474aa072d4fb002f8bf, type: 3}
+  playerSEList: []
+  balloonSEList: []
+  rouletteSEList: []
 --- !u!1001 &1120177107
 Prefab:
   m_ObjectHideFlags: 0
@@ -2077,6 +2111,9 @@ MonoBehaviour:
   - {fileID: 8300000, guid: e6aa74c45aaee6a488bd71765f491fb7, type: 3}
   - {fileID: 8300000, guid: e70aa1dde11946645a7767531f2df49b, type: 3}
   - {fileID: 8300000, guid: 3178c794ec97c474aa072d4fb002f8bf, type: 3}
+  playerSEList: []
+  balloonSEList: []
+  rouletteSEList: []
 --- !u!1 &2039620056
 GameObject:
   m_ObjectHideFlags: 0
@@ -2286,6 +2323,9 @@ MonoBehaviour:
   - {fileID: 8300000, guid: e6aa74c45aaee6a488bd71765f491fb7, type: 3}
   - {fileID: 8300000, guid: e70aa1dde11946645a7767531f2df49b, type: 3}
   - {fileID: 8300000, guid: 3178c794ec97c474aa072d4fb002f8bf, type: 3}
+  playerSEList: []
+  balloonSEList: []
+  rouletteSEList: []
 --- !u!114 &2067282216
 MonoBehaviour:
   m_ObjectHideFlags: 0

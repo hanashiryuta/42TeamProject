@@ -57,9 +57,9 @@ public class BGMController : MonoBehaviour
 
         audio = transform.GetComponent<AudioSource>();
 
-        SetNowAndNextClip((int)BGM.Title);
-        audio.clip = nowClip;
-        audio.Play();
+        //SetNowAndNextClip((int)BGM.Title);
+        //audio.clip = nowClip;
+        //audio.Play();
     }
 	
 	// Update is called once per frame
@@ -87,30 +87,34 @@ public class BGMController : MonoBehaviour
 
     void SetSceneBGM(Scene newScene, string preScene)
     {
-        if (newScene.name == "Title")
+        if (newScene.name == "Title")//タイトル
         {
             SetNowAndNextClip((int)BGM.Title);
             audio.clip = nowClip;
             audio.Play();
         }
-        else if (newScene.name == "CharacterSelect")
+        else if (newScene.name == "CharacterSelect")//キャラセレクト
         {
         }
-        else if (newScene.name == "StageSelect" && preScene == "Result")//もう一回で来たら
+        else if (newScene.name == "StageSelect" && //ステージセレクト
+                preScene == "Result")//もう一回で来たら
         {
             SetNowAndNextClip((int)BGM.Title);
             audio.clip = nowClip;
             audio.Play();
 
         }
-        else if (newScene.name == "main")
+        else if (newScene.name == "main")//ゲームメインシーン
         {
             SetNowAndNextClip((int)BGM.Main);
             audio.clip = nowClip;
-            audio.Play();
+
+            StartCountDown scd = GameObject.Find("StartCountDown").GetComponent<StartCountDown>();
+            audio.PlayDelayed(scd.waitTime + 4f);
+            //audio.Play();
 
         }
-        else if (newScene.name == "Result")
+        else if (newScene.name == "Result")//リザルト
         {
             SetNowAndNextClip((int)BGM.Result);
             audio.clip = nowClip;
@@ -150,7 +154,6 @@ public class BGMController : MonoBehaviour
 
         isFading = false;
     }
-
 
     IEnumerator FadeIn()
     {

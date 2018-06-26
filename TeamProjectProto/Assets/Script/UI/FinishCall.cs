@@ -24,7 +24,6 @@ public class FinishCall : MonoBehaviour
 
     //SE
     AudioSource audio;
-    public AudioClip finishSE;
     bool isSE = false;
 
     // Use this for initialization
@@ -48,7 +47,7 @@ public class FinishCall : MonoBehaviour
 
         if (!isSE)
         {
-            audio.PlayOneShot(finishSE);
+            audio.Play();
             isSE = true;
         }
     }

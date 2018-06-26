@@ -16,8 +16,7 @@ public class StartCountDown : MonoBehaviour
 
     [SerializeField]
     int _cntDownTime = 3;
-    [SerializeField]
-    float _waitTime = 2;
+    public float waitTime = 0;
 
     bool _isCntDown = true;
     public bool IsCntDown
@@ -28,7 +27,6 @@ public class StartCountDown : MonoBehaviour
 
     //SE
     AudioSource audio;
-    public AudioClip countDownSE;
 
 	// Use this for initialization
 	void Start ()
@@ -52,12 +50,12 @@ public class StartCountDown : MonoBehaviour
 
     IEnumerator CountdownCoroutine()
     {
-        yield return new WaitForSeconds(_waitTime);
+        yield return new WaitForSeconds(waitTime);
 
         _textCntDown.enabled = true;
         _bg.enabled = true;
 
-        audio.PlayOneShot(countDownSE);
+        audio.Play();
         for (int i = _cntDownTime; i > 0; i--)
         {
             _textCntDown.text = HalfWidth2FullWidth.Set2FullWidth(i.ToString());
