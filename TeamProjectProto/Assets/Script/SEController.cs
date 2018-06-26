@@ -80,6 +80,7 @@ public class SEController : MonoBehaviour
         _audio = transform.GetComponent<AudioSource>();
         _audio.playOnAwake = false;
         _audio.loop = false;//ループしない
+        _audio.volume = 1;
     }
 
     /// <summary>

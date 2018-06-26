@@ -216,7 +216,7 @@ public class CharacterSelectSceneController : MonoBehaviour
     }
 
     /// <summary>
-    /// ゲーム進行操作可能なプレイヤーがSTARTボタン押したか
+    /// ゲーム進行操作可能なプレイヤーがBACKボタン押したか
     /// </summary>
     /// <returns></returns>
     bool Is_ControllablePlayer_Pressed_Back()
@@ -323,7 +323,7 @@ public class CharacterSelectSceneController : MonoBehaviour
             {
                 connectedPlayerStatus.ConnectedPlayer.Add("Player" + (i + 1), i);
             }
-        }          
+        }
     }
 
     /// <summary>
