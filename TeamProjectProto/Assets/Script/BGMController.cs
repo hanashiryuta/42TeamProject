@@ -15,6 +15,7 @@ public class BGMController : MonoBehaviour
     [SerializeField]
     AudioClip rouletteBGM;//ルーレット用BGM（仕様がちょっと違う）
     AudioSource audio;// AudioSource
+    float defaultVolume = 0.5f;
 
     AudioClip nowClip;
     AudioClip nextClip;
@@ -26,6 +27,8 @@ public class BGMController : MonoBehaviour
     bool isFading = false;
 
     string preScene;//前のシーン
+    RouletteController rouletteC;
+    bool isRoulette = false;
 
     /// <summary>
     /// BGM順番
@@ -56,15 +59,30 @@ public class BGMController : MonoBehaviour
 
 
         audio = transform.GetComponent<AudioSource>();
-
-        //SetNowAndNextClip((int)BGM.Title);
-        //audio.clip = nowClip;
-        //audio.Play();
     }
 	
 	// Update is called once per frame
 	void Update ()
     {
+        // mainシーンで
+        if(SceneManager.GetActiveScene().name == "main")
+        {
+            //ルーレットがあったら
+            if (GameObject.Find("Roulette(Clone)") != null)
+            {
+                if (!isRoulette)
+                {
+                    rouletteC = GameObject.Find("Roulette(Clone)").GetComponent<RouletteController>();
+                }
+                VolumeChange();
+            }
+            else
+            {
+                rouletteC = null;
+                isRoulette = false;
+            }
+        }
+
         //FadeOut();
 
         //if(nowClipVolume <= 0.1f)
@@ -79,6 +97,19 @@ public class BGMController : MonoBehaviour
 
         //FadeIn();
 	}
+
+    void VolumeChange()
+    {
+        if(rouletteC.rouletteState == RouletteState.ENTRY)
+        {
+            audio.volume = 0.2f;
+        }
+
+        if (rouletteC.rouletteState == RouletteState.EXIT)
+        {
+            audio.volume = defaultVolume;
+        }
+    }
 
     void ChangeBGM(AudioClip nextBGM)
     {
