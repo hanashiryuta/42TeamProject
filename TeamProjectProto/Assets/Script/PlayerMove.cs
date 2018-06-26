@@ -643,7 +643,7 @@ public class PlayerMove : MonoBehaviour
                     //effect.GetComponent<ScoreEffect>().playerName = transform.name; //プレイヤーの名前を代入
                     ////エフェクトを生成
                     //Instantiate(effect, RectTransformUtility.WorldToScreenPoint(Camera.main, transform.position), Quaternion.identity, GameObject.Find("PlayerScoreUI").transform);
-                    GetComponent<AudioSource>().PlayOneShot(soundSE3);
+                    playerSE.PlayPlayerSEOnce((int)SEController.PlayerSE.SendPost);
                 }
                 col.GetComponent<PostController>().blastCount += holdItemCount;//中心物体に内容物総数を渡す
                 //col.GetComponent<PostController>().respawnCount += holdItemCount;
