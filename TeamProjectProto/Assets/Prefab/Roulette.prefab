@@ -340,6 +340,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 224072719493654768}
+  - component: {fileID: 114004792858623370}
   - component: {fileID: 114143832160151580}
   m_Layer: 5
   m_Name: Roulette
@@ -348,6 +349,23 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &114004792858623370
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1901371632001438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 434ef7c2efc70214d83492c3ec534bf7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  systemSEList: []
+  playerSEList: []
+  balloonSEList: []
+  rouletteSEList:
+  - {fileID: 8300000, guid: 9b70aa10f127e8d4984909bb8a4a71e3, type: 3}
+  - {fileID: 8300000, guid: 3904febcd8894744abcff746d3c64625, type: 3}
 --- !u!114 &114046336739643604
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -443,8 +461,9 @@ MonoBehaviour:
   isSpin: 0
   isEnd: 0
   spriteList:
-  - {fileID: 21300000, guid: 99f7503045159e849acfacc2137f9edc, type: 3}
-  - {fileID: 21300000, guid: 0772c0ae67332d8448ab51265065d12f, type: 3}
+  - {fileID: 21300000, guid: 7c6df5fb01cbf174389468ac443d782c, type: 3}
+  - {fileID: 21300000, guid: 66c5804c0a70cfd4a9e16bdf741cebe4, type: 3}
+  - {fileID: 21300000, guid: daaa83c11b45bb04c82881a8f3f1c224, type: 3}
   spriteObjList: []
   centerSprite: {fileID: 0}
   centerPosition: {x: 0, y: 0, z: 0}
@@ -455,6 +474,7 @@ MonoBehaviour:
   timeList:
   - 20
   - 15
+  - 10
 --- !u!114 &114140410734554226
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -504,10 +524,10 @@ MonoBehaviour:
   lever: {fileID: 1169676381497422}
   leverPlayer: {fileID: 1504564353052052}
   jugglerSpriteList:
-  - {fileID: 21300000, guid: 1d41075b090a1f2498cb5eb6ad13ab0b, type: 3}
-  - {fileID: 21300000, guid: 473cca2cb5a192f4392326c1615bc724, type: 3}
-  - {fileID: 21300000, guid: 5ccab3d4483277c45a13c3a92816d9e2, type: 3}
-  - {fileID: 21300000, guid: d7661e7d305a30741af58303d0456de1, type: 3}
+  - {fileID: 21300000, guid: 7fc0126240e13464a9eeffc1b27d0df1, type: 3}
+  - {fileID: 21300000, guid: e6f3d3c37ba31d3428a4f5a937aa7a39, type: 3}
+  - {fileID: 21300000, guid: f743f839c2b519246bc0c455789a1904, type: 3}
+  - {fileID: 21300000, guid: 5b4f18e5ac11bc949acb8d13f182011e, type: 3}
   jugglerA: {fileID: 1659975399901894}
   reelStopButtons:
   - {fileID: 1597224362336630}
@@ -621,7 +641,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 23f17dbcf720b5c47b12c56790a9c730, type: 3}
+  m_Sprite: {fileID: 21300000, guid: bc8dbfb2bece7ae45a583d2fac250ea8, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -841,8 +861,8 @@ MonoBehaviour:
   isSpin: 0
   isEnd: 0
   spriteList:
-  - {fileID: 21300000, guid: 9cdeca424c61c204db3f86f7f9987396, type: 3}
-  - {fileID: 21300000, guid: 633e44a462f7972408d913d64e4bf835, type: 3}
+  - {fileID: 21300000, guid: 2573ddf3ace83c44699bee3827c91a74, type: 3}
+  - {fileID: 21300000, guid: 9c2a7cce99a99f248ad3004867a6fd4b, type: 3}
   spriteObjList: []
   centerSprite: {fileID: 0}
   centerPosition: {x: 0, y: 0, z: 0}
@@ -865,10 +885,10 @@ MonoBehaviour:
   isSpin: 0
   isEnd: 0
   spriteList:
-  - {fileID: 21300000, guid: f545877bb8c47b1489b7a17efb408aa4, type: 3}
-  - {fileID: 21300000, guid: c4acf79c227611947a99c53f723cb9fa, type: 3}
-  - {fileID: 21300000, guid: 5cb1e0651ffefae4fbc721e763e0a020, type: 3}
-  - {fileID: 21300000, guid: 96b00b655b18eed4fae15540a29d207d, type: 3}
+  - {fileID: 21300000, guid: 91997f6f8527379469d0a2ddf9c86c50, type: 3}
+  - {fileID: 21300000, guid: 35f477aa6f3f0274db8ca8ded410d106, type: 3}
+  - {fileID: 21300000, guid: 9c4de283d792a7c4ba1816a5ad5781a5, type: 3}
+  - {fileID: 21300000, guid: 21c2d161c46de1742bd413557ef402eb, type: 3}
   spriteObjList: []
   centerSprite: {fileID: 0}
   centerPosition: {x: 0, y: 0, z: 0}

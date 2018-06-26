@@ -49,6 +49,9 @@ public class ResultManager : MonoBehaviour
     GamePadState currentState;
     float moveX = 0;
 
+    //SE
+    SEController se;
+
     // Use this for initialization
     void Awake()
     {
@@ -86,7 +89,8 @@ public class ResultManager : MonoBehaviour
         gameLoad = transform.GetComponent<GameLoad>();
         //現在接続しているプレイヤーの中で番号が一番小さいやつを選択プレイヤーにする
         SetControllablePlayer();
-
+        //SE
+        se = transform.GetComponent<SEController>();
     }
 
     // Update is called once per frame
@@ -138,6 +142,7 @@ public class ResultManager : MonoBehaviour
         if (moveX >= 0.8f && nowSelectedBtn != toTitleBtn)
         {
             toTitleBtn.Select();
+            se.PlaySystemSE((int)SEController.SystemSE.CursorMove);
             nowSelectedBtn = toTitleBtn;
         }
 
@@ -145,6 +150,7 @@ public class ResultManager : MonoBehaviour
         if (moveX <= -0.8f && nowSelectedBtn != oneMoreBtn)
         {
             oneMoreBtn.Select();
+            se.PlaySystemSE((int)SEController.SystemSE.CursorMove);
             nowSelectedBtn = oneMoreBtn;
         }
 
@@ -152,6 +158,7 @@ public class ResultManager : MonoBehaviour
         if (previousState.Buttons.A == ButtonState.Released &&
             currentState.Buttons.A == ButtonState.Pressed)
         {
+            se.PlaySystemSE((int)SEController.SystemSE.OK);
             BtnPushed(nowSelectedBtn);
         }
     }

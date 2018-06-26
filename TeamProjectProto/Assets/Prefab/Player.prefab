@@ -120,6 +120,7 @@ GameObject:
   - component: {fileID: 95322635193170888}
   - component: {fileID: 65774382792441882}
   - component: {fileID: 114125977234718296}
+  - component: {fileID: 114497677228497428}
   - component: {fileID: 114844505345048394}
   - component: {fileID: 54808840653408818}
   - component: {fileID: 114446471231669394}
@@ -739,6 +740,24 @@ MonoBehaviour:
   origin_dashSliderOBJ: {fileID: 1785252829080750, guid: cd246b47764bcec4288e6f3badbf508a,
     type: 2}
   dashOffset: {x: 0, y: -2, z: 0}
+--- !u!114 &114497677228497428
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1515882103006162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 434ef7c2efc70214d83492c3ec534bf7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  systemSEList: []
+  playerSEList:
+  - {fileID: 8300000, guid: f5c3ff069cdfdc14eb9af8c8956482e8, type: 3}
+  - {fileID: 8300000, guid: 475d72f144db63844b07315899919ce2, type: 3}
+  - {fileID: 8300000, guid: d55b50dfedb205c4f85b62fcbdf5cfb1, type: 3}
+  - {fileID: 8300000, guid: 2235b27092d1cd14682903feadae2b33, type: 3}
+  balloonSEList: []
 --- !u!114 &114583404204353246
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -790,6 +809,7 @@ MonoBehaviour:
   jump: Jump
   isStan: 0
   originStanTime: 2
+  stanTime: 0
   isBalloonShrink: 1
   jumpCount: 0
   hipDropCircle:
@@ -802,9 +822,6 @@ MonoBehaviour:
     type: 2}
   itemList: []
   totalItemList: []
-  soundSE1: {fileID: 8300000, guid: f5c3ff069cdfdc14eb9af8c8956482e8, type: 3}
-  soundSE2: {fileID: 8300000, guid: 475d72f144db63844b07315899919ce2, type: 3}
-  soundSE3: {fileID: 8300000, guid: 04aabf5253f07f84bb09425dd4cb2c5c, type: 3}
   isMoveInertia: 0
   setStopTime: 1
   origin_Stan_Star_Particle: {fileID: 1785694701142120, guid: 9160900c0c7b95b4085f3a675b321bf8,
@@ -814,9 +831,6 @@ MonoBehaviour:
   dashTimePerItem: 0.5
   origin_Dash_Particle: {fileID: 1976135854806902, guid: 36f3ef134f070c54a8e31cbb0f55d9e6,
     type: 2}
-  soundSE4: {fileID: 8300000, guid: a8c23cd303a620d4ea481ba4058b6f1f, type: 3}
-  soundSE5: {fileID: 8300000, guid: 326474d3a1aee7144bb04f2591955df0, type: 3}
-  soundSE6: {fileID: 8300000, guid: 2235b27092d1cd14682903feadae2b33, type: 3}
   shockWavePower: 150
   canHipDrop: 0
   attackPower: 25
@@ -824,6 +838,9 @@ MonoBehaviour:
   isHit: 0
   isBlastStan: 0
   balloonMaster: {fileID: 0}
+  isConstant: 1
+  originDashLimit: 5
+  playerSE: {fileID: 0}
   playerIndex: 0
   dashTiredTime: 1
 --- !u!136 &136683905432024742

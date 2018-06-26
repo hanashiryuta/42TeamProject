@@ -22,10 +22,15 @@ public class FinishCall : MonoBehaviour
         get { return _isCalling; }
     }
 
+    //SE
+    AudioSource audio;
+    bool isSE = false;
+
     // Use this for initialization
     void Start ()
     {
         _text = GetComponent<Text>();
+        audio = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -39,6 +44,12 @@ public class FinishCall : MonoBehaviour
         _isCalling = true;
         _text.enabled = true;
         _bg.enabled = true;
+
+        if (!isSE)
+        {
+            audio.Play();
+            isSE = true;
+        }
     }
 
     public void ShutDown()

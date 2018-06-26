@@ -37,6 +37,14 @@ public class TitleScene : MonoBehaviour
     public float delayTime = 0.5f;//長押しの時の遅延
     public bool isDelay = false;
 
+    //SE
+    SEController se;
+
+    //Canvas
+    [SerializeField]
+    CanvasGroup titleCanvas, creditCanvas;//タイトルキャンバス、クレジットキャンバス
+    bool isCredit = false;//クレジットか？
+
     // Use this for initialization
     void Start()
     {
@@ -52,6 +60,9 @@ public class TitleScene : MonoBehaviour
         nowSelectedBtn = titleBtnList[nowSelectedBtnIndex];
         //現在接続しているプレイヤーの中で番号が一番小さいやつを選択プレイヤーにする
         SetControllablePlayer();
+
+        //SE
+        se = transform.GetComponent<SEController>();
     }
 
     // Update is called once per frame
@@ -68,8 +79,19 @@ public class TitleScene : MonoBehaviour
         {
             //Get XInput
             currentState = GamePad.GetState(playerIndex);
-            moveY = currentState.ThumbSticks.Left.Y;
-            TitleXInput();
+
+            //クレジット中じゃなかったら
+            if (!isCredit)
+            {
+                //カーソル移動
+                moveY = currentState.ThumbSticks.Left.Y;
+                TitleXInput();
+            }
+            else
+            {
+                //クレジット中
+                CreditXInput();//Bボタン押したら
+            }
 
             if (isSceneChange)
             {
@@ -111,7 +133,7 @@ public class TitleScene : MonoBehaviour
     }
 
     /// <summary>
-    /// 入力
+    /// タイトル入力
     /// </summary>
     void TitleXInput()
     {
@@ -122,6 +144,7 @@ public class TitleScene : MonoBehaviour
             {
                 cnt = delayTime;
                 ChooseNextBtn("up");
+                se.PlaySystemSE((int)SEController.SystemSE.CursorMove);
                 isDelay = true;
             }
             else
@@ -129,7 +152,6 @@ public class TitleScene : MonoBehaviour
                 DelayTimeCountDown();
             }
         }
-
         //down
         if (moveY <= -0.8f && nowSelectedBtn != gameExitBtn)
         {
@@ -137,6 +159,7 @@ public class TitleScene : MonoBehaviour
             {
                 cnt = delayTime;
                 ChooseNextBtn("down");
+                se.PlaySystemSE((int)SEController.SystemSE.CursorMove);
                 isDelay = true;
             }
             else
@@ -144,12 +167,12 @@ public class TitleScene : MonoBehaviour
                 DelayTimeCountDown();
             }
         }
-
         //A
         if (previousState.Buttons.A == ButtonState.Released &&
             currentState.Buttons.A == ButtonState.Pressed)
         {
             BtnPushed(nowSelectedBtn);
+            se.PlaySystemSE((int)SEController.SystemSE.OK);
         }
 
         //遅延初期化
@@ -158,6 +181,23 @@ public class TitleScene : MonoBehaviour
         {
             cnt = delayTime;
             isDelay = false;
+        }
+    }
+
+    /// <summary>
+    /// クレジット入力
+    /// </summary>
+    /// <returns></returns>
+    void CreditXInput()
+    {
+        //B
+        if (previousState.Buttons.B == ButtonState.Released &&
+            currentState.Buttons.B == ButtonState.Pressed)
+        {
+            creditCanvas.alpha = 0;
+            titleCanvas.alpha = 1;
+            se.PlaySystemSE((int)SEController.SystemSE.Cancel);
+            isCredit = false;
         }
     }
 
@@ -216,7 +256,9 @@ public class TitleScene : MonoBehaviour
     /// </summary>
     public void GameCredit()
     {
-
+        isCredit = true;
+        titleCanvas.alpha = 0;
+        creditCanvas.alpha = 1;
     }
 
     /// <summary>

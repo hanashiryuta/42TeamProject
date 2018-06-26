@@ -35,14 +35,24 @@ public class CharacterSelectSceneController : MonoBehaviour
     GameObject connectedPlayerStatusObj;
     ConnectedPlayerStatus connectedPlayerStatus;
 
-    bool isStandbied = false;
+    //SE
+    SEController se;
+    bool isStartSE_Played = false;
+    bool isCancelSE_Played = false;
+
+    [SerializeField]
+    Text player1Text;
+    [SerializeField]
+    Text startText;
 
     // Use this for initialization
     void Start()
     {
-        gameload = this.GetComponent<GameLoad>();
+        gameload = transform.GetComponent<GameLoad>();
         fadeController = fadePanel.GetComponent<FadeController>();
         fadeController.FadeIn();
+
+        se = transform.GetComponent<SEController>();
     }
 
     // Update is called once per frame
@@ -68,7 +78,7 @@ public class CharacterSelectSceneController : MonoBehaviour
         }
 
         //全員スタンドバイしたか
-        if (Is_ControllablePlayer_Pressed_Start()/*IsPlayerStandby()*/)
+        if (Is_ControllablePlayer_Pressed_Start())
         {
             //AI無し
             //if (!_isAISpawned)
@@ -76,14 +86,35 @@ public class CharacterSelectSceneController : MonoBehaviour
             //    Invoke("AICharacterSpawn", _delayTime);
             //    _isAISpawned = true;
             //}
-            ToStageSelectScene();
+            //ToStageSelectScene();
+
+            //SE鳴る
+            se.PlaySystemSE((int)SEController.SystemSE.OK);
+            isStartSE_Played = true;
         }
 
         //Back押されたら
         if (Is_ControllablePlayer_Pressed_Back())
         {
-            Debug.Log("Back");
-            ToTitleScene();
+            //SE鳴る
+            se.PlaySystemSE((int)SEController.SystemSE.Cancel);
+            isCancelSE_Played = true;
+        }
+
+        //SE終わってからシーン転移
+        if (isStartSE_Played)
+        {
+            if (!se.Audio.isPlaying)//SE鳴りやむまで待つ
+            {
+                ToStageSelectScene();
+            }
+        }
+        else if (isCancelSE_Played)
+        {
+            if (!se.Audio.isPlaying)//SE鳴りやむまで待つ
+            {
+                ToTitleScene();
+            }
         }
 
     }
@@ -121,7 +152,7 @@ public class CharacterSelectSceneController : MonoBehaviour
         if (readyPlayers == ConnectedPlayerCount() &&
             ConnectedPlayerCount() == 1)
         {
-            mainText.text = "一人は遊べない！";
+            mainText.text = "一人では遊べないよ！";
         }
         else
         {
@@ -164,22 +195,28 @@ public class CharacterSelectSceneController : MonoBehaviour
         }
 
         //プレイヤーが一人の時
-        if (readyPlayers == 1)
+        if (readyPlayers <= 1)
         {
-            mainText.text = "一人は遊べない！";
+            //mainText.text = "一人では遊べないよ！";
+            mainText.enabled = false;
+            player1Text.enabled = false;
+            startText.enabled = false;
         }
         else
         {
-            mainText.text = "準備完了したら\n" +
-                            "Ｐｌａｙｅｒ" + HalfWidth2FullWidth.Set2FullWidth(((int)controllablePlayerIndex) + 1) +
-                            "が\nＳＴＡＲＴ押してね！";
+            mainText.text = "　　の\n" +
+                            "　　　　　　　で\n" +
+                            "ゲームスタート！";
+            mainText.enabled = true;
+            player1Text.enabled = true;
+            startText.enabled = true;
         }
 
         return isAllReady;
     }
 
     /// <summary>
-    /// ゲーム進行操作可能なプレイヤーがSTARTボタン押したか
+    /// ゲーム進行操作可能なプレイヤーがBACKボタン押したか
     /// </summary>
     /// <returns></returns>
     bool Is_ControllablePlayer_Pressed_Back()
@@ -226,8 +263,6 @@ public class CharacterSelectSceneController : MonoBehaviour
     /// </summary>
     void ToStageSelectScene()
     {
-        isStandbied = true;
-
         //全員確定したら取り消せないようにする
         for (int i = 0; i < ConnectedPlayerCount(); i++)
         {
@@ -238,6 +273,8 @@ public class CharacterSelectSceneController : MonoBehaviour
 
         mainText.text = "準備完了！";
         mainText.color = Color.yellow;
+        player1Text.enabled = false;
+        startText.enabled = false;
 
         gameload.NextScene = GameLoad.Scene.StageSelect;
         Invoke("SceneLoad", _delayTime + 1f);
@@ -268,7 +305,9 @@ public class CharacterSelectSceneController : MonoBehaviour
         }
 
         gameload.NextScene = GameLoad.Scene.Tilte;
-        Invoke("SceneLoad", 0f);
+
+        Invoke("SceneLoad", 0);
+
     }
 
 
@@ -284,7 +323,7 @@ public class CharacterSelectSceneController : MonoBehaviour
             {
                 connectedPlayerStatus.ConnectedPlayer.Add("Player" + (i + 1), i);
             }
-        }          
+        }
     }
 
     /// <summary>

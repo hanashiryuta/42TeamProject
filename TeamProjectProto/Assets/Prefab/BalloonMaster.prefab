@@ -19,6 +19,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4471104872321776}
+  - component: {fileID: 114745069505279536}
   - component: {fileID: 114900453907975914}
   m_Layer: 0
   m_Name: BalloonMaster
@@ -40,6 +41,24 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114745069505279536
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1500300943428620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 434ef7c2efc70214d83492c3ec534bf7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  systemSEList: []
+  playerSEList: []
+  balloonSEList:
+  - {fileID: 8300000, guid: 1f6390d9007c720498443a519765f7ef, type: 3}
+  - {fileID: 8300000, guid: b7b809350da05df4aacab41d43da483c, type: 3}
+  - {fileID: 8300000, guid: e35da036cc62aed4ab522b910feafac8, type: 3}
+  - {fileID: 8300000, guid: 3bedcf1f668e97343ab5a80c4fb36ea1, type: 3}
 --- !u!114 &114900453907975914
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -57,6 +76,7 @@ MonoBehaviour:
   nextPlayer: {fileID: 0}
   nowPlayer: {fileID: 0}
   originBalloonRespawnTime: 3
+  balloonRespawnTime: 0
   pList: []
   isCameraDistance: 0
   origin_BalloonEffectCenter: {fileID: 1263330718962570, guid: 4e5866f69cdd80a4aa51ba1da64adbbf,

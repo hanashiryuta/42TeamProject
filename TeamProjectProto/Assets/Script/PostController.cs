@@ -30,7 +30,6 @@ public class PostController : MonoBehaviour {
 	public bool isRespawn = false;//中心物体が移動するかどうか
 	[HideInInspector]
 	public float respawnCount = 0;//中心物体が移動するまでのカウント
-    
     [HideInInspector]
     public SphereCollider bc;//あたり判定をなくす
     

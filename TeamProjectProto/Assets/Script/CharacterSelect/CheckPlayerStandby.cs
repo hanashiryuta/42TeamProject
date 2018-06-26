@@ -78,11 +78,17 @@ public class CheckPlayerStandby : MonoBehaviour
         set { _isBackPressed = value; }
     }
 
+    //SE
+    SEController se;
+
+    //キャンセルか
+    bool isCancel = false;
 
     // Use this for initialization
     void Start ()
     {
         playerBG = GameObject.Instantiate(orgin_playerBG, this.transform);
+        se = transform.GetComponent<SEController>();
     }
 
     // Update is called once per frame
@@ -90,10 +96,17 @@ public class CheckPlayerStandby : MonoBehaviour
     {
         _currentState = GamePad.GetState(playerIndex);
 
+        //ボタン押せる状態で
         if (_isCanPressBtn)
         {
+            //プレイヤー生成
             CheckSpawn();
 
+            //キャンセル
+            CancelInit_Delay(0.2f);
+
+            //自分がゲーム進行操作プレイヤーだったら
+            ControllablePlayerInput();
         }
 
         _previousState = _currentState;
@@ -108,7 +121,7 @@ public class CheckPlayerStandby : MonoBehaviour
         {
             if (Is_Abtn_Pressed())//Aボタン押したら
             {
-                SpawnPlayerCharacter();
+                SpawnPlayerCharacter();//プレイヤー生成
                 _isSpawn = true;
             }
         }
@@ -116,23 +129,11 @@ public class CheckPlayerStandby : MonoBehaviour
         {
             if (Is_Bbtn_Pressed())//Bボタン押したら
             {
-                RemovePlayerCharacter();
+                RemovePlayerCharacter();//プレイヤー廃棄
+                isCancel = true;//生成キャンセル
                 _isSpawn = false;
             }
         }
-
-        //自分がゲーム進行操作プレイヤーだったら
-        if (playerIndex == controllablePlayerIndex)
-        {
-            //生成している時
-            if (_isSpawn)
-            {
-                _isStartPressed = Is_StartBtn_Pressed(); //STARTボタン押したか
-            }
-
-            _isBackPressed = Is_BackBtn_Pressed(); //Backボタン押したか
-        }
-
     }
 
     /// <summary>
@@ -141,12 +142,11 @@ public class CheckPlayerStandby : MonoBehaviour
     /// </summary>
     void SpawnPlayerCharacter()
     {
-        player = GameObject.Instantiate(playerPrefabs, transform.position, Quaternion.Euler(0, 180, 0));
+        player = GameObject.Instantiate(playerPrefabs, transform.position, Quaternion.Euler(0, 180, 0));//生成
         player.GetComponentInChildren<SkinnedMeshRenderer>().materials[0].mainTexture = tex;//テクスチャ変更
-        //playerBG = GameObject.Instantiate(orgin_playerBG, this.transform);
-
-        _playrLabel.enabled = true;
-        _btnText.enabled = false;
+        se.PlaySystemSE((int)SEController.SystemSE.CharacterSpawn);//SE
+　      _playrLabel.enabled = true;//名前表示
+        _btnText.enabled = false;//参加テキスト非表示
     }
 
     /// <summary>
@@ -156,8 +156,7 @@ public class CheckPlayerStandby : MonoBehaviour
     {
         GameObject.Destroy(player);
         player = null;
-        //GameObject.Destroy(playerBG);
-        //playerBG = null;
+        se.PlaySystemSE((int)SEController.SystemSE.Cancel);
         _playrLabel.enabled = false;
         _btnText.enabled = true;
     }
@@ -233,5 +232,46 @@ public class CheckPlayerStandby : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    /// <summary>
+    /// ゲーム進行操作プレイヤー操作
+    /// </summary>
+    void ControllablePlayerInput()
+    {
+        //自分がゲーム進行操作プレイヤーだったら
+        if (playerIndex == controllablePlayerIndex)
+        {
+            //生成している時
+            if (_isSpawn)
+            {
+                _isStartPressed = Is_StartBtn_Pressed(); //STARTボタン押したか
+            }
+
+            if (!_isSpawn && !isCancel)//生成してない時且つ取り消しじゃない
+            {
+                IsBackPressed = Is_Bbtn_Pressed();//Bボタン押したか
+            }
+            //_isBackPressed = Is_BackBtn_Pressed(); //Backボタン押したか
+        }
+    }
+
+    /// <summary>
+    /// 設定した秒数後にisCancelをfalseに
+    /// </summary>
+    void CancelInit_Delay(float time)
+    {
+        if (isCancel)
+        {
+            Invoke("CancelInit", time);
+        }
+    }
+
+    /// <summary>
+    /// isCancelを初期化
+    /// </summary>
+    void CancelInit()
+    {
+        isCancel = false;
     }
 }

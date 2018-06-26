@@ -6,6 +6,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using XInputDotNetPure;
 
     public enum NowBalloonState
 {
@@ -86,10 +87,15 @@ public class BalloonMaster : MonoBehaviour {
 
     TimeController timeController;//タイムコントローラー
 
+    SEController se;//SEコントローラー
+
     PlayerRank playerRank;//プレイヤーランク
 
     [HideInInspector]
     public List<List<float>> reelRateLists;//ルーレット各リール要素割合
+
+    [HideInInspector]
+    public PlayerIndex nextPlayerIndex;//次に風船を持つプレイヤーのコントローラー
 
     // Use this for initialization
     void Start ()
@@ -126,10 +132,12 @@ public class BalloonMaster : MonoBehaviour {
         //時間オブジェ取得
         timeController = GameObject.Find("TimeController").GetComponent<TimeController>();
 
+        se = transform.GetComponent<SEController>();
+        
         //ルーレット各リール要素割合初期値設定
         reelRateLists = new List<List<float>>
         {
-            new List<float> {5,5},
+            new List<float> {3,4,3},
             new List<float> {3,7},
             new List<float> {5,3,2},
         };
@@ -162,6 +170,7 @@ public class BalloonMaster : MonoBehaviour {
                 nowPlayer = nextPlayer;
                 //バルーン生成
                 nowBalloon = Instantiate(nextSpawnBalloon,nowPlayer.transform.position,Quaternion.identity);
+                se.PlayBalloonSE((int)SEController.BalloonSE.Spawn);
                 //自分指定
                 nowBalloon.GetComponent<BalloonOrigin>().balloonMaster = this;
                 //バルーンにプレイヤー指定
@@ -257,6 +266,9 @@ public class BalloonMaster : MonoBehaviour {
         nextPlayer = player;
 
         timeController.LossTimeStart(second, this);//ロスタイム判定
+
+        nextPlayerIndex = nextPlayer.GetComponent<PlayerMove>().playerIndex;
+        GamePad.SetVibration(nextPlayerIndex, 0.0f, 1.0f);
     }
     
 }
