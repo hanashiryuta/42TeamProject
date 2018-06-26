@@ -312,6 +312,10 @@ Prefab:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1218557527}
+    - target: {fileID: 1198947803426918, guid: 329d9b0f9f6951a4da8bfa8767054953, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 329d9b0f9f6951a4da8bfa8767054953, type: 2}
   m_IsPrefabParent: 0
@@ -591,8 +595,8 @@ Transform:
 CanvasGroup:
   m_PrefabParentObject: {fileID: 225097089894061994, guid: cef1f0a95f72ec1488e3d8a64e3366b2,
     type: 2}
-  m_PrefabInternal: {fileID: 2017131416}
---- !u!1001 &2017131416
+  m_PrefabInternal: {fileID: 1955600323}
+--- !u!1001 &1955600323
 Prefab:
   m_ObjectHideFlags: 0
   serializedVersion: 2
