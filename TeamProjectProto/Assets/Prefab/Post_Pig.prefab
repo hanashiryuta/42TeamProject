@@ -601,13 +601,13 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1842048652661864}
-  m_LocalRotation: {x: -0.7071068, y: 5.8622346e-16, z: -7.6483565e-16, w: 0.7071067}
-  m_LocalPosition: {x: 0.000000018123137, y: 0.2902901, z: -0.0000000013470797}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_Children: []
   m_Father: {fileID: 4203955021411840}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!4 &4145269501368512
 Transform:
   m_ObjectHideFlags: 1
@@ -654,7 +654,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1183412679620390}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.4, y: 0.2, z: 0.4}
   m_Children:
@@ -662,7 +662,7 @@ Transform:
   - {fileID: 4139280896363758}
   m_Father: {fileID: 4867857188830516}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
 --- !u!4 &4233671772095400
 Transform:
   m_ObjectHideFlags: 1
@@ -684,7 +684,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1276046923020840}
   m_LocalRotation: {x: 0.7071068, y: -0.00000009415696, z: 0.7071067, w: 0.00000009415697}
-  m_LocalPosition: {x: -0.34320158, y: 0, z: -0.071977496}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_Children:
   - {fileID: 4830377347125296}
@@ -1024,19 +1024,20 @@ MonoBehaviour:
   blastCount: 0
   isRespawn: 0
   respawnCount: 0
-  specialWallPoint: {fileID: 0}
-  player: {fileID: 0}
-  activity: 0
-  mesh: {fileID: 0}
   bc: {fileID: 0}
-  intervalLimit: 10
   inflateTime: 0.05
-  marker: {fileID: 1717468611347260, guid: 453cfdb7f33c3f84584e8401e015ec6b, type: 2}
+  originMakar: {fileID: 1717468611347260, guid: 453cfdb7f33c3f84584e8401e015ec6b,
+    type: 2}
   air: {fileID: 1732370374321784, guid: 6d5dce969aa62bb4b8f96da4c35d3310, type: 2}
   inflateObj: 1
   origin_Pig_ToCoin_Particle: {fileID: 1505978016423842, guid: 5c7c7a53d225b70479f33864f08a9f76,
     type: 2}
-  isBalloon: 0
+  postState: 0
+  player: {fileID: 0}
+  postPoint: {fileID: 0}
+  effect: {fileID: 1347281360223456, guid: dcb6dca670cc92248bf25501f9bcbea7, type: 2}
+  post_Fly_Particle: {fileID: 1079747323469674, guid: 5be0b2932ec54cb40959e208ffc51cfb,
+    type: 2}
 --- !u!135 &135722135796868558
 SphereCollider:
   m_ObjectHideFlags: 1
@@ -1048,7 +1049,7 @@ SphereCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.65
-  m_Center: {x: 0.2, y: 0, z: 0}
+  m_Center: {x: 0, y: 0, z: 0.2}
 --- !u!137 &137268581689840244
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1
