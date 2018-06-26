@@ -1024,19 +1024,20 @@ MonoBehaviour:
   blastCount: 0
   isRespawn: 0
   respawnCount: 0
-  specialWallPoint: {fileID: 0}
-  player: {fileID: 0}
-  activity: 0
-  mesh: {fileID: 0}
   bc: {fileID: 0}
-  intervalLimit: 10
   inflateTime: 0.05
-  marker: {fileID: 1717468611347260, guid: 453cfdb7f33c3f84584e8401e015ec6b, type: 2}
+  originMakar: {fileID: 1717468611347260, guid: 453cfdb7f33c3f84584e8401e015ec6b,
+    type: 2}
   air: {fileID: 1732370374321784, guid: 6d5dce969aa62bb4b8f96da4c35d3310, type: 2}
   inflateObj: 1
   origin_Pig_ToCoin_Particle: {fileID: 1505978016423842, guid: 5c7c7a53d225b70479f33864f08a9f76,
     type: 2}
-  isBalloon: 0
+  postState: 0
+  player: {fileID: 0}
+  postPoint: {fileID: 0}
+  effect: {fileID: 1347281360223456, guid: dcb6dca670cc92248bf25501f9bcbea7, type: 2}
+  post_Fly_Particle: {fileID: 1079747323469674, guid: 5be0b2932ec54cb40959e208ffc51cfb,
+    type: 2}
 --- !u!135 &135722135796868558
 SphereCollider:
   m_ObjectHideFlags: 1
