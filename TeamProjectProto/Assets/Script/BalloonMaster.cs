@@ -162,10 +162,6 @@ public class BalloonMaster : MonoBehaviour {
                 nowPlayer = nextPlayer;
                 //バルーン生成
                 nowBalloon = Instantiate(nextSpawnBalloon,nowPlayer.transform.position,Quaternion.identity);
-                foreach(var cx in GameObject.FindGameObjectsWithTag("Post"))
-                {
-                    cx.GetComponent<PostController>().isBalloon = true;
-                }
                 //自分指定
                 nowBalloon.GetComponent<BalloonOrigin>().balloonMaster = this;
                 //バルーンにプレイヤー指定
@@ -175,7 +171,7 @@ public class BalloonMaster : MonoBehaviour {
                 //次の爆弾指定
                 nextSpawnBalloon = balloonList[Random.Range(0, balloonList.Count)];
                 //ダッシュ回復
-                nowPlayer.GetComponent<PlayerMove>().DashCountDown = nowPlayer.GetComponent<PlayerMove>().DashLimitTime;
+                //nowPlayer.GetComponent<PlayerMove>().DashCountDown = nowPlayer.GetComponent<PlayerMove>().DashLimitTime;
 
                 balloonRespawnTime = originBalloonRespawnTime;
 

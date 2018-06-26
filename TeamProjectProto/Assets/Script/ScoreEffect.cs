@@ -30,14 +30,14 @@ public class ScoreEffect : MonoBehaviour {
             DOTween.To(
                 () => effect.anchoredPosition,
                 pos => effect.anchoredPosition = pos,
-                targetUI.anchoredPosition - new Vector2(0, targetUI.rect.height / 2),
-                1.5f);
+                targetUI.anchoredPosition,// - new Vector2(0, targetUI.rect.height / 2),
+                0.5f);
 
             isCreat = true;
         }
 
         //UIの位置（UIの下端）まで行ったら
-        if (effect.anchoredPosition.y >= 360 - (targetUI.rect.height + 2))
+        if (Mathf.Abs(Vector2.Distance(effect.anchoredPosition,targetUI.anchoredPosition)) <= 0.1f)//- (targetUI.rect.height + 2))
         {
             Debug.Log(effect.anchoredPosition.y);
             Destroy(gameObject); //破棄する
