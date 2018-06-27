@@ -63,7 +63,7 @@ public class PostRespawn : MonoBehaviour {
             return;
 
         //生成確認用bool
-        bool balloons = false;
+        float balloons = 0;
 
         //ポストがいなければ
         for (int i = 0; i < isPostList.Count; i++)
@@ -73,12 +73,15 @@ public class PostRespawn : MonoBehaviour {
                 isPostList.RemoveAt(i);
                 //生成許可
                 PostRespawnSet();
-                balloons = true;
+            }
+            else
+            {
+                balloons++;
             }
         }
 
         //2箇所とも生成されていたら
-        if(!balloons)
+        if(balloons >= 2)
         {
             //次のバルーン生成タイミングまで生成しない
             isBalloon = false;
