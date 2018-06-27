@@ -366,6 +366,7 @@ MonoBehaviour:
   rouletteSEList:
   - {fileID: 8300000, guid: 9b70aa10f127e8d4984909bb8a4a71e3, type: 3}
   - {fileID: 8300000, guid: 3904febcd8894744abcff746d3c64625, type: 3}
+  - {fileID: 8300000, guid: 68f3d0d5867a76b4291890d3026524c2, type: 3}
 --- !u!114 &114046336739643604
 MonoBehaviour:
   m_ObjectHideFlags: 1
