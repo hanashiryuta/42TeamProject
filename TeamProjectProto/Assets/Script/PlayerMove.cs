@@ -142,6 +142,9 @@ public class PlayerMove : MonoBehaviour
 
     public GameObject playerCol;//プレイヤーあたり判定
 
+    [HideInInspector]
+    public float totalItemCount_For_Text = 0;//トータル表示用数
+
     // Use this for initialization
     void Start()
     {
@@ -180,7 +183,7 @@ public class PlayerMove : MonoBehaviour
     void Update()
     {
         holdItemCountText.text = HalfWidth2FullWidth.Set2FullWidth(holdItemCount);//内容物取得数表示処理 
-        totalItemCountText.text = HalfWidth2FullWidth.Set2FullWidth(totalItemCount);
+        totalItemCountText.text = HalfWidth2FullWidth.Set2FullWidth(totalItemCount_For_Text);
 
         PlayerAnim(playerAnim);
 

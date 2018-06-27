@@ -112,7 +112,7 @@ public class BalloonMaster : MonoBehaviour {
         nextPlayer = pList[Random.Range(0, pList.Length)];
         //バルーン設定
         nowBalloon = null;
-        balloonRespawnTime = originBalloonRespawnTime;
+        balloonRespawnTime = originBalloonRespawnTime + nextPlayer.GetComponent<PlayerMove>().stanTime;
         nextSpawnBalloon = balloonList[0];
         //スタートカウント、終了オブジェ取得
         startCntDown = GameObject.Find("StartCountDown").GetComponent<StartCountDown>();
