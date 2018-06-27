@@ -166,8 +166,7 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: "\u52B9\u679C\u97F3\u30E9\u30DC\n\n\u9B54\u738B\u9B42\r\n\n\uFF2D\uFF55\uFF53\uFF49\uFF43
-    \uFF49\uFF53 \uFF36\uFF26\uFF32\n\n\u30D5\u30EA\u30FC\u52B9\u679C\u97F3\u7D20\u6750
-    \u304F\u3089\u3052\u5DE5\u5320\n\nOn-Jin \uFF5E\u97F3\u4EBA\uFF5E"
+    \uFF49\uFF53 \uFF36\uFF26\uFF32\n\n\u52B9\u679C\u97F3\u8F9E\u5178\n\nOn-Jin \uFF5E\u97F3\u4EBA\uFF5E"
 --- !u!114 &114068087950531448
 MonoBehaviour:
   m_ObjectHideFlags: 1
