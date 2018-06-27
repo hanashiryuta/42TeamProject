@@ -63,8 +63,9 @@ public class SEController : MonoBehaviour
     /// </summary>
     public enum RouletteSE
     {
-        Lever,  //レバー引くとき
-        PressA  //Aボタン押した時
+        Lever,          //レバー引くとき
+        PressA,         //Aボタン押した時
+        RouletteAppear  //ルーレット出現時
     }
 
     // Use this for initialization
