@@ -15,20 +15,19 @@ public class BGMController : MonoBehaviour
     [SerializeField]
     AudioClip rouletteBGM;//ルーレット用BGM（仕様がちょっと違う）
     AudioSource audio;// AudioSource
-    float defaultVolume = 0.5f;
+    float defaultVolume = 0.5f;//デフォルト音量
 
     AudioClip nowClip;
     AudioClip nextClip;
     float nowClipVolume = 1.0f;
     float nextClipVolume = 0.0f;
-    bool nextClipPlaying = false;
 
     static bool created = false;
     bool isFading = false;
 
     string preScene;//前のシーン
-    RouletteController rouletteC;
-    bool isRoulette = false;
+    RouletteController rouletteCon;//ルーレットコントローラー
+    bool isRoulette = false;//ルーレット中か？
 
     /// <summary>
     /// BGM順番
@@ -57,7 +56,6 @@ public class BGMController : MonoBehaviour
             Destroy(this.gameObject);
         }
 
-
         audio = transform.GetComponent<AudioSource>();
     }
 	
@@ -72,13 +70,13 @@ public class BGMController : MonoBehaviour
             {
                 if (!isRoulette)
                 {
-                    rouletteC = GameObject.Find("Roulette(Clone)").GetComponent<RouletteController>();
+                    rouletteCon = GameObject.Find("Roulette(Clone)").GetComponent<RouletteController>();
                 }
-                VolumeChange();
+                MainBGMsVolumeChange();
             }
             else
             {
-                rouletteC = null;
+                rouletteCon = null;
                 isRoulette = false;
             }
         }
@@ -98,24 +96,27 @@ public class BGMController : MonoBehaviour
         //FadeIn();
 	}
 
-    void VolumeChange()
+    /// <summary>
+    /// mainBGMの音量調整
+    /// </summary>
+    void MainBGMsVolumeChange()
     {
-        if(rouletteC.rouletteState == RouletteState.ENTRY)
+        if(rouletteCon.rouletteState == RouletteState.ENTRY)
         {
             audio.volume = 0.2f;
         }
 
-        if (rouletteC.rouletteState == RouletteState.EXIT)
+        if (rouletteCon.rouletteState == RouletteState.EXIT)
         {
             audio.volume = defaultVolume;
         }
     }
 
-    void ChangeBGM(AudioClip nextBGM)
-    {
-        audio.clip = nextBGM;
-    }
-
+    /// <summary>
+    /// 今のシーンのBGMをセット
+    /// </summary>
+    /// <param name="newScene">今のシーン</param>
+    /// <param name="preScene">前のシーン</param>
     void SetSceneBGM(Scene newScene, string preScene)
     {
         if (newScene.name == "Title")//タイトル
@@ -141,9 +142,7 @@ public class BGMController : MonoBehaviour
             audio.clip = nowClip;
 
             StartCountDown scd = GameObject.Find("StartCountDown").GetComponent<StartCountDown>();
-            audio.PlayDelayed(scd.waitTime + 4f);
-            //audio.Play();
-
+            audio.PlayDelayed(scd.waitTime + 4f);//カウントダウンが終わったらプレイ
         }
         else if (newScene.name == "Result")//リザルト
         {
@@ -220,8 +219,7 @@ public class BGMController : MonoBehaviour
     private void SceneUnloaded(Scene scene)
     {
         Debug.Log(scene.name + "Unloaded");
-        //音フェード
-        //StartCoroutine(Fade());
+        //アンロードされたシーンの名前を取得
         preScene = scene.name;
     }
 
@@ -233,9 +231,8 @@ public class BGMController : MonoBehaviour
     private void SceneLoaded(Scene scene, LoadSceneMode mode)
     {
         Debug.Log(scene.name + "Loaded");
-        //BGM設定
         Debug.Log(preScene + "が前のシーン");
-
+        //BGM設定
         SetSceneBGM(scene, preScene);
     }
 }
