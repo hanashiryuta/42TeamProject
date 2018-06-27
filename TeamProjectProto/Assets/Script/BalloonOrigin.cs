@@ -453,7 +453,7 @@ public class BalloonOrigin : MonoBehaviour
         player.GetComponent<PlayerMove>().isBlastStan = true;
         //スタン時間更新
         player.GetComponent<PlayerMove>().stanTime = 0.0f;
-        player.GetComponent<PlayerMove>().originStanTime = 3.0f;
+        player.GetComponent<PlayerMove>().originStanTime = 2.0f;
         se.PlayBalloonSE((int)SEController.BalloonSE.Blast);
         //次のプレイヤー指定
         balloonMaster.nextPlayer = BalloonExChangeByDistance(balloonMaster.pList, player);
@@ -471,18 +471,31 @@ public class BalloonOrigin : MonoBehaviour
     /// <param name="isTotal">トータルか所持からか</param>
     public virtual void ItemBlast(GameObject player,float itemRate,bool isTotal)
     {
+        //プレイヤー管理メソッド取得
         PlayerMove playerMove = player.GetComponent<PlayerMove>();
+        //スタン状態
         playerMove.isStan = true;
-        //排出ポイント割合
-        List<string> itemList = isTotal ? playerMove.totalItemList : playerMove.itemList;
 
+        //排出アイテムリスト設定
+        List<string> itemList = isTotal ? playerMove.totalItemList : playerMove.itemList;
+        
+        //排出アイテム数設定
         float itemCount = isTotal ? playerMove.totalItemCount : playerMove.holdItemCount;
 
+        //排出割合設定
         int itemRatio = (int)(itemCount *(itemRate/10));
 
-        if(isTotal)
+        if (isTotal)
+        {
+            //トータル表示用を減らす
+            playerMove.totalItemCount_For_Text -= itemRatio;
+            //0以下にしない
+            if (playerMove.totalItemCount_For_Text <= 0)
+                playerMove.totalItemCount_For_Text = 0;
+            //トータルを減らす
             playerMove.totalItemCount -= itemRatio;
-        else
+        }
+        else//手持ちを減らす
             playerMove.holdItemCount -= itemRatio;
         //排出ポイント割合が0になるまで排出
         while (itemRatio > 0)
