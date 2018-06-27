@@ -7,27 +7,40 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using XInputDotNetPure;
+using System.Linq;
 
 public class ResultManager : MonoBehaviour
 {
-    GameObject playerRank;//Playerの名前取得用
+    PlayerRank playerRank;//Playerの名前取得用
     [SerializeField]
     Button oneMoreBtn, toTitleBtn;//各ボタンの情報
-    Button nowSelectedBtn;
+    Button nowSelectedBtn;//今選択しているボタン
 
     [SerializeField]
     float textMovingTime = 2f;//順位テキストの移動スピード
+
     [SerializeField]
-    Text[] playerRankTexts;//順位表示のテキスト
+    GameObject[] playerRankTextObjs;//順位表示のテキストOBJ
     [SerializeField]
-    GameObject[] DefaltPosition;//初期位置
+    GameObject playerRankUIParent;//順位表示のテキストOBJの親
+    List<Text> _playerRankTextsList = new List<Text>();//順位表示テキストOBJリスト
+    public List<Text> PlayerRankTextsList
+    {
+        get { return _playerRankTextsList; }
+    }
+    List<int> _playerRankList = new List<int>(); // プレイヤー順位リスト
+    public List<int> PlayerRankList
+    {
+        get { return _playerRankList; }
+    }
+
     [SerializeField]
-    GameObject[] FinishPosition;//最終位置
-    [SerializeField]
-    Text[] playerScoreTexts;//プレイヤースコア表示テキスト
+    GameObject[] rankPositionSet;
+    List<GameObject> defaltPosition = new List<GameObject>();//初期位置
+    List<GameObject> finishPosition = new List<GameObject>();//最終位置
+    List<GameObject> playerScoreTexts = new List<GameObject>();//プレイヤースコア表示テキスト
 
     bool _isAnim = true;//アニメ中か
 
@@ -37,9 +50,6 @@ public class ResultManager : MonoBehaviour
     //fade
     FadeController fadeController;
     bool isFadeOuted = false;
-
-    bool isOneMore = false;
-    bool isTitle = false;
 
     //load
     GameLoad gameLoad;
@@ -57,41 +67,32 @@ public class ResultManager : MonoBehaviour
     // Use this for initialization
     void Awake()
     {
-        playerRank = GameObject.Find("PlayerRankController");
-
-        for (int i = 0; i < playerRankTexts.Length; i++)
-        {
-            playerRankTexts[i].transform.position = DefaltPosition[i].transform.position;
-        }
-
+        //接続プレイヤー数を取得
         if (connectedPlayerStatus == null)
         {
             // ConnectedPlayerStatusで接続しているプレイヤーを受け取る
             connectedPlayerStatus = GameObject.FindGameObjectWithTag("PlayerStatus").GetComponent<ConnectedPlayerStatus>();
         }
 
-        for (int i = 0; i < playerRankTexts.Length; i++)
+        playerRank = GameObject.Find("PlayerRankController").GetComponent<PlayerRank>();
+
+        //順位付け
+        _playerRankList = SetPlayersRank();
+
+        //どの位置セットを使用するか決定(一位の数で決定)
+        int numOfFirst = _playerRankList.Count(n => n == 1);
+        for (int i = 0; i < rankPositionSet[numOfFirst].transform.childCount; i++) 
         {
-            //ランクテキスト初期化
-            playerRankTexts[i].text = "";
-            //スコアテキスト初期化
-            playerScoreTexts[i].text = "";
-            playerScoreTexts[i].transform.GetChild(0).GetComponent<Text>().text = "";
-        }
-        //上から順位順に名前表示
-        //接続しているプレイヤー数だけ表示する
-        for (int i = 0; i < connectedPlayerStatus.ConnectedPlayer.Count; i++)
-        {
-            playerRankTexts[i].text = HalfWidth2FullWidth.Set2FullWidth((i + 1).ToString()) + " 位:";// + playerRank.GetComponent<PlayerRank>().ResultRank[i];
-            //スコア表示
-            playerScoreTexts[i].text = HalfWidth2FullWidth.Set2FullWidth(playerRank.GetComponent<PlayerRank>().PlayerRankScore[i]);
-            playerScoreTexts[i].transform.GetChild(0).GetComponent<Text>().text = "チョキン";
+            defaltPosition.Add(rankPositionSet[numOfFirst - 1].transform.GetChild(0).GetChild(i).gameObject);
+            finishPosition.Add(rankPositionSet[numOfFirst - 1].transform.GetChild(1).GetChild(i).gameObject);
         }
 
+        //プレイヤーランクテキスト
+        SetPlayerRankText(numOfFirst);
+
         //スポーンUIプレイヤー
-        spawnUIPlayer = transform.GetComponent<SpawnUIPlayer>();
-        spawnUIPlayer.ConnectedPLStatus = connectedPlayerStatus;
-        spawnUIPlayer.PList = playerRank.GetComponent<PlayerRank>().ResultRank;
+        SetSpawnUIPlayer();
+
         //fade
         fadeController = GameObject.Find("FadePanel").GetComponent<FadeController>();
         //load
@@ -172,7 +173,6 @@ public class ResultManager : MonoBehaviour
         }
     }
 
-
     /// <summary>
     /// 選択しているボタンのonClickイベントを呼ぶ
     /// </summary>
@@ -214,12 +214,12 @@ public class ResultManager : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f);
 
-        for (int i = 0; i < playerRankTexts.Length; i++)
+        //for (int i = 0; i < playerRankTexts.Length; i++)
+        for (int i = 0; i < _playerRankTextsList.Count; i++)
         {
-            playerRankTexts[i].transform.DOMove(FinishPosition[i].transform.position, textMovingTime);
+            _playerRankTextsList[i].transform.DOMove(finishPosition[i].transform.position, textMovingTime);
             yield return new WaitForSeconds(0.5f);
         }
-        //yield return new WaitForSeconds(1f);
         //アニメ終わったらoneMore選択
         oneMoreBtn.Select();
         nowSelectedBtn = oneMoreBtn;
@@ -229,7 +229,7 @@ public class ResultManager : MonoBehaviour
 
     /// <summary>
     /// 操作可能なプレイヤーを選択
-    /// /// </summary>
+    /// </summary>
     void SetControllablePlayer()
     {
         if (GamePad.GetState(PlayerIndex.One).IsConnected)
@@ -247,6 +247,118 @@ public class ResultManager : MonoBehaviour
         else if (GamePad.GetState(PlayerIndex.Four).IsConnected)
         {
             playerIndex = PlayerIndex.Four;
+        }
+    }
+
+    /// <summary>
+    /// プレイヤーのスコアで順位付け/
+    /// テキストOBJ生成し格納/
+    /// スコアテキストを格納
+    /// </summary>
+    List<int> SetPlayersRank()
+    {
+        List<int> eachRanksCount = new List<int>();//順位ごとの人数
+
+        int rank = 0;//順位
+        int count = 0;//順位カウント
+        float temp = 0;//スコア一時格納
+        //順位付け
+        for (int i = 0; i < playerRank.PlayerRankScore.Count; i++)
+        {
+            if (i == 0)
+            {
+                temp = playerRank.PlayerRankScore[0];
+                rank = count = 1;
+            }
+            else
+            {
+                if (temp == playerRank.PlayerRankScore[i])
+                {
+                    count++;
+                }
+                else
+                {
+                    temp = playerRank.PlayerRankScore[i];
+                    rank += count;
+                    count = 1;
+                }
+            }
+
+            eachRanksCount.Add(rank);
+        }
+
+        //表示用テキストOBJを生成し格納
+        foreach(var pRank in eachRanksCount)
+        {
+            //一位だったら
+            if(pRank == 1)
+            {
+                //一位用のランクプレハブ生成し格納
+                _playerRankTextsList.Add(Instantiate(playerRankTextObjs[0], 
+                                                   playerRankUIParent.transform).GetComponent<Text>());
+            }
+            //他の順位だったら
+            else
+            {
+                //２３４位用のランクプレハブ生成し格納
+                _playerRankTextsList.Add(Instantiate(playerRankTextObjs[1],
+                                                   playerRankUIParent.transform).GetComponent<Text>());
+            }
+        }
+        //スコアテキストを格納
+        foreach(var textOBJ in _playerRankTextsList)
+        {
+            Debug.Log(textOBJ.transform.GetChild(1).gameObject.name);
+            playerScoreTexts.Add(textOBJ.transform.GetChild(1).gameObject);
+        }
+
+        return eachRanksCount;
+    }
+
+    /// <summary>
+    /// スポーンUIプレイヤー初期設定
+    /// </summary>
+    void SetSpawnUIPlayer()
+    {
+        spawnUIPlayer = transform.GetComponent<SpawnUIPlayer>();
+        spawnUIPlayer.ConnectedPLStatus = connectedPlayerStatus;//UIプレイヤー接続ステータス
+        spawnUIPlayer.PList = playerRank.ResultRank;//UIプレイヤー順位順
+        spawnUIPlayer.RankList = PlayerRankList;//UIプレイヤーごとの順位
+        for (int i = 0; i < PlayerRankTextsList.Count; i++)//UIプレイヤー生成場所
+        {
+            spawnUIPlayer.PositionOBJ.Add(PlayerRankTextsList[i].transform.GetChild(0).gameObject);
+        }
+    }
+
+    /// <summary>
+    /// プレイヤーランクテキスト初期設定
+    /// </summary>
+    void SetPlayerRankText(int numOfFirstRank)
+    {
+        //デフォルト位置に移動とテキスト初期化
+        for (int i = 0; i < _playerRankTextsList.Count; i++)
+        {
+            //デフォルト位置に
+            _playerRankTextsList[i].transform.position = defaltPosition[i].transform.position;
+
+            //ランクテキスト初期化
+            _playerRankTextsList[i].text = "";
+            //スコアテキスト初期化
+            playerScoreTexts[i].GetComponent<Text>().text = "";
+            playerScoreTexts[i].transform.GetChild(0).GetComponent<Text>().text = "";
+        }
+
+        //接続しているプレイヤー数だけ表示する
+        for (int i = 0; i < connectedPlayerStatus.ConnectedPlayer.Count; i++)
+        {
+            if (i >= (numOfFirstRank - 1))
+            {
+                //上から順位表示
+                _playerRankTextsList[i].text = HalfWidth2FullWidth.Set2FullWidth(_playerRankList[i]) + " 位:";
+                //スコア表示
+                playerScoreTexts[i].GetComponent<Text>().text = HalfWidth2FullWidth.Set2FullWidth(playerRank.PlayerRankScore[i]);
+                playerScoreTexts[i].transform.GetChild(0).GetComponent<Text>().text = "チョキン";
+            }
         }
     }
 }

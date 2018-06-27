@@ -20,8 +20,12 @@ public class SpawnUIPlayer : MonoBehaviour
     GameObject playerPrefab;//キャラプレハブ
     [SerializeField]
     Texture[] tex;//テクスチャ
-    [SerializeField]
-    GameObject[] positionOBJ;//生成位置
+    List<GameObject> positionOBJ = new List<GameObject>();//生成位置
+    public List<GameObject> PositionOBJ
+    {
+        get { return positionOBJ; }
+        set { positionOBJ = value; }
+    }
 
     bool iscreated = false;//生成したか？
     List<string> pList;//プレイヤーリスト
@@ -30,6 +34,11 @@ public class SpawnUIPlayer : MonoBehaviour
         set { pList = value; }
     }
 
+    List<int> rankList;//順位リスト
+    public List<int> RankList
+    {
+        set { rankList = value; }
+    }
 
     // Update is called once per frame
     void Update ()
@@ -48,15 +57,14 @@ public class SpawnUIPlayer : MonoBehaviour
         else
         {
             //位置合わせ
-            foreach (var cntPlSta in connectedPlayerStatus.ConnectedPlayer)
+            for(int i = 0; i < connectedPlayerStatus.ConnectedPlayer.Count; i++)
             {
-                player[cntPlSta.Value].transform.position =
-                    new Vector3(Camera.main.ScreenToWorldPoint(positionOBJ[cntPlSta.Value].transform.position).x,
-                                Camera.main.ScreenToWorldPoint(positionOBJ[cntPlSta.Value].transform.position).y - 1,
+                player[i].transform.position =
+                    new Vector3(Camera.main.ScreenToWorldPoint(positionOBJ[i].transform.position).x,
+                                Camera.main.ScreenToWorldPoint(positionOBJ[i].transform.position).y - 1,
                                 0);
             }
         }
-
     }
 
     /// <summary>
@@ -74,7 +82,7 @@ public class SpawnUIPlayer : MonoBehaviour
             player[i].GetComponentInChildren<SkinnedMeshRenderer>().materials[0].mainTexture = tex[connectedPlayerStatus.ConnectedPlayer[pList[i]]];//テクスチャ変更
 
             //一位だったら
-            if (i == 0)
+            if (rankList[i] == 1)
             {
                 //拡大
                 player[i].transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
