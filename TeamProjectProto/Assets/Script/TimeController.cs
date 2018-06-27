@@ -110,9 +110,10 @@ public class TimeController : MonoBehaviour {
     public List<float> ReelRateSet()
     {
         //ゲーム時間でリール割合を決める
-        int rate = (int)(ReelSpin.reelCount * (gameTime / maxGameTime));
+        int rate = (int)(ReelSpin.reelCount * (gameTime / maxGameTime)) - 1;
         reelRate = new List<float>
         {
+            //チョキン　　　　　　　テモチ
             ReelSpin.reelCount-rate,rate
         };
         return reelRate;

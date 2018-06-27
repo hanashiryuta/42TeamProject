@@ -141,8 +141,8 @@ public class BalloonOrigin : MonoBehaviour
             BalloonBlast();
         }
 
-        //スタートカウントダウン中＆終了処理時膨らまない
-        if (!finishCall.IsCalling)
+        //スタートカウントダウン中＆プレイヤーがスタン時膨らまない
+        if (!finishCall.IsCalling||player.GetComponent<PlayerMove>().isStan)
         {
             //時間経過で膨らむ処理
             if (isTimeBlast)
@@ -452,7 +452,8 @@ public class BalloonOrigin : MonoBehaviour
         player.GetComponent<PlayerMove>().isStan = true;
         player.GetComponent<PlayerMove>().isBlastStan = true;
         //スタン時間更新
-        player.GetComponent<PlayerMove>().stanTime = player.GetComponent<PlayerMove>().originStanTime;
+        player.GetComponent<PlayerMove>().stanTime = 0.0f;
+        player.GetComponent<PlayerMove>().originStanTime = 3.0f;
         se.PlayBalloonSE((int)SEController.BalloonSE.Blast);
         //次のプレイヤー指定
         balloonMaster.nextPlayer = BalloonExChangeByDistance(balloonMaster.pList, player);
