@@ -842,6 +842,7 @@ MonoBehaviour:
   isConstant: 1
   originDashLimit: 5
   playerSE: {fileID: 0}
+  playerCol: {fileID: 1710551229950362}
   playerIndex: 0
   dashTiredTime: 1
 --- !u!136 &136683905432024742

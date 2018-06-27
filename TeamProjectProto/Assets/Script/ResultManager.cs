@@ -26,6 +26,8 @@ public class ResultManager : MonoBehaviour
     GameObject[] DefaltPosition;//初期位置
     [SerializeField]
     GameObject[] FinishPosition;//最終位置
+    [SerializeField]
+    Text[] playerScoreTexts;//プレイヤースコア表示テキスト
 
     bool _isAnim = true;//アニメ中か
 
@@ -70,13 +72,20 @@ public class ResultManager : MonoBehaviour
 
         for (int i = 0; i < playerRankTexts.Length; i++)
         {
+            //ランクテキスト初期化
             playerRankTexts[i].text = "";
+            //スコアテキスト初期化
+            playerScoreTexts[i].text = "";
+            playerScoreTexts[i].transform.GetChild(0).GetComponent<Text>().text = "";
         }
         //上から順位順に名前表示
         //接続しているプレイヤー数だけ表示する
         for (int i = 0; i < connectedPlayerStatus.ConnectedPlayer.Count; i++)
         {
             playerRankTexts[i].text = HalfWidth2FullWidth.Set2FullWidth((i + 1).ToString()) + " 位:";// + playerRank.GetComponent<PlayerRank>().ResultRank[i];
+            //スコア表示
+            playerScoreTexts[i].text = HalfWidth2FullWidth.Set2FullWidth(playerRank.GetComponent<PlayerRank>().PlayerRankScore[i]);
+            playerScoreTexts[i].transform.GetChild(0).GetComponent<Text>().text = "チョキン";
         }
 
         //スポーンUIプレイヤー
