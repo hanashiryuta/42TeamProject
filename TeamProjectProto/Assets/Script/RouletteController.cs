@@ -140,6 +140,9 @@ public class RouletteController : MonoBehaviour {
                 //所持アイテム表示オブジェクト生成
                 if (haveItemCount == null)
                 {
+                    //SE
+                    se.PlayRouletteSE((int)SEController.RouletteSE.RouletteAppear);
+
                     haveItemCount = Instantiate(originHaveItemCount, GameObject.FindGameObjectWithTag("Canvas").transform);
                     //初期化処理
                     haveItemCount.GetComponent<HaveItemCounts>().RouletteStart(pList, this);
