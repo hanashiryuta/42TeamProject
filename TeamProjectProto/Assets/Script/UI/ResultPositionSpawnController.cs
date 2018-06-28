@@ -17,13 +17,13 @@ public class ResultPositionSpawnController : MonoBehaviour
         get { return _rankOBJList; }
         set { _rankOBJList = value; }
     }
-    List<Vector3> _defaultPositionsList, _finishPositionsList;//格納リスト
-    public List<Vector3> DefaultPositionsList
+    List<Vector2> _defaultPositionsList, _finishPositionsList;//格納リスト
+    public List<Vector2> DefaultPositionsList
     {
         get { return _defaultPositionsList; }
         set { _defaultPositionsList = value; }
     }
-    public List<Vector3> FinishPositionsList
+    public List<Vector2> FinishPositionsList
     {
         get { return _finishPositionsList; }
         set { _finishPositionsList = value; }
@@ -53,7 +53,7 @@ public class ResultPositionSpawnController : MonoBehaviour
     /// </summary>
     public void SetRanksDefaltPosition(int playerNum)
     {
-        _defaultPositionsList = new List<Vector3>();
+        _defaultPositionsList = new List<Vector2>();
         _rankOBJList = new List<GameObject>();
 
         for (int i = 0; i < playerNum; i++)
@@ -67,7 +67,7 @@ public class ResultPositionSpawnController : MonoBehaviour
                 }
             }
             //デフォ位置格納
-            _defaultPositionsList.Add(new Vector3(firstPositionX + i * positionsXOffset, defaultY, 0));
+            _defaultPositionsList.Add(new Vector2(firstPositionX + i * positionsXOffset, defaultY));
             Debug.Log(_defaultPositionsList[i]);
             //デフォ位置にランクOBJ生成し格納
             _rankOBJList.Add(Instantiate(origin_rankOBJ, playerRankUIParent.transform));
@@ -80,12 +80,12 @@ public class ResultPositionSpawnController : MonoBehaviour
     /// </summary>
     public void SetRanksFinishPosition(int playerNum)
     {
-        _finishPositionsList = new List<Vector3>();
+        _finishPositionsList = new List<Vector2>();
 
         for (int i = 0; i < _defaultPositionsList.Count; i++)
         {
             //Finish位置格納
-            _finishPositionsList.Add(new Vector3(_defaultPositionsList[i].x, finishY, 0));
+            _finishPositionsList.Add(new Vector2(_defaultPositionsList[i].x, finishY));
         }
     }
 }

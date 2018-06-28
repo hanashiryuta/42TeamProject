@@ -39,6 +39,8 @@ public class SpawnUIPlayer : MonoBehaviour
     {
         set { rankList = value; }
     }
+    //順位のプレイヤースケール
+    List<float> rankScaleSize = new List<float>() { 0.7f, 0.5f, 0.4f, 0.3f };
 
     // Update is called once per frame
     void Update ()
@@ -79,10 +81,10 @@ public class SpawnUIPlayer : MonoBehaviour
                                     Camera.main.ScreenToWorldPoint(positionOBJ[i].transform.position),
                                     Quaternion.Euler(0, 180, 0));
 
-            player[i].GetComponentInChildren<SkinnedMeshRenderer>().materials[0].mainTexture = tex[connectedPlayerStatus.ConnectedPlayer[pList[i]]];//テクスチャ変更
-
-            //拡大
-            player[i].transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
+            //スキン変更
+            player[i].GetComponentInChildren<SkinnedMeshRenderer>().materials[0].mainTexture = tex[connectedPlayerStatus.ConnectedPlayer[pList[i]]];
+            //順位に応じてスケール調整
+            player[i].transform.localScale = new Vector3(rankScaleSize[i], rankScaleSize[i], rankScaleSize[i]);
 
             //一位だったら
             if (rankList[i] == 1)

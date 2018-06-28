@@ -32,7 +32,7 @@ public class ResultManager : MonoBehaviour
         get { return _playerRankList; }
     }
 
-    List<Vector3> finishPosition = new List<Vector3>();//最終位置
+    List<Vector2> finishPosition = new List<Vector2>();//最終位置
     List<GameObject> playerScoreTexts = new List<GameObject>();//プレイヤースコア表示テキスト
 
     bool _isAnim = true;//アニメ中か
@@ -72,27 +72,10 @@ public class ResultManager : MonoBehaviour
 
         playerRank = GameObject.Find("PlayerRankController").GetComponent<PlayerRank>();
 
-        //ランク生成初期位置を決定しランクOBJを生成
-        resultPositionSpawnCon = GetComponent<ResultPositionSpawnController>();
-        resultPositionSpawnCon.SetRanksDefaltPosition(connectedPlayerStatus.ConnectedPlayer.Count);
-        resultPositionSpawnCon.SetRanksFinishPosition(connectedPlayerStatus.ConnectedPlayer.Count);
-        // アニメ用位置を渡す
-        //defaltPosition = resultPositionSpawnCon.DefaultPositionsList;
-        finishPosition = resultPositionSpawnCon.FinishPositionsList;
-        //テキストコンポーネントを渡す
-        for (int i = 0; i < resultPositionSpawnCon.RankOBJList.Count; i++)
-        {
-            _playerRankTextsList.Add(resultPositionSpawnCon.RankOBJList[i].GetComponent<Text>());
-        }
-
-        //順位付け
-        _playerRankList = SetPlayersRank();
-
-        //プレイヤーランクテキスト
-        SetPlayerRankText();
-
-        //スポーンUIプレイヤー
-        SetSpawnUIPlayer();
+        SetRankUIsPosition();//ランクUI
+        _playerRankList = SetPlayersRank();//順位付け
+        SetPlayerRankText();//プレイヤーランクテキスト
+        SetSpawnUIPlayer();//スポーンUIプレイヤー
 
         //fade
         fadeController = GameObject.Find("FadePanel").GetComponent<FadeController>();
@@ -215,12 +198,9 @@ public class ResultManager : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f);
 
-        //DoMoveの原点は左下なので中心に移動
-        Vector2 centerPos = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
         for (int i = 0; i < _playerRankTextsList.Count; i++)
         {
-            _playerRankTextsList[i].rectTransform
-                .DOAnchorPos(new Vector2(finishPosition[i].x, finishPosition[i].y), textMovingTime);
+            _playerRankTextsList[i].rectTransform.DOAnchorPos(finishPosition[i], textMovingTime);
             yield return new WaitForSeconds(0.5f);
         }
         //アニメ終わったらoneMore選択
@@ -320,15 +300,15 @@ public class ResultManager : MonoBehaviour
     /// </summary>
     void SetPlayerRankText()
     {
-        //テキスト初期化
-        for (int i = 0; i < _playerRankTextsList.Count; i++)
-        {
-            //ランクテキスト初期化
-            _playerRankTextsList[i].text = "";
-            //スコアテキスト初期化
-            playerScoreTexts[i].GetComponent<Text>().text = "";
-            playerScoreTexts[i].transform.GetChild(0).GetComponent<Text>().text = "";
-        }
+        ////テキスト初期化
+        //for (int i = 0; i < _playerRankTextsList.Count; i++)
+        //{
+        //    //ランクテキスト初期化
+        //    _playerRankTextsList[i].text = "";
+        //    //スコアテキスト初期化
+        //    playerScoreTexts[i].GetComponent<Text>().text = "";
+        //    playerScoreTexts[i].transform.GetChild(0).GetComponent<Text>().text = "";
+        //}
 
         //接続しているプレイヤー数だけ表示する
         for (int i = 0; i < connectedPlayerStatus.ConnectedPlayer.Count; i++)
@@ -338,6 +318,24 @@ public class ResultManager : MonoBehaviour
             //スコア表示
             playerScoreTexts[i].GetComponent<Text>().text = HalfWidth2FullWidth.Set2FullWidth(playerRank.PlayerRankScore[i]);
             playerScoreTexts[i].transform.GetChild(0).GetComponent<Text>().text = "チョキン";
+        }
+    }
+
+    /// <summary>
+    /// ランクUI初期設定
+    /// </summary>
+    void SetRankUIsPosition()
+    {
+        //ランク生成初期位置を決定しランクOBJを生成
+        resultPositionSpawnCon = GetComponent<ResultPositionSpawnController>();
+        resultPositionSpawnCon.SetRanksDefaltPosition(connectedPlayerStatus.ConnectedPlayer.Count);
+        resultPositionSpawnCon.SetRanksFinishPosition(connectedPlayerStatus.ConnectedPlayer.Count);
+        // アニメ用終点位置を渡す
+        finishPosition = resultPositionSpawnCon.FinishPositionsList;
+        //テキストコンポーネントを渡す
+        for (int i = 0; i < resultPositionSpawnCon.RankOBJList.Count; i++)
+        {
+            _playerRankTextsList.Add(resultPositionSpawnCon.RankOBJList[i].GetComponent<Text>());
         }
     }
 }
