@@ -61,7 +61,7 @@ public class SpawnUIPlayer : MonoBehaviour
             {
                 player[i].transform.position =
                     new Vector3(Camera.main.ScreenToWorldPoint(positionOBJ[i].transform.position).x,
-                                Camera.main.ScreenToWorldPoint(positionOBJ[i].transform.position).y - 1,
+                                Camera.main.ScreenToWorldPoint(positionOBJ[i].transform.position).y,
                                 0);
             }
         }
@@ -81,11 +81,12 @@ public class SpawnUIPlayer : MonoBehaviour
 
             player[i].GetComponentInChildren<SkinnedMeshRenderer>().materials[0].mainTexture = tex[connectedPlayerStatus.ConnectedPlayer[pList[i]]];//テクスチャ変更
 
+            //拡大
+            player[i].transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
+
             //一位だったら
             if (rankList[i] == 1)
             {
-                //拡大
-                player[i].transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
                 //王冠を表示
                 player[i].transform.Find("Armature/Bone/Bone.001/Bone.002/Bone.003/Bone.004/Bone.004_end/Crown").gameObject.SetActive(true);
             }

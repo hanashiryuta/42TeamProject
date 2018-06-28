@@ -21,10 +21,6 @@ public class ResultManager : MonoBehaviour
     [SerializeField]
     float textMovingTime = 2f;//順位テキストの移動スピード
 
-    [SerializeField]
-    GameObject[] playerRankTextObjs;//順位表示のテキストOBJ
-    [SerializeField]
-    GameObject playerRankUIParent;//順位表示のテキストOBJの親
     List<Text> _playerRankTextsList = new List<Text>();//順位表示テキストOBJリスト
     public List<Text> PlayerRankTextsList
     {
@@ -36,10 +32,7 @@ public class ResultManager : MonoBehaviour
         get { return _playerRankList; }
     }
 
-    [SerializeField]
-    GameObject[] rankPositionSet;
-    List<GameObject> defaltPosition = new List<GameObject>();//初期位置
-    List<GameObject> finishPosition = new List<GameObject>();//最終位置
+    List<Vector3> finishPosition = new List<Vector3>();//最終位置
     List<GameObject> playerScoreTexts = new List<GameObject>();//プレイヤースコア表示テキスト
 
     bool _isAnim = true;//アニメ中か
@@ -64,6 +57,9 @@ public class ResultManager : MonoBehaviour
     //SE
     SEController se;
 
+    //RankSpawn
+    ResultPositionSpawnController resultPositionSpawnCon;
+
     // Use this for initialization
     void Awake()
     {
@@ -76,19 +72,24 @@ public class ResultManager : MonoBehaviour
 
         playerRank = GameObject.Find("PlayerRankController").GetComponent<PlayerRank>();
 
+        //ランク生成初期位置を決定しランクOBJを生成
+        resultPositionSpawnCon = GetComponent<ResultPositionSpawnController>();
+        resultPositionSpawnCon.SetRanksDefaltPosition(connectedPlayerStatus.ConnectedPlayer.Count);
+        resultPositionSpawnCon.SetRanksFinishPosition(connectedPlayerStatus.ConnectedPlayer.Count);
+        // アニメ用位置を渡す
+        //defaltPosition = resultPositionSpawnCon.DefaultPositionsList;
+        finishPosition = resultPositionSpawnCon.FinishPositionsList;
+        //テキストコンポーネントを渡す
+        for (int i = 0; i < resultPositionSpawnCon.RankOBJList.Count; i++)
+        {
+            _playerRankTextsList.Add(resultPositionSpawnCon.RankOBJList[i].GetComponent<Text>());
+        }
+
         //順位付け
         _playerRankList = SetPlayersRank();
 
-        //どの位置セットを使用するか決定(一位の数で決定)
-        int numOfFirst = _playerRankList.Count(n => n == 1);
-        for (int i = 0; i < rankPositionSet[numOfFirst].transform.childCount; i++) 
-        {
-            defaltPosition.Add(rankPositionSet[numOfFirst - 1].transform.GetChild(0).GetChild(i).gameObject);
-            finishPosition.Add(rankPositionSet[numOfFirst - 1].transform.GetChild(1).GetChild(i).gameObject);
-        }
-
         //プレイヤーランクテキスト
-        SetPlayerRankText(numOfFirst);
+        SetPlayerRankText();
 
         //スポーンUIプレイヤー
         SetSpawnUIPlayer();
@@ -133,7 +134,7 @@ public class ResultManager : MonoBehaviour
             currentState = GamePad.GetState(playerIndex);
             moveX = currentState.ThumbSticks.Left.X;
             ResultXInput();
-            Debug.Log("moveX =" + moveX); 
+            Debug.Log("moveX =" + moveX);
         }
 
         //NextSceneLoad
@@ -214,10 +215,12 @@ public class ResultManager : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f);
 
-        //for (int i = 0; i < playerRankTexts.Length; i++)
+        //DoMoveの原点は左下なので中心に移動
+        Vector2 centerPos = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
         for (int i = 0; i < _playerRankTextsList.Count; i++)
         {
-            _playerRankTextsList[i].transform.DOMove(finishPosition[i].transform.position, textMovingTime);
+            _playerRankTextsList[i].rectTransform
+                .DOAnchorPos(new Vector2(finishPosition[i].x, finishPosition[i].y), textMovingTime);
             yield return new WaitForSeconds(0.5f);
         }
         //アニメ終わったらoneMore選択
@@ -287,24 +290,6 @@ public class ResultManager : MonoBehaviour
             eachRanksCount.Add(rank);
         }
 
-        //表示用テキストOBJを生成し格納
-        foreach(var pRank in eachRanksCount)
-        {
-            //一位だったら
-            if(pRank == 1)
-            {
-                //一位用のランクプレハブ生成し格納
-                _playerRankTextsList.Add(Instantiate(playerRankTextObjs[0], 
-                                                   playerRankUIParent.transform).GetComponent<Text>());
-            }
-            //他の順位だったら
-            else
-            {
-                //２３４位用のランクプレハブ生成し格納
-                _playerRankTextsList.Add(Instantiate(playerRankTextObjs[1],
-                                                   playerRankUIParent.transform).GetComponent<Text>());
-            }
-        }
         //スコアテキストを格納
         foreach(var textOBJ in _playerRankTextsList)
         {
@@ -333,14 +318,11 @@ public class ResultManager : MonoBehaviour
     /// <summary>
     /// プレイヤーランクテキスト初期設定
     /// </summary>
-    void SetPlayerRankText(int numOfFirstRank)
+    void SetPlayerRankText()
     {
-        //デフォルト位置に移動とテキスト初期化
+        //テキスト初期化
         for (int i = 0; i < _playerRankTextsList.Count; i++)
         {
-            //デフォルト位置に
-            _playerRankTextsList[i].transform.position = defaltPosition[i].transform.position;
-
             //ランクテキスト初期化
             _playerRankTextsList[i].text = "";
             //スコアテキスト初期化
@@ -351,14 +333,11 @@ public class ResultManager : MonoBehaviour
         //接続しているプレイヤー数だけ表示する
         for (int i = 0; i < connectedPlayerStatus.ConnectedPlayer.Count; i++)
         {
-            if (i >= (numOfFirstRank - 1))
-            {
-                //上から順位表示
-                _playerRankTextsList[i].text = HalfWidth2FullWidth.Set2FullWidth(_playerRankList[i]) + " 位:";
-                //スコア表示
-                playerScoreTexts[i].GetComponent<Text>().text = HalfWidth2FullWidth.Set2FullWidth(playerRank.PlayerRankScore[i]);
-                playerScoreTexts[i].transform.GetChild(0).GetComponent<Text>().text = "チョキン";
-            }
+            //上から順位表示
+            _playerRankTextsList[i].text = HalfWidth2FullWidth.Set2FullWidth(_playerRankList[i]) + " 位:";
+            //スコア表示
+            playerScoreTexts[i].GetComponent<Text>().text = HalfWidth2FullWidth.Set2FullWidth(playerRank.PlayerRankScore[i]);
+            playerScoreTexts[i].transform.GetChild(0).GetComponent<Text>().text = "チョキン";
         }
     }
 }
