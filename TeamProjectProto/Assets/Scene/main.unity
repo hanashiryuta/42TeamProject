@@ -356,11 +356,6 @@ RenderTexture:
     m_WrapW: 1
   m_Dimension: 2
   m_VolumeDepth: 1
---- !u!4 &1235523766 stripped
-Transform:
-  m_PrefabParentObject: {fileID: 4865645227401938, guid: 4e5866f69cdd80a4aa51ba1da64adbbf,
-    type: 2}
-  m_PrefabInternal: {fileID: 1983581890}
 --- !u!1 &1362678592
 GameObject:
   m_ObjectHideFlags: 0
@@ -557,7 +552,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameObjectList:
-  - {fileID: 1577240658665078, guid: 4cfa373acc4305b4a923a9d1d0615092, type: 2}
+  - {fileID: 1027781594627762, guid: 294cde13d0bc77b468d97c6edc69aa94, type: 2}
   - {fileID: 1204771191657572, guid: a0a16def173e9d249b10f733f5551e0b, type: 2}
   - {fileID: 1500300943428620, guid: 37a6b47a6a2fbc8409433c306bccc6f5, type: 2}
   - {fileID: 1824404104768216, guid: d0f7451e0a1c28740bf1661d29f205b9, type: 2}
@@ -570,10 +565,8 @@ MonoBehaviour:
   - {fileID: 1220680316109376, guid: 1bc25a29a6e14c24bb68276f48b30452, type: 2}
   - {fileID: 1577240658665078, guid: 4cfa373acc4305b4a923a9d1d0615092, type: 2}
   - {fileID: 1027781594627762, guid: 294cde13d0bc77b468d97c6edc69aa94, type: 2}
-  - {fileID: 1861414431699662, guid: dbc1c00a38d4bac448f4144d69c88018, type: 2}
   - {fileID: 1874686281906046, guid: 246c4a36816ae7245a55960d751556bc, type: 2}
-  - {fileID: 1582295046900054, guid: b3bc73f2cc47389409d9d1a1d8bc95fe, type: 2}
-  - {fileID: 1249323856781088, guid: 5c411bc028015864fa412b74e5d1c217, type: 2}
+  - {fileID: 1933321785265950, guid: b3bc73f2cc47389409d9d1a1d8bc95fe, type: 2}
 --- !u!4 &1616548637
 Transform:
   m_ObjectHideFlags: 0

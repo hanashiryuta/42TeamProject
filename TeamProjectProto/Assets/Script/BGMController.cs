@@ -140,7 +140,6 @@ public class BGMController : MonoBehaviour
         {
             SetNowAndNextClip((int)BGM.Main);
             audio.clip = nowClip;
-
             StartCountDown scd = GameObject.Find("StartCountDown").GetComponent<StartCountDown>();
             audio.PlayDelayed(scd.waitTime + 4f);//カウントダウンが終わったらプレイ
         }

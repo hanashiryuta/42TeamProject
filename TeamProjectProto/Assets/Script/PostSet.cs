@@ -28,7 +28,6 @@ public class PostSet : MonoBehaviour {
         startCntDown = GameObject.Find("StartCountDown").GetComponent<StartCountDown>();
         //終了合図
         finishCall = GameObject.Find("FinishCall").GetComponent<FinishCall>();
-
         timeController = GameObject.Find("TimeController").GetComponent<TimeController>();
     }
 
@@ -55,7 +54,6 @@ public class PostSet : MonoBehaviour {
         //ロスタイムならすぐ生成
         if (timeController.timeState == TimeState.LOSSTIME)
             respawnTime = 0;
-
         //生成でき、ポストがなければ
         if (isRespawn&&post == null)
         {

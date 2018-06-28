@@ -325,6 +325,7 @@ public class PostController : MonoBehaviour {
             effect.GetComponent<ScoreEffect>().playerName = player.name; //プレイヤーの名前を代入
                                                                          //エフェクトを生成
             Instantiate(effect, RectTransformUtility.WorldToScreenPoint(Camera.main, transform.position), Quaternion.identity, GameObject.Find("PlayerScoreUI").transform);
+
             //トータル表示を増やす
             player.GetComponent<PlayerMove>().totalItemCount_For_Text++;
             stayTime = 0.0f;
