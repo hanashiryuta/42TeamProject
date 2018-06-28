@@ -40,6 +40,11 @@ public class TitleScene : MonoBehaviour
     //SE
     SEController se;
 
+    //Canvas
+    [SerializeField]
+    CanvasGroup titleCanvas, creditCanvas;//タイトルキャンバス、クレジットキャンバス
+    bool isCredit = false;//クレジットか？
+
     // Use this for initialization
     void Start()
     {
@@ -74,8 +79,19 @@ public class TitleScene : MonoBehaviour
         {
             //Get XInput
             currentState = GamePad.GetState(playerIndex);
-            moveY = currentState.ThumbSticks.Left.Y;
-            TitleXInput();
+
+            //クレジット中じゃなかったら
+            if (!isCredit)
+            {
+                //カーソル移動
+                moveY = currentState.ThumbSticks.Left.Y;
+                TitleXInput();
+            }
+            else
+            {
+                //クレジット中
+                CreditXInput();//Bボタン押したら
+            }
 
             if (isSceneChange)
             {
@@ -117,7 +133,7 @@ public class TitleScene : MonoBehaviour
     }
 
     /// <summary>
-    /// 入力
+    /// タイトル入力
     /// </summary>
     void TitleXInput()
     {
@@ -165,6 +181,23 @@ public class TitleScene : MonoBehaviour
         {
             cnt = delayTime;
             isDelay = false;
+        }
+    }
+
+    /// <summary>
+    /// クレジット入力
+    /// </summary>
+    /// <returns></returns>
+    void CreditXInput()
+    {
+        //B
+        if (previousState.Buttons.B == ButtonState.Released &&
+            currentState.Buttons.B == ButtonState.Pressed)
+        {
+            creditCanvas.alpha = 0;
+            titleCanvas.alpha = 1;
+            se.PlaySystemSE((int)SEController.SystemSE.Cancel);
+            isCredit = false;
         }
     }
 
@@ -223,7 +256,9 @@ public class TitleScene : MonoBehaviour
     /// </summary>
     public void GameCredit()
     {
-
+        isCredit = true;
+        titleCanvas.alpha = 0;
+        creditCanvas.alpha = 1;
     }
 
     /// <summary>

@@ -6,6 +6,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using XInputDotNetPure;
 
     public enum NowBalloonState
 {
@@ -93,6 +94,9 @@ public class BalloonMaster : MonoBehaviour {
     [HideInInspector]
     public List<List<float>> reelRateLists;//ルーレット各リール要素割合
 
+    [HideInInspector]
+    public PlayerIndex nextPlayerIndex;//次に風船を持つプレイヤーのコントローラー
+
     // Use this for initialization
     void Start ()
     {   
@@ -133,7 +137,7 @@ public class BalloonMaster : MonoBehaviour {
         //ルーレット各リール要素割合初期値設定
         reelRateLists = new List<List<float>>
         {
-            new List<float> {5,5},
+            new List<float> {3,4,3},
             new List<float> {3,7},
             new List<float> {5,3,2},
         };
@@ -167,10 +171,6 @@ public class BalloonMaster : MonoBehaviour {
                 //バルーン生成
                 nowBalloon = Instantiate(nextSpawnBalloon,nowPlayer.transform.position,Quaternion.identity);
                 se.PlayBalloonSE((int)SEController.BalloonSE.Spawn);
-                foreach(var cx in GameObject.FindGameObjectsWithTag("Post"))
-                {
-                    cx.GetComponent<PostController>().isBalloon = true;
-                }
                 //自分指定
                 nowBalloon.GetComponent<BalloonOrigin>().balloonMaster = this;
                 //バルーンにプレイヤー指定
@@ -180,7 +180,7 @@ public class BalloonMaster : MonoBehaviour {
                 //次の爆弾指定
                 nextSpawnBalloon = balloonList[Random.Range(0, balloonList.Count)];
                 //ダッシュ回復
-                nowPlayer.GetComponent<PlayerMove>().DashCountDown = nowPlayer.GetComponent<PlayerMove>().DashLimitTime;
+                //nowPlayer.GetComponent<PlayerMove>().DashCountDown = nowPlayer.GetComponent<PlayerMove>().DashLimitTime;
 
                 balloonRespawnTime = originBalloonRespawnTime;
 
@@ -266,6 +266,10 @@ public class BalloonMaster : MonoBehaviour {
         nextPlayer = player;
 
         timeController.LossTimeStart(second, this);//ロスタイム判定
+
+        nextPlayerIndex = nextPlayer.GetComponent<PlayerMove>().playerIndex;
+        GamePad.SetVibration(nextPlayerIndex, 0.0f, 1.0f);
+        GameObject.Find("PostRespawnPoint").GetComponent<PostRespawn>().isBalloon = true;
     }
     
 }

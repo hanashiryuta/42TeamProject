@@ -103,12 +103,14 @@ public class BalloonOrigin : MonoBehaviour
 
     bool isTexSet = true;//テクスチャ設定用bool
 
+    public float originMoveTime = 2.0f;//バルーンが動くまでの時間設定
+
     // Use this for initialization
     void Start()
     {
         //初期化処理
         scaleCount = 1;
-        moveTime = 3.0f;
+        moveTime = originMoveTime;
         isMove = true;
         _balloonState = BalloonState.SAFETY;
         scaleRate = scaleLimit / blastLimit;
@@ -156,17 +158,17 @@ public class BalloonOrigin : MonoBehaviour
 
         transform.localScale = new Vector3(scaleCount, scaleCount, scaleCount);//内容物の数により大きさ変更    
 
-        //一度移ってから再度移るまで3秒のインターバルが存在する
+        //一度移ってから再度移るまで2秒のインターバルが存在する
         if (!isMove)
         {
             moveTime -= Time.deltaTime;
             if (moveTime < 0)
             {
-                moveTime = 2;
+                moveTime = originMoveTime;
                 isMove = true;
             }
         }
-        
+
         ColorChange();//色変更
 
         _isColorChaged = CheckColorChange();
@@ -311,7 +313,7 @@ public class BalloonOrigin : MonoBehaviour
             isMove = false;
             player.GetComponent<PlayerMove>().isStan = true;
             //ダッシュ回復
-            player.GetComponent<PlayerMove>().DashCountDown = player.GetComponent<PlayerMove>().DashLimitTime;
+            //player.GetComponent<PlayerMove>().DashCountDown = player.GetComponent<PlayerMove>().DashLimitTime;
             se.PlayBalloonSE((int)SEController.BalloonSE.ChangeTarget);
         }
     }

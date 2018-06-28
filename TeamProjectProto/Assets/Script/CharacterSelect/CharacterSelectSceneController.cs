@@ -40,6 +40,11 @@ public class CharacterSelectSceneController : MonoBehaviour
     bool isStartSE_Played = false;
     bool isCancelSE_Played = false;
 
+    [SerializeField]
+    Text player1Text;
+    [SerializeField]
+    Text startText;
+
     // Use this for initialization
     void Start()
     {
@@ -147,7 +152,7 @@ public class CharacterSelectSceneController : MonoBehaviour
         if (readyPlayers == ConnectedPlayerCount() &&
             ConnectedPlayerCount() == 1)
         {
-            mainText.text = "一人は遊べない！";
+            mainText.text = "一人では遊べないよ！";
         }
         else
         {
@@ -190,22 +195,28 @@ public class CharacterSelectSceneController : MonoBehaviour
         }
 
         //プレイヤーが一人の時
-        if (readyPlayers == 1)
+        if (readyPlayers <= 1)
         {
-            mainText.text = "一人は遊べない！";
+            //mainText.text = "一人では遊べないよ！";
+            mainText.enabled = false;
+            player1Text.enabled = false;
+            startText.enabled = false;
         }
         else
         {
-            mainText.text = "準備完了したら\n" +
-                            "Ｐｌａｙｅｒ" + HalfWidth2FullWidth.Set2FullWidth(((int)controllablePlayerIndex) + 1) +
-                            "が\nＳＴＡＲＴ押してね！";
+            mainText.text = "　　の\n" +
+                            "　　　　　　　で\n" +
+                            "ゲームスタート！";
+            mainText.enabled = true;
+            player1Text.enabled = true;
+            startText.enabled = true;
         }
 
         return isAllReady;
     }
 
     /// <summary>
-    /// ゲーム進行操作可能なプレイヤーがSTARTボタン押したか
+    /// ゲーム進行操作可能なプレイヤーがBACKボタン押したか
     /// </summary>
     /// <returns></returns>
     bool Is_ControllablePlayer_Pressed_Back()
@@ -262,6 +273,8 @@ public class CharacterSelectSceneController : MonoBehaviour
 
         mainText.text = "準備完了！";
         mainText.color = Color.yellow;
+        player1Text.enabled = false;
+        startText.enabled = false;
 
         gameload.NextScene = GameLoad.Scene.StageSelect;
         Invoke("SceneLoad", _delayTime + 1f);
@@ -310,7 +323,7 @@ public class CharacterSelectSceneController : MonoBehaviour
             {
                 connectedPlayerStatus.ConnectedPlayer.Add("Player" + (i + 1), i);
             }
-        }          
+        }
     }
 
     /// <summary>

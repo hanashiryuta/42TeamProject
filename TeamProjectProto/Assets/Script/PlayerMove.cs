@@ -135,6 +135,8 @@ public class PlayerMove : MonoBehaviour
 
     float dashParticleTime = 0.0f;
 
+    public bool isConstant = false;//ダッシュ上限を固定するか
+    public float originDashLimit = 3.0f;//ダッシュ可能の最大時間の設定
     public SEController playerSE;//SEコントローラー
 
     // Use this for initialization
@@ -629,37 +631,31 @@ public class PlayerMove : MonoBehaviour
         //中心物体に当たったら
         if (col.gameObject.tag == "Post" && balloon == null)
         {
-            totalItemCount += holdItemCount;
+            //ポストが待機状態だったら
+            if(col.gameObject.GetComponent<PostController>().postState == PostState.STAY)
+            { 
+                //トータル増やす
+                totalItemCount += holdItemCount;
 
-            //if (balloon != null && isBalloonShrink)
-            //{
-            //    col.GetComponent<PostController>().blastCount -= holdItemCount;
-            //    itemList.Clear();
-            //    holdItemCount = 0;//内容物所持数を0にする
-            //    return;
-            //}
-
-            //ポイントが1つでもあったとき
-            if (holdItemCount >= 1)
-            {
-                effect.GetComponent<ScoreEffect>().playerName = transform.name; //プレイヤーの名前を代入
-                //エフェクトを生成
-                Instantiate(effect, RectTransformUtility.WorldToScreenPoint(Camera.main, transform.position), Quaternion.identity, GameObject.Find("PlayerScoreUI").transform);
-                playerSE.PlayPlayerSEOnce((int)SEController.PlayerSE.SendPost);
-                //GetComponent<AudioSource>().PlayOneShot(soundSE3);
-                //ポストパーティクル生成
-                col.GetComponent<PostController>().Pig_ToCoin_Particle();
+                //ポイントが1つでもあったとき
+                if (holdItemCount >= 1)
+                {
+                    //effect.GetComponent<ScoreEffect>().playerName = transform.name; //プレイヤーの名前を代入
+                    ////エフェクトを生成
+                    //Instantiate(effect, RectTransformUtility.WorldToScreenPoint(Camera.main, transform.position), Quaternion.identity, GameObject.Find("PlayerScoreUI").transform);
+                    playerSE.PlayPlayerSEOnce((int)SEController.PlayerSE.SendPost);
+                }
+                col.GetComponent<PostController>().blastCount += holdItemCount;//中心物体に内容物総数を渡す
+                //col.GetComponent<PostController>().respawnCount += holdItemCount;
+                col.GetComponent<PostController>().player = gameObject;
+                foreach (var cx in itemList)
+                {
+                    totalItemList.Add(cx);
+                }
+                itemList.Clear();
+                holdItemCount = 0;//内容物所持数を0にする
+                              //GetComponent<AudioSource> ().PlayOneShot (soundSE3);
             }
-            col.GetComponent<PostController>().blastCount += holdItemCount;//中心物体に内容物総数を渡す
-            col.GetComponent<PostController>().respawnCount += holdItemCount;
-            col.GetComponent<PostController>().player = gameObject;
-            foreach (var cx in itemList)
-            {
-                totalItemList.Add(cx);
-            }
-            itemList.Clear();
-            holdItemCount = 0;//内容物所持数を0にする
-            //GetComponent<AudioSource> ().PlayOneShot (soundSE3);
         }
 
         //衝撃波に当たったら
@@ -975,8 +971,15 @@ public class PlayerMove : MonoBehaviour
             }
             else
             {
-                //半分の速度でカウントダウン回復
-                _dashCountDown += Time.deltaTime / 2f;
+                if (balloon == null)
+                {
+                    //半分の速度でカウントダウン回復
+                    _dashCountDown += Time.deltaTime / 2f;
+                }
+                else
+                {
+                    _dashCountDown += Time.deltaTime;
+                }
                 dashTiredTime = 1f;
             }
         }
@@ -996,7 +999,17 @@ public class PlayerMove : MonoBehaviour
     /// <param name="time"></param>
     void SetDashLimitTime(float itemAmount, float time)
     {
-        _dashLimitTime = (itemAmount + 1) * time;
+        //上限固定をしなければアイテムの個数に応じて上限を設定する
+        if (!isConstant)
+            _dashLimitTime = (itemAmount + 1) * time;
+        //上限を固定する
+        else
+        {
+            if (balloon == null)
+                _dashLimitTime = originDashLimit;
+            else
+                _dashLimitTime = originDashLimit + 2.0f;
+        }
     }
 
     SelectScript pauseScript;//ポーズ関連
