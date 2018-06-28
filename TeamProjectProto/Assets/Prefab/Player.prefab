@@ -839,10 +839,11 @@ MonoBehaviour:
   isHit: 0
   isBlastStan: 0
   balloonMaster: {fileID: 0}
-  isConstant: 1
+  isConstant: 0
   originDashLimit: 5
   playerSE: {fileID: 0}
   playerCol: {fileID: 1710551229950362}
+  totalItemCount_For_Text: 0
   playerIndex: 0
   dashTiredTime: 1
 --- !u!136 &136683905432024742

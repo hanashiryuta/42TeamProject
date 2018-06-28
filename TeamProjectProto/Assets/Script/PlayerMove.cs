@@ -948,7 +948,15 @@ public class PlayerMove : MonoBehaviour
         if (currentState.Buttons.RightShoulder == ButtonState.Pressed)
         {
             //カウントダウン
-            _dashCountDown -= Time.deltaTime;
+            if (balloon != null)
+            {
+                //風船を持つプレイヤーは消費量半分
+                _dashCountDown -= Time.deltaTime / 2f;
+            }
+            else
+            {
+                _dashCountDown -= Time.deltaTime;
+            }
 
             if (_dashCountDown > 0)
             {
@@ -981,15 +989,8 @@ public class PlayerMove : MonoBehaviour
             }
             else
             {
-                if (balloon == null)
-                {
-                    //半分の速度でカウントダウン回復
-                    _dashCountDown += Time.deltaTime / 2f;
-                }
-                else
-                {
-                    _dashCountDown += Time.deltaTime;
-                }
+                //半分の速度でカウントダウン回復
+                _dashCountDown += Time.deltaTime/* / 2f*/;
                 dashTiredTime = 1f;
             }
         }
