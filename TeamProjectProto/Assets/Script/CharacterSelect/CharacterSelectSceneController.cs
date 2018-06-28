@@ -321,6 +321,7 @@ public class CharacterSelectSceneController : MonoBehaviour
         {
             if (standbyCheck[i].IsSpawn)
             {
+                //プレイヤー名とインデックスを記録
                 connectedPlayerStatus.ConnectedPlayer.Add("Player" + (i + 1), i);
             }
         }

@@ -20,8 +20,12 @@ public class SpawnUIPlayer : MonoBehaviour
     GameObject playerPrefab;//キャラプレハブ
     [SerializeField]
     Texture[] tex;//テクスチャ
-    [SerializeField]
-    GameObject[] positionOBJ;//生成位置
+    List<GameObject> positionOBJ = new List<GameObject>();//生成位置
+    public List<GameObject> PositionOBJ
+    {
+        get { return positionOBJ; }
+        set { positionOBJ = value; }
+    }
 
     bool iscreated = false;//生成したか？
     List<string> pList;//プレイヤーリスト
@@ -30,6 +34,13 @@ public class SpawnUIPlayer : MonoBehaviour
         set { pList = value; }
     }
 
+    List<int> rankList;//順位リスト
+    public List<int> RankList
+    {
+        set { rankList = value; }
+    }
+    //順位のプレイヤースケール
+    List<float> rankScaleSize = new List<float>() { 0.7f, 0.5f, 0.4f, 0.3f };
 
     // Update is called once per frame
     void Update ()
@@ -48,15 +59,14 @@ public class SpawnUIPlayer : MonoBehaviour
         else
         {
             //位置合わせ
-            foreach (var cntPlSta in connectedPlayerStatus.ConnectedPlayer)
+            for(int i = 0; i < connectedPlayerStatus.ConnectedPlayer.Count; i++)
             {
-                player[cntPlSta.Value].transform.position =
-                    new Vector3(Camera.main.ScreenToWorldPoint(positionOBJ[cntPlSta.Value].transform.position).x,
-                                Camera.main.ScreenToWorldPoint(positionOBJ[cntPlSta.Value].transform.position).y - 1,
+                player[i].transform.position =
+                    new Vector3(Camera.main.ScreenToWorldPoint(positionOBJ[i].transform.position).x,
+                                Camera.main.ScreenToWorldPoint(positionOBJ[i].transform.position).y,
                                 0);
             }
         }
-
     }
 
     /// <summary>
@@ -71,13 +81,14 @@ public class SpawnUIPlayer : MonoBehaviour
                                     Camera.main.ScreenToWorldPoint(positionOBJ[i].transform.position),
                                     Quaternion.Euler(0, 180, 0));
 
-            player[i].GetComponentInChildren<SkinnedMeshRenderer>().materials[0].mainTexture = tex[connectedPlayerStatus.ConnectedPlayer[pList[i]]];//テクスチャ変更
+            //スキン変更
+            player[i].GetComponentInChildren<SkinnedMeshRenderer>().materials[0].mainTexture = tex[connectedPlayerStatus.ConnectedPlayer[pList[i]]];
+            //順位に応じてスケール調整
+            player[i].transform.localScale = new Vector3(rankScaleSize[i], rankScaleSize[i], rankScaleSize[i]);
 
             //一位だったら
-            if (i == 0)
+            if (rankList[i] == 1)
             {
-                //拡大
-                player[i].transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
                 //王冠を表示
                 player[i].transform.Find("Armature/Bone/Bone.001/Bone.002/Bone.003/Bone.004/Bone.004_end/Crown").gameObject.SetActive(true);
             }
