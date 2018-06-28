@@ -33,6 +33,10 @@ public class ConnectedPlayerStatus : MonoBehaviour
 
     void Awake()
     {
+        //シーン切替を検知
+        SceneManager.sceneLoaded += SceneLoaded;
+
+        //1つしか存在しない
         if (!created)
         {
             //SelectシーンからMain.Resultシーン
@@ -47,5 +51,18 @@ public class ConnectedPlayerStatus : MonoBehaviour
 
     private void Update()
     {
+    }
+
+    /// <summary>
+    /// シーンが呼ばれた時呼ばれるメソッド
+    /// </summary>
+    /// <param name="scene"></param>
+    /// <param name="mode"></param>
+    private void SceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        Debug.Log(scene.name + "Loaded");
+        //キャラセレクトシーンをロードするとプ接続プレイヤーを削除
+        if(scene.name == "CharacterSelect")
+            _connectedPlayer.Clear();
     }
 }

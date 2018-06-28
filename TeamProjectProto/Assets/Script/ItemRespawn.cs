@@ -33,9 +33,9 @@ public class ItemRespawn : MonoBehaviour {
     void Update () {
         //内容物がなければ
         // 追加：アイテム上限以上の場合は生成できない
-        respawnTime -= Time.deltaTime;
+        //respawnTime -= Time.deltaTime;
         if (item == null && itemRespawnLimit.GetComponent<ItemRespawnLimit>().isRespawn()) {
-            //respawnTime -= Time.deltaTime;
+            respawnTime -= Time.deltaTime;
             if (respawnTime < 0 && !startCntDown.IsCntDown && !finishCall.IsCalling) {
                 item = Instantiate(itemList[Random.Range(0, itemList.Count)], transform.position + new Vector3(0,0.5f,0), Quaternion.Euler(90,0,0), transform);//内容物を生成する
                 respawnTime = setRespawnTiem;

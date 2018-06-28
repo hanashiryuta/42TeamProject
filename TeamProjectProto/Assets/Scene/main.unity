@@ -291,19 +291,10 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1912439068673506, guid: 91347e7381ca01b46b64cae46052ffeb, type: 2}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 91347e7381ca01b46b64cae46052ffeb, type: 2}
   m_IsPrefabParent: 0
---- !u!4 &1235523766 stripped
-Transform:
-  m_PrefabParentObject: {fileID: 4865645227401938, guid: 4e5866f69cdd80a4aa51ba1da64adbbf,
-    type: 2}
-  m_PrefabInternal: {fileID: 1983581890}
---- !u!84 &1259743376
+--- !u!84 &945366086
 RenderTexture:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -334,7 +325,7 @@ RenderTexture:
     m_WrapW: 1
   m_Dimension: 2
   m_VolumeDepth: 1
---- !u!84 &1324024081
+--- !u!84 &1142031159
 RenderTexture:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -727,7 +718,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 0
   m_RenderingPath: 1
-  m_TargetTexture: {fileID: 1259743376}
+  m_TargetTexture: {fileID: 945366086}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 0
@@ -953,8 +944,8 @@ MonoBehaviour:
   sourceCamera: {fileID: 2094600263}
   outlineCamera: {fileID: 1846411882}
   outlineShaderMaterial: {fileID: 0}
-  renderTexture: {fileID: 1259743376}
-  extraRenderTexture: {fileID: 1324024081}
+  renderTexture: {fileID: 945366086}
+  extraRenderTexture: {fileID: 1142031159}
 --- !u!114 &2094600266
 MonoBehaviour:
   m_ObjectHideFlags: 0

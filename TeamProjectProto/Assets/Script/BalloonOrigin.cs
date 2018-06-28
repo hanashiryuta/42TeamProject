@@ -105,6 +105,8 @@ public class BalloonOrigin : MonoBehaviour
 
     public float originMoveTime = 2.0f;//バルーンが動くまでの時間設定
 
+    public float colorEmission = 0.2f;
+
     // Use this for initialization
     void Start()
     {
@@ -141,8 +143,8 @@ public class BalloonOrigin : MonoBehaviour
             BalloonBlast();
         }
 
-        //スタートカウントダウン中＆終了処理時膨らまない
-        if (!finishCall.IsCalling)
+        //スタートカウントダウン中＆プレイヤーがスタン時膨らまない
+        if (!finishCall.IsCalling||player.GetComponent<PlayerMove>().isStan)
         {
             //時間経過で膨らむ処理
             if (isTimeBlast)
@@ -242,7 +244,7 @@ public class BalloonOrigin : MonoBehaviour
                     //テクスチャ設定
                     gameObject.GetComponentInChildren<MeshRenderer>().materials[0].mainTexture = balloonStateTexture[0];
                     //明るさ
-                    transform.GetComponentInChildren<MeshRenderer>().materials[0].SetColor("_EmissionColor", new Color(0.2f, 0.2f, 0.2f));
+                    transform.GetComponentInChildren<MeshRenderer>().materials[0].SetColor("_EmissionColor", new Color(colorEmission, colorEmission, colorEmission));
                     transform.GetComponentInChildren<MeshRenderer>().materials[0].SetTexture("_EmissionMap", balloonStateTexture[0]);
                     transform.GetComponentInChildren<MeshRenderer>().materials[0].EnableKeyword("_EMISSION");
                     isTexSet = false;
@@ -263,7 +265,7 @@ public class BalloonOrigin : MonoBehaviour
                     //テクスチャ設定
                     gameObject.GetComponentInChildren<MeshRenderer>().materials[0].mainTexture = balloonStateTexture[1];
                     //明るさ
-                    transform.GetComponentInChildren<MeshRenderer>().materials[0].SetColor("_EmissionColor", new Color(0.2f, 0.2f, 0.2f));
+                    transform.GetComponentInChildren<MeshRenderer>().materials[0].SetColor("_EmissionColor", new Color(colorEmission, colorEmission, colorEmission));
                     transform.GetComponentInChildren<MeshRenderer>().materials[0].SetTexture("_EmissionMap", balloonStateTexture[1]);
                     transform.GetComponentInChildren<MeshRenderer>().materials[0].EnableKeyword("_EMISSION");
                     isTexSet = false;
@@ -288,7 +290,7 @@ public class BalloonOrigin : MonoBehaviour
                 {
                     gameObject.GetComponentInChildren<MeshRenderer>().materials[0].mainTexture = balloonStateTexture[2];
                     //明るさ
-                    transform.GetComponentInChildren<MeshRenderer>().materials[0].SetColor("_EmissionColor", new Color(0.2f, 0.2f, 0.2f));
+                    transform.GetComponentInChildren<MeshRenderer>().materials[0].SetColor("_EmissionColor", new Color(colorEmission, colorEmission, colorEmission));
                     transform.GetComponentInChildren<MeshRenderer>().materials[0].SetTexture("_EmissionMap", balloonStateTexture[2]);
                     transform.GetComponentInChildren<MeshRenderer>().materials[0].EnableKeyword("_EMISSION");
                     isTexSet = false;
@@ -452,7 +454,8 @@ public class BalloonOrigin : MonoBehaviour
         player.GetComponent<PlayerMove>().isStan = true;
         player.GetComponent<PlayerMove>().isBlastStan = true;
         //スタン時間更新
-        player.GetComponent<PlayerMove>().stanTime = player.GetComponent<PlayerMove>().originStanTime;
+        player.GetComponent<PlayerMove>().stanTime = 0.0f;
+        player.GetComponent<PlayerMove>().originStanTime = 2.0f;
         se.PlayBalloonSE((int)SEController.BalloonSE.Blast);
         //次のプレイヤー指定
         balloonMaster.nextPlayer = BalloonExChangeByDistance(balloonMaster.pList, player);
@@ -470,18 +473,31 @@ public class BalloonOrigin : MonoBehaviour
     /// <param name="isTotal">トータルか所持からか</param>
     public virtual void ItemBlast(GameObject player,float itemRate,bool isTotal)
     {
+        //プレイヤー管理メソッド取得
         PlayerMove playerMove = player.GetComponent<PlayerMove>();
+        //スタン状態
         playerMove.isStan = true;
-        //排出ポイント割合
-        List<string> itemList = isTotal ? playerMove.totalItemList : playerMove.itemList;
 
+        //排出アイテムリスト設定
+        List<string> itemList = isTotal ? playerMove.totalItemList : playerMove.itemList;
+        
+        //排出アイテム数設定
         float itemCount = isTotal ? playerMove.totalItemCount : playerMove.holdItemCount;
 
+        //排出割合設定
         int itemRatio = (int)(itemCount *(itemRate/10));
 
-        if(isTotal)
+        if (isTotal)
+        {
+            //トータル表示用を減らす
+            playerMove.totalItemCount_For_Text -= itemRatio;
+            //0以下にしない
+            if (playerMove.totalItemCount_For_Text <= 0)
+                playerMove.totalItemCount_For_Text = 0;
+            //トータルを減らす
             playerMove.totalItemCount -= itemRatio;
-        else
+        }
+        else//手持ちを減らす
             playerMove.holdItemCount -= itemRatio;
         //排出ポイント割合が0になるまで排出
         while (itemRatio > 0)

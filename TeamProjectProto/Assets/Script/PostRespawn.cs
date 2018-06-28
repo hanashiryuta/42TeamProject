@@ -19,9 +19,10 @@ public class PostRespawn : MonoBehaviour {
     List<GameObject> isPostList;//ポストがある生成位置リスト
 
     public GameObject origin_Post_Target_Particle;
-
     [HideInInspector]
     public bool isBalloon;
+
+    TimeController timeController;//時間管理クラス
 
     // Use this for initialization
     void Start ()
@@ -46,6 +47,7 @@ public class PostRespawn : MonoBehaviour {
         {
             PostRespawnSet();
         }
+        timeController = GameObject.Find("TimeController").GetComponent<TimeController>();
     }
 
     // Update is called once per frame
@@ -53,10 +55,13 @@ public class PostRespawn : MonoBehaviour {
     {
         isLimitReset = false; //アイテム生成上限リセット判定をリセット
 
-        if (!isBalloon)
+        //バルーンが生成されるタイミングで生成できるようにする
+        //ロスタイムはいつでも生成できる
+        if (!isBalloon&&timeController.timeState != TimeState.LOSSTIME)
             return;
 
-        bool balloons = false;
+        //生成確認用bool
+        float balloons = 0;
 
         //ポストがいなければ
         for (int i = 0; i < isPostList.Count; i++)
@@ -66,13 +71,18 @@ public class PostRespawn : MonoBehaviour {
                 isPostList.RemoveAt(i);
                 //生成許可
                 PostRespawnSet();
-                balloons = true;
+            }
+            else
+            {
+                balloons++;
             }
         }
 
-        if(!balloons)
+        //2箇所とも生成されていたら
+        if(balloons >= 2)
         {
-            isBalloon = true;
+            //次のバルーン生成タイミングまで生成しない
+            isBalloon = false;
         }
     }
 

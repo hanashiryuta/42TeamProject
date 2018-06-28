@@ -34,6 +34,14 @@ public class PlayerRank : MonoBehaviour
         set { _isInPlay = value; }
     }
 
+    //プレイヤースコア用リスト
+    List<float> _playerRankScore;
+    public List<float> PlayerRankScore
+    {
+        get { return _playerRankScore; }
+        set { _playerRankScore = value; }
+    }
+
 	/// <summary>
 	/// 1つだけを生成
 	/// </summary>

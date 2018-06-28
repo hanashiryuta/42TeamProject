@@ -755,7 +755,7 @@ MonoBehaviour:
   playerSEList:
   - {fileID: 8300000, guid: f5c3ff069cdfdc14eb9af8c8956482e8, type: 3}
   - {fileID: 8300000, guid: 475d72f144db63844b07315899919ce2, type: 3}
-  - {fileID: 8300000, guid: d55b50dfedb205c4f85b62fcbdf5cfb1, type: 3}
+  - {fileID: 8300000, guid: 3a1e6320dd53e0b4990e7d6ef8988a4a, type: 3}
   - {fileID: 8300000, guid: 2235b27092d1cd14682903feadae2b33, type: 3}
   balloonSEList: []
   rouletteSEList: []
@@ -842,6 +842,7 @@ MonoBehaviour:
   isConstant: 1
   originDashLimit: 5
   playerSE: {fileID: 0}
+  playerCol: {fileID: 1710551229950362}
   playerIndex: 0
   dashTiredTime: 1
 --- !u!136 &136683905432024742

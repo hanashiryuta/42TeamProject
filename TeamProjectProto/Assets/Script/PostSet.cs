@@ -17,8 +17,9 @@ public class PostSet : MonoBehaviour {
     public bool isRespawn = false;//リスポーンしてるかどうか
     StartCountDown startCntDown;//カウントダウンScript
     FinishCall finishCall;//終了合図Script
-    GameObject origin_Post_Target_Particle;
+    GameObject origin_Post_Target_Particle;//ポスト出現ターゲット
     GameObject post_Target_Particle;
+    TimeController timeController;//時間管理クラス
 
     // Use this for initialization
     void Start () {
@@ -27,6 +28,7 @@ public class PostSet : MonoBehaviour {
         startCntDown = GameObject.Find("StartCountDown").GetComponent<StartCountDown>();
         //終了合図
         finishCall = GameObject.Find("FinishCall").GetComponent<FinishCall>();
+        timeController = GameObject.Find("TimeController").GetComponent<TimeController>();
     }
 
     /// <summary>
@@ -49,6 +51,9 @@ public class PostSet : MonoBehaviour {
         if (startCntDown.IsCntDown || finishCall.IsCalling)
             return;
 
+        //ロスタイムならすぐ生成
+        if (timeController.timeState == TimeState.LOSSTIME)
+            respawnTime = 0;
         //生成でき、ポストがなければ
         if (isRespawn&&post == null)
         {

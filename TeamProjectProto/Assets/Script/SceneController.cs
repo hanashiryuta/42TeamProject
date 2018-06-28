@@ -82,11 +82,15 @@ public class SceneController : MonoBehaviour {
 
         //ゲーム中の順位の名前を記録してリザルトシーン用に保存
         List<string> tmp = new List<string>();
+        //スコア保存用リスト
+        List<float> score = new List<float>();
         foreach(var player in playerRank.GetComponent<PlayerRank>().PlayerRankArray)
         {
             tmp.Add(player.name);
+            score.Add(player.GetComponent<PlayerMove>().totalItemCount);
         }
         playerRank.GetComponent<PlayerRank>().ResultRank = tmp;
+        playerRank.GetComponent<PlayerRank>().PlayerRankScore = score;
 
         //万が一シーンが切り替わると同時にコントローラーが振動し始めたときにコントローラーの振動を停止する処理
         GamePad.SetVibration(PlayerIndex.One, 0.0f, 0.0f);

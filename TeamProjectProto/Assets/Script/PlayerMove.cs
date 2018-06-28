@@ -137,7 +137,13 @@ public class PlayerMove : MonoBehaviour
 
     public bool isConstant = false;//ダッシュ上限を固定するか
     public float originDashLimit = 3.0f;//ダッシュ可能の最大時間の設定
+    [HideInInspector]
     public SEController playerSE;//SEコントローラー
+
+    public GameObject playerCol;//プレイヤーあたり判定
+
+    [HideInInspector]
+    public float totalItemCount_For_Text = 0;//トータル表示用数
 
     // Use this for initialization
     void Start()
@@ -149,7 +155,7 @@ public class PlayerMove : MonoBehaviour
         jumpCount = 0;
         rigid = GetComponent<Rigidbody>();
         rotationPosition = transform.position;
-        stanTime = originStanTime;
+        stanTime = 0;
 
         //holdItemCountText = GameObject.Find(transform.name + "ItemCount").GetComponent<Text>();//内容物所持数テキスト取得
         totalItemCountText = GameObject.Find(transform.name + "TotalCount").GetComponent<Text>();
@@ -177,7 +183,7 @@ public class PlayerMove : MonoBehaviour
     void Update()
     {
         holdItemCountText.text = HalfWidth2FullWidth.Set2FullWidth(holdItemCount);//内容物取得数表示処理 
-        totalItemCountText.text = HalfWidth2FullWidth.Set2FullWidth(totalItemCount);
+        totalItemCountText.text = HalfWidth2FullWidth.Set2FullWidth(totalItemCount_For_Text);
 
         PlayerAnim(playerAnim);
 
@@ -232,8 +238,10 @@ public class PlayerMove : MonoBehaviour
             }
 
             //最初に移動量をゼロに
-            if (stanTime >= originStanTime)
+            if (stanTime <= 0.0f)
             {
+                //スタン中あたり判定のレイヤーを変えてプレイヤー同士当たらないようにする
+                playerCol.layer = LayerMask.NameToLayer("PlayerStanHit");
                 //rigid.velocity = Vector3.zero;
                 GamePad.SetVibration(XDInput[(int)(playerIndex)], 0.0f, 1.0f);
                 isStop = true;
@@ -245,11 +253,13 @@ public class PlayerMove : MonoBehaviour
             rigid.AddForce(new Vector3(0, -9.8f * 5, 0));
 
             //時間で回復
-            stanTime -= Time.deltaTime;
-            if (stanTime < 0)
+            stanTime += Time.deltaTime;
+            if (stanTime > originStanTime)
             {
+                //レイヤーを戻す
+                playerCol.layer = LayerMask.NameToLayer("PlayerHit");
                 isStan = false;
-                stanTime = originStanTime;
+                stanTime = 0.0f;
                 if(isBlastStan)
                 {
                     isBlastStan = false;

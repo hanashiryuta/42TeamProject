@@ -108,7 +108,7 @@ public class PostController : MonoBehaviour {
                 Fly(2.0f);
                 break;
             case PostState.ITEM_UI://アイテム生成
-                Item_UI(0.2f);
+                Item_UI(0.1f);
                 break;
             case PostState.EXIT://退場
                 Exit(1.0f);
@@ -177,7 +177,6 @@ public class PostController : MonoBehaviour {
             //ポストパーティクル生成
             Pig_ToCoin_Particle();
             targetUI = GameObject.Find(player.name + "PostPosition"); //取得したプレイヤー名のUIを見つける
-            coinCount = blastCount;//コイン生成数指定
             postState = PostState.AIRSPAWN;//状態遷移
         }
     }
@@ -202,16 +201,8 @@ public class PostController : MonoBehaviour {
             if (blastCount <= 0 && pig_ToCoin_Particle == null)
             {
                 blastCount = 0;
-                //ロスタイム以外なら状態遷移
-                if (timeController.GetComponent<TimeController>().timeState != TimeState.LOSSTIME)
-                {
-                    AnimSpeedSet(animSpeed);
-                    postState = PostState.SPIN;
-                }
-                else
-                {
-                    postState = PostState.STAY;
-                }
+                AnimSpeedSet(animSpeed);
+                postState = PostState.SPIN;
             }
         }
     }
@@ -285,6 +276,9 @@ public class PostController : MonoBehaviour {
         stayTime += Time.deltaTime;
         if (stayTime >= setTime)
         {
+            //ロスタイムなら飛ぶときに生成可能にする
+            if (timeController.GetComponent<TimeController>().timeState == TimeState.LOSSTIME)
+                postPoint.GetComponent<PostSet>().isRespawn = false;
             stayTime = 0.0f;
             postState = PostState.FLY;//状態遷移
         }
@@ -331,12 +325,17 @@ public class PostController : MonoBehaviour {
             effect.GetComponent<ScoreEffect>().playerName = player.name; //プレイヤーの名前を代入
                                                                          //エフェクトを生成
             Instantiate(effect, RectTransformUtility.WorldToScreenPoint(Camera.main, transform.position), Quaternion.identity, GameObject.Find("PlayerScoreUI").transform);
+
+            //トータル表示を増やす
+            player.GetComponent<PlayerMove>().totalItemCount_For_Text++;
             stayTime = 0.0f;
-            coinCount--;
         }
         //設定数以上生成したら
-        if (coinCount <= 0)
+        //if (coinCount <= 0)
+        if(player.GetComponent<PlayerMove>().totalItemCount_For_Text >= player.GetComponent<PlayerMove>().totalItemCount)
         {
+            //トータル表示がトータルを超えないように
+            player.GetComponent<PlayerMove>().totalItemCount_For_Text = player.GetComponent<PlayerMove>().totalItemCount;
             stayTime = 0.0f;
             AnimSpeedSet(animSpeed);
             postState = PostState.EXIT;//状態遷移
@@ -361,6 +360,7 @@ public class PostController : MonoBehaviour {
         if (stayTime >= exitTime)
         {
             //リスポーンしてない状態に
+            if(postPoint.GetComponent<PostSet>().isRespawn)
             postPoint.GetComponent<PostSet>().isRespawn = false;
             //削除
             Destroy(gameObject);
