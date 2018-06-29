@@ -103,7 +103,7 @@ public class BalloonOrigin : MonoBehaviour
 
     bool isTexSet = true;//テクスチャ設定用bool
 
-    public float originMoveTime = 2.0f;//バルーンが動くまでの時間設定
+    public float originMoveTime = 2.0f;//バルーンが動くまでの時間設定z
 
     // Use this for initialization
     void Start()

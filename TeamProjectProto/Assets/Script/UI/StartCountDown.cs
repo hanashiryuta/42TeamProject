@@ -28,6 +28,9 @@ public class StartCountDown : MonoBehaviour
     //SE
     AudioSource audio;
 
+    TutorialController tutorialController;
+    bool isTuto = true;
+
 	// Use this for initialization
 	void Start ()
     {
@@ -35,15 +38,34 @@ public class StartCountDown : MonoBehaviour
         _textCntDown.text = "";
 
         audio = transform.GetComponent<AudioSource>();
+        try
+        {
+            tutorialController = GameObject.Find("TutorialController").GetComponent<TutorialController>();
+        }
+        catch(NullReferenceException ne)
+        {
+            isTuto = false;
+        }
 	}
 	
 	// Update is called once per frame
 	void Update ()
     {
-        if (!_isCntDownStarted)
+        if (isTuto)
         {
-            StartCoroutine(CountdownCoroutine());
-            _isCntDownStarted = true;
+            if (!_isCntDownStarted && !tutorialController.isTutorial)
+            {
+                StartCoroutine(CountdownCoroutine());
+                _isCntDownStarted = true;
+            }
+        }
+        else
+        {
+            if (!_isCntDownStarted)
+            {
+                StartCoroutine(CountdownCoroutine());
+                _isCntDownStarted = true;
+            }
         }
 
     }
