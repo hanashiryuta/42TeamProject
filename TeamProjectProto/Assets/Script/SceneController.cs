@@ -26,6 +26,8 @@ public class SceneController : MonoBehaviour {
     FadeController fadeController;
     float cnt = 0;
 
+    PostRespawn postRespawn;
+
     //pause->toTitle
     bool isToTitle = false;
     public bool IsToTitle
@@ -51,6 +53,8 @@ public class SceneController : MonoBehaviour {
 
         //fade
         fadeController = GameObject.Find("FadePanel").GetComponent<FadeController>();
+
+        postRespawn = GameObject.Find("PostRespawnPoint").GetComponent<PostRespawn>();
     }
 	
 	// Update is called once per frame
@@ -84,7 +88,7 @@ public class SceneController : MonoBehaviour {
         List<string> tmp = new List<string>();
         //スコア保存用リスト
         List<float> score = new List<float>();
-        foreach(var player in playerRank.GetComponent<PlayerRank>().PlayerRankArray)
+        foreach (var player in playerRank.GetComponent<PlayerRank>().PlayerRankArray)
         {
             tmp.Add(player.name);
             score.Add(player.GetComponent<PlayerMove>().totalItemCount);
@@ -102,21 +106,36 @@ public class SceneController : MonoBehaviour {
         finishCall.ShowUp();
 
         //ダッシュスライダーを隠す
-        foreach(var p in playerList)
+        foreach (var p in playerList)
         {
             p.GetComponent<SliderController>().InvisibleSlider();
         }
 
-        cnt += Time.deltaTime;
-        //fadeout
-        if (fadeController.IsFadeOutFinish == false && cnt >= 3)
+        List<GameObject> postRespawnPointList = postRespawn.isPostList;
+
+        bool isPostFly = false;
+
+        foreach(var post in postRespawnPointList)
         {
-            fadeController.FadeOut();
+            if (post.GetComponent<PostSet>().isPost == true)
+            {
+                if ((int)(post.GetComponent<PostSet>().post.GetComponent<PostController>().postState) >= (int)PostState.AIRSPAWN)
+                    isPostFly = true;
+            }
         }
 
+        cnt += Time.deltaTime;
+        if (!isPostFly)
+        { 
+            //fadeout
+            if (fadeController.IsFadeOutFinish == false && cnt >= 3)
+            {
+                fadeController.FadeOut();
+            }
 
-        //シーン遷移
-        Invoke("LoadResult", finishCall._waitTime);
+            //シーン遷移
+            Invoke("LoadResult", finishCall._waitTime);
+        }
     }
 
     /// <summary>

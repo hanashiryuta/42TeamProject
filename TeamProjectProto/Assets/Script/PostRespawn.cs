@@ -16,7 +16,8 @@ public class PostRespawn : MonoBehaviour {
     public bool isLimitReset = false;//アイテム生成上限リセット判定用
     
     public float originRespawnTime = 5.0f;//生成間隔
-    List<GameObject> isPostList;//ポストがある生成位置リスト
+    [HideInInspector]
+    public List<GameObject> isPostList;//ポストがある生成位置リスト
 
     public GameObject origin_Post_Target_Particle;
     [HideInInspector]

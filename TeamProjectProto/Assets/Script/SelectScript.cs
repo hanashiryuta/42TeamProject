@@ -10,6 +10,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using XInputDotNetPure;
 using System;
+using DG.Tweening;
 
 //ポーズ状態
 public enum PauseState
@@ -21,10 +22,18 @@ public enum PauseState
     PAUSEEND,
 }
 
+public enum PauseSelect
+{
+    ToTitle,
+    Tutorial,
+    BackToGame,
+}
+
 public class SelectScript : MonoBehaviour
 {
     public Button backToGame;
     public Button toTitle;
+    public Button tutorial;
     Button nowSelectedBtn;
 
     public GameObject pausepanel;
@@ -67,6 +76,18 @@ public class SelectScript : MonoBehaviour
     Image panelBG;
     List<Color> panelColor = new List<Color>() { Color.red, Color.blue, Color.yellow, Color.green };
 
+    PauseSelect pauseSelect = PauseSelect.ToTitle;
+    bool isSelect = true;
+    [HideInInspector]
+    public bool isTutorial = false;
+    float tutorialCount = 0;
+
+    public List<Sprite> ruleSpriteList;//ルール表示画像リスト
+    List<GameObject> ruleList;//ルールリスト
+    public GameObject Rules;//ルール元オブジェクト
+    float stayTime =  0;
+    public GameObject pageCount;
+
     // Use this for initialization
     void Start()
     {
@@ -82,6 +103,8 @@ public class SelectScript : MonoBehaviour
         scenecontroller = GameObject.Find("SceneController(Clone)").GetComponent<SceneController>();
         //ポーズ背景
         panelBG = pausepanel.transform.Find("Panel").GetComponent<Image>();
+
+        ruleList = new List<GameObject>();
     }
 
     // Update is called once per frame
@@ -155,19 +178,72 @@ public class SelectScript : MonoBehaviour
     /// </summary>
     void PausingXInput()
     {
-        //up
-        if (moveY >=0.8f && nowSelectedBtn != toTitle)
+        switch(pauseSelect)
         {
-            toTitle.Select();
-            nowSelectedBtn = toTitle;
+            case PauseSelect.ToTitle:
+                if (nowSelectedBtn != toTitle)
+                {
+                    toTitle.Select();
+                    nowSelectedBtn = toTitle;
+                }
+                if (moveY <= -0.8f && isSelect)
+                {
+                    isSelect = false;
+                    pauseSelect = PauseSelect.Tutorial;
+                }
+                break;
+            case PauseSelect.Tutorial:
+                if (nowSelectedBtn != tutorial)
+                {
+                    tutorial.Select();
+                    nowSelectedBtn = tutorial;
+                }
+                stayTime -= Time.deltaTime;
+                if (moveY >= 0.8f && isSelect && !isTutorial)
+                {
+                    tutorialCount = 0;
+                    isSelect = false;
+                    pauseSelect = PauseSelect.ToTitle;
+                }
+                else if (moveY <= -0.8f && isSelect && !isTutorial)
+                {
+                    tutorialCount = 0;
+                    isSelect = false;
+                    pauseSelect = PauseSelect.BackToGame;
+                }
+                break;
+            case PauseSelect.BackToGame:
+                if (nowSelectedBtn != backToGame)
+                {
+                    backToGame.Select();
+                    nowSelectedBtn = backToGame;
+                }
+                if (moveY >= 0.8f && isSelect)
+                {
+                    isSelect = false;
+                    pauseSelect = PauseSelect.Tutorial;
+                }
+                break;
         }
 
-        //down
-        if (moveY <= -0.8f && nowSelectedBtn != backToGame)
+        if(moveY < 0.8f&&moveY > -0.8f)
         {
-            backToGame.Select();
-            nowSelectedBtn = backToGame;
+            isSelect = true;
         }
+
+        ////up
+        //if (moveY >=0.8f && nowSelectedBtn != toTitle)
+        //{
+        //    toTitle.Select();
+        //    nowSelectedBtn = toTitle;
+        //}
+
+        ////down
+        //if (moveY <= -0.8f && nowSelectedBtn != backToGame)
+        //{
+        //    backToGame.Select();
+        //    nowSelectedBtn = backToGame;
+        //}
 
         //A
         if (previousState.Buttons.A == ButtonState.Released &&
@@ -214,6 +290,52 @@ public class SelectScript : MonoBehaviour
         scenecontroller.IsToTitle = true;
     }
 
+    public void ShowTutorial()
+    {       
+        if (tutorialCount <= 0 && !isTutorial)
+        {
+            pageCount.SetActive(true);
+            pausepanel.SetActive(false);
+            ruleList = new List<GameObject>();
+            for (int i = 0; i < ruleSpriteList.Count; i++)
+            {
+                GameObject rule;
+                rule = Instantiate(Rules, transform);
+                rule.GetComponent<RectTransform>().position += new Vector3(i * 1280, 0, 0);
+                rule.transform.GetChild(1).GetComponent<Image>().sprite = ruleSpriteList[i];
+                ruleList.Add(rule);
+            }
+            isTutorial = true;
+        }
+        else
+        {
+            if (stayTime <= 0)
+            {
+                stayTime = 1.0f;
+                tutorialCount++;
+                foreach (var rule in ruleList)
+                {
+                    rule.GetComponent<RectTransform>().DOMoveX(rule.GetComponent<RectTransform>().position.x - 1280, 1.0f);
+                }
+            }
+            if (tutorialCount >= ruleSpriteList.Count)
+            {
+                foreach (var tutorial in ruleList)
+                {
+                    Destroy(tutorial);
+                }
+                ruleList.Clear();
+                tutorialCount = 0;
+                stayTime = 0.0f;
+                pageCount.SetActive(false);
+                pausepanel.SetActive(true);
+                isTutorial = false;
+            }
+        }
+
+        pageCount.GetComponent<Text>().text = HalfWidth2FullWidth.Set2FullWidth((tutorialCount + 1).ToString("0")) + "／" + HalfWidth2FullWidth.Set2FullWidth(ruleSpriteList.Count.ToString("0"));
+    }
+
     /// <summary>
     /// オブジェクトセット
     /// </summary>
@@ -241,6 +363,7 @@ public class SelectScript : MonoBehaviour
     /// </summary>
     void PauseStart()
     {
+        pauseSelect = PauseSelect.ToTitle;
         //時間を止める
         timeController.GetComponent<TimeController>().isPause = true;
         foreach (var pauseObj in pauseList)
@@ -276,6 +399,15 @@ public class SelectScript : MonoBehaviour
     /// </summary>
     void PauseEnd()
     {
+        foreach (var tutorial in ruleList)
+        {
+            Destroy(tutorial);
+        }
+        ruleList.Clear();
+        tutorialCount = 0;
+        stayTime = 0.0f;
+        pageCount.SetActive(false);
+        isTutorial = false;
         timeController.GetComponent<TimeController>().isPause = false;
         foreach (var pauseObj in pauseList)
         {

@@ -47,8 +47,10 @@ public class HaveItemCounts : MonoBehaviour {
     /// <param name="rouletteController">ルーレット管理クラス</param>
     public void RouletteStart(GameObject[] pList,RouletteController rouletteController)
     {
-        //一番奥に表示する
-        transform.SetAsFirstSibling();
+        ////一番奥に表示する
+        //transform.SetAsFirstSibling();
+        //ダッシュゲージより前に表示する
+        transform.SetSiblingIndex(6);
         //取得
         this.rouletteController = rouletteController;
         //存在しているプレイヤーのインデックス格納

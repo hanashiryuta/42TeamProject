@@ -2850,6 +2850,7 @@ MonoBehaviour:
   postCount: 2
   isLimitReset: 0
   originRespawnTime: 5
+  isPostList: []
   origin_Post_Target_Particle: {fileID: 0}
   isBalloon: 0
 --- !u!114 &114706743721441364

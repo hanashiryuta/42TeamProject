@@ -55,6 +55,10 @@ public class TitleScene : MonoBehaviour
         Creadit,
         Exit
     }
+    
+    //BGMController
+    [SerializeField]
+    GameObject bgmControllerOBJ;
 
     // Use this for initialization
     void Start()
@@ -74,6 +78,11 @@ public class TitleScene : MonoBehaviour
 
         //SE
         se = transform.GetComponent<SEController>();
+        //BGM
+        if (!BGMController.created)
+        {
+            Instantiate(bgmControllerOBJ).GetComponent<BGMController>();
+        }
     }
 
     // Update is called once per frame

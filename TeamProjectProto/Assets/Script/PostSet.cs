@@ -10,7 +10,8 @@ using UnityEngine;
 public class PostSet : MonoBehaviour {
 
     GameObject originPost;//ポスト
-    GameObject post = null;
+    [HideInInspector]
+    public GameObject post = null;
     float originRespawnTime = 5.0f;//リスポーン時間
     float respawnTime;
     [HideInInspector]
@@ -20,6 +21,8 @@ public class PostSet : MonoBehaviour {
     GameObject origin_Post_Target_Particle;//ポスト出現ターゲット
     GameObject post_Target_Particle;
     TimeController timeController;//時間管理クラス
+    [HideInInspector]
+    public bool isPost = false;
 
     // Use this for initialization
     void Start () {
@@ -70,6 +73,7 @@ public class PostSet : MonoBehaviour {
                 post.GetComponent<PostController>().postPoint = gameObject;
                 respawnTime = originRespawnTime;
                 Destroy(post_Target_Particle);
+                isPost = true;
             }
         }
 	}
