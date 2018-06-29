@@ -212,7 +212,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -232,7 +232,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\uFF2C\u30B9\u30C6\u30A3\u30C3\u30AF\u30FC\u79FB\u52D5\u3000\u3000\uFF21\u30DC\u30BF\u30F3\u30FC\u30B8\u30E3\u30F3\u30D7\u3000\u3000\uFF2C\uFF22\u30DC\u30BF\u30F3\u30FC\u30C0\u30C3\u30B7\u30E5"
+  m_Text: "\uFF2C\u30B9\u30C6\u30A3\u30C3\u30AF\u30FC\u79FB\u52D5\u3000\u3000\uFF21\u30DC\u30BF\u30F3\u30FC\u30B8\u30E3\u30F3\u30D7\u3000\u3000\uFF32\uFF22\u30DC\u30BF\u30F3\u30FC\u30C0\u30C3\u30B7\u30E5"
 --- !u!114 &114764874182897144
 MonoBehaviour:
   m_ObjectHideFlags: 1

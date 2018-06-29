@@ -123,11 +123,11 @@ public class Tutorial : MonoBehaviour
                 {
                     if (finishObj.IsCalling)
                         operation.SetActive(false);
-                    if (balloonMaster.isRoulette)
+                    else if (balloonMaster.isRoulette)
                         operation.SetActive(false);
-                    else
-                        operation.SetActive(true);
-                    if (selectScript.isTutorial)
+                    //else
+                    //    operation.SetActive(true);
+                    else if (selectScript.isTutorial)
                         operation.SetActive(false);
                     else
                         operation.SetActive(true);

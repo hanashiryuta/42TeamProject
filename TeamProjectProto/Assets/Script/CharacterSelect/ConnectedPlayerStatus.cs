@@ -10,6 +10,7 @@ using UnityEngine.SceneManagement;
 
 public class ConnectedPlayerStatus : MonoBehaviour
 {
+    [SerializeField]
     Dictionary<string, int> _connectedPlayer = new Dictionary< string, int>();//繋がているプレイヤー
     public Dictionary<string, int> ConnectedPlayer
     {

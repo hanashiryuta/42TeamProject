@@ -316,13 +316,22 @@ public class CharacterSelectSceneController : MonoBehaviour
     /// </summary>
     void SavePlayerStatus()
     {
-        connectedPlayerStatus = Instantiate(connectedPlayerStatusObj).GetComponent<ConnectedPlayerStatus>();
+        if(GameObject.FindGameObjectWithTag("PlayerStatus") != null)
+        {
+            connectedPlayerStatus = GameObject.FindGameObjectWithTag("PlayerStatus").GetComponent<ConnectedPlayerStatus>();
+        }
+        else
+        {
+            connectedPlayerStatus = Instantiate(connectedPlayerStatusObj).GetComponent<ConnectedPlayerStatus>();
+        }
+        connectedPlayerStatus.ConnectedPlayer.Clear();
         for (int i = 0; i < standbyCheck.Length; i++)
         {
             if (standbyCheck[i].IsSpawn)
             {
                 //プレイヤー名とインデックスを記録
                 connectedPlayerStatus.ConnectedPlayer.Add("Player" + (i + 1), i);
+                Debug.Log(i);
             }
         }
     }
