@@ -14,7 +14,7 @@ public class BGMController : MonoBehaviour
     List<AudioClip> bgmList = new List<AudioClip>();//BGM格納リスト
     [SerializeField]
     AudioClip rouletteBGM;//ルーレット用BGM（仕様がちょっと違う）
-    AudioSource audio;// AudioSource
+    public AudioSource audio;// AudioSource
     float defaultVolume = 0.5f;//デフォルト音量
 
     AudioClip nowClip;
@@ -22,12 +22,14 @@ public class BGMController : MonoBehaviour
     float nowClipVolume = 1.0f;
     float nextClipVolume = 0.0f;
 
-    static bool created = false;
+    public static bool created = false;
     bool isFading = false;
 
     string preScene;//前のシーン
     RouletteController rouletteCon;//ルーレットコントローラー
     bool isRoulette = false;//ルーレット中か？
+
+    TutorialController tutorialController;//チュートリアルコントローラー
 
     /// <summary>
     /// BGM順番
@@ -36,7 +38,8 @@ public class BGMController : MonoBehaviour
     {
         Title,
         Main,
-        Result
+        Result,
+        Tutorial
     }
 
     void Awake()
@@ -48,6 +51,10 @@ public class BGMController : MonoBehaviour
         //1つしか存在しない
         if (!created)
         {
+            SetNowAndNextClip((int)BGM.Title);
+            audio.clip = nowClip;
+            audio.Play();
+
             DontDestroyOnLoad(this.gameObject);
             created = true;
         }
@@ -56,7 +63,8 @@ public class BGMController : MonoBehaviour
             Destroy(this.gameObject);
         }
 
-        audio = transform.GetComponent<AudioSource>();
+        tutorialController = GameObject.Find("TutorialController").GetComponent<TutorialController>();
+        tutorialController.bgmController = this;
     }
 	
 	// Update is called once per frame
@@ -117,7 +125,7 @@ public class BGMController : MonoBehaviour
     /// </summary>
     /// <param name="newScene">今のシーン</param>
     /// <param name="preScene">前のシーン</param>
-    void SetSceneBGM(Scene newScene, string preScene)
+    public void SetSceneBGM(Scene newScene, string preScene)
     {
         if (newScene.name == "Title")//タイトル
         {
@@ -138,10 +146,21 @@ public class BGMController : MonoBehaviour
         }
         else if (newScene.name == "main")//ゲームメインシーン
         {
-            SetNowAndNextClip((int)BGM.Main);
-            audio.clip = nowClip;
-            StartCountDown scd = GameObject.Find("StartCountDown").GetComponent<StartCountDown>();
-            audio.PlayDelayed(scd.waitTime + 4f);//カウントダウンが終わったらプレイ
+            if (!tutorialController.isTutorial)
+            {
+                SetNowAndNextClip((int)BGM.Main);
+                audio.clip = nowClip;
+
+                StartCountDown scd = GameObject.Find("StartCountDown").GetComponent<StartCountDown>();
+                audio.PlayDelayed(scd.waitTime + 4f);//カウントダウンが終わったらプレイ
+            }
+            else
+            {
+                SetNowAndNextClip((int)BGM.Tutorial);
+                audio.clip = nowClip;
+
+                audio.Play();
+            }
         }
         else if (newScene.name == "Result")//リザルト
         {

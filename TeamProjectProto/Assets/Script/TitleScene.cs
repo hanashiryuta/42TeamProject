@@ -44,6 +44,10 @@ public class TitleScene : MonoBehaviour
     [SerializeField]
     CanvasGroup titleCanvas, creditCanvas;//タイトルキャンバス、クレジットキャンバス
     bool isCredit = false;//クレジットか？
+    
+    //BGMController
+    [SerializeField]
+    GameObject bgmControllerOBJ;
 
     // Use this for initialization
     void Start()
@@ -63,6 +67,11 @@ public class TitleScene : MonoBehaviour
 
         //SE
         se = transform.GetComponent<SEController>();
+        //BGM
+        if (!BGMController.created)
+        {
+            Instantiate(bgmControllerOBJ).GetComponent<BGMController>();
+        }
     }
 
     // Update is called once per frame

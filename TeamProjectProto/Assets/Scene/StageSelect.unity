@@ -1373,7 +1373,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a22086615cacf694aa4b34d29c3664ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stagesList:
   - {fileID: 1190149493053578, guid: 7308f3c6a4810da42a58299e23c2254f, type: 2}
   - {fileID: 1913171982309218, guid: cf7d2b112ed1018449762f9f3826571a, type: 2}
   - {fileID: 1213026834804094, guid: 3989c9496649bd94f92de994f4551eac, type: 2}

@@ -362,6 +362,8 @@ public class PostController : MonoBehaviour {
             //リスポーンしてない状態に
             if(postPoint.GetComponent<PostSet>().isRespawn)
             postPoint.GetComponent<PostSet>().isRespawn = false;
+
+            postPoint.GetComponent<PostSet>().isPost = false;
             //削除
             Destroy(gameObject);
         }
