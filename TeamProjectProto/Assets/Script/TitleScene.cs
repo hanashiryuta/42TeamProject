@@ -26,6 +26,7 @@ public class TitleScene : MonoBehaviour
     List<Button> titleBtnList = new List<Button>();//ボタンリスト
     Button nowSelectedBtn;//今選択しているボタン
     int nowSelectedBtnIndex = 0;
+    ButtonState btnState = ButtonState.None;
 
     //XInput
     PlayerIndex playerIndex;
@@ -43,7 +44,17 @@ public class TitleScene : MonoBehaviour
     //Canvas
     [SerializeField]
     CanvasGroup titleCanvas, creditCanvas;//タイトルキャンバス、クレジットキャンバス
-    bool isCredit = false;//クレジットか？
+
+    /// <summary>
+    /// 選択されたボタン
+    /// </summary>
+    enum ButtonState
+    {
+        None,
+        Start,
+        Creadit,
+        Exit
+    }
     
     //BGMController
     [SerializeField]
@@ -89,18 +100,8 @@ public class TitleScene : MonoBehaviour
             //Get XInput
             currentState = GamePad.GetState(playerIndex);
 
-            //クレジット中じゃなかったら
-            if (!isCredit)
-            {
-                //カーソル移動
-                moveY = currentState.ThumbSticks.Left.Y;
-                TitleXInput();
-            }
-            else
-            {
-                //クレジット中
-                CreditXInput();//Bボタン押したら
-            }
+            //選択されたボタンの沿ってメソッド実行
+            CheckBtnState();
 
             if (isSceneChange)
             {
@@ -108,14 +109,41 @@ public class TitleScene : MonoBehaviour
             }
         }
 
-        //NextSceneLoad
-        if (fadeController.IsFadeOutFinish && !isFadeOuted)
-        {
-            gameload.LoadingStartWithOBJ();
-            isFadeOuted = true;
-        }
-
         previousState = currentState;
+    }
+
+    /// <summary>
+    /// 選択されたボタンの沿ってメソッド実行
+    /// </summary>
+    void CheckBtnState()
+    {
+        switch (btnState)
+        {
+            case ButtonState.None:
+                //カーソル移動
+                moveY = currentState.ThumbSticks.Left.Y;
+                TitleXInput();
+                break;
+            case ButtonState.Start:
+                //NextSceneLoad
+                if (fadeController.IsFadeOutFinish && !isFadeOuted)
+                {
+                    gameload.LoadingStartWithOBJ();
+                    isFadeOuted = true;
+                }
+                break;
+            case ButtonState.Creadit:
+                CreditXInput();//Bボタン押したらtitleCanvas戻す
+                break;
+            case ButtonState.Exit:
+                //ExitFade
+                if (fadeController.IsFadeOutFinish && !isFadeOuted)
+                {
+                    Application.Quit();
+                }
+                break;
+
+        }
     }
 
     /// <summary>
@@ -177,11 +205,11 @@ public class TitleScene : MonoBehaviour
             }
         }
         //A
-        if (previousState.Buttons.A == ButtonState.Released &&
-            currentState.Buttons.A == ButtonState.Pressed)
+        if (previousState.Buttons.A == XInputDotNetPure.ButtonState.Released &&
+            currentState.Buttons.A == XInputDotNetPure.ButtonState.Pressed)
         {
-            BtnPushed(nowSelectedBtn);
             se.PlaySystemSE((int)SEController.SystemSE.OK);
+            BtnPushed(nowSelectedBtn);
         }
 
         //遅延初期化
@@ -200,13 +228,13 @@ public class TitleScene : MonoBehaviour
     void CreditXInput()
     {
         //B
-        if (previousState.Buttons.B == ButtonState.Released &&
-            currentState.Buttons.B == ButtonState.Pressed)
+        if (previousState.Buttons.B == XInputDotNetPure.ButtonState.Released &&
+            currentState.Buttons.B == XInputDotNetPure.ButtonState.Pressed)
         {
             creditCanvas.alpha = 0;
             titleCanvas.alpha = 1;
             se.PlaySystemSE((int)SEController.SystemSE.Cancel);
-            isCredit = false;
+            btnState = ButtonState.None;
         }
     }
 
@@ -258,6 +286,7 @@ public class TitleScene : MonoBehaviour
     public void GameStart()
     {
         isSceneChange = true;
+        btnState = ButtonState.Start;
     }
 
     /// <summary>
@@ -265,9 +294,9 @@ public class TitleScene : MonoBehaviour
     /// </summary>
     public void GameCredit()
     {
-        isCredit = true;
         titleCanvas.alpha = 0;
         creditCanvas.alpha = 1;
+        btnState = ButtonState.Creadit;
     }
 
     /// <summary>
@@ -275,6 +304,7 @@ public class TitleScene : MonoBehaviour
     /// </summary>
     public void GameExit()
     {
-        Application.Quit();
+        isSceneChange = true;
+        btnState = ButtonState.Exit;
     }
 }
