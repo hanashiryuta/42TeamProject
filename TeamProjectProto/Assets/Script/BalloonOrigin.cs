@@ -137,11 +137,11 @@ public class BalloonOrigin : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //裏コマンド
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            BalloonBlast();
-        }
+    //    //裏コマンド
+    //    if (Input.GetKeyDown(KeyCode.A))
+    //    {
+    //        BalloonBlast();
+    //    }
 
         //スタートカウントダウン中＆プレイヤーがスタン時膨らまない
         if (!finishCall.IsCalling||player.GetComponent<PlayerMove>().isStan)

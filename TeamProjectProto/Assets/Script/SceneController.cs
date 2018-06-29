@@ -113,20 +113,23 @@ public class SceneController : MonoBehaviour {
 
         List<GameObject> postRespawnPointList = postRespawn.isPostList;
 
-        float isPostFly = 0;
+        int isPostFly = 0;
 
         foreach(var post in postRespawnPointList)
         {
             if (post.GetComponent<PostSet>().isPost == true)
             {
+                Debug.Log(post.GetComponent<PostSet>().post.GetComponent<PostController>().postState);
                 if ((int)(post.GetComponent<PostSet>().post.GetComponent<PostController>().postState) >= (int)PostState.AIRSPAWN)
+                {
                     isPostFly++;
+                }
             }
         }
-
-        cnt += Time.deltaTime;
-        if (isPostFly ==0)
-        { 
+        Debug.Log("IsPostFly:" + isPostFly);
+        if (isPostFly <= 0)
+        {
+            cnt += Time.deltaTime;
             //fadeout
             if (fadeController.IsFadeOutFinish == false && cnt >= 3)
             {

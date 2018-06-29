@@ -301,7 +301,7 @@ public class SelectScript : MonoBehaviour
             {
                 GameObject rule;
                 rule = Instantiate(Rules, transform);
-                rule.GetComponent<RectTransform>().position += new Vector3(i * 1280, 0, 0);
+                rule.GetComponent<RectTransform>().position += new Vector3(i * Screen.width, 0, 0);
                 rule.transform.GetChild(1).GetComponent<Image>().sprite = ruleSpriteList[i];
                 ruleList.Add(rule);
             }
@@ -315,7 +315,7 @@ public class SelectScript : MonoBehaviour
                 tutorialCount++;
                 foreach (var rule in ruleList)
                 {
-                    rule.GetComponent<RectTransform>().DOMoveX(rule.GetComponent<RectTransform>().position.x - 1280, 1.0f);
+                    rule.GetComponent<RectTransform>().DOMoveX(rule.GetComponent<RectTransform>().position.x - Screen.width, 1.0f);
                 }
             }
             if (tutorialCount >= ruleSpriteList.Count)

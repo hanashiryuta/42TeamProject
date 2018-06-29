@@ -84,7 +84,7 @@ public class SpawnUIPlayer : MonoBehaviour
             //スキン変更
             player[i].GetComponentInChildren<SkinnedMeshRenderer>().materials[0].mainTexture = tex[connectedPlayerStatus.ConnectedPlayer[pList[i]]];
             //順位に応じてスケール調整
-            player[i].transform.localScale = new Vector3(rankScaleSize[i], rankScaleSize[i], rankScaleSize[i]);
+            player[i].transform.localScale = new Vector3(rankScaleSize[rankList[i]-1], rankScaleSize[rankList[i]-1], rankScaleSize[rankList[i]-1]);
 
             //一位だったら
             if (rankList[i] == 1)

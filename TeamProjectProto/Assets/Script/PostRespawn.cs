@@ -58,7 +58,7 @@ public class PostRespawn : MonoBehaviour {
 
         //バルーンが生成されるタイミングで生成できるようにする
         //ロスタイムはいつでも生成できる
-        if (!isBalloon&&timeController.timeState != TimeState.LOSSTIME)
+        if ((!isBalloon&&timeController.timeState != TimeState.LOSSTIME)||timeController.isEnd)
             return;
 
         //生成確認用bool

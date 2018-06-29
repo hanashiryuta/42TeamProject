@@ -62,7 +62,7 @@ public class PostSet : MonoBehaviour {
         {
             if (post_Target_Particle == null)
             {
-                post_Target_Particle = Instantiate(origin_Post_Target_Particle, transform.position - new Vector3(0, 0.5f, 0), Quaternion.identity);
+                post_Target_Particle = Instantiate(origin_Post_Target_Particle, transform.position - new Vector3(0, 0.1f, 0), Quaternion.identity);
             }
             respawnTime -= Time.deltaTime;
             if(respawnTime <= 0)
