@@ -73,6 +73,8 @@ public class PostController : MonoBehaviour {
     Animator postAnim;
     float animSpeed = 1.0f;
 
+    AudioSource postAudio;//コイン加算時のSE入り
+
     // Use this for initialization
     void Start () {
 		//初期化処理
@@ -82,6 +84,8 @@ public class PostController : MonoBehaviour {
         postAnim = GetComponentInChildren<Animator>();
         
         timeController = GameObject.Find("TimeController");
+
+        postAudio = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -328,6 +332,8 @@ public class PostController : MonoBehaviour {
 
             //トータル表示を増やす
             player.GetComponent<PlayerMove>().totalItemCount_For_Text++;
+            //コインSE
+            postAudio.Play();
             stayTime = 0.0f;
         }
         //設定数以上生成したら
