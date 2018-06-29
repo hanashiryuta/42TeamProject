@@ -96,10 +96,10 @@ public class Tutorial : MonoBehaviour
                     {
                         rule.SetActive(false);
                     }
+                    tutorialController.isTutorial = false;
                     tutorialController.bgmController.SetSceneBGM(SceneManager.GetActiveScene(), "StageSelect");
                     PageCount.SetActive(false);
                     operation = Instantiate(Operations, transform);
-                    tutorialController.isTutorial = false;
                     tutorialState = TutorialState.Operation;
                 }               
                     break;

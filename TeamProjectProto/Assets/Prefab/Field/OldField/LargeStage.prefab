@@ -6099,8 +6099,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   originPost: {fileID: 1960808050330346, guid: 14616bf70e2bd6d4d8fe06683b92cf0e, type: 2}
   postCount: 2
-  intervalLimit: 5
   isLimitReset: 0
+  originRespawnTime: 5
+  isPostList: []
+  origin_Post_Target_Particle: {fileID: 0}
+  isBalloon: 0
 --- !u!114 &114766552285994358
 MonoBehaviour:
   m_ObjectHideFlags: 1

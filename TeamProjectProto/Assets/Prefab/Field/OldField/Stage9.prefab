@@ -4685,6 +4685,7 @@ MonoBehaviour:
   postCount: 2
   isLimitReset: 0
   originRespawnTime: 5
+  isPostList: []
   origin_Post_Target_Particle: {fileID: 1910226616316022, guid: 55acc19ab355cd04980c2f4529241376,
     type: 2}
   isBalloon: 0

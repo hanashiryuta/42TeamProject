@@ -68,6 +68,7 @@ public class TutorialController : MonoBehaviour {
                 if(tutorial == null)
                 {
                     tutorial = Instantiate(originTutorial, GameObject.FindGameObjectWithTag("Canvas").transform);
+                    tutorial.transform.SetSiblingIndex(GameObject.FindGameObjectWithTag("Canvas").transform.childCount-2);
                     tutorial.GetComponent<Tutorial>().tutorialController = this;
                 }
                 break;
