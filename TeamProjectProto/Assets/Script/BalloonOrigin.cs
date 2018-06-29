@@ -105,6 +105,8 @@ public class BalloonOrigin : MonoBehaviour
 
     public float originMoveTime = 2.0f;//バルーンが動くまでの時間設定z
 
+    public float colorEmission = 0.2f;
+
     // Use this for initialization
     void Start()
     {
@@ -242,7 +244,7 @@ public class BalloonOrigin : MonoBehaviour
                     //テクスチャ設定
                     gameObject.GetComponentInChildren<MeshRenderer>().materials[0].mainTexture = balloonStateTexture[0];
                     //明るさ
-                    transform.GetComponentInChildren<MeshRenderer>().materials[0].SetColor("_EmissionColor", new Color(0.2f, 0.2f, 0.2f));
+                    transform.GetComponentInChildren<MeshRenderer>().materials[0].SetColor("_EmissionColor", new Color(colorEmission, colorEmission, colorEmission));
                     transform.GetComponentInChildren<MeshRenderer>().materials[0].SetTexture("_EmissionMap", balloonStateTexture[0]);
                     transform.GetComponentInChildren<MeshRenderer>().materials[0].EnableKeyword("_EMISSION");
                     isTexSet = false;
@@ -263,7 +265,7 @@ public class BalloonOrigin : MonoBehaviour
                     //テクスチャ設定
                     gameObject.GetComponentInChildren<MeshRenderer>().materials[0].mainTexture = balloonStateTexture[1];
                     //明るさ
-                    transform.GetComponentInChildren<MeshRenderer>().materials[0].SetColor("_EmissionColor", new Color(0.2f, 0.2f, 0.2f));
+                    transform.GetComponentInChildren<MeshRenderer>().materials[0].SetColor("_EmissionColor", new Color(colorEmission, colorEmission, colorEmission));
                     transform.GetComponentInChildren<MeshRenderer>().materials[0].SetTexture("_EmissionMap", balloonStateTexture[1]);
                     transform.GetComponentInChildren<MeshRenderer>().materials[0].EnableKeyword("_EMISSION");
                     isTexSet = false;
@@ -288,7 +290,7 @@ public class BalloonOrigin : MonoBehaviour
                 {
                     gameObject.GetComponentInChildren<MeshRenderer>().materials[0].mainTexture = balloonStateTexture[2];
                     //明るさ
-                    transform.GetComponentInChildren<MeshRenderer>().materials[0].SetColor("_EmissionColor", new Color(0.2f, 0.2f, 0.2f));
+                    transform.GetComponentInChildren<MeshRenderer>().materials[0].SetColor("_EmissionColor", new Color(colorEmission, colorEmission, colorEmission));
                     transform.GetComponentInChildren<MeshRenderer>().materials[0].SetTexture("_EmissionMap", balloonStateTexture[2]);
                     transform.GetComponentInChildren<MeshRenderer>().materials[0].EnableKeyword("_EMISSION");
                     isTexSet = false;

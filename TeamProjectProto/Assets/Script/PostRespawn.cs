@@ -20,7 +20,6 @@ public class PostRespawn : MonoBehaviour {
     public List<GameObject> isPostList;//ポストがある生成位置リスト
 
     public GameObject origin_Post_Target_Particle;
-
     [HideInInspector]
     public bool isBalloon;
 
@@ -49,7 +48,6 @@ public class PostRespawn : MonoBehaviour {
         {
             PostRespawnSet();
         }
-
         timeController = GameObject.Find("TimeController").GetComponent<TimeController>();
     }
 
