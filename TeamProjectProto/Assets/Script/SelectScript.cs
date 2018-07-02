@@ -15,28 +15,31 @@ using DG.Tweening;
 //ポーズ状態
 public enum PauseState
 {
-    NONEPAUSE,
-    OBJECTSET,
-    PAUSESTART,
-    PAUSING,
-    PAUSEEND,
+    NONEPAUSE,//非ポーズ
+    OBJECTSET,//オブジェクトセット
+    PAUSESTART,//ポーズ開始
+    PAUSING,//ポーズ中
+    PAUSEEND,//ポーズ終了
 }
 
+/// <summary>
+/// ポーズ選択肢
+/// </summary>
 public enum PauseSelect
 {
-    ToTitle,
-    Tutorial,
-    BackToGame,
+    ToTitle,//タイトルへ
+    Tutorial,//チュートリアル表示
+    BackToGame,//ゲームに戻る
 }
 
 public class SelectScript : MonoBehaviour
 {
-    public Button backToGame;
-    public Button toTitle;
-    public Button tutorial;
-    Button nowSelectedBtn;
+    public Button backToGame;//ゲームに戻るボタン
+    public Button toTitle;//タイトルに戻るボタン
+    public Button tutorial;//チュートリアルを表示するボタン
+    Button nowSelectedBtn;//今選択しているボタン
 
-    public GameObject pausepanel;
+    public GameObject pausepanel;//ポーズ表示パネル
     
     List<GameObject> pauseList;//ポーズするオブジェクト
     public List<string> tagNameList;//ポーズするタグ
@@ -51,10 +54,10 @@ public class SelectScript : MonoBehaviour
     //制限時間オブジェクト
     GameObject timeController;
 
-    GamePadState previousState;
-    GamePadState currentState;
+    GamePadState previousState;//前フレームコントローラ状態
+    GamePadState currentState;//現在のコントローラ状態
 
-    float moveY;
+    float moveY;//Y入力
 
     PlayerIndex pausePlayerIndex = 0;//プレイヤーインデックス
     public PlayerIndex PausePlayerIndex
@@ -70,22 +73,24 @@ public class SelectScript : MonoBehaviour
     }
 
     //途中終了用シーンコントローラー
-    GameSceneController scenecontroller;
+    GameSceneController gameSceneController;
 
     //ポーズ背景
     Image panelBG;
+    //背景色
     List<Color> panelColor = new List<Color>() { Color.red, Color.blue, Color.yellow, Color.green };
 
+    //ポーズ選択肢
     PauseSelect pauseSelect = PauseSelect.ToTitle;
+    //選べるかどうか
     bool isSelect = true;
+    //チュートリアル表示中かどうか
     [HideInInspector]
     public bool isTutorial = false;
-    float tutorialCount = 0;
-
-    public List<Sprite> ruleSpriteList;//ルール表示画像リスト
-    List<GameObject> ruleList;//ルールリスト
-    public GameObject Rules;//ルール元オブジェクト
-    float stayTime =  0;
+    
+    public GameObject originRules;//ルール元オブジェクト
+    GameObject rules;
+    //ページ数表示オブジェクト
     public GameObject pageCount;
 
     // Use this for initialization
@@ -100,11 +105,9 @@ public class SelectScript : MonoBehaviour
         // 終了合図
         finishCall = GameObject.Find("FinishCall").GetComponent<FinishCall>();
         //途中終了用シーンコントローラー
-        scenecontroller = GameObject.Find("SceneController(Clone)").GetComponent<GameSceneController>();
+        gameSceneController = GameObject.Find("SceneController(Clone)").GetComponent<GameSceneController>();
         //ポーズ背景
-        panelBG = pausepanel.transform.Find("Panel").GetComponent<Image>();
-
-        ruleList = new List<GameObject>();
+        panelBG = pausepanel.transform.Find("Panel").GetComponent<Image>();        
     }
 
     // Update is called once per frame
@@ -114,12 +117,12 @@ public class SelectScript : MonoBehaviour
         if (startCntDown.IsCntDown || finishCall.IsCalling)
             return;
 
-        //if(pauseState != PauseState.NONEPAUSE)
-            HandleXInput();
+        HandleXInput();
 
+        //状態により処理変更
         switch (pauseState)
         {
-            case PauseState.NONEPAUSE://非ポーズ中では
+            case PauseState.NONEPAUSE://非ポーズ中
                 if (PushStart())
                 {
                     pausepanel.SetActive(true);//パネル出現
@@ -140,7 +143,7 @@ public class SelectScript : MonoBehaviour
                 }
                 break;
             case PauseState.PAUSEEND://ポーズ終了
-                //パネル削除
+                //パネル非表示
                 pausepanel.SetActive(false);
                 PauseEnd();//ポーズ終了
                 break;
@@ -159,14 +162,35 @@ public class SelectScript : MonoBehaviour
             return;
         }
 
-        //STARTボタンを押したら（ポーズ解除）開始
-        isStartBtnPushed = (previousState.Buttons.Start == ButtonState.Released &&
-                            currentState.Buttons.Start == ButtonState.Pressed);
-
-        if (pauseState == PauseState.PAUSING&&!isRoulette)
+        //チュートリアル中かどうか
+        if (isTutorial)
         {
-            moveY = currentState.ThumbSticks.Left.Y;
-            PausingXInput();
+            //ルール画像移動処理
+            rules.GetComponent<Rule>().Move(previousState, currentState);
+            //ルール画像終了なら
+            if (rules.GetComponent<Rule>().isRuleEnd)
+            {
+                //ポーズメニュー表示
+                pausepanel.SetActive(true);
+                //フラグ設定
+                isTutorial = false;
+            }
+        }
+        //チュートリアルではないなら
+        else
+        {
+            //STARTボタンを押したら（ポーズ解除）開始
+            isStartBtnPushed = (previousState.Buttons.Start == ButtonState.Released &&
+                                currentState.Buttons.Start == ButtonState.Pressed);
+
+            //ポーズ中でなくルーレットもなければ
+            if (pauseState == PauseState.PAUSING && !isRoulette)
+            {
+                //Y入力取得
+                moveY = currentState.ThumbSticks.Left.Y;
+                //ポーズ中入力
+                PausingXInput();
+            }
         }
 
         previousState = currentState;
@@ -178,77 +202,83 @@ public class SelectScript : MonoBehaviour
     /// </summary>
     void PausingXInput()
     {
+        //選択しているものにより処理変更
         switch(pauseSelect)
         {
-            case PauseSelect.ToTitle:
+            case PauseSelect.ToTitle://タイトルへ
+                //今選ばれているボタンが「タイトル」でなければ
                 if (nowSelectedBtn != toTitle)
                 {
+                    //「タイトル」ボタン選択
                     toTitle.Select();
                     nowSelectedBtn = toTitle;
                 }
+                //選ぶことが可能で、左スティックを下に倒したら
                 if (moveY <= -0.8f && isSelect)
                 {
+                    //選べない
                     isSelect = false;
+                    //状態遷移
                     pauseSelect = PauseSelect.Tutorial;
                 }
                 break;
-            case PauseSelect.Tutorial:
+            case PauseSelect.Tutorial://チュートリアル表示
+                //今選ばれているボタンが「チュートリアル」でなければ
                 if (nowSelectedBtn != tutorial)
                 {
+                    //「チュートリアル」ボタン選択
                     tutorial.Select();
                     nowSelectedBtn = tutorial;
                 }
-                stayTime -= Time.deltaTime;
+
+                //選ぶことが可能で、左スティックを上に倒したら
                 if (moveY >= 0.8f && isSelect && !isTutorial)
                 {
-                    tutorialCount = 0;
+                    //選べない
                     isSelect = false;
+                    //状態遷移
                     pauseSelect = PauseSelect.ToTitle;
                 }
+                //選ぶことが可能で、左スティックを下に倒したら
                 else if (moveY <= -0.8f && isSelect && !isTutorial)
                 {
-                    tutorialCount = 0;
+                    //選べない
                     isSelect = false;
+                    //状態遷移
                     pauseSelect = PauseSelect.BackToGame;
                 }
                 break;
-            case PauseSelect.BackToGame:
+            case PauseSelect.BackToGame://ゲームへ戻る
+                //今選ばれているボタンが「ゲームへ戻る」でなければ
                 if (nowSelectedBtn != backToGame)
                 {
+                    //「ゲームへ戻る」ボタン選択
                     backToGame.Select();
                     nowSelectedBtn = backToGame;
                 }
+                //選ぶことが可能で、左スティックを上に倒したら
                 if (moveY >= 0.8f && isSelect)
                 {
+                    //選べない
                     isSelect = false;
+                    //状態遷移
                     pauseSelect = PauseSelect.Tutorial;
                 }
                 break;
         }
 
+        //一度左スティックを戻さないと
         if(moveY < 0.8f&&moveY > -0.8f)
         {
+            //選択可能にならない
             isSelect = true;
         }
-
-        ////up
-        //if (moveY >=0.8f && nowSelectedBtn != toTitle)
-        //{
-        //    toTitle.Select();
-        //    nowSelectedBtn = toTitle;
-        //}
-
-        ////down
-        //if (moveY <= -0.8f && nowSelectedBtn != backToGame)
-        //{
-        //    backToGame.Select();
-        //    nowSelectedBtn = backToGame;
-        //}
-
-        //A
+        
+        //Aボタンが押されたら
         if (previousState.Buttons.A == ButtonState.Released &&
             currentState.Buttons.A == ButtonState.Pressed)
         {
+            //現在押されているボタン処理を行う
             BtnPushed(nowSelectedBtn);
         }
     }
@@ -287,53 +317,25 @@ public class SelectScript : MonoBehaviour
     public void BackToTitle()
     {
         //SceneManager.LoadScene("Title");
-        scenecontroller.IsToTitle = true;
+        gameSceneController.IsToTitle = true;
     }
 
+    /// <summary>
+    /// チュートリアル表示ボタン
+    /// </summary>
     public void ShowTutorial()
     {       
-        if (tutorialCount <= 0 && !isTutorial)
+        if (!isTutorial)
         {
-            pageCount.SetActive(true);
+            //ポーズパネルを非表示
             pausepanel.SetActive(false);
-            ruleList = new List<GameObject>();
-            for (int i = 0; i < ruleSpriteList.Count; i++)
-            {
-                GameObject rule;
-                rule = Instantiate(Rules, transform);
-                rule.GetComponent<RectTransform>().position += new Vector3(i * Screen.width, 0, 0);
-                rule.transform.GetChild(1).GetComponent<Image>().sprite = ruleSpriteList[i];
-                ruleList.Add(rule);
-            }
+            //ルール画像表示オブジェクト生成
+            rules = Instantiate(originRules, transform);
+            //ページカウント設定
+            rules.GetComponent<Rule>().PageCount = pageCount;
+            //チュートリアル状態
             isTutorial = true;
         }
-        else
-        {
-            if (stayTime <= 0)
-            {
-                stayTime = 1.0f;
-                tutorialCount++;
-                foreach (var rule in ruleList)
-                {
-                    rule.GetComponent<RectTransform>().DOMoveX(rule.GetComponent<RectTransform>().position.x - Screen.width, 1.0f);
-                }
-            }
-            if (tutorialCount >= ruleSpriteList.Count)
-            {
-                foreach (var tutorial in ruleList)
-                {
-                    Destroy(tutorial);
-                }
-                ruleList.Clear();
-                tutorialCount = 0;
-                stayTime = 0.0f;
-                pageCount.SetActive(false);
-                pausepanel.SetActive(true);
-                isTutorial = false;
-            }
-        }
-
-        pageCount.GetComponent<Text>().text = HalfWidth2FullWidth.Set2FullWidth((tutorialCount + 1).ToString("0")) + "／" + HalfWidth2FullWidth.Set2FullWidth(ruleSpriteList.Count.ToString("0"));
     }
 
     /// <summary>
@@ -341,20 +343,26 @@ public class SelectScript : MonoBehaviour
     /// </summary>
     void ObjectSet()
     {
+        //振動止める
         GamePad.SetVibration(PlayerIndex.One, 0.0f, 0.0f);
         GamePad.SetVibration(PlayerIndex.Two, 0.0f, 0.0f);
         GamePad.SetVibration(PlayerIndex.Three, 0.0f, 0.0f);
         GamePad.SetVibration(PlayerIndex.Four, 0.0f, 0.0f);
+        //ポーズリストクリア
         pauseList.Clear();
+        //設定したタグをポーズ対象に選択
         foreach (var tagName in tagNameList)
         {
+            //タグで探す
             GameObject[] objList = GameObject.FindGameObjectsWithTag(tagName);
 
+            //リスト追加
             foreach (var obj in objList)
             {
                 pauseList.Add(obj);
             }
         }
+        //状態遷移
         pauseState = PauseState.PAUSESTART;
     }
 
@@ -363,34 +371,47 @@ public class SelectScript : MonoBehaviour
     /// </summary>
     void PauseStart()
     {
+        //ボタン選択
         pauseSelect = PauseSelect.ToTitle;
         //時間を止める
         timeController.GetComponent<TimeController>().isPause = true;
+        //ポーズ対象から1つずつ呼び出す
         foreach (var pauseObj in pauseList)
         {
+            //空なら飛ばす
             if (pauseObj == null)
                 continue;
+
+            //スクリプト取得
             Behaviour[] pauseBehavs = Array.FindAll(pauseObj.GetComponentsInChildren<Behaviour>(), (obj) => { return obj.enabled; });
+            //スクリプトを一時非アクティブ化
             foreach (var com in pauseBehavs)
             {
                 com.enabled = false;
             }
 
+            //リジットボディ取得
             Rigidbody[] rgBodies = Array.FindAll(pauseObj.GetComponentsInChildren<Rigidbody>(), (obj) => { return !obj.IsSleeping(); });
+            //リジッドボディがあれば
             if (rgBodies.Length != 0)
             {
+                //移動量保存用配列
                 Vector3[] rgBodyVels = new Vector3[rgBodies.Length];
                 Vector3[] rgBodyAVels = new Vector3[rgBodies.Length];
                 for (var i = 0; i < rgBodies.Length; ++i)
                 {
+                    //移動量保存用
                     rgBodyVels[i] = rgBodies[i].velocity;
                     rgBodyAVels[i] = rgBodies[i].angularVelocity;
+                    //リジッドボディ止める
                     rgBodies[i].Sleep();
                 }
             }
         }
+        //タイトルボタン選択
         toTitle.Select();
         nowSelectedBtn = toTitle;
+        //状態遷移
         pauseState = PauseState.PAUSING;
     }
 
@@ -399,40 +420,49 @@ public class SelectScript : MonoBehaviour
     /// </summary>
     void PauseEnd()
     {
-        foreach (var tutorial in ruleList)
+        //もしチュートリアル状態なら
+        if (isTutorial)
         {
-            Destroy(tutorial);
+            //ルール画像終了処理
+            rules.GetComponent<Rule>().Death();
+            //状態変化
+            isTutorial = false;
         }
-        ruleList.Clear();
-        tutorialCount = 0;
-        stayTime = 0.0f;
-        pageCount.SetActive(false);
-        isTutorial = false;
+        //タイム開始
         timeController.GetComponent<TimeController>().isPause = false;
+        //ポーズ対象から1つずつ呼び出す
         foreach (var pauseObj in pauseList)
         {
+            //空なら飛ばす
             if (pauseObj == null)
                 continue;
+
+            //スクリプト取得
             Behaviour[] pauseBehavs = Array.FindAll(pauseObj.GetComponentsInChildren<Behaviour>(), (obj) => { return !obj.enabled; });
+            //スクリプトをアクティブ化
             foreach (var com in pauseBehavs)
             {
                 com.enabled = true;
             }
 
+            //リジットボディ取得
             Rigidbody[] rgBodies = Array.FindAll(pauseObj.GetComponentsInChildren<Rigidbody>(), (obj) => { return obj.IsSleeping(); });
             if (rgBodies.Length != 0)
             {
+                //移動量配列
                 Vector3[] rgBodyVels = new Vector3[rgBodies.Length];
                 Vector3[] rgBodyAVels = new Vector3[rgBodies.Length];
                 for (var i = 0; i < rgBodies.Length; ++i)
                 {
+                    //リジッドボディ止める
                     rgBodies[i].WakeUp();
+                    //移動量回帰
                     rgBodies[i].velocity = rgBodyVels[i];
                     rgBodies[i].angularVelocity = rgBodyAVels[i];
                 }
             }
         }
-
+        //状態遷移
         pauseState = PauseState.NONEPAUSE;
     }
 
