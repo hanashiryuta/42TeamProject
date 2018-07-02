@@ -414,12 +414,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3aa95a9ccac36d94bb12d4be2e3abb11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameLoad: {fileID: 0}
   fadePanel: {fileID: 748016649}
+  fadeController: {fileID: 0}
+  isSceneChange: 0
+  playerIndex: 0
+  moveX: 0
+  moveY: 0
+  inputDelayCnt: 0
+  inputDelayTime: 0.3
+  isInputDelay: 0
+  se: {fileID: 0}
   gameStartBtn: {fileID: 649383090}
   creditBtn: {fileID: 1022773030}
   gameExitBtn: {fileID: 1206159788}
-  delayTime: 0.5
-  isDelay: 0
   titleCanvas: {fileID: 678234731}
   creditCanvas: {fileID: 1394221701}
   bgmControllerOBJ: {fileID: 1178841107629970, guid: b643a883259f6a343af7796b24b6bfaa,

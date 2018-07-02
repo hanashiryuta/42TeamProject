@@ -268,6 +268,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf8322e9e24b29248ab39dccd930f7b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameLoad: {fileID: 0}
+  fadePanel: {fileID: 1892419696}
+  fadeController: {fileID: 0}
+  isSceneChange: 0
+  playerIndex: 0
+  moveX: 0
+  moveY: 0
+  inputDelayCnt: 0
+  inputDelayTime: 0.3
+  isInputDelay: 0
+  se: {fileID: 0}
   oneMoreBtn: {fileID: 128662108}
   toTitleBtn: {fileID: 783692505}
   textMovingTime: 1.5
@@ -1140,6 +1151,11 @@ Prefab:
 --- !u!224 &1892419695 stripped
 RectTransform:
   m_PrefabParentObject: {fileID: 224059734985540118, guid: b83164d055201be479d1dcb72359fc5f,
+    type: 2}
+  m_PrefabInternal: {fileID: 1892419694}
+--- !u!1 &1892419696 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1367887611309476, guid: b83164d055201be479d1dcb72359fc5f,
     type: 2}
   m_PrefabInternal: {fileID: 1892419694}
 --- !u!1 &2047080844

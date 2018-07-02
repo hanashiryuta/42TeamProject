@@ -9,114 +9,102 @@ using UnityEngine;
 using UnityEngine.UI;
 using XInputDotNetPure; // Required in C#
 
-public class CharacterSelectSceneController : MonoBehaviour
+public class CharacterSelectSceneController : SceneController
 {
     //プレイヤー準備関連
     [SerializeField]
     CheckPlayerStandby[] standbyCheck;//プレイヤースタンドバイチェック
-    PlayerIndex controllablePlayerIndex;
+    PlayerIndex controllablePlayerIndex;//操作可能プレイヤーのインデックス
     [SerializeField]
     Text mainText;//中央の表示テキスト
+    [SerializeField]
+    Text player1Text, startText;
 
+    //AI
     bool _isAISpawned = false;
 
-    float _delayTime = 1.5F;
+    //フェードアウト遅延時間
+    public float fadeOutDelayTime = 1f;
 
-    //シーン移転関連
-    GameLoad gameload;
+    //接続したプレイヤー関連
     [SerializeField]
-    GameObject fadePanel;
-    FadeController fadeController;
-    bool isFadedOut = false;
-    bool isFadedIn = false;
+    GameObject connectedPlayerStatusObj;//接続プレイヤーステータスOBJ
+    ConnectedPlayerStatus connectedPlayerStatus;//接続プレイヤーステータス
 
-    //接続したプレイヤー
-    [SerializeField]
-    GameObject connectedPlayerStatusObj;
-    ConnectedPlayerStatus connectedPlayerStatus;
+    //SceneState
+    CharacterSceneState sceneState = CharacterSceneState.FadeIn;
 
-    //SE
-    SEController se;
-    bool isStartSE_Played = false;
-    bool isCancelSE_Played = false;
-
-    [SerializeField]
-    Text player1Text;
-    [SerializeField]
-    Text startText;
-
-    // Use this for initialization
-    void Start()
+    public override void Start()
     {
-        gameload = transform.GetComponent<GameLoad>();
-        fadeController = fadePanel.GetComponent<FadeController>();
-        fadeController.FadeIn();
+        base.Start();
 
-        se = transform.GetComponent<SEController>();
+        mainText.enabled = false;
+        player1Text.enabled = false;
+        startText.enabled = false;
     }
 
-    // Update is called once per frame
-    void Update()
+    /// <summary>
+    /// シーンの状態に沿ってメソッド実行
+    /// </summary>
+    public override void CheckSceneState()
     {
-        SetControllablePlayer();
+        //Get XInput
+        currentState = GamePad.GetState(playerIndex);
 
-        //フェードイン中か
-        if (fadeController.IsFadeInFinish == false)
+        switch (sceneState)
         {
-            fadeController.FadeIn();
-        }
-        else
-        {
-            if (!isFadedIn)
-            {
-                for (int i = 0; i < ConnectedPlayerCount(); i++)
+            case CharacterSceneState.FadeIn://フェードイン中
+                if (fadeController.IsFadeInFinish)
                 {
-                    standbyCheck[i].IsCanPressBtn = true;
+                    //ボタン判定を起動
+                    for (int i = 0; i < ConnectedPlayerCount(); i++)
+                        standbyCheck[i].IsCanPressBtn = true;
+
+                    sceneState = CharacterSceneState.None;
                 }
-                isFadedIn = true;
-            }
-        }
+                break;
 
-        //全員スタンドバイしたか
-        if (Is_ControllablePlayer_Pressed_Start())
-        {
-            //AI無し
-            //if (!_isAISpawned)
-            //{
-            //    Invoke("AICharacterSpawn", _delayTime);
-            //    _isAISpawned = true;
-            //}
-            //ToStageSelectScene();
+            case CharacterSceneState.None://基準状態
+                if (Is_ControllablePlayer_Pressed_Start())//Start押されたら
+                {
+                    /*//AI無し
+                    if (!_isAISpawned)
+                    {
+                        Invoke("AICharacterSpawn", _delayTime);
+                        _isAISpawned = true;
+                    }
+                    ToStageSelectScene();*/
 
-            //SE鳴る
-            se.PlaySystemSE((int)SEController.SystemSE.OK);
-            isStartSE_Played = true;
-        }
+                    //SE鳴る
+                    se.PlaySystemSE((int)SEController.SystemSE.OK);
+                    sceneState = CharacterSceneState.ToNextScene;
+                }
+                if (Is_ControllablePlayer_Pressed_B_Back())//B(Back)押されたら
+                {
+                    //SE鳴る
+                    se.PlaySystemSE((int)SEController.SystemSE.Cancel);
+                    sceneState = CharacterSceneState.ToPreScene;
+                }
+                break;
 
-        //Back押されたら
-        if (Is_ControllablePlayer_Pressed_Back())
-        {
-            //SE鳴る
-            se.PlaySystemSE((int)SEController.SystemSE.Cancel);
-            isCancelSE_Played = true;
-        }
-
-        //SE終わってからシーン転移
-        if (isStartSE_Played)
-        {
-            if (!se.Audio.isPlaying)//SE鳴りやむまで待つ
-            {
-                ToStageSelectScene();
-            }
-        }
-        else if (isCancelSE_Played)
-        {
-            if (!se.Audio.isPlaying)//SE鳴りやむまで待つ
-            {
+            case CharacterSceneState.ToPreScene://前のシーンに移行
                 ToTitleScene();
-            }
+                //フェードアウト終わったら
+                if (fadeController.IsFadeOutFinish)
+                    //NextSceneLoad
+                    gameLoad.LoadingStartWithOBJ();
+                break;
+
+            case CharacterSceneState.ToNextScene://次のシーンに移行
+                ToStageSelectScene();
+                //フェードアウト終わったら
+                if (fadeController.IsFadeOutFinish)
+                    //NextSceneLoad
+                    gameLoad.LoadingStartWithOBJ();
+                break;
         }
 
+        previousState = currentState;
     }
 
     /// <summary>
@@ -190,6 +178,7 @@ public class CharacterSelectSceneController : MonoBehaviour
             if (standbyCheck[(int)controllablePlayerIndex].IsStartPressed &&
                 readyPlayers != 1)
             {
+                gameLoad.NextScene = GameLoad.Scenes.StageSelect;//ステージシーンに
                 isAllReady = true;//準備完了
             }
         }
@@ -208,6 +197,7 @@ public class CharacterSelectSceneController : MonoBehaviour
                             "　　　　　　　で\n" +
                             "ゲームスタート！";
             mainText.enabled = true;
+            player1Text.text = HalfWidth2FullWidth.Set2FullWidth("P" + ((int)controllablePlayerIndex + 1));
             player1Text.enabled = true;
             startText.enabled = true;
         }
@@ -216,14 +206,17 @@ public class CharacterSelectSceneController : MonoBehaviour
     }
 
     /// <summary>
-    /// ゲーム進行操作可能なプレイヤーがBACKボタン押したか
+    /// ゲーム進行操作可能なプレイヤーがB(Back)ボタン押したか
     /// </summary>
     /// <returns></returns>
-    bool Is_ControllablePlayer_Pressed_Back()
+    bool Is_ControllablePlayer_Pressed_B_Back()
     {
-        return standbyCheck[(int)controllablePlayerIndex].IsBackPressed;
+        if (standbyCheck[(int)controllablePlayerIndex].IsB_BackPressed)
+        {
+            gameLoad.NextScene = GameLoad.Scenes.Tilte;
+        }
+        return standbyCheck[(int)controllablePlayerIndex].IsB_BackPressed;
     }
-
 
     /// <summary>
     /// 接続しているプレイヤーの人数をカウント
@@ -276,21 +269,8 @@ public class CharacterSelectSceneController : MonoBehaviour
         player1Text.enabled = false;
         startText.enabled = false;
 
-        gameload.NextScene = GameLoad.Scene.StageSelect;
-        Invoke("SceneLoad", _delayTime + 1f);
-    }
-
-    /// <summary>
-    /// シーンロード
-    /// </summary>
-    void SceneLoad()
-    {
-        fadeController.FadeOut();
-        if (fadeController.IsFadeOutFinish && !isFadedOut)
-        {
-            gameload.LoadingStartWithOBJ();
-            isFadedOut = true;
-        }
+        gameLoad.NextScene = GameLoad.Scenes.StageSelect;
+        isSceneChange = true;
     }
 
     /// <summary>
@@ -304,12 +284,9 @@ public class CharacterSelectSceneController : MonoBehaviour
             standbyCheck[i].IsCanPressBtn = false;
         }
 
-        gameload.NextScene = GameLoad.Scene.Tilte;
-
-        Invoke("SceneLoad", 0);
-
+        gameLoad.NextScene = GameLoad.Scenes.Tilte;
+        isSceneChange = true;
     }
-
 
     /// <summary>
     /// 参戦しているプレイヤーを記録
@@ -333,34 +310,6 @@ public class CharacterSelectSceneController : MonoBehaviour
                 connectedPlayerStatus.ConnectedPlayer.Add("Player" + (i + 1), i);
                 Debug.Log(i);
             }
-        }
-    }
-
-    /// <summary>
-    /// 操作可能なプレイヤーを選択
-    /// /// </summary>
-    void SetControllablePlayer()
-    {
-        if (GamePad.GetState(PlayerIndex.One).IsConnected)
-        {
-            controllablePlayerIndex = PlayerIndex.One;
-        }
-        else if (GamePad.GetState(PlayerIndex.Two).IsConnected)
-        {
-            controllablePlayerIndex = PlayerIndex.Two;
-        }
-        else if (GamePad.GetState(PlayerIndex.Three).IsConnected)
-        {
-            controllablePlayerIndex = PlayerIndex.Three;
-        }
-        else if (GamePad.GetState(PlayerIndex.Four).IsConnected)
-        {
-            controllablePlayerIndex = PlayerIndex.Four;
-        }
-
-        for(int i = 0; i < standbyCheck.Length; i++)
-        {
-            standbyCheck[i].ControllablePlayerIndex = controllablePlayerIndex;
         }
     }
 }

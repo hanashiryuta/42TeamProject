@@ -11,37 +11,22 @@ using UnityEngine.EventSystems;
 using XInputDotNetPure;
 using DG.Tweening;
 
-public class StageSelectController : MonoBehaviour
+public class StageSelectController : SceneController
 {
+    //ステージ関連
     [SerializeField]
-    GameObject[] stagesList;
-    GameObject stage;//今表示しているステージ
+    GameObject[] stagesList;//すべてのステージを格納するリスト
+    GameObject nowStage;//今表示しているステージ
     int nowStageIndex = 0;//今表示しているステージのインデックス
 
+    //接続プレイヤー
     ConnectedPlayerStatus connectedPlayerStatus;//プレイヤーステータス(選択したステージをここに渡す)
 
-    //シーン移転関連
-    GameLoad gameload;
+    //ボタン
     [SerializeField]
-    GameObject fadePanel;
-    FadeController fadeController;
-    bool isFaded = false;
-    bool isSceneChage = false;
+    Button leftBtn, rightBtn;
 
-    [SerializeField]
-    Button leftBtn;
-    [SerializeField]
-    Button rightBtn;
-
-    float cnt = 0;
-    public float delayTime = 0.5f;//長押しの時の遅延
-    public bool isDelay = false;
-
-    PlayerIndex playerIndex;
-    GamePadState previousState;
-    GamePadState currentState;
-    float moveX = 0;
-    
+    //ステージポイント関連
     [SerializeField]
     GameObject stagePointsSet;//ポイント生成場所
     [SerializeField]
@@ -50,11 +35,11 @@ public class StageSelectController : MonoBehaviour
     public float pointsOffset = 40f;
     float firstPointX = 0;
 
-    //SE
-    SEController se;
+    //SceneState
+    StageSceneState sceneState = StageSceneState.FadeIn;
 
     // Use this for initialization
-    void Start ()
+    public override void Start()
     {
         if (connectedPlayerStatus == null)
         {
@@ -63,14 +48,11 @@ public class StageSelectController : MonoBehaviour
         }
 
         //一つ目のステージを出す
-        stage = Instantiate(stagesList[0]);
-
-        gameload = this.GetComponent<GameLoad>();
-        fadeController = fadePanel.GetComponent<FadeController>();
-
+        nowStage = Instantiate(stagesList[0]);
+        //ステージポイントを設定
         SetStagePoints();
 
-        se = transform.GetComponent<SEController>();
+        base.Start();
     }
 
     /// <summary>
@@ -101,34 +83,59 @@ public class StageSelectController : MonoBehaviour
         PointToSelected(nowStageIndex);
     }
 
-    // Update is called once per frame
-    void Update ()
+    /// <summary>
+    /// シーンの状態に沿ってメソッド実行
+    /// </summary>
+    public override void CheckSceneState()
     {
-        SetControllablePlayer();
+        //Get XInput
+        currentState = GamePad.GetState(playerIndex);
 
-        //フェードイン中か
-        if (fadeController.IsFadeInFinish == false)
+        switch (sceneState)
         {
-            fadeController.FadeIn();
-        }
-        else
-        {
-            //XInput
-            currentState = GamePad.GetState(playerIndex);
-            moveX = currentState.ThumbSticks.Left.X;
+            case StageSceneState.FadeIn://フェードイン中
+                if (fadeController.IsFadeInFinish)
+                    sceneState = StageSceneState.None;
+                break;
 
-            if (isSceneChage)
-            {
-                SceneLoad();
-            }
+            case StageSceneState.None://基準状態
+                moveX = currentState.ThumbSticks.Left.X;
+                StageSelectXInput();
+                break;
+
+            case StageSceneState.ToPreScene://前のシーンに移行
+                DOTween.KillAll();
+                ToCharacterSelectScene();
+                //フェードアウト終わったら
+                if (fadeController.IsFadeOutFinish)
+                    //NextSceneLoad
+                    gameLoad.LoadingStartWithOBJ();
+                break;
+
+            case StageSceneState.ToNextScene://次のシーンに移行
+                DOTween.KillAll();
+                GameStart();
+                //フェードアウト終わったら
+                if (fadeController.IsFadeOutFinish)
+                    //NextSceneLoad
+                    gameLoad.LoadingStartWithOBJ();
+                break;
         }
 
+        previousState = currentState;
+    }
+
+    /// <summary>
+    /// ステージセレクト入力
+    /// </summary>
+    void StageSelectXInput()
+    {
         //今のステージを選択してゲームへ（Aボタン）
         if (previousState.Buttons.A == ButtonState.Released &&
             currentState.Buttons.A == ButtonState.Pressed)
         {
             se.PlaySystemSE((int)SEController.SystemSE.OK);
-            GameStart();
+            sceneState = StageSceneState.ToNextScene;
         }
         //左右ボタンの選択状態表示
         ShowBtnSelected();
@@ -140,32 +147,7 @@ public class StageSelectController : MonoBehaviour
             currentState.Buttons.B == ButtonState.Pressed)
         {
             se.PlaySystemSE((int)SEController.SystemSE.Cancel);
-            ToCharacterSelectScene();
-        }
-
-        previousState = currentState;
-    }
-
-    /// <summary>
-    /// 操作可能なプレイヤーを選択
-    /// /// </summary>
-    void SetControllablePlayer()
-    {
-        if (GamePad.GetState(PlayerIndex.One).IsConnected)
-        {
-            playerIndex = PlayerIndex.One;
-        }
-        else if(GamePad.GetState(PlayerIndex.Two).IsConnected)
-        {
-            playerIndex = PlayerIndex.Two;
-        }
-        else if (GamePad.GetState(PlayerIndex.Three).IsConnected)
-        {
-            playerIndex = PlayerIndex.Three;
-        }
-        else if (GamePad.GetState(PlayerIndex.Four).IsConnected)
-        {
-            playerIndex = PlayerIndex.Four;
+            sceneState = StageSceneState.ToPreScene;
         }
     }
 
@@ -174,12 +156,12 @@ public class StageSelectController : MonoBehaviour
     /// </summary>
     void ShowSeletedStage(float rotate)
     {
-        if(stage != null)
+        if(nowStage != null)
         {
-            Destroy(stage);
+            Destroy(nowStage);
         }
 
-        stage = Instantiate(stagesList[nowStageIndex], new Vector3(0, 0.5f, 0), Quaternion.Euler(0, rotate, 0));
+        nowStage = Instantiate(stagesList[nowStageIndex], new Vector3(0, 0.5f, 0), Quaternion.Euler(0, rotate, 0));
     }
 
     /// <summary>
@@ -225,40 +207,40 @@ public class StageSelectController : MonoBehaviour
         //右
         if (moveX > 0.8f)
         {
-            if (!isDelay)
+            if (!isInputDelay)
             {
-                cnt = delayTime;
+                inputDelayCnt = inputDelayTime;
                 rightBtn.onClick.Invoke();
                 DOTween.Punch(() => rightBtn.gameObject.transform.position,
                                 x => rightBtn.gameObject.transform.position = x,
                                 new Vector3(5, 0, 0),
-                                delayTime,
+                                inputDelayTime,
                                 5);
-                isDelay = true;
+                isInputDelay = true;
             }
             else
             {
-                DelayTimeCountDown();
+                InputDelayTimeCountDown();
             }
         }
 
         //左
         if (moveX < -0.8f)
         {
-            if (!isDelay)
+            if (!isInputDelay)
             {
-                cnt = delayTime;
+                inputDelayCnt = inputDelayTime;
                 leftBtn.onClick.Invoke();
                 DOTween.Punch(() => leftBtn.gameObject.transform.position,
                                 x => leftBtn.gameObject.transform.position = x,
                                 new Vector3(-5, 0, 0),
-                                delayTime,
+                                inputDelayTime,
                                 5);
-                isDelay = true;
+                isInputDelay = true;
             }
             else
             {
-                DelayTimeCountDown();
+                InputDelayTimeCountDown();
             }
         }
 
@@ -266,8 +248,8 @@ public class StageSelectController : MonoBehaviour
         if (moveX > -0.05f &&
             moveX < 0.05f)
         {
-            cnt = delayTime;
-            isDelay = false;
+            inputDelayCnt = inputDelayTime;
+            isInputDelay = false;
         }
     }
 
@@ -280,7 +262,7 @@ public class StageSelectController : MonoBehaviour
         {
             PointToDefalt(nowStageIndex);
 
-            float rotate = stage.transform.eulerAngles.y;
+            float rotate = nowStage.transform.eulerAngles.y;
             nowStageIndex++;
             ShowSeletedStage(rotate);
 
@@ -299,7 +281,7 @@ public class StageSelectController : MonoBehaviour
         {
             PointToDefalt(nowStageIndex);
 
-            float rotate = stage.transform.eulerAngles.y;
+            float rotate = nowStage.transform.eulerAngles.y;
             nowStageIndex--;
             ShowSeletedStage(rotate);
 
@@ -341,45 +323,22 @@ public class StageSelectController : MonoBehaviour
         connectedPlayerStatus.StageName = stageName;
     }
 
-    void SceneLoad()
-    {
-        fadeController.FadeOut();
-        DOTween.KillAll();
-        if (fadeController.IsFadeOutFinish && !isFaded)
-        {
-            gameload.LoadingStartWithOBJ();
-            isFaded = true;
-        }
-    }
-
     /// <summary>
     /// 今のステージを選択してゲームへ
     /// </summary>
     public void GameStart()
     {
         SetStage();
-        gameload.NextScene = GameLoad.Scene.Main;
-        isSceneChage = true;
+        gameLoad.NextScene = GameLoad.Scenes.Main;
+        isSceneChange = true;
     }
 
     /// <summary>
-    /// Backボタン
+    /// B(Back)ボタン
     /// </summary>
     public void ToCharacterSelectScene()
     {
-        gameload.NextScene = GameLoad.Scene.CharacterSelect;
-        isSceneChage = true;
-    }
-
-    /// <summary>
-    /// 遅延カウントダウン
-    /// </summary>
-    void DelayTimeCountDown()
-    {
-        cnt -= Time.deltaTime;
-        if (cnt <= 0)
-        {
-            isDelay = false;
-        }
+        gameLoad.NextScene = GameLoad.Scenes.CharacterSelect;
+        isSceneChange = true;
     }
 }
