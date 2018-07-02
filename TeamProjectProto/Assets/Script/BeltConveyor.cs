@@ -61,6 +61,18 @@ public class BeltConveyor : MonoBehaviour {
         }
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        var rigidBody = other.gameObject.GetComponent<Rigidbody>();
+        _rigidbodies.Add(rigidBody);
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        var rigidBody = other.gameObject.GetComponent<Rigidbody>();
+        _rigidbodies.Remove(rigidBody);
+    }
+
     void OnCollisionEnter(Collision collision)
     {
         var rigidBody = collision.gameObject.GetComponent<Rigidbody>();

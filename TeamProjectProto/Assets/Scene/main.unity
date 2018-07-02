@@ -353,6 +353,10 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1912439068673506, guid: 91347e7381ca01b46b64cae46052ffeb, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 91347e7381ca01b46b64cae46052ffeb, type: 2}
   m_IsPrefabParent: 0
@@ -557,7 +561,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameObjectList:
-  - {fileID: 1220680316109376, guid: e8f38b69d001bc84a9012886d90e2861, type: 2}
+  - {fileID: 1582527512779246, guid: 01fec83662039de409e569c4f78d4b5e, type: 2}
   - {fileID: 1204771191657572, guid: a0a16def173e9d249b10f733f5551e0b, type: 2}
   - {fileID: 1500300943428620, guid: 37a6b47a6a2fbc8409433c306bccc6f5, type: 2}
   - {fileID: 1824404104768216, guid: d0f7451e0a1c28740bf1661d29f205b9, type: 2}
@@ -572,6 +576,7 @@ MonoBehaviour:
   - {fileID: 1027781594627762, guid: 294cde13d0bc77b468d97c6edc69aa94, type: 2}
   - {fileID: 1874686281906046, guid: 246c4a36816ae7245a55960d751556bc, type: 2}
   - {fileID: 1933321785265950, guid: b3bc73f2cc47389409d9d1a1d8bc95fe, type: 2}
+  - {fileID: 1582527512779246, guid: 01fec83662039de409e569c4f78d4b5e, type: 2}
 --- !u!4 &1616548637
 Transform:
   m_ObjectHideFlags: 0

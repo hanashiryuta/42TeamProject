@@ -1,7 +1,7 @@
 ﻿/*
  * 作成日：180604
  * タイトルシーンコントローラー
- * 作成者：阿部→何承恩
+ * 作成者：安部→何承恩
  */
 using System.Collections;
 using System.Collections.Generic;

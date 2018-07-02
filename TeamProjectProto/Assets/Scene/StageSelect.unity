@@ -1379,6 +1379,7 @@ MonoBehaviour:
   - {fileID: 1213026834804094, guid: 3989c9496649bd94f92de994f4551eac, type: 2}
   - {fileID: 1888355709975584, guid: 4fc8933bbac931f4a8b0edeb24b70ea8, type: 2}
   - {fileID: 1910498465122938, guid: 2c92c1676cd2e72408f0f257303d226b, type: 2}
+  - {fileID: 1551638036661458, guid: 98a626283037ae649aa27b746311530d, type: 2}
   fadePanel: {fileID: 1120177109}
   leftBtn: {fileID: 1220915094}
   rightBtn: {fileID: 1334476595}
