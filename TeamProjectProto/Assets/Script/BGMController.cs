@@ -14,7 +14,7 @@ public class BGMController : MonoBehaviour
     List<AudioClip> bgmList = new List<AudioClip>();//BGM格納リスト
     [SerializeField]
     AudioClip rouletteBGM;//ルーレット用BGM（仕様がちょっと違う）
-    public AudioSource audio;// AudioSource
+    public AudioSource bgmAudio;// AudioSource
     float defaultVolume = 0.5f;//デフォルト音量
 
     AudioClip nowClip;
@@ -52,8 +52,8 @@ public class BGMController : MonoBehaviour
         if (!created)
         {
             SetNowAndNextClip((int)BGM.Title);
-            audio.clip = nowClip;
-            audio.Play();
+            bgmAudio.clip = nowClip;
+            bgmAudio.Play();
 
             DontDestroyOnLoad(this.gameObject);
             created = true;
@@ -111,12 +111,12 @@ public class BGMController : MonoBehaviour
     {
         if(rouletteCon.rouletteState == RouletteState.ENTRY)
         {
-            audio.volume = 0.2f;
+            bgmAudio.volume = 0.2f;
         }
 
         if (rouletteCon.rouletteState == RouletteState.EXIT)
         {
-            audio.volume = defaultVolume;
+            bgmAudio.volume = defaultVolume;
         }
     }
 
@@ -130,8 +130,8 @@ public class BGMController : MonoBehaviour
         if (newScene.name == "Title")//タイトル
         {
             SetNowAndNextClip((int)BGM.Title);
-            audio.clip = nowClip;
-            audio.Play();
+            bgmAudio.clip = nowClip;
+            bgmAudio.Play();
         }
         else if (newScene.name == "CharacterSelect")//キャラセレクト
         {
@@ -140,8 +140,8 @@ public class BGMController : MonoBehaviour
                 preScene == "Result")//もう一回で来たら
         {
             SetNowAndNextClip((int)BGM.Title);
-            audio.clip = nowClip;
-            audio.Play();
+            bgmAudio.clip = nowClip;
+            bgmAudio.Play();
 
         }
         else if (newScene.name == "main")//ゲームメインシーン
@@ -149,24 +149,24 @@ public class BGMController : MonoBehaviour
             if (!tutorialController.isTutorial)
             {
                 SetNowAndNextClip((int)BGM.Main);
-                audio.clip = nowClip;
+                bgmAudio.clip = nowClip;
 
                 StartCountDown scd = GameObject.Find("StartCountDown").GetComponent<StartCountDown>();
-                audio.PlayDelayed(scd.waitTime + 4f);//カウントダウンが終わったらプレイ
+                bgmAudio.PlayDelayed(scd.waitTime + 4f);//カウントダウンが終わったらプレイ
             }
             else
             {
                 SetNowAndNextClip((int)BGM.Tutorial);
-                audio.clip = nowClip;
+                bgmAudio.clip = nowClip;
 
-                audio.Play();
+                bgmAudio.Play();
             }
         }
         else if (newScene.name == "Result")//リザルト
         {
             SetNowAndNextClip((int)BGM.Result);
-            audio.clip = nowClip;
-            audio.Play();
+            bgmAudio.clip = nowClip;
+            bgmAudio.Play();
         }
     }
 
@@ -208,7 +208,7 @@ public class BGMController : MonoBehaviour
         if (nextClipVolume < 1) 
         {
             nextClipVolume += 0.1f * Time.deltaTime;
-            audio.volume = nextClipVolume;
+            bgmAudio.volume = nextClipVolume;
         }
         else
         {
@@ -221,7 +221,7 @@ public class BGMController : MonoBehaviour
         if (nowClipVolume > 0.1f) 
         {
             nowClipVolume -= 0.1f * Time.deltaTime;
-            audio.volume = nowClipVolume;
+            bgmAudio.volume = nowClipVolume;
         }
         else
         {
@@ -236,7 +236,7 @@ public class BGMController : MonoBehaviour
     /// <param name="mode"></param>
     private void SceneUnloaded(Scene scene)
     {
-        Debug.Log(scene.name + "Unloaded");
+        Debug.Log(scene.name + " Unloaded");
         //アンロードされたシーンの名前を取得
         preScene = scene.name;
     }
@@ -248,8 +248,7 @@ public class BGMController : MonoBehaviour
     /// <param name="mode"></param>
     private void SceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        Debug.Log(scene.name + "Loaded");
-        Debug.Log(preScene + "が前のシーン");
+        Debug.Log(scene.name + " Loaded");
         //BGM設定
         SetSceneBGM(scene, preScene);
     }

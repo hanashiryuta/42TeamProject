@@ -70,7 +70,7 @@ public class SelectScript : MonoBehaviour
     }
 
     //途中終了用シーンコントローラー
-    SceneController scenecontroller;
+    GameSceneController scenecontroller;
 
     //ポーズ背景
     Image panelBG;
@@ -100,7 +100,7 @@ public class SelectScript : MonoBehaviour
         // 終了合図
         finishCall = GameObject.Find("FinishCall").GetComponent<FinishCall>();
         //途中終了用シーンコントローラー
-        scenecontroller = GameObject.Find("SceneController(Clone)").GetComponent<SceneController>();
+        scenecontroller = GameObject.Find("SceneController(Clone)").GetComponent<GameSceneController>();
         //ポーズ背景
         panelBG = pausepanel.transform.Find("Panel").GetComponent<Image>();
 
