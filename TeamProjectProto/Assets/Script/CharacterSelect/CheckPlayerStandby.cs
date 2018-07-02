@@ -71,11 +71,11 @@ public class CheckPlayerStandby : MonoBehaviour
         set { _isStartPressed = value; }
     }
 
-    bool _isBackPressed = false;//Back押されたか
-    public bool IsBackPressed
+    bool _isB_BackPressed = false;//B(Back)押されたか
+    public bool IsB_BackPressed
     {
-        get { return _isBackPressed; }
-        set { _isBackPressed = value; }
+        get { return _isB_BackPressed; }
+        set { _isB_BackPressed = value; }
     }
 
     //SE
@@ -250,7 +250,7 @@ public class CheckPlayerStandby : MonoBehaviour
 
             if (!_isSpawn && !isCancel)//生成してない時且つ取り消しじゃない
             {
-                IsBackPressed = Is_Bbtn_Pressed();//Bボタン押したか
+                IsB_BackPressed = Is_Bbtn_Pressed();//Bボタン押したか
             }
             //_isBackPressed = Is_BackBtn_Pressed(); //Backボタン押したか
         }

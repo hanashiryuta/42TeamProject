@@ -56,7 +56,6 @@ public static class HalfWidth2FullWidth
     /// <returns></returns>
     public static string Set2FullWidth(string halfWidth)
     {
-        char[] half = new char[halfWidth.Length];
         string result = "";
         char tmp = ' ';
 
@@ -77,7 +76,6 @@ public static class HalfWidth2FullWidth
     /// <returns></returns>
     public static string Set2FullWidth(float halfWidth)
     {
-        char[] half = new char[halfWidth.ToString().Length];
         string result = "";
         char tmp = ' ';
 
