@@ -78,7 +78,7 @@ public class SliderController : MonoBehaviour
     /// </summary>
     public void InvisibleSlider()
     {
-        dashSliderOBJ.GetComponent<CanvasGroup>().alpha = 0;
+        dashCanvas.alpha = 0;
     }
 
 }

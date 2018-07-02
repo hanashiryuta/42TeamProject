@@ -138,4 +138,4 @@ MonoBehaviour:
   - {fileID: 8300000, guid: be132a1ecf2fca84c888f84d7cd1c263, type: 3}
   - {fileID: 8300000, guid: c8014368451a9694c87c57263a33e354, type: 3}
   rouletteBGM: {fileID: 8300000, guid: d4610ae6d336bbe449d2dbffa2cf71d3, type: 3}
-  audio: {fileID: 82328160874931812}
+  bgmAudio: {fileID: 82328160874931812}
