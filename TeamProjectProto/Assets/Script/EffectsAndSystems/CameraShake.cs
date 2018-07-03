@@ -1,6 +1,6 @@
 ﻿/*
  * 作成日時：180518
- * カメラを揺らす
+ * カメラを揺らすクラス
  * 作成者：何承恩
  */
 using System.Collections;
@@ -14,9 +14,9 @@ public class CameraShake : MonoBehaviour
     private float shakeSeconds = 1f;//揺れの継続時間
     [SerializeField]
     private Vector3 shakeValue = new Vector3(5, 5, 0);//揺れ具合
-    private bool isShaked = false;//
-    private bool currentIsShake = false;
-    private bool previousIsShake = false;
+    private bool isShaked = false;//揺れ始めたか？
+    private bool currentIsShake = false;//今揺れているか？
+    private bool previousIsShake = false;//先揺れているか？
 
     BalloonMaster _balloonM;//風船総合管理クラス
     public BalloonMaster BalloonM
@@ -34,11 +34,14 @@ public class CameraShake : MonoBehaviour
     // Update is called once per frame
     void Update ()
     {
+        //風船の爆発状態を取得
         currentIsShake = BalloonM.IsBlast;
 
+        //爆発の瞬間
         if (currentIsShake == true &&
             previousIsShake == false) 
         {
+            //揺れる判定に入った
             isShaked = true;
         }
 
@@ -46,6 +49,7 @@ public class CameraShake : MonoBehaviour
 
         if (isShaked)
         {
+            //揺らす
             Shake();
             isShaked = false;
         }
@@ -63,6 +67,6 @@ public class CameraShake : MonoBehaviour
                         shakeSeconds, 
                         shakeValue); 
 
-        BalloonM.IsBlast = false;
+        BalloonM.IsBlast = false;//爆発によって揺れ始めたので爆発状態をfalseに
     }
 }

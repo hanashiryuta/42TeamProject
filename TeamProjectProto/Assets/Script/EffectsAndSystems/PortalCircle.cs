@@ -9,22 +9,22 @@ using UnityEngine;
 public class PortalCircle : MonoBehaviour
 {
     [SerializeField]
-    bool isDirectionToOutside = false;
+    bool isDirectionToOutside = false;//外向け円なのか？
 
     [SerializeField]
-    Material material;
+    Material material;//マテリアル
     [SerializeField]
-    Texture texture;//サブテクスチャ
+    Texture texture;//サブテクスチャ（透明）
     [SerializeField]
     float defaltPortalRadius = 0.05f;//円の半径(設定値)
-    float tmpDefaltRadius = 0;//設定値を一時格納する変数
+    float tmpDefaltRadius = 0;//円の半径(設定値)を一時格納する変数
     [SerializeField]
     float currentPortalRadius = 0;//円の半径(現在値)
     [SerializeField]
-    float portalWidth = 0.05f;//円の太さ
-    float tmpWidth = 0;
+    float portalWidth = 0.05f;//円の太さ(設定値)
+    float tmpWidth = 0;//円の太さ(設定値)を一時格納する変数
     [SerializeField]
-    float increaseValue = 0.01f;//膨らむ値
+    float increaseValue = 0.01f;//膨らむ量
     GameObject target;//円の中心目標(デフォはNULL)
     bool isBlow = false;//円を吹き飛ばすか
     public bool IsBlow
@@ -35,10 +35,10 @@ public class PortalCircle : MonoBehaviour
     bool isSwelled = false;//風船膨らんだか？
 
     [SerializeField]
-    float range = 1f; //変化後半径
+    float blowRange = 1f; //吹き飛ばす半径
     [SerializeField]
     float seconds = 1f; //継続時間
-    bool isCreateCircle = false;
+    bool isCreateCircleToInside = false;//内向け円生成したか？
 
     BalloonMaster _balloonM;//風船総合管理クラス
     public BalloonMaster BalloonM
@@ -63,10 +63,10 @@ public class PortalCircle : MonoBehaviour
     {
         SetPortalRadius(0);//半径を初期化（歪みを無くす）
         SetPortalWidth(portalWidth);//円の太さを指定
-        tmpDefaltRadius = defaltPortalRadius;///設定値を格納する
-        tmpWidth = portalWidth;
+        tmpDefaltRadius = defaltPortalRadius;//円の半径の設定値を格納する
+        tmpWidth = portalWidth;//円の太さの設定値を格納する
 
-        if (material.name.IndexOf("Outside") > 0)//マテリアルに沿って円の方向を設定
+        if (material.name.IndexOf("Outside") > 0)//マテリアルの名前に沿って円の方向を設定
         {
             isDirectionToOutside = true;
         }
@@ -79,8 +79,7 @@ public class PortalCircle : MonoBehaviour
 
     void Start()
     {
-        DOTween.KillAll();
-
+        DOTween.KillAll();//ゲーム開始時DOTween全削除
         material.SetTexture(subTexPropertyId, texture);
     }
 
@@ -109,7 +108,7 @@ public class PortalCircle : MonoBehaviour
     void OpenPortal()
     {
         //DOTween.KillAll(); ここでKillしたらCameraChakeが止まっちゃう
-        DOTween.To(() => currentPortalRadius, SetPortalRadius, range, seconds).SetEase(Ease.OutExpo);
+        DOTween.To(() => currentPortalRadius, SetPortalRadius, blowRange, seconds).SetEase(Ease.OutExpo);
     }
 
 
@@ -118,8 +117,7 @@ public class PortalCircle : MonoBehaviour
     /// </summary>
     void ClosePortal()
     {
-        //DOTween.KillAll();
-        DOTween.To(() => currentPortalRadius, SetPortalRadius, range, seconds).SetEase(Ease.OutCubic);
+        DOTween.To(() => currentPortalRadius, SetPortalRadius, blowRange, seconds).SetEase(Ease.OutCubic);
     }
 
     /// <summary>
@@ -151,11 +149,11 @@ public class PortalCircle : MonoBehaviour
     /// </summary>
     void SetCircleToOutside()
     {
-        if (BalloonM.NowBState == NowBalloonState.DANGER) //風船が赤い時
+        if (BalloonM.NowBState == NowBalloonState.DANGER) //風船が危険状態
         {
             currentPortalRadius = defaltPortalRadius;
 
-            BalloonBlowUp(BalloonM.blastCount);
+            BalloonBlowUp(BalloonM.blastCount);//膨らむ表現
 
             SetPortalRadius(currentPortalRadius);//円の半径を指定
             SetPortalWidth(portalWidth);//円の太さを指定
@@ -192,9 +190,8 @@ public class PortalCircle : MonoBehaviour
         }
 
         //拡大した円が目的値に越えたら
-        if (currentPortalRadius >= range)
+        if (currentPortalRadius >= blowRange)
         {
-            Debug.Log("InitCircle");
             //半径を初期化
             InitRadius();
         }
@@ -222,18 +219,17 @@ public class PortalCircle : MonoBehaviour
 
             material.SetFloat("_Aspect", Screen.height / (float)Screen.width);//アスペクトを合わせる
 
-            isCreateCircle = true;
+            isCreateCircleToInside = true;
         }
 
-        if (isCreateCircle)
+        if (isCreateCircleToInside)
         {
             ClosePortal();
-            //target = null;
-            isCreateCircle = false;
+            isCreateCircleToInside = false;
         }
 
         //円が目的値に越えたら
-        if (currentPortalRadius <= range)
+        if (currentPortalRadius <= blowRange)
         {
             //半径を初期化
             InitRadius();

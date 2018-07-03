@@ -42,7 +42,7 @@ public class TitleScene : SceneController
         nowSelectedBtn = titleBtnList[nowSelectedBtnIndex];
 
         //BGM
-        if (!BGMController.created)
+        if (!BGMController.isCreated)
         {
             Instantiate(bgmControllerOBJ).GetComponent<BGMController>();
         }

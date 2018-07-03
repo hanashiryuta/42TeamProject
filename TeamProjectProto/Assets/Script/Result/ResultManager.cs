@@ -1,7 +1,7 @@
 ﻿//
 //作成日時：4月25日
-//リザルト画面クラス
-//作成者：平岡誠司
+//リザルトマネージャー
+//作成者：何承恩
 //
 using DG.Tweening;
 using System.Collections;
@@ -52,7 +52,7 @@ public class ResultManager : SceneController
             // ConnectedPlayerStatusで接続しているプレイヤーを受け取る
             connectedPlayerStatus = GameObject.FindGameObjectWithTag("PlayerStatus").GetComponent<ConnectedPlayerStatus>();
         }
-
+        //プレイヤーランク
         playerRank = GameObject.Find("PlayerRankController").GetComponent<PlayerRank>();
 
         SetRankUIsPosition();//ランクUI
@@ -156,8 +156,7 @@ public class ResultManager : SceneController
     }
 
     /// <summary>
-    /// 追加日：180601 追加者：何
-    /// テキストアニメーション
+    /// ランク演出アニメーション
     /// </summary>
     /// <returns></returns>
     IEnumerator ShowRankCoroutine()

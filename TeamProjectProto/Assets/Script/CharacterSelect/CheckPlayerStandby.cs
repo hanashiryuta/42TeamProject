@@ -17,23 +17,24 @@ public class CheckPlayerStandby : MonoBehaviour
     {
         set { controllablePlayerIndex = value; }
     }
-    GamePadState _previousState;
+    GamePadState _previousState;//前のGamePad状態
     public GamePadState PreviousState
     {
         get { return _currentState; }
     }
 
-    GamePadState _currentState;
+    GamePadState _currentState;//今のGamePad状態
     public GamePadState CurrentState
     {
         get { return _currentState; }
     }
+
     [SerializeField]
     GameObject playerPrefabs;//キャラプレハブ
     [SerializeField]
     Texture tex;//テクスチャ
     [SerializeField]
-    Text _playrLabel;//プレイヤーラベル
+    Text _playrLabel;//プレイヤー名前ラベル
     public Text PlayerLabel
     {
         get { return _playrLabel; }
@@ -41,6 +42,7 @@ public class CheckPlayerStandby : MonoBehaviour
     }
     [SerializeField]
     Text _btnText;//ボタンテキスト（Aボタンを押して入場）
+
     [SerializeField]
     GameObject orgin_playerBG;//Player背景
     GameObject playerBG;
@@ -87,7 +89,7 @@ public class CheckPlayerStandby : MonoBehaviour
     // Use this for initialization
     void Start ()
     {
-        playerBG = GameObject.Instantiate(orgin_playerBG, this.transform);
+        playerBG = GameObject.Instantiate(orgin_playerBG, this.transform);//背景生成
         se = transform.GetComponent<SEController>();
     }
 
@@ -99,10 +101,10 @@ public class CheckPlayerStandby : MonoBehaviour
         //ボタン押せる状態で
         if (_isCanPressBtn)
         {
-            //プレイヤー生成
+            //プレイヤー生成チェック
             CheckSpawn();
 
-            //キャンセル
+            //キャンセル復帰をずらす
             CancelInit_Delay(0.2f);
 
             //自分がゲーム進行操作プレイヤーだったら
@@ -146,19 +148,20 @@ public class CheckPlayerStandby : MonoBehaviour
         player.GetComponentInChildren<SkinnedMeshRenderer>().materials[0].mainTexture = tex;//テクスチャ変更
         se.PlaySystemSE((int)SEController.SystemSE.CharacterSpawn);//SE
 　      _playrLabel.enabled = true;//名前表示
-        _btnText.enabled = false;//参加テキスト非表示
+        _btnText.enabled = false;//未参加テキスト非表示
     }
 
     /// <summary>
+    /// プレイヤーキャラ削除
     /// 準備状態キャンセル
     /// </summary>
     void RemovePlayerCharacter()
     {
-        GameObject.Destroy(player);
-        player = null;
-        se.PlaySystemSE((int)SEController.SystemSE.Cancel);
-        _playrLabel.enabled = false;
-        _btnText.enabled = true;
+        GameObject.Destroy(player);//削除
+        player = null;//nullに
+        se.PlaySystemSE((int)SEController.SystemSE.Cancel);//SE
+        _playrLabel.enabled = false;//名前非表示
+        _btnText.enabled = true;//未参加テキスト表示
     }
 
     /// <summary>
@@ -220,21 +223,6 @@ public class CheckPlayerStandby : MonoBehaviour
     }
 
     /// <summary>
-    /// BACKボタンを押したかをチェック
-    /// </summary>
-    /// <param name="playerIndex"></param>
-    /// <returns></returns>
-    bool Is_BackBtn_Pressed()
-    {
-        if (_previousState.Buttons.Back == ButtonState.Released &&
-            _currentState.Buttons.Back == ButtonState.Pressed)
-        {
-            return true;
-        }
-        return false;
-    }
-
-    /// <summary>
     /// ゲーム進行操作プレイヤー操作
     /// </summary>
     void ControllablePlayerInput()
@@ -250,14 +238,14 @@ public class CheckPlayerStandby : MonoBehaviour
 
             if (!_isSpawn && !isCancel)//生成してない時且つ取り消しじゃない
             {
-                IsB_BackPressed = Is_Bbtn_Pressed();//Bボタン押したか
+                IsB_BackPressed = Is_Bbtn_Pressed();//Bボタン押したか(前のシーンに戻る)
             }
-            //_isBackPressed = Is_BackBtn_Pressed(); //Backボタン押したか
         }
     }
 
     /// <summary>
-    /// 設定した秒数後にisCancelをfalseに
+    /// キャラ生成をキャンセルしたら設定した秒数後にisCancelをfalseに
+    /// (もう一回B押したら前のシーンに戻る状態に)
     /// </summary>
     void CancelInit_Delay(float time)
     {

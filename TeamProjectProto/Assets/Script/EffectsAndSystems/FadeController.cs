@@ -13,6 +13,7 @@ public class FadeController : MonoBehaviour
 {
     Image fadeImage; //フェード用イメージコンポーネント
     float _fadeAlphaValue = 255; //一時計算用アルファ値
+
     float _fadeSeconds = 1f;
     /// <summary>
     /// フェード時間
@@ -50,7 +51,6 @@ public class FadeController : MonoBehaviour
         fadeImage = this.GetComponent<Image>();
         //初期色を黒に設定
         fadeImage.color = new Vector4(Color.black.r, Color.black.g, Color.black.b, 255);
-
     }
 
     /// <summary>
@@ -102,5 +102,4 @@ public class FadeController : MonoBehaviour
             }
         }
     }
-
 }

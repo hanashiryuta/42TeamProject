@@ -30,10 +30,10 @@ public class StageSelectController : SceneController
     [SerializeField]
     GameObject stagePointsSet;//ポイント生成場所
     [SerializeField]
-    GameObject stagePoint;//プレハブ
-    List<GameObject> stagePointsList;
-    public float pointsOffset = 40f;
-    float firstPointX = 0;
+    GameObject stagePoint;//ポイントプレハブ
+    List<GameObject> stagePointsList;//ポイントリスト
+    public float pointsOffset = 40f;//ポイント生成間隔
+    float firstPointX = 0;//一番目（左）のポイントのX座標
 
     //SceneState
     StageSceneState sceneState = StageSceneState.FadeIn;
@@ -69,14 +69,15 @@ public class StageSelectController : SceneController
                 firstPointX = (stagesList.Length / 2) * (-pointsOffset);//最初の位置を設定
                 if (stagesList.Length % 2 == 0)//偶数だったら
                 {
-                    firstPointX += pointsOffset / 2;//半分ずらす
+                    firstPointX += pointsOffset / 2;//間隔をもう半分ずらす
                 }
             }
-            //ステージのポイント生成
+            //ステージのポイント生成と格納
             stagePointsList.Add(Instantiate(stagePoint, stagePointsSet.transform));
+            //位置調整（アンカー位置）
             stagePointsList[i].transform.GetComponent<RectTransform>().anchoredPosition = new Vector3(firstPointX + i * pointsOffset, 0, 0);
         }
-        //セットの大きさ
+        //セットのサイズ設定(両側に付く矢印の位置はセットのサイズに沿って位置変更)
         Vector2 setSize = stagePointsSet.transform.GetComponent<RectTransform>().sizeDelta;
         stagePointsSet.transform.GetComponent<RectTransform>().sizeDelta = new Vector2(Mathf.Abs(firstPointX), setSize.y);
         //最初表示するポイント
@@ -134,7 +135,7 @@ public class StageSelectController : SceneController
         if (previousState.Buttons.A == ButtonState.Released &&
             currentState.Buttons.A == ButtonState.Pressed)
         {
-            se.PlaySystemSE((int)SEController.SystemSE.OK);
+            se.PlaySystemSE((int)SEController.SystemSE.OK);//SE
             sceneState = StageSceneState.ToNextScene;
         }
         //左右ボタンの選択状態表示
@@ -169,29 +170,31 @@ public class StageSelectController : SceneController
     /// </summary>
     void ShowBtnSelected()
     {
-        if (nowStageIndex <= 0)
+        if (nowStageIndex <= 0)//一番左のステージが表示されている
         {
-            leftBtn.gameObject.SetActive(false);
+            leftBtn.gameObject.SetActive(false);//左矢印非アクティブ化
         }
-        else if (nowStageIndex >= stagesList.Length - 1)
+        else if (nowStageIndex >= stagesList.Length - 1)//一番右のステージが表示されている
         {
-            rightBtn.gameObject.SetActive(false);
+            rightBtn.gameObject.SetActive(false);//右矢印非アクティブ化
         }
         else
         {
             leftBtn.gameObject.SetActive(true);
             rightBtn.gameObject.SetActive(true);
         }
-
+        //右
         if (moveX >= 0.5f)
         {
             rightBtn.Select();
         }
-        if(moveX <= -0.5f)
+        //左
+        if (moveX <= -0.5f)
         {
             leftBtn.Select();
 
         }
+        //ステージ非選択
         if (moveX > -0.05f ||
             moveX < 0.05f)
         {
@@ -207,16 +210,18 @@ public class StageSelectController : SceneController
         //右
         if (moveX > 0.8f)
         {
+            //遅延中ではなかったら
             if (!isInputDelay)
             {
-                inputDelayCnt = inputDelayTime;
-                rightBtn.onClick.Invoke();
+                inputDelayCnt = inputDelayTime;//遅延時間初期化
+                rightBtn.onClick.Invoke();//ボタン処理呼び出し
+                //ボタン動く
                 DOTween.Punch(() => rightBtn.gameObject.transform.position,
                                 x => rightBtn.gameObject.transform.position = x,
                                 new Vector3(5, 0, 0),
                                 inputDelayTime,
                                 5);
-                isInputDelay = true;
+                isInputDelay = true;//遅延状態にする
             }
             else
             {
@@ -227,16 +232,18 @@ public class StageSelectController : SceneController
         //左
         if (moveX < -0.8f)
         {
+            //遅延中ではなかったら
             if (!isInputDelay)
             {
-                inputDelayCnt = inputDelayTime;
-                leftBtn.onClick.Invoke();
+                inputDelayCnt = inputDelayTime;//遅延時間初期化
+                leftBtn.onClick.Invoke();//ボタン処理呼び出し
+                //ボタン動く
                 DOTween.Punch(() => leftBtn.gameObject.transform.position,
                                 x => leftBtn.gameObject.transform.position = x,
                                 new Vector3(-5, 0, 0),
                                 inputDelayTime,
                                 5);
-                isInputDelay = true;
+                isInputDelay = true;//遅延状態にする
             }
             else
             {
@@ -244,11 +251,11 @@ public class StageSelectController : SceneController
             }
         }
 
-        //遅延初期化
+        //中心位置に戻ったら
         if (moveX > -0.05f &&
             moveX < 0.05f)
         {
-            inputDelayCnt = inputDelayTime;
+            inputDelayCnt = inputDelayTime;//遅延時間初期化
             isInputDelay = false;
         }
     }
@@ -334,7 +341,7 @@ public class StageSelectController : SceneController
     }
 
     /// <summary>
-    /// B(Back)ボタン
+    /// 前のステージへ
     /// </summary>
     public void ToCharacterSelectScene()
     {

@@ -30,22 +30,11 @@ public class ResultPositionSpawnController : MonoBehaviour
     }
     public float positionsXOffset = 300f;//生成間隔
     float firstPositionX = 0;//一番左の位置のX座標
-    public float defaultY = 450f;
-    public float finishY = -100f;
+    public float defaultY = 450f;//デフォ待機位置のY座標
+    public float finishY = -100f;//アニメ終了位置のY座標
 
     [SerializeField]
     GameObject playerRankUIParent;//順位表示のテキストOBJの親
-
-    // Use this for initialization
-    void Start()
-    {
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 
     /// <summary>
     /// ランクのDefaltPosition生成・
@@ -63,12 +52,11 @@ public class ResultPositionSpawnController : MonoBehaviour
                 firstPositionX = (playerNum / 2) * (-positionsXOffset);//最初の位置を設定
                 if (playerNum % 2 == 0)//偶数だったら
                 {
-                    firstPositionX += positionsXOffset / 2;//半分ずらす
+                    firstPositionX += positionsXOffset / 2;//間隔をもう半分ずらす
                 }
             }
             //デフォ位置格納
             _defaultPositionsList.Add(new Vector2(firstPositionX + i * positionsXOffset, defaultY));
-            Debug.Log(_defaultPositionsList[i]);
             //デフォ位置にランクOBJ生成し格納
             _rankOBJList.Add(Instantiate(origin_rankOBJ, playerRankUIParent.transform));
             _rankOBJList[i].transform.GetComponent<RectTransform>().localPosition = _defaultPositionsList[i];

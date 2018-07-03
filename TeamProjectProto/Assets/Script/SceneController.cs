@@ -43,7 +43,7 @@ public class SceneController : MonoBehaviour
     public float inputDelayCnt = 0; //遅延カウント
     public float inputDelayTime = 0.3f;//長押しの時の遅延
     [HideInInspector]
-    public bool isInputDelay = false;
+    public bool isInputDelay = false;//遅延中か？
 
     //SE
     [HideInInspector]
@@ -163,7 +163,7 @@ public class SceneController : MonoBehaviour
     }
 
     /// <summary>
-    /// 操作可能なプレイヤーを選択(番号が一番小さい人、例１P)
+    /// 操作可能なプレイヤーを選択(番号が一番小さい人、例P１)
     /// /// </summary>
     public void SetControllablePlayer()
     {

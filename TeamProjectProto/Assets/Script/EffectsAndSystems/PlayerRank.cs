@@ -1,7 +1,7 @@
 ﻿//
 //作成日時：4月29日
 //プレイヤーの順位付けクラス
-//作成者：平岡誠司
+//作成者：平岡誠司、何承恩
 //
 using System.Collections;
 using System.Collections.Generic;
@@ -58,14 +58,6 @@ public class PlayerRank : MonoBehaviour
 		}
     }
 
-    // Use this for initialization
-    void Start ()
-    {
-        //DontDestroyオブジェのためシーンマネージャーで初期化
-        
-        //Reset ();
-    }
-
     // Update is called once per frame
     void Update ()
 	{
@@ -75,23 +67,11 @@ public class PlayerRank : MonoBehaviour
             SetPlayerRank();
             SetCrown();
         }
-
-        //Result画面の時、左側から1位、2位、3位、4位
-        if (SceneManager.GetActiveScene ().name == "Result")
-        {
-//			for (int i = 0; i < playerRankList.Count; i++) {
-//				playerRankList [i].SetActive (true);
-//				playerRankList [i].transform.position =
-//					new Vector3 (4.5f + i * -3.0f, 0, 0);
-//				}
-
-			foreach (var rank in _resultRank)
-            {
-				//Debug.Log (rank);
-			}
-		}
 	}
 
+    /// <summary>
+    /// ゲーム開始時プレイヤーリストを再構築
+    /// </summary>
     public void InitPlayerList()
     {
         _playerRankArray = GameObject.FindGameObjectsWithTag("Player");
@@ -134,7 +114,7 @@ public class PlayerRank : MonoBehaviour
             if (_playerRankArray[0].GetComponent<PlayerMove>().totalItemCount == 0)
             {
                 //全プレイヤーの王冠は消す
-                player.transform.Find("Armature/Bone/Bone.001/Bone.002/Bone.003/Bone.004/Bone.004_end/Crown").gameObject.SetActive(false);//GetComponent<MeshRenderer>().enabled = false;
+                player.transform.Find("Armature/Bone/Bone.001/Bone.002/Bone.003/Bone.004/Bone.004_end/Crown").gameObject.SetActive(false);
             }
             else
             {
@@ -142,35 +122,15 @@ public class PlayerRank : MonoBehaviour
                 //1位タイも王冠を見えるようにする
                 if (player.GetComponent<PlayerMove>().totalItemCount >= _playerRankArray[0].GetComponent<PlayerMove>().totalItemCount)
                 {
-                    player.transform.Find("Armature/Bone/Bone.001/Bone.002/Bone.003/Bone.004/Bone.004_end/Crown").gameObject.SetActive(true);//GetComponent<MeshRenderer>().enabled = true;
+                    player.transform.Find("Armature/Bone/Bone.001/Bone.002/Bone.003/Bone.004/Bone.004_end/Crown").gameObject.SetActive(true);
                 }
                 //それ以外のプレイヤーの王冠は消す
                 else
                 {
-                    player.transform.Find("Armature/Bone/Bone.001/Bone.002/Bone.003/Bone.004/Bone.004_end/Crown").gameObject.SetActive(false);//GetComponent<MeshRenderer>().enabled = false;
+                    player.transform.Find("Armature/Bone/Bone.001/Bone.002/Bone.003/Bone.004/Bone.004_end/Crown").gameObject.SetActive(false);
                 }
             }
 
         }
     }
-
-    /// <summary>
-    /// リストの要素を全て削除する処理
-    /// </summary>
-    public void Reset()
-    {
-//		if (transform.childCount >= 0) {
-//			foreach (Transform child in gameObject.transform) {
-//				Destroy (child.gameObject);
-//			}
-
-//			for (int i = 0; i < gameObject.transform.childCount; i++) {
-//				Destroy (transform.GetChild (i));
-//
-//				playerRankList.RemoveAt (i);
-
-//			}
-
-			//_playerRankArray.Clear ();
-	}
 }
