@@ -42,9 +42,4 @@ public class FBXSetMaterial : MonoBehaviour
             transform.GetComponentInChildren<SkinnedMeshRenderer>().materials[0].EnableKeyword("_EMISSION");
         }
     }
-
-    // Update is called once per frame
-    void Update () {
-		
-	}
 }

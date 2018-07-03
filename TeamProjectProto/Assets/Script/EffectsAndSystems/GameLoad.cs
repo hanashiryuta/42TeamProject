@@ -40,7 +40,7 @@ public class GameLoad : MonoBehaviour
     }
 
     /// <summary>
-    /// ロードオブジ付きの非同期ロード
+    /// ロードOBJ付きの非同期ロード
     /// </summary>
     public void LoadingStartWithOBJ()
     {
@@ -73,7 +73,7 @@ public class GameLoad : MonoBehaviour
     private IEnumerator LoadData()
     {
         AsyncOperation async = SceneManager.LoadSceneAsync((int)_nextScene);
-        async.allowSceneActivation = false;    // シーン遷移をしない
+        async.allowSceneActivation = false;// シーン遷移をしない
 
         //　読み込みが終わるまで進捗状況をスライダーの値に反映させる
         while (async.progress < 0.9f)
@@ -90,6 +90,6 @@ public class GameLoad : MonoBehaviour
 
         yield return new WaitForSeconds(0.5f);
 
-        async.allowSceneActivation = true;    // シーン遷移許可
+        async.allowSceneActivation = true;// シーン遷移許可
     }
 }

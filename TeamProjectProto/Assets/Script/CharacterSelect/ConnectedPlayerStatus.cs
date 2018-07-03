@@ -11,7 +11,7 @@ using UnityEngine.SceneManagement;
 public class ConnectedPlayerStatus : MonoBehaviour
 {
     [SerializeField]
-    Dictionary<string, int> _connectedPlayer = new Dictionary< string, int>();//繋がているプレイヤー
+    Dictionary<string, int> _connectedPlayer = new Dictionary< string, int>();//繋がているプレイヤー名ディクショナリ
     public Dictionary<string, int> ConnectedPlayer
     {
         get { return _connectedPlayer; }
@@ -25,11 +25,11 @@ public class ConnectedPlayerStatus : MonoBehaviour
         set { _stageName = value; }
     }
 
-    static bool created = false;
+    static bool isCreated = false;//生成したか？
     public bool Created
     {
-        get { return created; }
-        set { created = value; }
+        get { return isCreated; }
+        set { isCreated = value; }
     }
 
     void Awake()
@@ -38,20 +38,16 @@ public class ConnectedPlayerStatus : MonoBehaviour
         SceneManager.sceneLoaded += SceneLoaded;
 
         //1つしか存在しない
-        if (!created)
+        if (!isCreated)
         {
             //SelectシーンからMain.Resultシーン
             DontDestroyOnLoad(this.gameObject);
-            created = true;
+            isCreated = true;
         }
         else
         {
             Destroy(this.gameObject);
         }
-    }
-
-    private void Update()
-    {
     }
 
     /// <summary>
@@ -62,8 +58,11 @@ public class ConnectedPlayerStatus : MonoBehaviour
     private void SceneLoaded(Scene scene, LoadSceneMode mode)
     {
         Debug.Log(scene.name + "Loaded");
-        //キャラセレクトシーンをロードするとプ接続プレイヤーを削除
+        //キャラセレクトシーンをロードすると再格納するため
         if(scene.name == "CharacterSelect")
+        {
+            //現在接続プレイヤーディクショナリをクリア
             _connectedPlayer.Clear();
+        }
     }
 }
