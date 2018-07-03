@@ -49,6 +49,11 @@ public class SceneController : MonoBehaviour
     [HideInInspector]
     public SEController se;//SEコントローラー
 
+    //背景
+    public GameObject bg;//背景オブジェ
+    public float zDistance = 20f;//カメラとのｚ軸距離
+
+
     /// <summary>
     /// タイトルシーン状態
     /// </summary>
@@ -102,6 +107,8 @@ public class SceneController : MonoBehaviour
         fadeController = fadePanel.GetComponent<FadeController>();
         //SE
         se = transform.GetComponent<SEController>();
+        //BG
+        BG_Spawn();
     }
 
     // Update is called once per frame
@@ -137,7 +144,7 @@ public class SceneController : MonoBehaviour
     /// <summary>
     /// パネルフェードイン
     /// </summary>
-    public void PanelFadeIn()
+    void PanelFadeIn()
     {
         fadeController.FadeIn();
     }
@@ -145,7 +152,7 @@ public class SceneController : MonoBehaviour
     /// <summary>
     /// パネルフェードアウト
     /// </summary>
-    public void PanelFadeOut()
+    void PanelFadeOut()
     {
         fadeController.FadeOut();
     }
@@ -184,4 +191,18 @@ public class SceneController : MonoBehaviour
             playerIndex = PlayerIndex.Four;
         }
     }
+
+    /// <summary>
+    /// 背景生成
+    /// </summary>
+    void BG_Spawn()
+    {
+        //背景位置設定
+        Vector3 bg_position = new Vector3(Screen.width / 2, Screen.height / 2, zDistance);
+        //ワールド座標に転換
+        Vector3 worldPoint = Camera.main.ScreenToWorldPoint(bg_position);
+        //転換されたワールド座標で生成
+        GameObject.Instantiate(bg, worldPoint, Camera.main.transform.rotation);
+    }
+
 }
