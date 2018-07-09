@@ -52,8 +52,6 @@ public class PostController : MonoBehaviour {
     [HideInInspector]
     public GameObject player;//プレイヤーネーム
 
-    GameObject targetUI; //ポイントを入れたプレイヤーのScoreUIの位置
-
     [HideInInspector]
     public GameObject postPoint;//ポスト生成位置
     public GameObject effect;//UIコイン
@@ -74,6 +72,14 @@ public class PostController : MonoBehaviour {
     float animSpeed = 1.0f;
 
     AudioSource postAudio;//コイン加算時のSE入り
+    FinishCall finishCall;//終了合図Script
+
+    List<PlayerMove> playerHitList;//当たっているプレイヤーリスト
+
+    GameObject[] postTargetList;//目指すUIの位置リスト
+    Vector3 target;//目指すUIの位置
+
+    Dictionary<string, Vector3> targetDic;//目指す位置ディクショナリ
 
     // Use this for initialization
     void Start () {
@@ -86,6 +92,20 @@ public class PostController : MonoBehaviour {
         timeController = GameObject.Find("TimeController");
 
         postAudio = GetComponent<AudioSource>();
+        // 終了合図
+        finishCall = GameObject.Find("FinishCall").GetComponent<FinishCall>();
+
+        playerHitList = new List<PlayerMove>();
+        //ターゲット取得
+        postTargetList = GameObject.FindGameObjectsWithTag("PostPosition");
+        //ターゲット管理ディクショナリ設定
+        targetDic = new Dictionary<string, Vector3>()
+        {
+            { postTargetList[0].name, Camera.main.ScreenToWorldPoint(postTargetList[0].transform.position)},
+            { postTargetList[1].name, Camera.main.ScreenToWorldPoint(postTargetList[1].transform.position)},
+            { postTargetList[2].name, Camera.main.ScreenToWorldPoint(postTargetList[2].transform.position)},
+            { postTargetList[3].name, Camera.main.ScreenToWorldPoint(postTargetList[3].transform.position)},
+        };
     }
 
     // Update is called once per frame
@@ -171,17 +191,15 @@ public class PostController : MonoBehaviour {
     /// </summary>
     void Stay()
     {
-        //内容物が一つでもあれば
-        if (blastCount >= 1)
+        if(finishCall.IsCalling)
         {
-            //ロスタイム以外はあたり判定外す
-            if (timeController.GetComponent<TimeController>().timeState != TimeState.LOSSTIME)
-                bc.enabled = false;
+            bc.enabled = false;
+            return;
+        }
 
-            //ポストパーティクル生成
-            Pig_ToCoin_Particle();
-            targetUI = GameObject.Find(player.name + "PostPosition"); //取得したプレイヤー名のUIを見つける
-            postState = PostState.AIRSPAWN;//状態遷移
+        if (playerHitList.Count >= 1)
+        {
+            PlayerHit();
         }
     }
 
@@ -256,8 +274,6 @@ public class PostController : MonoBehaviour {
     {
         if (stayTime <= 0.0f)
         {
-            //ターゲット設定
-            Vector3 target = Camera.main.ScreenToWorldPoint(targetUI.transform.position);
             //方向設定
             Vector3 forward = (target - transform.position).normalized;
             //徐々にその方向を向く
@@ -296,8 +312,6 @@ public class PostController : MonoBehaviour {
     {
         if (stayTime <= 0.0f)
         {
-            //ターゲット指定
-            Vector3 target = Camera.main.ScreenToWorldPoint(targetUI.transform.position);
             //移動処理
             transform.DOMove(target, flyTime).SetEase(Ease.OutCubic);
         }
@@ -358,9 +372,9 @@ public class PostController : MonoBehaviour {
         {
             //移動処理
             if (player.name.Contains("1") || player.name.Contains("2"))
-                transform.DOMove(Camera.main.ScreenToWorldPoint(new Vector3(0-50, targetUI.transform.position.y)), exitTime);
+                transform.DOMoveX(Camera.main.ScreenToWorldPoint(new Vector3(0-50,0)).x, exitTime);
             else
-                transform.DOMove(Camera.main.ScreenToWorldPoint(new Vector3(1280+50, targetUI.transform.position.y)), exitTime);
+                transform.DOMoveX(Camera.main.ScreenToWorldPoint(new Vector3(1280+50, 0)).x, exitTime);
         }
         stayTime += Time.deltaTime;
         if (stayTime >= exitTime)
@@ -375,8 +389,55 @@ public class PostController : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// アニメスピード変更
+    /// </summary>
+    /// <param name="animspeed"></param>
     void AnimSpeedSet(float animspeed)
     {
         postAnim.speed = animspeed;
+    }
+
+    /// <summary>
+    /// プレイヤーと当たった際の処理
+    /// </summary>
+    void PlayerHit()
+    {
+        //当たっているプレイヤーリストで判定
+        foreach(var player in playerHitList)
+        {
+            //アイテムを持っていたら
+            if (player.holdItemCount >= 1)
+            {
+                //プレイヤーのポスト当たった処理
+                player.HitPost(gameObject);
+                //あたり判定消す
+                bc.enabled = false;
+                //パーティクル出す
+                Pig_ToCoin_Particle();
+                //ターゲット設定
+                target = targetDic[player.name + "PostPosition"];
+                //状態遷移
+                postState = PostState.AIRSPAWN;
+                break;
+            }
+        }
+    }
+
+    void OnTriggerEnter(Collider col)
+    {
+        if (col.gameObject.tag == "Player" && col.GetComponent<PlayerMove>().balloon == null) 
+        {
+            //当たったプレイヤーリスト追加
+            playerHitList.Add(col.gameObject.GetComponent<PlayerMove>());
+        }
+    }
+    void OnTriggerExit(Collider col)
+    {
+        if (col.gameObject.tag == "Player" && col.GetComponent<PlayerMove>().balloon == null)
+        {
+            //離れたプレイヤーリスト除外
+            playerHitList.Remove(col.gameObject.GetComponent<PlayerMove>());
+        }
     }
 }

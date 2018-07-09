@@ -142,9 +142,9 @@ public class TimeController : MonoBehaviour {
     public void LossTimeStart(float second,BalloonMaster balloonMaster)
     {
         //残り時間がバルーンの爆破時間より短かったら
-        if (gameTime <= balloonMaster.originBalloonRespawnTime + second)
+        if (gameTime <= second)
         {
-            gameTime = balloonMaster.originBalloonRespawnTime + second;
+            gameTime =second;
             balloonMaster.balloonRespawnTime = balloonMaster.originBalloonRespawnTime;
             this.balloonMaster = balloonMaster.gameObject;
             timeState = TimeState.LOSSTIME;

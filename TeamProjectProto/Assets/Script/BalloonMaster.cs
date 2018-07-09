@@ -265,7 +265,7 @@ public class BalloonMaster : MonoBehaviour {
         //プレイヤー設定
         nextPlayer = player;
 
-        timeController.LossTimeStart(second, this);//ロスタイム判定
+        timeController.LossTimeStart(second + originBalloonRespawnTime + nextPlayer.GetComponent<PlayerMove>().originStanTime, this);//ロスタイム判定
 
         nextPlayerIndex = nextPlayer.GetComponent<PlayerMove>().playerIndex;
         GamePad.SetVibration(nextPlayerIndex, 0.0f, 1.0f);
