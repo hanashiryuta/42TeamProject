@@ -13,21 +13,8 @@ public class CheckPlayerStandby : MonoBehaviour
 {
     public PlayerIndex playerIndex;// ゲームパッド用インデックス
     PlayerIndex controllablePlayerIndex;//ゲーム進行操作プレイヤーインデックス
-    public PlayerIndex ControllablePlayerIndex
-    {
-        set { controllablePlayerIndex = value; }
-    }
-    GamePadState _previousState;//前のGamePad状態
-    public GamePadState PreviousState
-    {
-        get { return _currentState; }
-    }
-
     GamePadState _currentState;//今のGamePad状態
-    public GamePadState CurrentState
-    {
-        get { return _currentState; }
-    }
+    GamePadState _previousState;//前のGamePad状態
 
     [SerializeField]
     GameObject playerPrefabs;//キャラプレハブ
@@ -35,56 +22,65 @@ public class CheckPlayerStandby : MonoBehaviour
     Texture tex;//テクスチャ
     [SerializeField]
     Text _playrLabel;//プレイヤー名前ラベル
-    public Text PlayerLabel
-    {
-        get { return _playrLabel; }
-        set { _playrLabel = value; }
-    }
     [SerializeField]
     Text _btnText;//ボタンテキスト（Aボタンを押して入場）
 
     [SerializeField]
     GameObject orgin_playerBG;//Player背景
     GameObject playerBG;
-
     GameObject player;
     bool _isSpawn = false;//キャラ生成したか
-    public bool IsSpawn
-    {
-        get { return _isSpawn; }
-    }
     bool _isCanPressBtn = false;//ボタン入力受け付けているか
-    public bool IsCanPressBtn
-    {
-        get { return _isCanPressBtn; }
-        set { _isCanPressBtn = value; }
-    }
     bool _isAI = false;//AIキャラか
-    public bool IsAI
-    {
-        get { return _isAI; }
-        set { _isAI = value; }
-    }
 
     bool _isStartPressed = false;//Start押されたか
-    public bool IsStartPressed
-    {
-        get { return _isStartPressed; }
-        set { _isStartPressed = value; }
-    }
-
     bool _isB_BackPressed = false;//B(Back)押されたか
-    public bool IsB_BackPressed
-    {
-        get { return _isB_BackPressed; }
-        set { _isB_BackPressed = value; }
-    }
 
     //SE
     SEController se;
 
     //キャンセルか
     bool isCancel = false;
+
+
+    public PlayerIndex ControllablePlayerIndex
+    {
+        set { controllablePlayerIndex = value; }
+    }
+    public GamePadState CurrentState
+    {
+        get { return _currentState; }
+    }
+    public Text PlayerLabel
+    {
+        get { return _playrLabel; }
+        set { _playrLabel = value; }
+    }
+    public bool IsStartPressed
+    {
+        get { return _isStartPressed; }
+        set { _isStartPressed = value; }
+    }
+    public bool IsB_BackPressed
+    {
+        get { return _isB_BackPressed; }
+        set { _isB_BackPressed = value; }
+    }
+    public bool IsSpawn
+    {
+        get { return _isSpawn; }
+    }
+    public bool IsCanPressBtn
+    {
+        get { return _isCanPressBtn; }
+        set { _isCanPressBtn = value; }
+    }
+    public bool IsAI
+    {
+        get { return _isAI; }
+        set { _isAI = value; }
+    }
+
 
     // Use this for initialization
     void Start ()
@@ -121,7 +117,7 @@ public class CheckPlayerStandby : MonoBehaviour
     {
         if (!_isSpawn)//生成してない時
         {
-            if (Is_Abtn_Pressed())//Aボタン押したら
+            if (IsBtnPressed("A"))//Aボタン押したら
             {
                 SpawnPlayerCharacter();//プレイヤー生成
                 _isSpawn = true;
@@ -129,7 +125,7 @@ public class CheckPlayerStandby : MonoBehaviour
         }
         else//生成していた時
         {
-            if (Is_Bbtn_Pressed())//Bボタン押したら
+            if (IsBtnPressed("B"))//Bボタン押したら
             {
                 RemovePlayerCharacter();//プレイヤー廃棄
                 isCancel = true;//生成キャンセル
@@ -176,50 +172,38 @@ public class CheckPlayerStandby : MonoBehaviour
 
         _isSpawn = true;
     }
-
-    /// <summary>
-    /// Aボタンを押したかをチェック
-    /// </summary>
-    /// <param name="playerIndex"></param>
-    /// <returns></returns>
-    bool Is_Abtn_Pressed()
+  
+    bool IsBtnPressed(string btn)
     {
-        if (_previousState.Buttons.A == ButtonState.Released &&
-            _currentState.Buttons.A == ButtonState.Pressed)
+        switch (btn)
         {
-            return true;
-        }
-        return false;
-    }
+            case "A":
+                if (_previousState.Buttons.A == ButtonState.Released &&
+                    _currentState.Buttons.A == ButtonState.Pressed)
+                {
+                    return true;
+                }
+                return false;
 
-    /// <summary>
-    /// Bボタンを押したかをチェック
-    /// </summary>
-    /// <param name="playerIndex"></param>
-    /// <returns></returns>
-    bool Is_Bbtn_Pressed()
-    {
-        if (_previousState.Buttons.B == ButtonState.Released &&
-            _currentState.Buttons.B == ButtonState.Pressed)
-        {
-            return true;
-        }
-        return false;
-    }
+            case "B":
+                if (_previousState.Buttons.B == ButtonState.Released &&
+                    _currentState.Buttons.B == ButtonState.Pressed)
+                {
+                    return true;
+                }
+                return false;
 
-    /// <summary>
-    /// STARTボタンを押したかをチェック
-    /// </summary>
-    /// <param name="playerIndex"></param>
-    /// <returns></returns>
-    bool Is_StartBtn_Pressed()
-    {
-        if (_previousState.Buttons.Start == ButtonState.Released &&
-            _currentState.Buttons.Start == ButtonState.Pressed)
-        {
-            return true;
+            case "Start":
+                if (_previousState.Buttons.Start == ButtonState.Released &&
+                    _currentState.Buttons.Start == ButtonState.Pressed)
+                {
+                    return true;
+                }
+                return false;
+
+            default:
+                return false;
         }
-        return false;
     }
 
     /// <summary>
@@ -233,12 +217,12 @@ public class CheckPlayerStandby : MonoBehaviour
             //生成している時
             if (_isSpawn)
             {
-                _isStartPressed = Is_StartBtn_Pressed(); //STARTボタン押したか
+                _isStartPressed = IsBtnPressed("Start");//STARTボタン押したか
             }
 
             if (!_isSpawn && !isCancel)//生成してない時且つ取り消しじゃない
             {
-                IsB_BackPressed = Is_Bbtn_Pressed();//Bボタン押したか(前のシーンに戻る)
+                _isB_BackPressed = IsBtnPressed("B");//Bボタン押したか(前のシーンに戻る)
             }
         }
     }
