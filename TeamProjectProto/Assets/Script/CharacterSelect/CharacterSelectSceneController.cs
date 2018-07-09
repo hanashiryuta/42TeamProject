@@ -308,7 +308,6 @@ public class CharacterSelectSceneController : SceneController
             {
                 //プレイヤー名とインデックスを記録
                 connectedPlayerStatus.ConnectedPlayer.Add("Player" + (i + 1), i);
-                Debug.Log(i);
             }
         }
     }
