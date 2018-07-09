@@ -1,172 +1,94 @@
 ﻿/*
  * 作成日：180604
  * タイトルシーンコントローラー
- * 作成者：阿部→何承恩
+ * 作成者：安部→何承恩
  */
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using XInputDotNetPure;
 
-public class TitleScene : MonoBehaviour
+public class TitleScene : SceneController
 {
-    GameLoad gameload;//ゲームロード
-
-    [SerializeField]
-    GameObject fadePanel;//フェードパネル
-    FadeController fadeController;//フェードコントローラー
-    bool isSceneChange = false;//シーン転換するか？
-    bool isFadeOuted = false;//フェードアウトしたか？
-
     //ボタン
     [SerializeField]
     Button gameStartBtn, creditBtn, gameExitBtn;//ボタンたち
     List<Button> titleBtnList = new List<Button>();//ボタンリスト
-    Button nowSelectedBtn;//今選択しているボタン
-    int nowSelectedBtnIndex = 0;
-    ButtonState btnState = ButtonState.None;
+    Button nowSelectedBtn;//今選択しているボタンOBJ
+    int nowSelectedBtnIndex = 0;//今選択しているボタンのインデックス
 
-    //XInput
-    PlayerIndex playerIndex;
-    GamePadState previousState;
-    GamePadState currentState;
-    float moveY = 0;
-
-    float cnt = 0;
-    public float delayTime = 0.5f;//長押しの時の遅延
-    public bool isDelay = false;
-
-    //SE
-    SEController se;
+    //SceneState
+    TitleSceneState sceneState = TitleSceneState.FadeIn;//今のシーン状態
 
     //Canvas
     [SerializeField]
     CanvasGroup titleCanvas, creditCanvas;//タイトルキャンバス、クレジットキャンバス
-
-    /// <summary>
-    /// 選択されたボタン
-    /// </summary>
-    enum ButtonState
-    {
-        None,
-        Start,
-        Creadit,
-        Exit
-    }
-    
+  
     //BGMController
     [SerializeField]
     GameObject bgmControllerOBJ;
 
     // Use this for initialization
-    void Start()
+    public override void Start()
     {
-        gameload = this.GetComponent<GameLoad>();
-        fadeController = fadePanel.GetComponent<FadeController>();
-
         //ボタン格納
         titleBtnList.Add(gameStartBtn);
         titleBtnList.Add(creditBtn);
         titleBtnList.Add(gameExitBtn);
+
         //最初にゲームスタートを選択状態に
         titleBtnList[nowSelectedBtnIndex].Select();
         nowSelectedBtn = titleBtnList[nowSelectedBtnIndex];
-        //現在接続しているプレイヤーの中で番号が一番小さいやつを選択プレイヤーにする
-        SetControllablePlayer();
 
-        //SE
-        se = transform.GetComponent<SEController>();
         //BGM
-        if (!BGMController.created)
+        if (!BGMController.isCreated)
         {
             Instantiate(bgmControllerOBJ).GetComponent<BGMController>();
         }
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        SetControllablePlayer();
-
-        //フェードイン中か
-        if (fadeController.IsFadeInFinish == false)
-        {
-            fadeController.FadeIn();
-        }
-        else
-        {
-            //Get XInput
-            currentState = GamePad.GetState(playerIndex);
-
-            //選択されたボタンの沿ってメソッド実行
-            CheckBtnState();
-
-            if (isSceneChange)
-            {
-                fadeController.FadeOut();
-            }
-        }
-
-        previousState = currentState;
+        base.Start();
     }
 
     /// <summary>
-    /// 選択されたボタンの沿ってメソッド実行
+    /// シーンの状態に沿ってメソッド実行
     /// </summary>
-    void CheckBtnState()
+    public override void CheckSceneState()
     {
-        switch (btnState)
+        //Get XInput
+        currentState = GamePad.GetState(playerIndex);
+
+        switch (sceneState)
         {
-            case ButtonState.None:
-                //カーソル移動
+            case TitleSceneState.FadeIn://フェードイン中
+                if (fadeController.IsFadeInFinish)
+                    sceneState = TitleSceneState.None;
+                break;
+
+            case TitleSceneState.None://基準状態
                 moveY = currentState.ThumbSticks.Left.Y;
                 TitleXInput();
                 break;
-            case ButtonState.Start:
-                //NextSceneLoad
-                if (fadeController.IsFadeOutFinish && !isFadeOuted)
-                {
-                    gameload.LoadingStartWithOBJ();
-                    isFadeOuted = true;
-                }
+
+            case TitleSceneState.Start://スタート
+                //フェードアウト終わったら
+                if (fadeController.IsFadeOutFinish)
+                    //NextSceneLoad
+                    gameLoad.LoadingStartWithOBJ();
                 break;
-            case ButtonState.Creadit:
+
+            case TitleSceneState.Creadit://クレジット
                 CreditXInput();//Bボタン押したらtitleCanvas戻す
                 break;
-            case ButtonState.Exit:
+
+            case TitleSceneState.Exit://ゲーム終了
                 //ExitFade
-                if (fadeController.IsFadeOutFinish && !isFadeOuted)
-                {
+                if (fadeController.IsFadeOutFinish)
                     Application.Quit();
-                }
                 break;
+        }
 
-        }
-    }
-
-    /// <summary>
-    /// 操作可能なプレイヤーを選択(番号が一番小さい人、例１P)
-    /// /// </summary>
-    void SetControllablePlayer()
-    {
-        if (GamePad.GetState(PlayerIndex.One).IsConnected)
-        {
-            playerIndex = PlayerIndex.One;
-        }
-        else if (GamePad.GetState(PlayerIndex.Two).IsConnected)
-        {
-            playerIndex = PlayerIndex.Two;
-        }
-        else if (GamePad.GetState(PlayerIndex.Three).IsConnected)
-        {
-            playerIndex = PlayerIndex.Three;
-        }
-        else if (GamePad.GetState(PlayerIndex.Four).IsConnected)
-        {
-            playerIndex = PlayerIndex.Four;
-        }
+        previousState = currentState;
     }
 
     /// <summary>
@@ -177,31 +99,31 @@ public class TitleScene : MonoBehaviour
         //up
         if (moveY >= 0.8f && nowSelectedBtn != gameStartBtn)
         {
-            if (!isDelay)
+            if (!isInputDelay)
             {
-                cnt = delayTime;
+                inputDelayCnt = inputDelayTime;
                 ChooseNextBtn("up");
                 se.PlaySystemSE((int)SEController.SystemSE.CursorMove);
-                isDelay = true;
+                isInputDelay = true;
             }
             else
             {
-                DelayTimeCountDown();
+                InputDelayTimeCountDown();
             }
         }
         //down
         if (moveY <= -0.8f && nowSelectedBtn != gameExitBtn)
         {
-            if (!isDelay)
+            if (!isInputDelay)
             {
-                cnt = delayTime;
+                inputDelayCnt = inputDelayTime;
                 ChooseNextBtn("down");
                 se.PlaySystemSE((int)SEController.SystemSE.CursorMove);
-                isDelay = true;
+                isInputDelay = true;
             }
             else
             {
-                DelayTimeCountDown();
+                InputDelayTimeCountDown();
             }
         }
         //A
@@ -216,8 +138,8 @@ public class TitleScene : MonoBehaviour
         if (moveY > -0.05f &&
             moveY < 0.05f)
         {
-            cnt = delayTime;
-            isDelay = false;
+            inputDelayCnt = inputDelayTime;
+            isInputDelay = false;
         }
     }
 
@@ -234,7 +156,7 @@ public class TitleScene : MonoBehaviour
             creditCanvas.alpha = 0;
             titleCanvas.alpha = 1;
             se.PlaySystemSE((int)SEController.SystemSE.Cancel);
-            btnState = ButtonState.None;
+            sceneState = TitleSceneState.None;
         }
     }
 
@@ -260,18 +182,6 @@ public class TitleScene : MonoBehaviour
     }
 
     /// <summary>
-    /// 遅延カウントダウン
-    /// </summary>
-    void DelayTimeCountDown()
-    {
-        cnt -= Time.deltaTime;
-        if (cnt <= 0)
-        {
-            isDelay = false;
-        }
-    }
-
-    /// <summary>
     /// 選択しているボタンのonClickイベントを呼ぶ
     /// </summary>
     /// <param name="btn"></param>
@@ -286,7 +196,7 @@ public class TitleScene : MonoBehaviour
     public void GameStart()
     {
         isSceneChange = true;
-        btnState = ButtonState.Start;
+        sceneState = TitleSceneState.Start;
     }
 
     /// <summary>
@@ -296,7 +206,7 @@ public class TitleScene : MonoBehaviour
     {
         titleCanvas.alpha = 0;
         creditCanvas.alpha = 1;
-        btnState = ButtonState.Creadit;
+        sceneState = TitleSceneState.Creadit;
     }
 
     /// <summary>
@@ -305,6 +215,6 @@ public class TitleScene : MonoBehaviour
     public void GameExit()
     {
         isSceneChange = true;
-        btnState = ButtonState.Exit;
+        sceneState = TitleSceneState.Exit;
     }
 }

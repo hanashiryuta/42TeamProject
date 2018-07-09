@@ -350,7 +350,6 @@ GameObject:
   - component: {fileID: 1218557529}
   - component: {fileID: 1218557527}
   - component: {fileID: 1218557528}
-  - component: {fileID: 1218557530}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -414,12 +413,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3aa95a9ccac36d94bb12d4be2e3abb11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameLoad: {fileID: 0}
   fadePanel: {fileID: 748016649}
+  fadeController: {fileID: 0}
+  isSceneChange: 0
+  playerIndex: 0
+  moveX: 0
+  moveY: 0
+  inputDelayCnt: 0
+  inputDelayTime: 0.3
+  isInputDelay: 0
+  se: {fileID: 0}
+  bg: {fileID: 1387371117130210, guid: 4b86ac0388961b345848e1139261e831, type: 2}
+  zDistance: 20
   gameStartBtn: {fileID: 649383090}
   creditBtn: {fileID: 1022773030}
   gameExitBtn: {fileID: 1206159788}
-  delayTime: 0.5
-  isDelay: 0
   titleCanvas: {fileID: 678234731}
   creditCanvas: {fileID: 1394221701}
   bgmControllerOBJ: {fileID: 1178841107629970, guid: b643a883259f6a343af7796b24b6bfaa,
@@ -457,19 +466,6 @@ MonoBehaviour:
   playerSEList: []
   balloonSEList: []
   rouletteSEList: []
---- !u!114 &1218557530
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1218557523}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0d11a4e3c567ae543854d532c44976e5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bg: {fileID: 1387371117130210, guid: 4b86ac0388961b345848e1139261e831, type: 2}
-  zDistance: 20
 --- !u!1 &1252063943
 GameObject:
   m_ObjectHideFlags: 0
@@ -585,7 +581,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isTutorial: 0
   bgmController: {fileID: 0}
-  state: 0
+  tutorialStart: 0
   originTutorial: {fileID: 1147467692311400, guid: aefdc614c3e4e214c983dab30a5a6179,
     type: 2}
 --- !u!4 &1759286809

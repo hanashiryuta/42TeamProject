@@ -1,187 +1,209 @@
-﻿//
-//作成日時：4月18日
-//シーン管理クラス
-//作成者：葉梨竜太
-//
+﻿/*
+ * 作成日時：180702
+ * ゲームシーン管理クラス
+ * 作成者：何承恩
+ */
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using XInputDotNetPure;
-using DG.Tweening;
+using UnityEngine.UI;
+using XInputDotNetPure; // Required in C#
 
-public class SceneController : MonoBehaviour {
+/// <summary>
+/// シーンコントローラー継承元クラス
+/// </summary>
+public class SceneController : MonoBehaviour
+{
+    //Load
+    [HideInInspector]
+    public GameLoad gameLoad;//ゲームロード
 
-    //GameObject balloon;//爆発物
-    GameObject timeController;//時間管理オブジェクト
-    GameObject playerRank;//プレイヤーランク管理オブジェクト
+    //Fade
+    [SerializeField]
+    public GameObject fadePanel;//フェードパネル
+    [HideInInspector]
+    public FadeController fadeController;//フェードコントローラー
+    [HideInInspector]
+    public bool isSceneChange = false;//シーン転換するか？
 
-    //180601 何
-    FinishCall finishCall;
+    //XInput
+    [HideInInspector]
+    public PlayerIndex playerIndex;//操作プレイヤーインデックス
+    [HideInInspector]
+    public GamePadState previousState;//前のGamePad状態
+    [HideInInspector]
+    public GamePadState currentState;//今のGamePad状態
+    [HideInInspector]
+    public float moveX = 0;//X軸移動量
+    [HideInInspector]
+    public float moveY = 0;//Y軸移動量
 
-    //180614 何
-    List<GameObject> playerList = new List<GameObject>();
+    //InputDelay
+    [HideInInspector]
+    public float inputDelayCnt = 0; //遅延カウント
+    public float inputDelayTime = 0.3f;//長押しの時の遅延
+    [HideInInspector]
+    public bool isInputDelay = false;//遅延中か？
 
-    //fade
-    FadeController fadeController;
-    float cnt = 0;
+    //SE
+    [HideInInspector]
+    public SEController se;//SEコントローラー
 
-    PostRespawn postRespawn;
+    //背景
+    public GameObject bg;//背景オブジェ
+    public float zDistance = 20f;//カメラとのｚ軸距離
 
-    //pause->toTitle
-    bool isToTitle = false;
-    public bool IsToTitle
+
+    /// <summary>
+    /// タイトルシーン状態
+    /// </summary>
+    public enum TitleSceneState
     {
-        set { isToTitle = value; }
+        FadeIn, //フェードイン中
+        None,   //基準状態
+        Start,  //スタート
+        Creadit,//クレジット
+        Exit    //ゲーム終了
+    }
+
+    /// <summary>
+    /// キャラセレクトシーン状態
+    /// </summary>
+    public enum CharacterSceneState
+    {
+        FadeIn,     //フェードイン中
+        None,       //基準状態
+        ToPreScene, //前のシーンに移行
+        ToNextScene //次のシーンに移行
+    }
+
+    /// <summary>
+    /// ステージシーン状態
+    /// </summary>
+    public enum StageSceneState
+    {
+        FadeIn,     //フェードイン中
+        None,       //基準状態
+        ToPreScene, //前のシーンに移行
+        ToNextScene //次のシーンに移行
+    }
+
+    /// <summary>
+    /// リザルトシーン状態
+    /// </summary>
+    public enum ResultSceneState
+    {
+        FadeIn,     //フェードイン中
+        RankAnim,   //アニメ中
+        None,       //基準状態
+        ToNextScene //次のシーンに移行
     }
 
     // Use this for initialization
-    void Start () {
-        //balloon = GameObject.FindGameObjectWithTag("Balloon");//爆発物取得
-        timeController = GameObject.Find("TimeController");
-
-        //ランク関連
-        playerRank = GameObject.Find("PlayerRankController");
-        playerRank.GetComponent<PlayerRank>().InitPlayerList();
-        playerRank.GetComponent<PlayerRank>().IsInPlay = true;
-
-        //終了関連
-        finishCall = GameObject.Find("FinishCall").GetComponent<FinishCall>();
-
-        //players
-        playerList = GameObject.Find("PlayerRespawns").GetComponent<RespawnController>().PlayerList;
-
-        //fade
-        fadeController = GameObject.Find("FadePanel").GetComponent<FadeController>();
-
-        postRespawn = GameObject.Find("PostRespawnPoint").GetComponent<PostRespawn>();
-    }
-	
-	// Update is called once per frame
-	void Update ()
+    public virtual void Start ()
     {
+        //load
+        gameLoad = GetComponent<GameLoad>();
+        //fade
+        fadeController = fadePanel.GetComponent<FadeController>();
+        //SE
+        se = transform.GetComponent<SEController>();
+        //BG
+        BG_Spawn();
+    }
+
+    // Update is called once per frame
+    public virtual void Update ()
+    {
+        SetControllablePlayer();
+
+        //フェードインが終わるまで
         if (fadeController.IsFadeInFinish == false)
         {
-            fadeController.FadeIn();
+            //フェードインし続ける
+            PanelFadeIn();
         }
-
-        if (timeController.GetComponent<TimeController>().isEnd)
+        //フェードインが終わってから
+        else
         {
-            isEnd_ToResult();
-        }
-
-        if (isToTitle)
-        {
-            isEnd_ToTitle();
-        }
-	}
-
-    /// <summary>
-    /// 終了処理(Result)
-    /// </summary>
-    public void isEnd_ToResult()
-    {
-        // PlayerRankの順位更新を停止
-        playerRank.GetComponent<PlayerRank>().IsInPlay = false;
-
-        //ゲーム中の順位の名前を記録してリザルトシーン用に保存
-        List<string> tmp = new List<string>();
-        //スコア保存用リスト
-        List<float> score = new List<float>();
-        foreach (var player in playerRank.GetComponent<PlayerRank>().PlayerRankArray)
-        {
-            tmp.Add(player.name);
-            score.Add(player.GetComponent<PlayerMove>().totalItemCount);
-        }
-        playerRank.GetComponent<PlayerRank>().ResultRank = tmp;
-        playerRank.GetComponent<PlayerRank>().PlayerRankScore = score;
-
-        //万が一シーンが切り替わると同時にコントローラーが振動し始めたときにコントローラーの振動を停止する処理
-        GamePad.SetVibration(PlayerIndex.One, 0.0f, 0.0f);
-        GamePad.SetVibration(PlayerIndex.Two, 0.0f, 0.0f);
-        GamePad.SetVibration(PlayerIndex.Three, 0.0f, 0.0f);
-        GamePad.SetVibration(PlayerIndex.Four, 0.0f, 0.0f);
-
-        //終了合図
-        finishCall.ShowUp();
-
-        //ダッシュスライダーを隠す
-        foreach (var p in playerList)
-        {
-            p.GetComponent<SliderController>().InvisibleSlider();
-        }
-
-        List<GameObject> postRespawnPointList = postRespawn.isPostList;
-
-        int isPostFly = 0;
-
-        foreach(var post in postRespawnPointList)
-        {
-            if (post.GetComponent<PostSet>().isPost == true)
+            //シーン移行判定がtrueの時
+            if (isSceneChange)
             {
-                Debug.Log(post.GetComponent<PostSet>().post.GetComponent<PostController>().postState);
-                if ((int)(post.GetComponent<PostSet>().post.GetComponent<PostController>().postState) >= (int)PostState.AIRSPAWN)
-                {
-                    isPostFly++;
-                }
+                //フェードアウト
+                PanelFadeOut();
             }
         }
-        Debug.Log("IsPostFly:" + isPostFly);
-        if (isPostFly <= 0)
-        {
-            cnt += Time.deltaTime;
-            //fadeout
-            if (fadeController.IsFadeOutFinish == false && cnt >= 3)
-            {
-                fadeController.FadeOut();
-            }
 
-            //シーン遷移
-            Invoke("LoadResult", finishCall._waitTime);
-        }
+        CheckSceneState();
     }
 
     /// <summary>
-    /// 追加日：180601 追加者：何
-    /// リザルトシーン遷移
+    /// シーンの状態に沿ってメソッド実行
     /// </summary>
-    void LoadResult()
+    public virtual void CheckSceneState() { }
+
+    /// <summary>
+    /// パネルフェードイン
+    /// </summary>
+    void PanelFadeIn()
     {
-        SceneManager.LoadScene("Result");
+        fadeController.FadeIn();
     }
 
-    
     /// <summary>
-    /// 終了処理(Title)
+    /// パネルフェードアウト
     /// </summary>
-    public void isEnd_ToTitle()
+    void PanelFadeOut()
     {
-        // PlayerRankの順位更新を停止
-        playerRank.GetComponent<PlayerRank>().IsInPlay = false;
-
-        //万が一シーンが切り替わると同時にコントローラーが振動し始めたときにコントローラーの振動を停止する処理
-        GamePad.SetVibration(PlayerIndex.One, 0.0f, 0.0f);
-        GamePad.SetVibration(PlayerIndex.Two, 0.0f, 0.0f);
-        GamePad.SetVibration(PlayerIndex.Three, 0.0f, 0.0f);
-        GamePad.SetVibration(PlayerIndex.Four, 0.0f, 0.0f);
-
-        //DOTween全削除
-        DOTween.KillAll();
-
-        //fadeout
         fadeController.FadeOut();
-
-
-        //シーン遷移
-        Invoke("LoadTitle", finishCall._waitTime - 3);
     }
 
     /// <summary>
-    /// 追加日：180601 追加者：何
-    /// リザルトシーン遷移
+    /// 入力遅延カウントダウン
     /// </summary>
-    void LoadTitle()
+    public void InputDelayTimeCountDown()
     {
-        SceneManager.LoadScene("Title");
+        inputDelayCnt -= Time.deltaTime;
+        if (inputDelayCnt <= 0)
+        {
+            isInputDelay = false;
+        }
     }
+
+    /// <summary>
+    /// 操作可能なプレイヤーを選択(番号が一番小さい人、例P１)
+    /// /// </summary>
+    public void SetControllablePlayer()
+    {
+        if (GamePad.GetState(PlayerIndex.One).IsConnected)
+        {
+            playerIndex = PlayerIndex.One;
+        }
+        else if (GamePad.GetState(PlayerIndex.Two).IsConnected)
+        {
+            playerIndex = PlayerIndex.Two;
+        }
+        else if (GamePad.GetState(PlayerIndex.Three).IsConnected)
+        {
+            playerIndex = PlayerIndex.Three;
+        }
+        else if (GamePad.GetState(PlayerIndex.Four).IsConnected)
+        {
+            playerIndex = PlayerIndex.Four;
+        }
+    }
+
+    /// <summary>
+    /// 背景生成
+    /// </summary>
+    void BG_Spawn()
+    {
+        //背景位置設定
+        Vector3 bg_position = new Vector3(Screen.width / 2, Screen.height / 2, zDistance);
+        //ワールド座標に転換
+        Vector3 worldPoint = Camera.main.ScreenToWorldPoint(bg_position);
+        //転換されたワールド座標で生成
+        GameObject.Instantiate(bg, worldPoint, Camera.main.transform.rotation);
+    }
+
 }

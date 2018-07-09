@@ -21,122 +21,69 @@ public enum TutorialState
 
 public class Tutorial : MonoBehaviour
 {
-    public List<Sprite> ruleSpriteList;//ルール表示画像リスト
-    List<GameObject> ruleList;//ルールリスト
     PlayerIndex playerIndex;//プレイヤー番号
     GamePadState previousState;//1フレーム前のコントローラ
     GamePadState currentState;//現在のコントローラ
+
     [HideInInspector]
     public TutorialController tutorialController;//チュートリアル管理クラス
     TutorialState tutorialState = TutorialState.Rule;//チュートリアル表示状態
-    public GameObject Rules;//ルール元オブジェクト
-    public GameObject Operations;//操作説明元オブジェクト
-    int imageCount = 0;//ルールページ数
-    GameObject operation;
-    float stayTime = 0.0f;
-    public GameObject PageCount;
-    [HideInInspector]
-    public FinishCall finishObj;
-    [HideInInspector]
-    public BalloonMaster balloonMaster;
-    [HideInInspector]
-    public SelectScript selectScript;
-    bool isOperation;
 
+    public GameObject originRules;//ルール元オブジェクト
+    GameObject rules;
+    Rule ruleScript;
+    public GameObject Operations;//操作説明元オブジェクト
+    GameObject operation;
+
+    public GameObject PageCount;//ページ数
+    float stayTime = 1.0f;//ボタン待機時間
+
+    [HideInInspector]
+    public FinishCall finishObj;//終了表示
+    [HideInInspector]
+    public BalloonMaster balloonMaster;//バルーン管理
+    [HideInInspector]
+    public SelectScript selectScript;//ポーズ管理
+    
     // Use this for initialization
     void Start () {
-        ruleList = new List<GameObject>();
-        for (int i = 0; i < ruleSpriteList.Count; i++)
-        {
-            GameObject rule;
-            rule = Instantiate(Rules, transform);
-            rule.GetComponent<RectTransform>().position += new Vector3(i*Screen.width,0, 0);
-            rule.transform.GetChild(1).GetComponent<Image>().sprite = ruleSpriteList[i];
-            ruleList.Add(rule);
-        }
-
-        PageCount.SetActive(true);
+        //ルール表示オブジェクト生成
+        rules = Instantiate(originRules, transform);
+        //スクリプト取得
+        ruleScript = rules.GetComponent<Rule>();
+        //ページ数設定
+        ruleScript.PageCount = PageCount;
+        
+        //各スクリプト取得
+        finishObj = GameObject.Find("FinishCall").GetComponent<FinishCall>();
+        balloonMaster = GameObject.Find("BalloonMaster(Clone)").GetComponent<BalloonMaster>();
+        selectScript = GameObject.Find("PauseCtrl").GetComponent<SelectScript>();
     }
 
     // Update is called once per frame
     void Update()
     {
         currentState = GamePad.GetState(playerIndex);
+        //状態により処理変更
         switch (tutorialState)
         {
-            case TutorialState.Rule:
-                PageCount.GetComponent<Text>().text = HalfWidth2FullWidth.Set2FullWidth((imageCount + 1).ToString("0")) + "／" + HalfWidth2FullWidth.Set2FullWidth(ruleSpriteList.Count.ToString("0"));
-                PageCount.transform.SetAsLastSibling();
-                stayTime -= Time.deltaTime;
-                if (stayTime <= 0)
-                {
-                    if (previousState.Buttons.A == ButtonState.Released &&
-                    currentState.Buttons.A == ButtonState.Pressed)
-                    {
-                        stayTime = 1.0f;
-                        imageCount++;
-                        foreach (var rule in ruleList)
-                        {
-                            rule.GetComponent<RectTransform>().DOMoveX(rule.GetComponent<RectTransform>().position.x - Screen.width, 1.0f);
-                        }
-                    }
-                    if (imageCount >= ruleSpriteList.Count)
-                    {
-                        PageCount.SetActive(false);
-                        operation = Instantiate(Operations, transform);
-                        tutorialController.isTutorial = false;
-                        tutorialController.bgmController.SetSceneBGM(SceneManager.GetActiveScene(), "StageSelect");
-                        tutorialState = TutorialState.Operation;
-                    }
-                }
-                if (previousState.Buttons.Start == ButtonState.Released &&
-                    currentState.Buttons.Start == ButtonState.Pressed)
-                {
-                    foreach (var rule in ruleList)
-                    {
-                        rule.SetActive(false);
-                    }
-                    tutorialController.isTutorial = false;
-                    tutorialController.bgmController.SetSceneBGM(SceneManager.GetActiveScene(), "StageSelect");
-                    PageCount.SetActive(false);
-                    operation = Instantiate(Operations, transform);
-                    tutorialState = TutorialState.Operation;
-                }               
-                    break;
-            case TutorialState.Operation:
-                stayTime -= Time.deltaTime;
-                if(stayTime <= 0)
-                {
-                    operation.GetComponent<RectTransform>().DOMoveY(360, 1.0f);
-                    tutorialState = TutorialState.Stay;
-                }
+            case TutorialState.Rule://ルール表示
+                Rule();
                 break;
-            case TutorialState.Stay:
-                if (finishObj == null)
-                    finishObj = GameObject.Find("FinishCall").GetComponent<FinishCall>();
-                if (balloonMaster == null)
-                    balloonMaster = GameObject.Find("BalloonMaster(Clone)").GetComponent<BalloonMaster>();
-                if (selectScript == null)
-                    selectScript = GameObject.Find("PauseCtrl").GetComponent<SelectScript>();
-
-                else
-                {
-                    if (finishObj.IsCalling)
-                        operation.SetActive(false);
-                    else if (balloonMaster.isRoulette)
-                        operation.SetActive(false);
-                    //else
-                    //    operation.SetActive(true);
-                    else if (selectScript.isTutorial)
-                        operation.SetActive(false);
-                    else
-                        operation.SetActive(true);
-                }
+            case TutorialState.Operation://操作説明表示
+                Operation();
+                break;
+            case TutorialState.Stay://待機状態
+                Stay();
                 break;
         }
     
         previousState = currentState;
     }
+
+    /// <summary>
+    /// 操作プレイヤー設定
+    /// </summary>
     void SetControllablePlayer()
     {
         if (GamePad.GetState(PlayerIndex.One).IsConnected)
@@ -155,5 +102,55 @@ public class Tutorial : MonoBehaviour
         {
             playerIndex = PlayerIndex.Four;
         }
+    }
+
+    /// <summary>
+    /// ルール表示
+    /// </summary>
+    void Rule()
+    {
+        //ルール画像移動処理
+        ruleScript.Move(previousState, currentState);
+        //ルール終了状態なら
+        if (ruleScript.isRuleEnd)
+        {
+            //チュートリアルしないフラグ
+            tutorialController.isTutorial = false;
+            //BGM変更
+            tutorialController.bgmController.SetSceneBGM(SceneManager.GetActiveScene(), "StageSelect");
+            //操作説明表示
+            operation = Instantiate(Operations, transform);
+            //状態遷移
+            tutorialState = TutorialState.Operation;
+        }
+    }
+
+    /// <summary>
+    /// 操作説明
+    /// </summary>
+    void Operation()
+    {
+        //時間経過
+        stayTime -= Time.deltaTime;
+        //時間が来たら
+        if (stayTime <= 0)
+        {
+            //画面下から操作説明出す
+            operation.GetComponent<RectTransform>().DOMoveY(360, 1.0f);
+            //状態遷移
+            tutorialState = TutorialState.Stay;
+        }
+    }
+
+    /// <summary>
+    /// 待機
+    /// </summary>
+    void Stay()
+    {
+        //ゲーム終了時、ルーレット表示時、ポーズ表示時、操作説明は隠す
+        if (finishObj.IsCalling || balloonMaster.isRoulette || selectScript.isTutorial)
+            operation.SetActive(false);
+        else
+            operation.SetActive(true);//それ以外は表示
     }
 }

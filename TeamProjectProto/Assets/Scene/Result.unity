@@ -247,7 +247,6 @@ GameObject:
   - component: {fileID: 130474220}
   - component: {fileID: 130474215}
   - component: {fileID: 130474221}
-  - component: {fileID: 130474217}
   - component: {fileID: 130474218}
   - component: {fileID: 130474219}
   m_Layer: 0
@@ -268,9 +267,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf8322e9e24b29248ab39dccd930f7b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameLoad: {fileID: 0}
+  fadePanel: {fileID: 1892419696}
+  fadeController: {fileID: 0}
+  isSceneChange: 0
+  playerIndex: 0
+  moveX: 0
+  moveY: 0
+  inputDelayCnt: 0
+  inputDelayTime: 0.3
+  isInputDelay: 0
+  se: {fileID: 0}
+  bg: {fileID: 1387371117130210, guid: 4b86ac0388961b345848e1139261e831, type: 2}
+  zDistance: 20
   oneMoreBtn: {fileID: 128662108}
   toTitleBtn: {fileID: 783692505}
-  textMovingTime: 1.5
+  textMovingTime: 1
 --- !u!4 &130474216
 Transform:
   m_ObjectHideFlags: 0
@@ -284,19 +296,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &130474217
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 130474214}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0d11a4e3c567ae543854d532c44976e5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bg: {fileID: 1387371117130210, guid: 4b86ac0388961b345848e1139261e831, type: 2}
-  zDistance: 20
 --- !u!114 &130474218
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1140,6 +1139,11 @@ Prefab:
 --- !u!224 &1892419695 stripped
 RectTransform:
   m_PrefabParentObject: {fileID: 224059734985540118, guid: b83164d055201be479d1dcb72359fc5f,
+    type: 2}
+  m_PrefabInternal: {fileID: 1892419694}
+--- !u!1 &1892419696 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1367887611309476, guid: b83164d055201be479d1dcb72359fc5f,
     type: 2}
   m_PrefabInternal: {fileID: 1892419694}
 --- !u!1 &2047080844

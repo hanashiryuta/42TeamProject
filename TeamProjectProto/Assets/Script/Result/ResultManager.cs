@@ -1,7 +1,7 @@
 ﻿//
 //作成日時：4月25日
-//リザルト画面クラス
-//作成者：平岡誠司
+//リザルトマネージャー
+//作成者：何承恩
 //
 using DG.Tweening;
 using System.Collections;
@@ -9,18 +9,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using XInputDotNetPure;
-using System.Linq;
 
-public class ResultManager : MonoBehaviour
+public class ResultManager : SceneController
 {
+    //プレイヤー順位関連
     PlayerRank playerRank;//Playerの名前取得用
-    [SerializeField]
-    Button oneMoreBtn, toTitleBtn;//各ボタンの情報
-    Button nowSelectedBtn;//今選択しているボタン
-
-    [SerializeField]
-    float textMovingTime = 2f;//順位テキストの移動スピード
-
     List<Text> _playerRankTextsList = new List<Text>();//順位表示テキストOBJリスト
     public List<Text> PlayerRankTextsList
     {
@@ -31,34 +24,24 @@ public class ResultManager : MonoBehaviour
     {
         get { return _playerRankList; }
     }
+    ConnectedPlayerStatus connectedPlayerStatus;//接続したプレイヤー
+    //Spawn
+    ResultPositionSpawnController resultPositionSpawnCon;
+    SpawnUIPlayer spawnUIPlayer;//UIプレイヤースポーン
 
+    //Btns
+    [SerializeField]
+    Button oneMoreBtn, toTitleBtn;//各ボタンの情報
+    Button nowSelectedBtn;//今選択しているボタン
+
+    //Anim
+    [SerializeField]
+    float textMovingTime;//順位テキストの移動スピード
     List<Vector2> finishPosition = new List<Vector2>();//最終位置
     List<GameObject> playerScoreTexts = new List<GameObject>();//プレイヤースコア表示テキスト
 
-    bool _isAnim = true;//アニメ中か
-
-    ConnectedPlayerStatus connectedPlayerStatus;//接続したプレイヤー
-    SpawnUIPlayer spawnUIPlayer;//UIプレイヤースポーン
-
-    //fade
-    FadeController fadeController;
-    bool isFadeOuted = false;
-
-    //load
-    GameLoad gameLoad;
-    bool isSceneChange = false;
-
-    //Input
-    PlayerIndex playerIndex;
-    GamePadState previousState;
-    GamePadState currentState;
-    float moveX = 0;
-
-    //SE
-    SEController se;
-
-    //RankSpawn
-    ResultPositionSpawnController resultPositionSpawnCon;
+    //SceneState
+    ResultSceneState sceneState = ResultSceneState.RankAnim;
 
     // Use this for initialization
     void Awake()
@@ -69,67 +52,52 @@ public class ResultManager : MonoBehaviour
             // ConnectedPlayerStatusで接続しているプレイヤーを受け取る
             connectedPlayerStatus = GameObject.FindGameObjectWithTag("PlayerStatus").GetComponent<ConnectedPlayerStatus>();
         }
-
+        //プレイヤーランク
         playerRank = GameObject.Find("PlayerRankController").GetComponent<PlayerRank>();
 
         SetRankUIsPosition();//ランクUI
         _playerRankList = SetPlayersRank();//順位付け
         SetPlayerRankText();//プレイヤーランクテキスト
         SetSpawnUIPlayer();//スポーンUIプレイヤー
-
-        //fade
-        fadeController = GameObject.Find("FadePanel").GetComponent<FadeController>();
-        //load
-        gameLoad = transform.GetComponent<GameLoad>();
-        //現在接続しているプレイヤーの中で番号が一番小さいやつを選択プレイヤーにする
-        SetControllablePlayer();
-        //SE
-        se = transform.GetComponent<SEController>();
     }
 
-    // Update is called once per frame
-    void Update()
+     /// <summary>
+    /// シーンの状態に沿ってメソッド実行
+    /// </summary>
+    public override void CheckSceneState()
     {
-        SetControllablePlayer();
+        //XInput
+        currentState = GamePad.GetState(playerIndex);
 
-        //fadein
-        if (fadeController.IsFadeInFinish == false)
+        switch (sceneState)
         {
-            fadeController.FadeIn();
-        }
-        else
-        {
-            //fadeout
-            if (isSceneChange)
-            {
-                fadeController.FadeOut();
-            }
-        }
+            case ResultSceneState.FadeIn://フェードイン中
+                if (fadeController.IsFadeInFinish)
+                    sceneState = ResultSceneState.RankAnim;
+                break;
 
-        //順位アニメ中か
-        if (_isAnim)
-        {
-            StartCoroutine(ShowRankCoroutine());
-        }
-        else
-        {
-            //XInput
-            currentState = GamePad.GetState(playerIndex);
-            moveX = currentState.ThumbSticks.Left.X;
-            ResultXInput();
-            Debug.Log("moveX =" + moveX);
-        }
+            case ResultSceneState.RankAnim://アニメ中
+                StartCoroutine(ShowRankCoroutine());
+                break;
 
-        //NextSceneLoad
-        if (fadeController.IsFadeOutFinish && !isFadeOuted)
-        {
-            gameLoad.LoadingStartWithOBJ();
-            isFadeOuted = true;
+            case ResultSceneState.None://基準状態
+                moveX = currentState.ThumbSticks.Left.X;
+                ResultXInput();
+                break;
+
+            case ResultSceneState.ToNextScene://次のシーンに移行
+                //NextSceneLoad
+                if (fadeController.IsFadeOutFinish)
+                    gameLoad.LoadingStartWithOBJ();
+                break;
         }
 
         previousState = currentState;
     }
 
+    /// <summary>
+    /// リザルト入力
+    /// </summary>
     void ResultXInput()
     {
         //right
@@ -171,8 +139,10 @@ public class ResultManager : MonoBehaviour
     /// </summary>
     public void OneMoreBtn()
     {
-        gameLoad.NextScene = GameLoad.Scene.StageSelect;
+        gameLoad.NextScene = GameLoad.Scenes.StageSelect;
+
         isSceneChange = true;
+        sceneState = ResultSceneState.ToNextScene;
     }
 
     /// <summary>
@@ -180,57 +150,42 @@ public class ResultManager : MonoBehaviour
     /// </summary>
     public void ToTitleBtn()
     {
-        gameLoad.NextScene = GameLoad.Scene.Tilte;
+        gameLoad.NextScene = GameLoad.Scenes.Tilte;
 
         //接続プレイヤーステータス受け取りオブジェを削除
         connectedPlayerStatus.Created = false;
         Destroy(connectedPlayerStatus.transform.gameObject);
 
         isSceneChange = true;
+        sceneState = ResultSceneState.ToNextScene;
     }
 
     /// <summary>
-    /// 追加日：180601 追加者：何
-    /// テキストアニメーション
+    /// ランク演出アニメーション
     /// </summary>
     /// <returns></returns>
     IEnumerator ShowRankCoroutine()
     {
         yield return new WaitForSeconds(0.5f);
 
+        //ランキング表示アニメ
         for (int i = 0; i < _playerRankTextsList.Count; i++)
         {
             _playerRankTextsList[i].rectTransform.DOAnchorPos(finishPosition[i], textMovingTime);
+
+            //最下位のアニメーションの終わる時間に合わせて
+            if (i == _playerRankTextsList.Count - 1)
+            {
+                yield return new WaitForSeconds(textMovingTime - 0.5f);
+            }
             yield return new WaitForSeconds(0.5f);
         }
         //アニメ終わったらoneMore選択
         oneMoreBtn.Select();
         nowSelectedBtn = oneMoreBtn;
-
-        _isAnim = false;
-    }
-
-    /// <summary>
-    /// 操作可能なプレイヤーを選択
-    /// </summary>
-    void SetControllablePlayer()
-    {
-        if (GamePad.GetState(PlayerIndex.One).IsConnected)
-        {
-            playerIndex = PlayerIndex.One;
-        }
-        else if (GamePad.GetState(PlayerIndex.Two).IsConnected)
-        {
-            playerIndex = PlayerIndex.Two;
-        }
-        else if (GamePad.GetState(PlayerIndex.Three).IsConnected)
-        {
-            playerIndex = PlayerIndex.Three;
-        }
-        else if (GamePad.GetState(PlayerIndex.Four).IsConnected)
-        {
-            playerIndex = PlayerIndex.Four;
-        }
+        //SceneState移行
+        if(sceneState == ResultSceneState.RankAnim)
+            sceneState = ResultSceneState.None;
     }
 
     /// <summary>
@@ -300,16 +255,6 @@ public class ResultManager : MonoBehaviour
     /// </summary>
     void SetPlayerRankText()
     {
-        ////テキスト初期化
-        //for (int i = 0; i < _playerRankTextsList.Count; i++)
-        //{
-        //    //ランクテキスト初期化
-        //    _playerRankTextsList[i].text = "";
-        //    //スコアテキスト初期化
-        //    playerScoreTexts[i].GetComponent<Text>().text = "";
-        //    playerScoreTexts[i].transform.GetChild(0).GetComponent<Text>().text = "";
-        //}
-
         //接続しているプレイヤー数だけ表示する
         for (int i = 0; i < connectedPlayerStatus.ConnectedPlayer.Count; i++)
         {
