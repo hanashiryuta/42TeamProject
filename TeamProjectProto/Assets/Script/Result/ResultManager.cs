@@ -36,7 +36,7 @@ public class ResultManager : SceneController
 
     //Anim
     [SerializeField]
-    float textMovingTime = 2f;//順位テキストの移動スピード
+    float textMovingTime;//順位テキストの移動スピード
     List<Vector2> finishPosition = new List<Vector2>();//最終位置
     List<GameObject> playerScoreTexts = new List<GameObject>();//プレイヤースコア表示テキスト
 
@@ -71,6 +71,11 @@ public class ResultManager : SceneController
 
         switch (sceneState)
         {
+            case ResultSceneState.FadeIn://フェードイン中
+                if (fadeController.IsFadeInFinish)
+                    sceneState = ResultSceneState.RankAnim;
+                break;
+
             case ResultSceneState.RankAnim://アニメ中
                 StartCoroutine(ShowRankCoroutine());
                 break;
@@ -163,16 +168,24 @@ public class ResultManager : SceneController
     {
         yield return new WaitForSeconds(0.5f);
 
+        //ランキング表示アニメ
         for (int i = 0; i < _playerRankTextsList.Count; i++)
         {
             _playerRankTextsList[i].rectTransform.DOAnchorPos(finishPosition[i], textMovingTime);
+
+            //最下位のアニメーションの終わる時間に合わせて
+            if (i == _playerRankTextsList.Count - 1)
+            {
+                yield return new WaitForSeconds(textMovingTime - 0.5f);
+            }
             yield return new WaitForSeconds(0.5f);
         }
         //アニメ終わったらoneMore選択
         oneMoreBtn.Select();
         nowSelectedBtn = oneMoreBtn;
-
-        sceneState = ResultSceneState.None;
+        //SceneState移行
+        if(sceneState == ResultSceneState.RankAnim)
+            sceneState = ResultSceneState.None;
     }
 
     /// <summary>
