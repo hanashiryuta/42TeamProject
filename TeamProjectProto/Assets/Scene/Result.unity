@@ -282,7 +282,7 @@ MonoBehaviour:
   zDistance: 20
   oneMoreBtn: {fileID: 128662108}
   toTitleBtn: {fileID: 783692505}
-  textMovingTime: 1.5
+  textMovingTime: 1
 --- !u!4 &130474216
 Transform:
   m_ObjectHideFlags: 0
