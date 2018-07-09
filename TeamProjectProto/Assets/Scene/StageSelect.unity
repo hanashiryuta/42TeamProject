@@ -1373,6 +1373,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a22086615cacf694aa4b34d29c3664ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '"'
+  gameLoad: {fileID: 0}
+  fadePanel: {fileID: 1120177109}
+  fadeController: {fileID: 0}
+  isSceneChange: 0
+  playerIndex: 0
+  moveX: 0
+  moveY: 0
+  inputDelayCnt: 0
+  inputDelayTime: 0.3
+  isInputDelay: 0
+  se: {fileID: 0}
   stagesList:
   - {fileID: 1190149493053578, guid: 7308f3c6a4810da42a58299e23c2254f, type: 2}
   - {fileID: 1913171982309218, guid: cf7d2b112ed1018449762f9f3826571a, type: 2}
@@ -1380,11 +1391,9 @@ MonoBehaviour:
   - {fileID: 1888355709975584, guid: 4fc8933bbac931f4a8b0edeb24b70ea8, type: 2}
   - {fileID: 1910498465122938, guid: 2c92c1676cd2e72408f0f257303d226b, type: 2}
   - {fileID: 1551638036661458, guid: 98a626283037ae649aa27b746311530d, type: 2}
-  fadePanel: {fileID: 1120177109}
+  - {fileID: 1724281642634570, guid: e381ccbc125ef5041b77a39ea9e3ffad, type: 2}
   leftBtn: {fileID: 1220915094}
   rightBtn: {fileID: 1334476595}
-  delayTime: 0.5
-  isDelay: 0
   stagePointsSet: {fileID: 519135132}
   stagePoint: {fileID: 1833519175947790, guid: 396820bed7715ec489bc329ebba788a6, type: 2}
   pointsOffset: 40

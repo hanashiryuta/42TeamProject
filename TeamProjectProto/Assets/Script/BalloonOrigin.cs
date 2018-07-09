@@ -81,6 +81,8 @@ public class BalloonOrigin : MonoBehaviour
 
     public bool isCameraDistance = false;
 
+    public float _setblastLimit;
+
     [HideInInspector]
     public BalloonMaster balloonMaster;//バルーン総合管理クラス
 
@@ -388,13 +390,15 @@ public class BalloonOrigin : MonoBehaviour
     /// </summary>
     public void BalloonBlast(float air)
     {
-        blastCount+=air;
-        scaleCount += scaleRate*air;
-        isDestroy = false;//破棄できないようにする
-        //内容物の数が限界を超えたら
-        if (blastCount >= blastLimit)
-        {
-            BlastAction();
+        if (blastCount <= blastLimit - _setblastLimit) {
+            blastCount += air;
+            scaleCount += scaleRate * air;
+            isDestroy = false;//破棄できないようにする
+                              //内容物の数が限界を超えたら
+            if (blastCount >= blastLimit)
+            {
+                BlastAction();
+            }
         }
     }
 

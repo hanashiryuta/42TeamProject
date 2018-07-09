@@ -593,7 +593,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isTutorial: 0
   bgmController: {fileID: 0}
-  state: 0
+  tutorialStart: 0
   originTutorial: {fileID: 1147467692311400, guid: aefdc614c3e4e214c983dab30a5a6179,
     type: 2}
 --- !u!4 &1759286809
