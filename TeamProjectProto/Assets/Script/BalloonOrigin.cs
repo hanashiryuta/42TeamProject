@@ -97,9 +97,6 @@ public class BalloonOrigin : MonoBehaviour
     public float detonationRadius = 4.0f;//誘爆半径
     public GameObject originDetonationArea;//誘爆半径表示オブジェクト
     GameObject detonationArea;
-    GameObject detonationText;
-    ParticleSystem detoParticle;
-    bool isDetoColorChange = false;
 
     //SE
     SEController se;
@@ -109,9 +106,6 @@ public class BalloonOrigin : MonoBehaviour
     public float originMoveTime = 2.0f;//バルーンが動くまでの時間設定z
 
     public float colorEmission = 0.2f;
-
-    [SerializeField]
-    Gradient safety, caution, danger; 
 
     // Use this for initialization
     void Start()
@@ -245,17 +239,6 @@ public class BalloonOrigin : MonoBehaviour
             //1/3以下なら安全状態
             //色は緑
             case BalloonState.SAFETY:
-                if (detonationArea == null)
-                {
-                    //テクスチャ設定
-                    //誘爆半径表示オブジェクト生成
-                    detonationArea = Instantiate(originDetonationArea, player.transform.position + new Vector3(0, 1, 0), Quaternion.identity, player.transform);
-                    detonationArea.transform.localScale = new Vector3(detonationRadius * 4, detonationRadius * 4, detonationRadius * 4);
-                    detoParticle = detonationArea.transform.GetChild(0).GetComponent<ParticleSystem>();
-                    detonationText = detonationArea.transform.GetChild(1).gameObject;
-                    detonationText.SetActive(false);
-                    ChangeDetonationCircleColor(Color.green);
-                }
                 if (isTexSet)
                 {
                     //テクスチャ設定
@@ -270,7 +253,6 @@ public class BalloonOrigin : MonoBehaviour
                 {
                     //次の状態へ
                     isTexSet = true;
-                    isDetoColorChange = false;
                     _balloonState = BalloonState.CAUTION;
                 }
                 break;
@@ -278,10 +260,6 @@ public class BalloonOrigin : MonoBehaviour
             //1/3以上なら注意状態
             //色は黄色
             case BalloonState.CAUTION:
-                if (!isDetoColorChange)
-                {
-                    ChangeDetonationCircleColor(Color.yellow);
-                }
                 if (isTexSet)
                 {
                     //テクスチャ設定
@@ -295,7 +273,6 @@ public class BalloonOrigin : MonoBehaviour
                 if (blastCount > blastLimit * 2 / 3)
                 {
                     isTexSet = true;
-                    isDetoColorChange = false;
                     _balloonState = BalloonState.DANGER;
                 }
                 break;
@@ -310,10 +287,12 @@ public class BalloonOrigin : MonoBehaviour
                 //    detonationArea = Instantiate(originDetonationArea, player.transform.position + new Vector3(0, 1, 0), Quaternion.identity, player.transform);
                 //    detonationArea.transform.localScale = new Vector3(detonationRadius * 4, detonationRadius * 4, detonationRadius * 4);
                 //}
-                if (!isDetoColorChange)
+                if (detonationArea == null)
                 {
-                    detonationText.SetActive(true);
-                    ChangeDetonationCircleColor(Color.red);
+                    //テクスチャ設定
+                    //誘爆半径表示オブジェクト生成
+                    detonationArea = Instantiate(originDetonationArea, player.transform.position + new Vector3(0, 1, 0), Quaternion.identity, player.transform);
+                    detonationArea.transform.localScale = new Vector3(detonationRadius * 4, detonationRadius * 4, detonationRadius * 4);
                 }
                 {
                     gameObject.GetComponentInChildren<MeshRenderer>().materials[0].mainTexture = balloonStateTexture[2];
@@ -583,29 +562,4 @@ public class BalloonOrigin : MonoBehaviour
         }
     }
 
-    void ChangeDetonationCircleColor(Color color)
-    {
-        var col = detoParticle.colorOverLifetime;
-        var startCol = detoParticle.main.startColor;
-
-        if(color == Color.red)
-        {
-            col.color = danger;
-        }
-        else if(color == Color.yellow)
-        {
-            col.color = caution;
-        }
-        else if(color == Color.green)
-        {
-            col.color = safety;
-        }
-
-        //Gradient grad = new Gradient();
-        //grad.SetKeys(new GradientColorKey[] { new GradientColorKey(color, 0.0f), new GradientColorKey(new Color(r, g, b), 0.8f), new GradientColorKey(color, 1.0f) },
-        //             new GradientAlphaKey[] { new GradientAlphaKey(1.0f, 0.0f), new GradientAlphaKey(1.0f, 1.0f) });
-
-        startCol = color;
-        isDetoColorChange = true;
-    }
 }
