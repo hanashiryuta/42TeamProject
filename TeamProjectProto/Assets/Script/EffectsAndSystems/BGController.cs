@@ -11,22 +11,23 @@ using UnityEngine.SceneManagement;
 
 public class BGController : MonoBehaviour
 {
+    //背景をずらす速度
     [SerializeField]
     float _moveSpeedX = 0.2f;
     [SerializeField]
     float _moveSpeedY = 0.2f;
 
+    //背景今軸ごとのoffset
     float offsetX = 0;
     float offsetY = 0;
 
-    BalloonOrigin balloon;
-    GameObject balloonControllerObject;
-
+    //背景テクスチャ
     [SerializeField]
     Texture[] bgColorTex;
 
+    //背景の色を薄める用のパネル
     [SerializeField]
-    GameObject panel;
+    GameObject whitePanel;
    
     // Use this for initialization
 	void Start ()
@@ -41,17 +42,18 @@ public class BGController : MonoBehaviour
         else
         {
             mats[0].SetTexture("_MainTex", bgColorTex[4]);//青紫
-            Destroy(panel);//Mainシーン以外パネル不表示
-            panel = null;
+            Destroy(whitePanel);//Mainシーン以外白パネル不表示
+            whitePanel = null;
         }
 
-        //画面に合わせて
+        //画面に合わせる
         transform.localScale = new Vector3(Camera.main.orthographicSize * 2.2f * Screen.width / Screen.height,
                                         Camera.main.orthographicSize * 2.2f,
                                         0.1f);
-        if(panel != null)
+        //白パネルがあったら画面に合わせる
+        if (whitePanel != null)
         {
-            panel.transform.localScale = new Vector3(Camera.main.orthographicSize * 2.2f * Screen.width / Screen.height,
+            whitePanel.transform.localScale = new Vector3(Camera.main.orthographicSize * 2.2f * Screen.width / Screen.height,
                                             Camera.main.orthographicSize * 2.2f,
                                             0.1f);
         }
@@ -63,19 +65,7 @@ public class BGController : MonoBehaviour
         if(transform.GetComponent<MeshRenderer>().materials.Length != 1)
         {
             BG_SpriteOffsetChange();
-
-            if (SceneManager.GetActiveScene().name == "main")
-            {
-                if (balloonControllerObject == null)
-                {
-                    balloonControllerObject = GameObject.FindGameObjectWithTag("Balloon");
-                    return;
-                }
-                balloon = balloonControllerObject.GetComponent<BalloonOrigin>();
-                BG_SpriteColorChange();
-            }
         }
-
     }
 
     /// <summary>
@@ -94,24 +84,20 @@ public class BGController : MonoBehaviour
     /// <summary>
     /// 背景OBJの画像色が風船の持ち主の色に変化
     /// </summary>
-    void BG_SpriteColorChange()
+    public void BG_SpriteColorChange(string playerName)
     {
-        switch (balloon.player.name)
+        switch (playerName)
         {
             case "Player1":
-                //transform.GetComponent<MeshRenderer>().materials[0].SetColor("_Color", Color.red);
                 transform.GetComponentInChildren<MeshRenderer>().materials[0].SetTexture("_MainTex", bgColorTex[0]);
                 break;
             case "Player2":
-                //transform.GetComponent<MeshRenderer>().materials[0].SetColor("_Color", Color.blue);
                 transform.GetComponentInChildren<MeshRenderer>().materials[0].SetTexture("_MainTex", bgColorTex[1]);
                 break;
             case "Player3":
-                //transform.GetComponent<MeshRenderer>().materials[0].SetColor("_Color", Color.yellow);
                 transform.GetComponentInChildren<MeshRenderer>().materials[0].SetTexture("_MainTex", bgColorTex[2]);
                 break;
             case "Player4":
-                //transform.GetComponent<MeshRenderer>().materials[0].SetColor("_Color", Color.green);
                 transform.GetComponentInChildren<MeshRenderer>().materials[0].SetTexture("_MainTex", bgColorTex[3]);
                 break;
         }

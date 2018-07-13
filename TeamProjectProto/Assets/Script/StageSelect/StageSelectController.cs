@@ -157,11 +157,12 @@ public class StageSelectController : SceneController
     /// </summary>
     void ShowSeletedStage(float rotate)
     {
+        //今のステージを削除
         if(nowStage != null)
         {
             Destroy(nowStage);
         }
-
+        //新しいステージを今のステージとする
         nowStage = Instantiate(stagesList[nowStageIndex], new Vector3(0, 0.5f, 0), Quaternion.Euler(0, rotate, 0));
     }
 

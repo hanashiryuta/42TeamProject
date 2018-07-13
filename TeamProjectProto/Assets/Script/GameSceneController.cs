@@ -10,34 +10,32 @@ using UnityEngine.SceneManagement;
 using XInputDotNetPure;
 using DG.Tweening;
 
-public class GameSceneController : MonoBehaviour {
-
-    //GameObject balloon;//爆発物
+public class GameSceneController : SceneController
+{
     GameObject timeController;//時間管理オブジェクト
     GameObject playerRank;//プレイヤーランク管理オブジェクト
 
     //180601 何
-    FinishCall finishCall;
+    FinishCall finishCall;//終了コール
 
     //180614 何
-    List<GameObject> playerList = new List<GameObject>();
-
-    //fade
-    FadeController fadeController;
-    float cnt = 0;
+    List<GameObject> playerList = new List<GameObject>();//生成したプレイヤーのリスト
 
     PostRespawn postRespawn;
 
     //pause->toTitle
-    bool isToTitle = false;
+    bool isToTitle = false;//タイトルに行くか
     public bool IsToTitle
     {
         set { isToTitle = value; }
     }
 
+    //SceneState
+    GameSceneState sceneState = GameSceneState.FadeIn;
+
     // Use this for initialization
-    void Start () {
-        //balloon = GameObject.FindGameObjectWithTag("Balloon");//爆発物取得
+    public override void Start()
+    { 
         timeController = GameObject.Find("TimeController");
 
         //ランク関連
@@ -51,30 +49,58 @@ public class GameSceneController : MonoBehaviour {
         //players
         playerList = GameObject.Find("PlayerRespawns").GetComponent<RespawnController>().PlayerList;
 
-        //fade
-        fadeController = GameObject.Find("FadePanel").GetComponent<FadeController>();
-
         postRespawn = GameObject.Find("PostRespawnPoint").GetComponent<PostRespawn>();
+
+        base.Start();
     }
-	
-	// Update is called once per frame
-	void Update ()
+
+    /// <summary>
+    /// シーンの状態に沿ってメソッド実行
+    /// </summary>
+    public override void CheckSceneState()
     {
-        if (fadeController.IsFadeInFinish == false)
+        switch (sceneState)
         {
-            fadeController.FadeIn();
+            case GameSceneState.FadeIn://フェードイン中
+                if (fadeController.IsFadeInFinish)
+                    sceneState = GameSceneState.None;
+                break;
+
+            case GameSceneState.None://基準状態
+                if (timeController.GetComponent<TimeController>().isEnd)
+                {
+                    sceneState = GameSceneState.ToNextScene;
+                }
+                if (isToTitle)
+                {
+                    sceneState = GameSceneState.ToTitleScene;
+                }
+                break;
+
+            case GameSceneState.ToTitleScene://タイトルシーンに移行
+                isEnd_ToTitle();
+                //フェードアウト終わったら
+                if (fadeController.IsFadeOutFinish)
+                {
+                    DOTween.KillAll();
+                    //NextSceneLoad
+                    gameLoad.LoadingStartWithOBJ();
+                }
+                break;
+
+            case GameSceneState.ToNextScene://次のシーンに移行
+                isEnd_ToResult();
+                //フェードアウト終わったら
+                if (fadeController.IsFadeOutFinish)
+                {
+                    DOTween.KillAll();
+                    //NextSceneLoad
+                    gameLoad.LoadingStartWithoutOBJ();
+                }
+                break;
         }
 
-        if (timeController.GetComponent<TimeController>().isEnd)
-        {
-            isEnd_ToResult();
-        }
-
-        if (isToTitle)
-        {
-            isEnd_ToTitle();
-        }
-	}
+    }
 
     /// <summary>
     /// 終了処理(Result)
@@ -111,31 +137,16 @@ public class GameSceneController : MonoBehaviour {
                 }
             }
         }
-        Debug.Log("IsPostFly:" + isPostFly);
+
         if (isPostFly <= 0)
         {
-            cnt += Time.deltaTime;
-            //fadeout
-            if (fadeController.IsFadeOutFinish == false && cnt >= 3)
-            {
-                fadeController.FadeOut();
-                SetPlayerRank();
-            }
+            SetPlayerRank();
+            gameLoad.NextScene = GameLoad.Scenes.Result;
 
-            //シーン遷移
-            Invoke("LoadResult", finishCall._waitTime);
+            fadeOutDelayTime = finishCall._waitTime;
+            isSceneChange = true;
         }
     }
-
-    /// <summary>
-    /// 追加日：180601 追加者：何
-    /// リザルトシーン遷移
-    /// </summary>
-    void LoadResult()
-    {
-        SceneManager.LoadScene("Result");
-    }
-
     
     /// <summary>
     /// 終了処理(Title)
@@ -155,20 +166,8 @@ public class GameSceneController : MonoBehaviour {
         DOTween.KillAll();
 
         //fadeout
-        fadeController.FadeOut();
-
-
-        //シーン遷移
-        Invoke("LoadTitle", finishCall._waitTime - 3);
-    }
-
-    /// <summary>
-    /// 追加日：180601 追加者：何
-    /// リザルトシーン遷移
-    /// </summary>
-    void LoadTitle()
-    {
-        SceneManager.LoadScene("Title");
+        gameLoad.NextScene = GameLoad.Scenes.Title;
+        isSceneChange = true;
     }
 
     /// <summary>

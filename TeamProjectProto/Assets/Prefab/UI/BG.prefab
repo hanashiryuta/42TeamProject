@@ -217,4 +217,4 @@ MonoBehaviour:
   - {fileID: 2800000, guid: 00c0386e9aba25a419c72effe0a1c75a, type: 3}
   - {fileID: 2800000, guid: b1caaa4837ff30c46aa6022f206f9771, type: 3}
   - {fileID: 2800000, guid: 9e89a257ab00a4e4dafb41facf1349e2, type: 3}
-  panel: {fileID: 1649151401271458}
+  whitePanel: {fileID: 1649151401271458}
