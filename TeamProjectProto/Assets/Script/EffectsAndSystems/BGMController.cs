@@ -165,7 +165,8 @@ public class BGMController : MonoBehaviour
     {
         Debug.Log(scene.name + " Unloaded");
         //アンロードされたシーンの名前を取得
-        preScene = scene.name;
+        if(preScene != null)
+            preScene = scene.name;
     }
 
     /// <summary>
