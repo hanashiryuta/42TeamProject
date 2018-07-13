@@ -19,8 +19,8 @@ public class BGController : MonoBehaviour
     float offsetX = 0;
     float offsetY = 0;
 
-    BalloonOrigin balloon;
-    GameObject balloonControllerObject;
+    //BalloonOrigin balloon;
+    //GameObject balloonControllerObject;
 
     [SerializeField]
     Texture[] bgColorTex;
@@ -63,19 +63,7 @@ public class BGController : MonoBehaviour
         if(transform.GetComponent<MeshRenderer>().materials.Length != 1)
         {
             BG_SpriteOffsetChange();
-
-            if (SceneManager.GetActiveScene().name == "main")
-            {
-                if (balloonControllerObject == null)
-                {
-                    balloonControllerObject = GameObject.FindGameObjectWithTag("Balloon");
-                    return;
-                }
-                balloon = balloonControllerObject.GetComponent<BalloonOrigin>();
-                BG_SpriteColorChange();
-            }
         }
-
     }
 
     /// <summary>
@@ -94,24 +82,20 @@ public class BGController : MonoBehaviour
     /// <summary>
     /// 背景OBJの画像色が風船の持ち主の色に変化
     /// </summary>
-    void BG_SpriteColorChange()
+    public void BG_SpriteColorChange(string playerName)
     {
-        switch (balloon.player.name)
+        switch (playerName)
         {
             case "Player1":
-                //transform.GetComponent<MeshRenderer>().materials[0].SetColor("_Color", Color.red);
                 transform.GetComponentInChildren<MeshRenderer>().materials[0].SetTexture("_MainTex", bgColorTex[0]);
                 break;
             case "Player2":
-                //transform.GetComponent<MeshRenderer>().materials[0].SetColor("_Color", Color.blue);
                 transform.GetComponentInChildren<MeshRenderer>().materials[0].SetTexture("_MainTex", bgColorTex[1]);
                 break;
             case "Player3":
-                //transform.GetComponent<MeshRenderer>().materials[0].SetColor("_Color", Color.yellow);
                 transform.GetComponentInChildren<MeshRenderer>().materials[0].SetTexture("_MainTex", bgColorTex[2]);
                 break;
             case "Player4":
-                //transform.GetComponent<MeshRenderer>().materials[0].SetColor("_Color", Color.green);
                 transform.GetComponentInChildren<MeshRenderer>().materials[0].SetTexture("_MainTex", bgColorTex[3]);
                 break;
         }

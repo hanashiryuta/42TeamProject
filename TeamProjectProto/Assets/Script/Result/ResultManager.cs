@@ -150,7 +150,7 @@ public class ResultManager : SceneController
     /// </summary>
     public void ToTitleBtn()
     {
-        gameLoad.NextScene = GameLoad.Scenes.Tilte;
+        gameLoad.NextScene = GameLoad.Scenes.Title;
 
         //接続プレイヤーステータス受け取りオブジェを削除
         connectedPlayerStatus.Created = false;

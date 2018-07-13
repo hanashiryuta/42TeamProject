@@ -321,6 +321,7 @@ public class BalloonOrigin : MonoBehaviour
             player2.GetComponent<PlayerMove>().balloon = transform.gameObject;//移動先に自身を指定
             player = player2;
             balloonMaster.nowPlayer = player2;
+            balloonMaster.bgController.BG_SpriteColorChange(balloonMaster.nowPlayer.name);//背景変更
             isMove = false;
             player.GetComponent<PlayerMove>().isStan = true;
             //ダッシュ回復
