@@ -231,12 +231,13 @@ MonoBehaviour:
   scaleCount: 1
   scaleLimit: 3
   blastCount: 0
-  blastLimit: 20
+  blastLimit: 15
   setStopTime: 5
   isTimeBlast: 1
   originBlastTime: 1
   isDestroy: 0
   isCameraDistance: 0
+  _setblastLimit: 5
   balloonMaster: {fileID: 0}
   balloonStateTexture:
   - {fileID: 2800000, guid: 5cd0bb4cd23f75f4ab60a0f5ebcd5219, type: 3}
