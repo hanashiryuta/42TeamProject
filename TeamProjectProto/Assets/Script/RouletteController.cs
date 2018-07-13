@@ -103,10 +103,10 @@ public class RouletteController : MonoBehaviour {
         leverPlayer.GetComponent<Image>().sprite = jugglerSpriteList[(int)playerIndex];
         //Aボタン表示
         jugglerA.SetActive(true);
-        //各リールストップボタン押してない状態の画像に設定
+        //各リールストップボタン押せない状態の画像に設定
         foreach(var button in reelStopButtons)
         {
-            button.GetComponent<Image>().sprite = reelStopButtonsState[0];
+            button.GetComponent<Image>().sprite = reelStopButtonsState[1];
         }
 
         //レクト取得
@@ -174,6 +174,11 @@ public class RouletteController : MonoBehaviour {
                     lever.GetComponent<RectTransform>().rotation = Quaternion.Euler(0, 0, 180);
                     //レバーボタン消す
                     jugglerA.SetActive(false);
+                    //各リールストップボタン押せる状態の画像に設定
+                    foreach (var button in reelStopButtons)
+                    {
+                        button.GetComponent<Image>().sprite = reelStopButtonsState[0];
+                    }
                     //状態変化
                     rouletteState = RouletteState.REEL1;
                     //SE

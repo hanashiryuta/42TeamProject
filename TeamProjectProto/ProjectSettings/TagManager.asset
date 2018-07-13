@@ -15,6 +15,7 @@ TagManager:
   - Canvas
   - PlayerStatus
   - Pausable
+  - PostPosition
   layers:
   - Default
   - TransparentFX
