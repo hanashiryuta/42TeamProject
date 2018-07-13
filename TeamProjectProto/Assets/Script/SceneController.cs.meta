@@ -5,7 +5,12 @@ licenseType: Free
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - gameLoad: {instanceID: 0}
+  - fadePanel: {instanceID: 0}
+  - fadeController: {instanceID: 0}
+  - se: {instanceID: 0}
+  - bg: {fileID: 1387371117130210, guid: 4b86ac0388961b345848e1139261e831, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

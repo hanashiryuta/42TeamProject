@@ -350,7 +350,6 @@ GameObject:
   - component: {fileID: 1218557529}
   - component: {fileID: 1218557527}
   - component: {fileID: 1218557528}
-  - component: {fileID: 1218557530}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -425,6 +424,8 @@ MonoBehaviour:
   inputDelayTime: 0.3
   isInputDelay: 0
   se: {fileID: 0}
+  bg: {fileID: 1387371117130210, guid: 4b86ac0388961b345848e1139261e831, type: 2}
+  zDistance: 20
   gameStartBtn: {fileID: 649383090}
   creditBtn: {fileID: 1022773030}
   gameExitBtn: {fileID: 1206159788}
@@ -465,19 +466,6 @@ MonoBehaviour:
   playerSEList: []
   balloonSEList: []
   rouletteSEList: []
---- !u!114 &1218557530
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1218557523}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0d11a4e3c567ae543854d532c44976e5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bg: {fileID: 1387371117130210, guid: 4b86ac0388961b345848e1139261e831, type: 2}
-  zDistance: 20
 --- !u!1 &1252063943
 GameObject:
   m_ObjectHideFlags: 0

@@ -3,86 +3,28 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BeltConveyor : MonoBehaviour {
-    /// <summary>
-    /// ベルトコンベアの稼働状況
-    /// </summary>
-    public bool IsOn = false;
-
-    /// <summary>
-    /// ベルトコンベアの設定速度
-    /// </summary>
-    public float TargetDriveSpeed = 3.0f;
-
-    /// <summary>
-    /// 現在のベルトコンベアの速度
-    /// </summary>
-    public float CurrentSpeed
-    {
-        get { return _currentSpeed; }
-    }
-
-    /// <summary>
-    /// ベルトコンベアが物体を動かす方向
-    /// </summary>
-    public Vector3 DriveDirection = Vector3.forward;
-
-    /// <summary>
-    /// コンベアが物体を押す力（加速力）
-    /// </summary>
+    public float speed = 1f;//ベルトコンベアのスピード
     [SerializeField]
-    private float _forcePower = 50f;
+    Vector3 moveDirection = Vector3.forward;//進む方向
 
-    private float _currentSpeed = 0;
-    private List<Rigidbody> _rigidbodies = new List<Rigidbody>();
-
-    void Start()
+    /// <summary>
+    /// ベルトコンベアに乗ったときに進む方向
+    /// </summary>
+    /// <returns></returns>
+    public Vector3 Conveyor()
     {
-        //方向は正規化しておく
-        DriveDirection = DriveDirection.normalized;
+        return moveDirection.normalized * speed;
     }
 
-    void FixedUpdate()
+    void Update()
     {
-        _currentSpeed = IsOn ? TargetDriveSpeed : 0;
+        Ray ray = new Ray(transform.position, Vector3.down);
+        RaycastHit hit;
 
-        //消滅したオブジェクトは除去する
-        _rigidbodies.RemoveAll(r => r == null);
-
-        foreach (var r in _rigidbodies)
+        if (Physics.Raycast(ray, out hit, 10f))
         {
-            //物体の移動速度のベルトコンベア方向の成分だけを取り出す
-            var objectSpeed = Vector3.Dot(r.velocity, DriveDirection);
-
-            //目標値以下なら加速する
-            if (objectSpeed < Mathf.Abs(TargetDriveSpeed))
-            {
-                r.AddForce(DriveDirection * _forcePower, ForceMode.Acceleration);
-            }
+            //ステージに接するようにRayで座標を取る。ステージにめり込まないようにする
+            this.transform.position = hit.point + new Vector3(0, 0.01f, 0);
         }
     }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        var rigidBody = other.gameObject.GetComponent<Rigidbody>();
-        _rigidbodies.Add(rigidBody);
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        var rigidBody = other.gameObject.GetComponent<Rigidbody>();
-        _rigidbodies.Remove(rigidBody);
-    }
-
-    void OnCollisionEnter(Collision collision)
-    {
-        var rigidBody = collision.gameObject.GetComponent<Rigidbody>();
-        _rigidbodies.Add(rigidBody);
-    }
-
-    void OnCollisionExit(Collision collision)
-    {
-        var rigidBody = collision.gameObject.GetComponent<Rigidbody>();
-        _rigidbodies.Remove(rigidBody);
-    }
-
 }

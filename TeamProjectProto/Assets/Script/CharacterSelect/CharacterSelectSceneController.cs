@@ -1,6 +1,6 @@
 ﻿/*
  * 作成日時：180605
- *  キャラ選択コントローラー
+ *  キャラ選択シーンコントローラー
  * 作成者：何承恩
  */
 using System.Collections;
@@ -308,7 +308,6 @@ public class CharacterSelectSceneController : SceneController
             {
                 //プレイヤー名とインデックスを記録
                 connectedPlayerStatus.ConnectedPlayer.Add("Player" + (i + 1), i);
-                Debug.Log(i);
             }
         }
     }

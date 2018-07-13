@@ -38,7 +38,7 @@ Transform:
   m_GameObject: {fileID: 1703990960461718}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -94,7 +94,7 @@ MeshCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 14
   m_SkinWidth: 0.01
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
@@ -109,7 +109,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eaa9e15100ba6864d9737c42ce211a88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsOn: 1
-  TargetDriveSpeed: 3
-  DriveDirection: {x: 0, y: 0, z: -1}
-  _forcePower: 50
+  speed: 1
+  moveDirection: {x: 0, y: 0, z: -1}
