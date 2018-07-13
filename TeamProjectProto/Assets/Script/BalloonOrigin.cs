@@ -109,6 +109,8 @@ public class BalloonOrigin : MonoBehaviour
 
     public float colorEmission = 0.2f;
 
+    CutinSpawn cutinSpawn;
+
     // Use this for initialization
     void Start()
     {
@@ -134,6 +136,9 @@ public class BalloonOrigin : MonoBehaviour
         finishCall = GameObject.Find("FinishCall").GetComponent<FinishCall>();//終了処理オブジェクト取得
 
         se = balloonMaster.transform.GetComponent<SEController>();
+
+        //風船が他のプレイヤーに移ったときにカットインを生成
+        cutinSpawn = GameObject.Find("CutinController").GetComponent<CutinSpawn>();
     }
 
     // Update is called once per frame
@@ -330,6 +335,8 @@ public class BalloonOrigin : MonoBehaviour
                 detonationArea.transform.position = player.transform.position + new Vector3(0, 1, 0);
 
             se.PlayBalloonSE((int)SEController.BalloonSE.ChangeTarget);
+
+            cutinSpawn.cutinSpawn();
         }
     }
     /// <summary>
