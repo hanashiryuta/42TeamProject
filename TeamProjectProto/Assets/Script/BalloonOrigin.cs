@@ -241,7 +241,7 @@ public class BalloonOrigin : MonoBehaviour
             //1/3以下なら安全状態
             //色は緑
             case BalloonState.SAFETY:
-                if(isTexSet)
+                if (isTexSet)
                 {
                     //テクスチャ設定
                     gameObject.GetComponentInChildren<MeshRenderer>().materials[0].mainTexture = balloonStateTexture[0];
@@ -282,6 +282,13 @@ public class BalloonOrigin : MonoBehaviour
             //2/3以上なら危険状態
             //色は赤
             case BalloonState.DANGER:
+                //if (detonationArea == null)
+                //{
+                //    //テクスチャ設定
+                //    //誘爆半径表示オブジェクト生成
+                //    detonationArea = Instantiate(originDetonationArea, player.transform.position + new Vector3(0, 1, 0), Quaternion.identity, player.transform);
+                //    detonationArea.transform.localScale = new Vector3(detonationRadius * 4, detonationRadius * 4, detonationRadius * 4);
+                //}
                 if (detonationArea == null)
                 {
                     //テクスチャ設定
@@ -318,6 +325,9 @@ public class BalloonOrigin : MonoBehaviour
             player.GetComponent<PlayerMove>().isStan = true;
             //ダッシュ回復
             //player.GetComponent<PlayerMove>().DashCountDown = player.GetComponent<PlayerMove>().DashLimitTime;
+            if (detonationArea != null)//プレイヤーに誘爆半径を追従
+                detonationArea.transform.position = player.transform.position + new Vector3(0, 1, 0);
+
             se.PlayBalloonSE((int)SEController.BalloonSE.ChangeTarget);
         }
     }
@@ -555,4 +565,5 @@ public class BalloonOrigin : MonoBehaviour
             }
         }
     }
+
 }
