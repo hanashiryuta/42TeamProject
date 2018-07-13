@@ -12,19 +12,17 @@ using XInputDotNetPure;
 
 public class ResultManager : SceneController
 {
+    ConnectedPlayerStatus connectedPlayerStatus;//接続したプレイヤー
+
     //プレイヤー順位関連
     PlayerRank playerRank;//Playerの名前取得用
+    List<int> _playerRankList = new List<int>(); // プレイヤー順位リスト
     List<Text> _playerRankTextsList = new List<Text>();//順位表示テキストOBJリスト
     public List<Text> PlayerRankTextsList
     {
         get { return _playerRankTextsList; }
     }
-    List<int> _playerRankList = new List<int>(); // プレイヤー順位リスト
-    public List<int> PlayerRankList
-    {
-        get { return _playerRankList; }
-    }
-    ConnectedPlayerStatus connectedPlayerStatus;//接続したプレイヤー
+
     //Spawn
     ResultPositionSpawnController resultPositionSpawnCon;
     SpawnUIPlayer spawnUIPlayer;//UIプレイヤースポーン
@@ -41,7 +39,7 @@ public class ResultManager : SceneController
     List<GameObject> playerScoreTexts = new List<GameObject>();//プレイヤースコア表示テキスト
 
     //SceneState
-    ResultSceneState sceneState = ResultSceneState.RankAnim;
+    ResultSceneState sceneState = ResultSceneState.FadeIn;
 
     // Use this for initialization
     void Awake()
@@ -203,26 +201,25 @@ public class ResultManager : SceneController
         //順位付け
         for (int i = 0; i < playerRank.PlayerRankScore.Count; i++)
         {
-            if (i == 0)
+            if (i == 0)//playerRankの一番目でしたら
             {
-                temp = playerRank.PlayerRankScore[0];
-                rank = count = 1;
+                temp = playerRank.PlayerRankScore[0];//点数一時格納
+                rank = count = 1;//一位とする・該当する順位の数=1
             }
-            else
+            else//それ以降の順番
             {
-                if (temp == playerRank.PlayerRankScore[i])
+                if (temp == playerRank.PlayerRankScore[i])//同点でしたら
                 {
-                    count++;
+                    count++;//該当する順位の人数+1
                 }
                 else
                 {
-                    temp = playerRank.PlayerRankScore[i];
-                    rank += count;
-                    count = 1;
+                    temp = playerRank.PlayerRankScore[i];//それ以下でしたら
+                    rank += count;//前の順位＋その順位の人数=次の順位
+                    count = 1;//該当する順位の人数=1
                 }
             }
-
-            eachRanksCount.Add(rank);
+            eachRanksCount.Add(rank);//プレイヤー順位を格納
         }
 
         //スコアテキストを格納
@@ -243,7 +240,7 @@ public class ResultManager : SceneController
         spawnUIPlayer = transform.GetComponent<SpawnUIPlayer>();
         spawnUIPlayer.ConnectedPLStatus = connectedPlayerStatus;//UIプレイヤー接続ステータス
         spawnUIPlayer.PList = playerRank.ResultRank;//UIプレイヤー順位順
-        spawnUIPlayer.RankList = PlayerRankList;//UIプレイヤーごとの順位
+        spawnUIPlayer.RankList = _playerRankList;//UIプレイヤーごとの順位
         for (int i = 0; i < PlayerRankTextsList.Count; i++)//UIプレイヤー生成場所
         {
             spawnUIPlayer.PositionOBJ.Add(PlayerRankTextsList[i].transform.GetChild(0).gameObject);
