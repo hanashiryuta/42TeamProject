@@ -179,11 +179,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
---- !u!1 &304744047 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1917121758232174, guid: 329d9b0f9f6951a4da8bfa8767054953,
-    type: 2}
-  m_PrefabInternal: {fileID: 782863678}
 --- !u!114 &649383090 stripped
 MonoBehaviour:
   m_PrefabParentObject: {fileID: 114544983312022920, guid: 329d9b0f9f6951a4da8bfa8767054953,
@@ -312,9 +307,15 @@ Prefab:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1218557527}
-    - target: {fileID: 1198947803426918, guid: 329d9b0f9f6951a4da8bfa8767054953, type: 2}
-      propertyPath: m_IsActive
-      value: 1
+    - target: {fileID: 224754012368037190, guid: 329d9b0f9f6951a4da8bfa8767054953,
+        type: 2}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224754012368037190, guid: 329d9b0f9f6951a4da8bfa8767054953,
+        type: 2}
+      propertyPath: m_AnchorMax.y
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 329d9b0f9f6951a4da8bfa8767054953, type: 2}
@@ -325,12 +326,6 @@ MonoBehaviour:
     type: 2}
   m_PrefabInternal: {fileID: 782863678}
   m_Script: {fileID: 1392445389, guid: f70555f144d8491a825f0804e09c671c, type: 3}
---- !u!114 &1194716995 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 114174524852285208, guid: 329d9b0f9f6951a4da8bfa8767054953,
-    type: 2}
-  m_PrefabInternal: {fileID: 782863678}
-  m_Script: {fileID: -113659843, guid: f70555f144d8491a825f0804e09c671c, type: 3}
 --- !u!114 &1206159788 stripped
 MonoBehaviour:
   m_PrefabParentObject: {fileID: 114582696563748026, guid: 329d9b0f9f6951a4da8bfa8767054953,
@@ -444,8 +439,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8564eb071fa69844488490a6394201fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  loadObj: {fileID: 304744047}
-  slider: {fileID: 1194716995}
   _nextScene: 1
 --- !u!114 &1218557529
 MonoBehaviour:

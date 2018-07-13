@@ -11,8 +11,8 @@ using UnityEngine.UI;
 
 public class GameLoad : MonoBehaviour
 {
-    public GameObject loadObj;//ロード表示UIOBJ
-    public Slider slider;//ロード表示スライダー
+    GameObject loadObj;//ロード表示UIOBJ
+    Slider slider;//ロード表示スライダー
 
     bool _isLoadStart = false;// ロード始めたか？
 
@@ -32,11 +32,17 @@ public class GameLoad : MonoBehaviour
     /// </summary>
     public enum Scenes
     {
-        Tilte,          // タイトル
+        Title,          // タイトル
         CharacterSelect,// キャラセレクト
         StageSelect,    // ステージセレクト
         Main,           // メインゲーム
         Result          // リザルト
+    }
+
+    void Start()
+    {
+        loadObj = GameObject.Find("LoadingObj").gameObject;
+        slider = loadObj.GetComponentInChildren<Slider>();
     }
 
     /// <summary>
@@ -46,12 +52,21 @@ public class GameLoad : MonoBehaviour
     {
         if (!_isLoadStart)
         {
-            //ロード画面UIをアクティブにする
-            loadObj.SetActive(true);
+            //ロード画面UIを表示する
+            loadObj.GetComponent<CanvasGroup>().alpha = 1;
             //ロードコルーチン開始
             StartCoroutine(LoadData());
             _isLoadStart = true;
         }
+    }
+
+    /// <summary>
+    /// ロードOBJ付きの非同期ロード(遅延付き)
+    /// </summary>
+    /// <param name="delayTime"></param>
+    public void LoadingStartWithOBJ(float delayTime)
+    {
+        Invoke("LoadingStartWithOBJ", delayTime);
     }
 
     /// <summary>
@@ -65,6 +80,12 @@ public class GameLoad : MonoBehaviour
             _isLoadStart = true;
         }
     }
+
+    public void LoadingStartWithoutOBJ(float delayTime)
+    {
+        Invoke("LoadingStartWithoutOBJ", delayTime);
+    }
+
 
     /// <summary>
     /// 非同期ロード

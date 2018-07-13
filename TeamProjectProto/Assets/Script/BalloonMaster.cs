@@ -97,6 +97,10 @@ public class BalloonMaster : MonoBehaviour {
     [HideInInspector]
     public PlayerIndex nextPlayerIndex;//次に風船を持つプレイヤーのコントローラー
 
+    //BG
+    [HideInInspector]
+    public BGController bgController;
+
     // Use this for initialization
     void Start ()
     {   
@@ -141,6 +145,8 @@ public class BalloonMaster : MonoBehaviour {
             new List<float> {3,7},
             new List<float> {5,3,2},
         };
+
+        bgController = GameObject.Find("BG(Clone)").GetComponent<BGController>();
     }
 
     // Update is called once per frame
@@ -168,6 +174,8 @@ public class BalloonMaster : MonoBehaviour {
             {
                 //今風船つくプレイヤーを指定
                 nowPlayer = nextPlayer;
+                //背景色変更
+                bgController.BG_SpriteColorChange(nowPlayer.name);
                 //バルーン生成
                 nowBalloon = Instantiate(nextSpawnBalloon,nowPlayer.transform.position,Quaternion.identity);
                 se.PlayBalloonSE((int)SEController.BalloonSE.Spawn);

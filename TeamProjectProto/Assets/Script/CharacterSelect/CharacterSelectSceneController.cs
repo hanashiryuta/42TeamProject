@@ -213,7 +213,7 @@ public class CharacterSelectSceneController : SceneController
     {
         if (standbyCheck[(int)controllablePlayerIndex].IsB_BackPressed)
         {
-            gameLoad.NextScene = GameLoad.Scenes.Tilte;
+            gameLoad.NextScene = GameLoad.Scenes.Title;
         }
         return standbyCheck[(int)controllablePlayerIndex].IsB_BackPressed;
     }
@@ -270,6 +270,7 @@ public class CharacterSelectSceneController : SceneController
         startText.enabled = false;
 
         gameLoad.NextScene = GameLoad.Scenes.StageSelect;
+        fadeOutDelayTime = 1f;
         isSceneChange = true;
     }
 
@@ -284,7 +285,7 @@ public class CharacterSelectSceneController : SceneController
             standbyCheck[i].IsCanPressBtn = false;
         }
 
-        gameLoad.NextScene = GameLoad.Scenes.Tilte;
+        gameLoad.NextScene = GameLoad.Scenes.Title;
         isSceneChange = true;
     }
 

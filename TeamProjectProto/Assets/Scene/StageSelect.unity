@@ -1058,15 +1058,11 @@ Prefab:
     - target: {fileID: 224325157445433150, guid: fcd4d7cb0f62fb24c8937f0a7abca36f,
         type: 2}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224325157445433150, guid: fcd4d7cb0f62fb24c8937f0a7abca36f,
         type: 2}
       propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1950263430645446, guid: fcd4d7cb0f62fb24c8937f0a7abca36f, type: 2}
-      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -1075,17 +1071,6 @@ Prefab:
 --- !u!224 &1690050839 stripped
 RectTransform:
   m_PrefabParentObject: {fileID: 224606601324951362, guid: fcd4d7cb0f62fb24c8937f0a7abca36f,
-    type: 2}
-  m_PrefabInternal: {fileID: 1690050838}
---- !u!114 &1690050840 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 114059881339979012, guid: fcd4d7cb0f62fb24c8937f0a7abca36f,
-    type: 2}
-  m_PrefabInternal: {fileID: 1690050838}
-  m_Script: {fileID: -113659843, guid: f70555f144d8491a825f0804e09c671c, type: 3}
---- !u!1 &1690050841 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1950263430645446, guid: fcd4d7cb0f62fb24c8937f0a7abca36f,
     type: 2}
   m_PrefabInternal: {fileID: 1690050838}
 --- !u!1 &1934998890
@@ -1358,8 +1343,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8564eb071fa69844488490a6394201fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  loadObj: {fileID: 1690050841}
-  slider: {fileID: 1690050840}
   _nextScene: 3
 --- !u!114 &2067282214
 MonoBehaviour:

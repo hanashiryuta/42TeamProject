@@ -14,7 +14,7 @@ public class FinishCall : MonoBehaviour
     [SerializeField]
     Image _bg;
 
-    public float _waitTime = 2;
+    public float _waitTime = 3;
 
     bool _isCalling = false;
     public bool IsCalling

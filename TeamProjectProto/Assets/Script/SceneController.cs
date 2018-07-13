@@ -19,12 +19,14 @@ public class SceneController : MonoBehaviour
     public GameLoad gameLoad;//ゲームロード
 
     //Fade
-    [SerializeField]
+    [HideInInspector]
     public GameObject fadePanel;//フェードパネル
     [HideInInspector]
     public FadeController fadeController;//フェードコントローラー
     [HideInInspector]
     public bool isSceneChange = false;//シーン転換するか？
+    [HideInInspector]
+    public float fadeOutDelayTime = 0f;//fadeout遅延時間
 
     //XInput
     [HideInInspector]
@@ -88,6 +90,14 @@ public class SceneController : MonoBehaviour
         ToNextScene //次のシーンに移行
     }
 
+    public enum GameSceneState
+    {
+        FadeIn,         //フェードイン中
+        None,           //基準状態
+        ToTitleScene,   //次のシーンに移行
+        ToNextScene     //次のシーンに移行
+    }
+
     /// <summary>
     /// リザルトシーン状態
     /// </summary>
@@ -105,9 +115,12 @@ public class SceneController : MonoBehaviour
         //load
         gameLoad = GetComponent<GameLoad>();
         //fade
-        fadeController = fadePanel.GetComponent<FadeController>();
+        fadeController = GameObject.Find("FadePanel").GetComponent<FadeController>();
         //SE
-        se = transform.GetComponent<SEController>();
+        if (transform.GetComponent<SEController>() != null)
+        {
+            se = transform.GetComponent<SEController>();
+        }
         //BG
         BG_Spawn();
     }
@@ -130,7 +143,7 @@ public class SceneController : MonoBehaviour
             if (isSceneChange)
             {
                 //フェードアウト
-                PanelFadeOut();
+                Invoke("PanelFadeOut", fadeOutDelayTime);
             }
         }
 
