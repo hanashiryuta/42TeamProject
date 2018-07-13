@@ -301,10 +301,22 @@ public class PlayerMove : MonoBehaviour
             transform.rotation = Quaternion.LookRotation(diff);
         }
 
-        //ベルトコンベアに乗っていたら動く
-        if (onConveyor)
+        ////ベルトコンベアに乗っていたら動く
+        //if (onConveyor)
+        //{
+        //    rigid.velocity += direction;
+        //}
+
+        //Rayを飛ばしてベルトコンベアに当たっていたらベルトコンベアで動くようにする
+        RaycastHit hit;
+        if (Physics.Linecast(transform.position + Vector3.up, transform.position + Vector3.down, out hit, LayerMask.GetMask("BeltConveyor")))
         {
-            rigid.velocity += direction;
+            var beltConveyor = hit.transform.gameObject.GetComponent<BeltConveyor>();
+            if (beltConveyor != null)
+            {
+                direction = beltConveyor.Conveyor();
+                rigid.velocity += direction;
+            }
         }
     }
 
@@ -1116,25 +1128,25 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
-    void OnCollisionStay(Collision col)
-    {
-        //Rayを飛ばしてベルトコンベアに当たっていたらベルトコンベアで動くようにする
-        if (Physics.Linecast(transform.position + Vector3.up, transform.position + Vector3.down, LayerMask.GetMask("BeltConveyor")))
-        {
-            var beltConveyor = col.gameObject.GetComponent<BeltConveyor>();
-            if (beltConveyor != null)
-            {
-                direction = beltConveyor.Conveyor();
-                onConveyor = true;
-            }
-            else
-            {
-                onConveyor = false;
-            }
-        }
-        else
-        {
-            onConveyor = false;
-        }
-    }
+    //void OnCollisionStay(Collision col)
+    //{
+    //    //Rayを飛ばしてベルトコンベアに当たっていたらベルトコンベアで動くようにする
+    //    if (Physics.Linecast(transform.position + Vector3.up, transform.position + Vector3.down, LayerMask.GetMask("BeltConveyor")))
+    //    {
+    //        var beltConveyor = col.gameObject.GetComponent<BeltConveyor>();
+    //        if (beltConveyor != null)
+    //        {
+    //            direction = beltConveyor.Conveyor();
+    //            onConveyor = true;
+    //        }
+    //        else
+    //        {
+    //            onConveyor = false;
+    //        }
+    //    }
+    //    else
+    //    {
+    //        onConveyor = false;
+    //    }
+    //}
 }
