@@ -16,18 +16,15 @@ public class GameSceneController : SceneController
     GameObject playerRank;//プレイヤーランク管理オブジェクト
 
     //180601 何
-    FinishCall finishCall;
+    FinishCall finishCall;//終了コール
 
     //180614 何
-    List<GameObject> playerList = new List<GameObject>();
-
-    //fade
-    float fadeOutStartCnt = 0;
+    List<GameObject> playerList = new List<GameObject>();//生成したプレイヤーのリスト
 
     PostRespawn postRespawn;
 
     //pause->toTitle
-    bool isToTitle = false;
+    bool isToTitle = false;//タイトルに行くか
     public bool IsToTitle
     {
         set { isToTitle = value; }
@@ -150,16 +147,6 @@ public class GameSceneController : SceneController
             isSceneChange = true;
         }
     }
-
-    /// <summary>
-    /// 追加日：180601 追加者：何
-    /// リザルトシーン遷移
-    /// </summary>
-    void LoadResult()
-    {
-        SceneManager.LoadScene("Result");
-    }
-
     
     /// <summary>
     /// 終了処理(Title)
