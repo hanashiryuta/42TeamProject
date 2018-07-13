@@ -17,7 +17,8 @@ public class GameLoad : MonoBehaviour
     bool _isLoadStart = false;// ロード始めたか？
 
     [SerializeField]
-    Scenes _nextScene;
+    Scenes _nextScene;//次のシーン
+
     /// <summary>
     /// 次のシーン
     /// </summary>
@@ -81,11 +82,14 @@ public class GameLoad : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 普通にロード(遅延付き)
+    /// </summary>
+    /// <param name="delayTime"></param>
     public void LoadingStartWithoutOBJ(float delayTime)
     {
         Invoke("LoadingStartWithoutOBJ", delayTime);
     }
-
 
     /// <summary>
     /// 非同期ロード

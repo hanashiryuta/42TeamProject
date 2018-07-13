@@ -11,22 +11,23 @@ using UnityEngine.SceneManagement;
 
 public class BGController : MonoBehaviour
 {
+    //背景をずらす速度
     [SerializeField]
     float _moveSpeedX = 0.2f;
     [SerializeField]
     float _moveSpeedY = 0.2f;
 
+    //背景今軸ごとのoffset
     float offsetX = 0;
     float offsetY = 0;
 
-    //BalloonOrigin balloon;
-    //GameObject balloonControllerObject;
-
+    //背景テクスチャ
     [SerializeField]
     Texture[] bgColorTex;
 
+    //背景の色を薄める用のパネル
     [SerializeField]
-    GameObject panel;
+    GameObject whitePanel;
    
     // Use this for initialization
 	void Start ()
@@ -41,17 +42,18 @@ public class BGController : MonoBehaviour
         else
         {
             mats[0].SetTexture("_MainTex", bgColorTex[4]);//青紫
-            Destroy(panel);//Mainシーン以外パネル不表示
-            panel = null;
+            Destroy(whitePanel);//Mainシーン以外白パネル不表示
+            whitePanel = null;
         }
 
-        //画面に合わせて
+        //画面に合わせる
         transform.localScale = new Vector3(Camera.main.orthographicSize * 2.2f * Screen.width / Screen.height,
                                         Camera.main.orthographicSize * 2.2f,
                                         0.1f);
-        if(panel != null)
+        //白パネルがあったら画面に合わせる
+        if (whitePanel != null)
         {
-            panel.transform.localScale = new Vector3(Camera.main.orthographicSize * 2.2f * Screen.width / Screen.height,
+            whitePanel.transform.localScale = new Vector3(Camera.main.orthographicSize * 2.2f * Screen.width / Screen.height,
                                             Camera.main.orthographicSize * 2.2f,
                                             0.1f);
         }
