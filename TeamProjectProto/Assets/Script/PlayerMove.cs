@@ -145,6 +145,9 @@ public class PlayerMove : MonoBehaviour
     [HideInInspector]
     public float totalItemCount_For_Text = 0;//トータル表示用数
 
+    bool onConveyor = false;
+    Vector3 direction;
+
     // Use this for initialization
     void Start()
     {
@@ -296,6 +299,12 @@ public class PlayerMove : MonoBehaviour
         if (diff.magnitude > 0.01f)
         {
             transform.rotation = Quaternion.LookRotation(diff);
+        }
+
+        //ベルトコンベアに乗っていたら動く
+        if (onConveyor)
+        {
+            rigid.velocity += direction;
         }
     }
 
@@ -1104,6 +1113,28 @@ public class PlayerMove : MonoBehaviour
                 Mathf.Clamp(transform.position.x, -7.5f, 7.5f),
                 playerPos_Y,
                 Mathf.Clamp(transform.position.z, -7.5f, 7.5f));
+        }
+    }
+
+    void OnCollisionStay(Collision col)
+    {
+        //Rayを飛ばしてベルトコンベアに当たっていたらベルトコンベアで動くようにする
+        if (Physics.Linecast(transform.position + Vector3.up, transform.position + Vector3.down, LayerMask.GetMask("BeltConveyor")))
+        {
+            var beltConveyor = col.gameObject.GetComponent<BeltConveyor>();
+            if (beltConveyor != null)
+            {
+                direction = beltConveyor.Conveyor();
+                onConveyor = true;
+            }
+            else
+            {
+                onConveyor = false;
+            }
+        }
+        else
+        {
+            onConveyor = false;
         }
     }
 }

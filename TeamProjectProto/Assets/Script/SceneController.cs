@@ -93,6 +93,7 @@ public class SceneController : MonoBehaviour
     /// </summary>
     public enum ResultSceneState
     {
+        FadeIn,     //フェードイン中
         RankAnim,   //アニメ中
         None,       //基準状態
         ToNextScene //次のシーンに移行
