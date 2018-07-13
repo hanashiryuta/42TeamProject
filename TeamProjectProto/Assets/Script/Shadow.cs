@@ -17,6 +17,7 @@ public class Shadow : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        //プレイヤーの下方向にRayを飛ばして、その先に当たったオブジェクトに影を置く
         Ray ray = new Ray(player.transform.position, Vector3.down);
         RaycastHit hit;
 

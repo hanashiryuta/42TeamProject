@@ -145,6 +145,9 @@ public class PlayerMove : MonoBehaviour
     [HideInInspector]
     public float totalItemCount_For_Text = 0;//トータル表示用数
 
+    bool onConveyor = false;
+    Vector3 direction;
+
     // Use this for initialization
     void Start()
     {
@@ -296,6 +299,12 @@ public class PlayerMove : MonoBehaviour
         if (diff.magnitude > 0.01f)
         {
             transform.rotation = Quaternion.LookRotation(diff);
+        }
+
+        //ベルトコンベアに乗っていたら動く
+        if (onConveyor)
+        {
+            rigid.velocity += direction;
         }
     }
 
@@ -638,35 +647,6 @@ public class PlayerMove : MonoBehaviour
             GameObject b = GameObject.FindGameObjectWithTag("Balloon");
             b.GetComponent<BalloonOrigin>().BalloonExChange(pList, gameObject);
         }
-        //中心物体に当たったら
-        if (col.gameObject.tag == "Post" && balloon == null)
-        {
-            //ポストが待機状態だったら
-            if(col.gameObject.GetComponent<PostController>().postState == PostState.STAY)
-            { 
-                //トータル増やす
-                totalItemCount += holdItemCount;
-
-                //ポイントが1つでもあったとき
-                if (holdItemCount >= 1)
-                {
-                    //effect.GetComponent<ScoreEffect>().playerName = transform.name; //プレイヤーの名前を代入
-                    ////エフェクトを生成
-                    //Instantiate(effect, RectTransformUtility.WorldToScreenPoint(Camera.main, transform.position), Quaternion.identity, GameObject.Find("PlayerScoreUI").transform);
-                    playerSE.PlayPlayerSEOnce((int)SEController.PlayerSE.SendPost);
-                }
-                col.GetComponent<PostController>().blastCount += holdItemCount;//中心物体に内容物総数を渡す
-                //col.GetComponent<PostController>().respawnCount += holdItemCount;
-                col.GetComponent<PostController>().player = gameObject;
-                foreach (var cx in itemList)
-                {
-                    totalItemList.Add(cx);
-                }
-                itemList.Clear();
-                holdItemCount = 0;//内容物所持数を0にする
-                              //GetComponent<AudioSource> ().PlayOneShot (soundSE3);
-            }
-        }
 
         //衝撃波に当たったら
         if (col.gameObject.tag == "HipDropCircle")
@@ -684,6 +664,32 @@ public class PlayerMove : MonoBehaviour
                 hitHipDrop = true;
             }
         }
+    }
+
+    /// <summary>
+    /// ポストに当たった際の処理
+    /// </summary>
+    /// <param name="post"></param>
+    public void HitPost(GameObject post)
+    {
+        //トータルをテモチ分増やす
+        totalItemCount += holdItemCount;
+        //SE鳴らす
+        playerSE.PlayPlayerSEOnce((int)SEController.PlayerSE.SendPost);
+        //ポストにテモチ数を渡す
+        post.GetComponent<PostController>().blastCount += holdItemCount;
+        post.GetComponent<PostController>().respawnCount += holdItemCount;
+        //ポストに自信を渡す
+        post.GetComponent<PostController>().player = gameObject;
+        //所持アイテムをトータルリストに渡す
+        foreach (var cx in itemList)
+        {
+            totalItemList.Add(cx);
+        }
+        //アイテムリストクリア
+        itemList.Clear();
+        //内容物所持数を0にする
+        holdItemCount = 0;
     }
 
     /// <summary>
@@ -1107,6 +1113,28 @@ public class PlayerMove : MonoBehaviour
                 Mathf.Clamp(transform.position.x, -7.5f, 7.5f),
                 playerPos_Y,
                 Mathf.Clamp(transform.position.z, -7.5f, 7.5f));
+        }
+    }
+
+    void OnCollisionStay(Collision col)
+    {
+        //Rayを飛ばしてベルトコンベアに当たっていたらベルトコンベアで動くようにする
+        if (Physics.Linecast(transform.position + Vector3.up, transform.position + Vector3.down, LayerMask.GetMask("BeltConveyor")))
+        {
+            var beltConveyor = col.gameObject.GetComponent<BeltConveyor>();
+            if (beltConveyor != null)
+            {
+                direction = beltConveyor.Conveyor();
+                onConveyor = true;
+            }
+            else
+            {
+                onConveyor = false;
+            }
+        }
+        else
+        {
+            onConveyor = false;
         }
     }
 }
