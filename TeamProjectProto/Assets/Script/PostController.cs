@@ -208,24 +208,33 @@ public class PostController : MonoBehaviour {
     /// </summary>
     void AirSpawn()
     {
-        inflateTime -= Time.deltaTime;
-        if (inflateTime < 0)
+        //Balloonがステージ上にない場合、生成しない
+        var balloon = GameObject.FindGameObjectWithTag("Balloon");
+        if (balloon != null)
         {
-            //一定間隔で出す
-            if (inflateObj && blastCount > 0)
+            inflateTime -= Time.deltaTime;
+            if (inflateTime < 0)
             {
-                //風船膨らませるオブジェクト生成
-                Instantiate(air, gameObject.transform.position + Vector3.up, Quaternion.identity);
+                //一定間隔で出す
+                if (inflateObj && blastCount > 0)
+                {
+                    //風船膨らませるオブジェクト生成
+                    Instantiate(air, gameObject.transform.position + Vector3.up, Quaternion.identity);
+                }
+                blastCount--;//内容物の総数を減らす
+                inflateTime = 0.05f;
+                //ポイント分生成したらポストを移動させる＆パーティクルが消えたら
+                if (blastCount <= 0 && pig_ToCoin_Particle == null)
+                {
+                    blastCount = 0;
+                    AnimSpeedSet(animSpeed);
+                    postState = PostState.SPIN;
+                }
             }
-            blastCount--;//内容物の総数を減らす
-            inflateTime = 0.05f;
-            //ポイント分生成したらポストを移動させる＆パーティクルが消えたら
-            if (blastCount <= 0 && pig_ToCoin_Particle == null)
-            {
-                blastCount = 0;
-                AnimSpeedSet(animSpeed);
-                postState = PostState.SPIN;
-            }
+        }
+        else
+        {
+            postState = PostState.SPIN;
         }
     }
 
