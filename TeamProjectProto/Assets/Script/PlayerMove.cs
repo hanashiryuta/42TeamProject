@@ -301,11 +301,24 @@ public class PlayerMove : MonoBehaviour
             transform.rotation = Quaternion.LookRotation(diff);
         }
 
-        //ベルトコンベアに乗っていたら動く
-        if (onConveyor)
-        {
-            rigid.velocity += direction;
-        }
+        ////ベルトコンベアに乗っていたら動く
+        //if (onConveyor)
+        //{
+        //    rigid.velocity += direction;
+        //}
+
+        //Rayを飛ばしてベルトコンベアに当たっていたらベルトコンベアで動くようにする
+        RayHitBeltConveyor();
+        //RaycastHit hit;
+        //if (Physics.Linecast(transform.position + Vector3.up, transform.position + Vector3.down, out hit, LayerMask.GetMask("BeltConveyor")))
+        //{
+        //    var beltConveyor = hit.transform.gameObject.GetComponent<BeltConveyor>();
+        //    if (beltConveyor != null)
+        //    {
+        //        direction = beltConveyor.Conveyor();
+        //        rigid.velocity += direction;
+        //    }
+        //}
     }
 
     /// <summary>
@@ -1116,25 +1129,53 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
-    void OnCollisionStay(Collision col)
+    //void OnCollisionStay(Collision col)
+    //{
+    //    //Rayを飛ばしてベルトコンベアに当たっていたらベルトコンベアで動くようにする
+    //    if (Physics.Linecast(transform.position + Vector3.up, transform.position + Vector3.down, LayerMask.GetMask("BeltConveyor")))
+    //    {
+    //        var beltConveyor = col.gameObject.GetComponent<BeltConveyor>();
+    //        if (beltConveyor != null)
+    //        {
+    //            direction = beltConveyor.Conveyor();
+    //            onConveyor = true;
+    //        }
+    //        else
+    //        {
+    //            onConveyor = false;
+    //        }
+    //    }
+    //    else
+    //    {
+    //        onConveyor = false;
+    //    }
+    //}
+
+    private void RayHitBeltConveyor()
     {
-        //Rayを飛ばしてベルトコンベアに当たっていたらベルトコンベアで動くようにする
-        if (Physics.Linecast(transform.position + Vector3.up, transform.position + Vector3.down, LayerMask.GetMask("BeltConveyor")))
+        RaycastHit hit;
+        if (Physics.Linecast(transform.position + Vector3.up, transform.position + Vector3.down, out hit, LayerMask.GetMask("BeltConveyor")))
         {
-            var beltConveyor = col.gameObject.GetComponent<BeltConveyor>();
+            var beltConveyor = hit.transform.gameObject.GetComponent<BeltConveyor>();
             if (beltConveyor != null)
             {
                 direction = beltConveyor.Conveyor();
-                onConveyor = true;
+                rigid.velocity += direction;
+                //進行方向がx座標ならば縦中央にもっていく
+                if (Mathf.Abs(direction.x) >= 1)
+                {
+                    var centerDir = (hit.transform.position - transform.position).normalized;
+                    if (Mathf.Abs(centerDir.z) > 0.5f)
+                        transform.position += new Vector3(0, 0, centerDir.z * Time.deltaTime);
+                }
+                //進行方向がz座標ならば横中央にもっていく
+                else if (Mathf.Abs(direction.z) >= 1)
+                {
+                    var centerDir = (hit.transform.position - transform.position).normalized;
+                    if (Mathf.Abs(centerDir.x) > 0.5f)
+                        transform.position += new Vector3(centerDir.x * Time.deltaTime, 0, 0);
+                }
             }
-            else
-            {
-                onConveyor = false;
-            }
-        }
-        else
-        {
-            onConveyor = false;
         }
     }
 }

@@ -21,8 +21,8 @@ public class ItemController : MonoBehaviour {
     float moveZ = 0;//z軸移動方向
     float moveTime = 0.5f;//吹き飛び時間
     Rigidbody rigid;//リジッドボディ
-    bool onConveyor = false;
-    Vector3 direction;
+    //bool onConveyor = false;
+    //Vector3 direction;
 
     public GameObject origin_Item_Death_Particle;//アイテム取得時パーティクル生成元
     GameObject item_Death_Particle;//アイテム取得時パーティクル
@@ -78,10 +78,10 @@ public class ItemController : MonoBehaviour {
         //    }
         }
 
-        if (onConveyor)
-        {
-            rigid.velocity += direction;
-        }
+        //if (onConveyor)
+        //{
+        //    rigid.velocity += direction;
+        //}
     }
 
     /// <summary>
@@ -112,25 +112,25 @@ public class ItemController : MonoBehaviour {
         }
     }
 
-    void OnCollisionStay(Collision col)
-    {
-        //Rayを飛ばしてベルトコンベアに当たっていたらベルトコンベアで動くようにする
-        if (Physics.Linecast(transform.position + Vector3.up, transform.position + Vector3.down, LayerMask.GetMask("BeltConveyor")))
-        {
-            var beltConveyor = col.gameObject.GetComponent<BeltConveyor>();
-            if (beltConveyor != null)
-            {
-                direction = beltConveyor.Conveyor();
-                onConveyor = true;
-            }
-            else
-            {
-                onConveyor = false;
-            }
-        }
-        else
-        {
-            onConveyor = false;
-        }
-    }
+    //void OnCollisionStay(Collision col)
+    //{
+    //    //Rayを飛ばしてベルトコンベアに当たっていたらベルトコンベアで動くようにする
+    //    if (Physics.Linecast(transform.position + Vector3.up, transform.position + Vector3.down, LayerMask.GetMask("BeltConveyor")))
+    //    {
+    //        var beltConveyor = col.gameObject.GetComponent<BeltConveyor>();
+    //        if (beltConveyor != null)
+    //        {
+    //            direction = beltConveyor.Conveyor();
+    //            onConveyor = true;
+    //        }
+    //        else
+    //        {
+    //            onConveyor = false;
+    //        }
+    //    }
+    //    else
+    //    {
+    //        onConveyor = false;
+    //    }
+    //}
 }

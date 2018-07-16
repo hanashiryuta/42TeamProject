@@ -16,18 +16,16 @@ public class GameSceneController : SceneController
     GameObject playerRank;//プレイヤーランク管理オブジェクト
 
     //180601 何
-    FinishCall finishCall;
+    FinishCall finishCall;//終了コール
 
     //180614 何
-    List<GameObject> playerList = new List<GameObject>();
-
-    //fade
-    float fadeOutStartCnt = 0;
+    List<GameObject> playerList = new List<GameObject>();//生成したプレイヤーのリスト
 
     PostRespawn postRespawn;
+    bool isPostFliedWhenFinish = false;//終了時貯金箱飛んでるか？
 
     //pause->toTitle
-    bool isToTitle = false;
+    bool isToTitle = false;//タイトルに行くか
     public bool IsToTitle
     {
         set { isToTitle = value; }
@@ -133,10 +131,10 @@ public class GameSceneController : SceneController
         {
             if (post.GetComponent<PostSet>().isPost == true)
             {
-                Debug.Log(post.GetComponent<PostSet>().post.GetComponent<PostController>().postState);
                 if ((int)(post.GetComponent<PostSet>().post.GetComponent<PostController>().postState) >= (int)PostState.AIRSPAWN)
                 {
                     isPostFly++;
+                    isPostFliedWhenFinish = true;
                 }
             }
         }
@@ -146,20 +144,17 @@ public class GameSceneController : SceneController
             SetPlayerRank();
             gameLoad.NextScene = GameLoad.Scenes.Result;
 
-            fadeOutDelayTime = finishCall._waitTime;
+            if (isPostFliedWhenFinish)//飛んだら
+            {
+                fadeOutDelayTime = 0;//貯金箱終了時フェード開始
+            }
+            else//飛んでなかったら
+            {
+                fadeOutDelayTime = finishCall._waitTime;//待ち時間終わったらフェード開始
+            }
             isSceneChange = true;
         }
     }
-
-    /// <summary>
-    /// 追加日：180601 追加者：何
-    /// リザルトシーン遷移
-    /// </summary>
-    void LoadResult()
-    {
-        SceneManager.LoadScene("Result");
-    }
-
     
     /// <summary>
     /// 終了処理(Title)
