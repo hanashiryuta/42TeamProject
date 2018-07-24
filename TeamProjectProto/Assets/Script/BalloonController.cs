@@ -413,7 +413,6 @@ public class BalloonController : MonoBehaviour {
         if (blastCount >= blastLimit)
 		{
             _isBlast = true;//爆発した
-            player.GetComponent<PlayerMove>().ItemBlast(5);
             player.GetComponent<PlayerMove>().isStan = true;
             //playerRank.GetComponent<PlayerRank> ().SetPlayer (player);//爆発したらリストに格納
             GameObject[] pList = GameObject.FindGameObjectsWithTag("Player");//プレイヤー配列を作成
@@ -450,7 +449,6 @@ public class BalloonController : MonoBehaviour {
         if (blastCount >= blastLimit)
         {
             _isBlast = true;//爆発した
-            player.GetComponent<PlayerMove>().ItemBlast(5);
             player.GetComponent<PlayerMove>().isStan = true;
             //playerRank.GetComponent<PlayerRank> ().SetPlayer (player);//爆発したらリストに格納
             GameObject[] pList = GameObject.FindGameObjectsWithTag("Player");//プレイヤー配列を作成

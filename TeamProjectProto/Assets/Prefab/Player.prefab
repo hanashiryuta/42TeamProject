@@ -401,7 +401,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1710551229950362}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.98, z: 0}
+  m_LocalPosition: {x: 0, y: 1.94, z: 0}
   m_LocalScale: {x: 2, y: 1.93, z: 2}
   m_Children: []
   m_Father: {fileID: 4999574636648600}
@@ -551,7 +551,7 @@ MeshCollider:
   serializedVersion: 3
   m_Convex: 1
   m_CookingOptions: -1
-  m_SkinWidth: 0.03
+  m_SkinWidth: 0.01
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!65 &65182502362328944
 BoxCollider:
@@ -805,19 +805,10 @@ MonoBehaviour:
   balloon: {fileID: 0}
   holdItemCount: 0
   totalItemCount: 0
-  horizontal: Horizontal1
-  vertical: Vertical1
-  jump: Jump
   isStan: 0
   originStanTime: 2
   stanTime: 0
-  isBalloonShrink: 1
   jumpCount: 0
-  hipDropCircle:
-  - {fileID: 1598151434304912, guid: 6bcf0921d5888c544b35e4673c0bbc40, type: 2}
-  - {fileID: 1578071290630430, guid: bf2bbcaf45753ce449f6c3843771c7e3, type: 2}
-  - {fileID: 1195641294193534, guid: 3c2ab9bc51628e94b811c28e5b8ef19c, type: 2}
-  - {fileID: 1543973167486684, guid: 67594920fe3345542868ff44bdfa02c0, type: 2}
   originItem: {fileID: 1272410322635724, guid: 2ff4604ad3f9c284bb6682811d6c4424, type: 2}
   originHighItem: {fileID: 1787082520497464, guid: c96169cf033f68d48b4cdeffe9ed0122,
     type: 2}
@@ -832,10 +823,6 @@ MonoBehaviour:
   dashTimePerItem: 0.5
   origin_Dash_Particle: {fileID: 1976135854806902, guid: 36f3ef134f070c54a8e31cbb0f55d9e6,
     type: 2}
-  shockWavePower: 150
-  canHipDrop: 0
-  attackPower: 25
-  hitHipDrop: 0
   isHit: 0
   isBlastStan: 0
   balloonMaster: {fileID: 0}

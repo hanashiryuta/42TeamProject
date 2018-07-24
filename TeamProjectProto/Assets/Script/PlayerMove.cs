@@ -8,6 +8,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using XInputDotNetPure;
+using System.IO;
+
+//プレイヤーの操作状態
+public enum PlayerState
+{
+    CONTROLLER,//コントローラーで操作
+    NormalAI,//普通のAIで操作
+    AfraidAI,//怖がりのAIで操作
+    GamblerAI,//ギャンブラーのAIで操作
+}
 
 public class PlayerMove : MonoBehaviour
 {
@@ -37,25 +47,14 @@ public class PlayerMove : MonoBehaviour
     Text totalItemCountText;//内容物所持数累計テキスト
     [HideInInspector]
     public float totalItemCount = 0;//内容物所持数累計
-
-    [HideInInspector]
-    public string horizontal = "Horizontal1";//Inputの左スティック横方向取得名前
-    [HideInInspector]
-    public string vertical = "Vertical1";//Inputの左スティック縦方向取得名前
-    [HideInInspector]
-    public string jump = "Jump1";//Inputのジャンプボタン取得名前
-
+    
     public bool isStan = false;//動けるかどうか
     public float originStanTime = 1.5f;//動けるようになるまでの時間
     [HideInInspector]
     public float stanTime;
-
-    public bool isBalloonShrink = true;//爆発物が縮むかどうか
-
-    bool isHipDrop = false;//ヒップドロップしているかどうか
+    
     [HideInInspector]
     public float jumpCount = 0;//ジャンプ回数
-    public GameObject[] hipDropCircle;//衝撃波範囲→0515何変更　色別の4種
     public GameObject originItem;//アイテム
     public GameObject originHighItem;//ハイアイテム
 
@@ -65,8 +64,6 @@ public class PlayerMove : MonoBehaviour
     public List<string> totalItemList;//累計取得アイテム管理リスト
 
     Rigidbody rigid;//リジットボディ
-    float hipDropTime = 0.3f;//ヒップドロップ空中待機時間
-    Vector3 hipDropPosition = Vector3.zero;//ヒップドロップ空中待機場所
 
     Vector3 rotationPosition;//プレイヤー回転用ポジション
 
@@ -113,13 +110,7 @@ public class PlayerMove : MonoBehaviour
     GameObject dash_Particle;//ダッシュパーティクル
 
     bool dashStart = true;//ダッシュしたかどうか
-
-    public float shockWavePower = 100;//衝撃波で吹き飛ぶ強さ
-
-    public bool canHipDrop = false;//ヒップドロップできるようにするかどうか
-    public float attackPower = 25;//プレイヤーにダッシュで体当たりして吹き飛ばす強さ
-    [HideInInspector]
-    public bool hitHipDrop = false;//ヒップドロップサークルに当たったか
+    
     [HideInInspector]
     public bool isHit = false;//ダッシュしていない他プレイヤーに当たったか
     float hitTime = 0.1f;//BoxColliderを付けなおすまでの時間
@@ -131,7 +122,7 @@ public class PlayerMove : MonoBehaviour
     [HideInInspector]
     public bool isBlastStan;
     [HideInInspector]
-    public GameObject balloonMaster;
+    public BalloonMaster balloonMaster;
 
     float dashParticleTime = 0.0f;
 
@@ -148,13 +139,33 @@ public class PlayerMove : MonoBehaviour
     bool onConveyor = false;
     Vector3 direction;
 
+    [HideInInspector]
+    public PlayerState playerState = PlayerState.NormalAI;//プレイヤー操作状態
+    AIMapController aiMapController;//AIのマップ準備クラス
+    float[][] influenceMap;//影響マップ
+    float[][] otherInfluenceMap;//他のプレイヤーの影響マップ
+    [HideInInspector]
+    public float[][] coinInfluenceMap;//アイテムの影響マップ
+
+    float aiJumpTime = 0;//AIのジャンプ間隔
+    float currentNearBlockHeight = 0;//現在の近いブロック
+    float previousNearBlockHeight = 0;//1フレーム前のブロック
+
+    float currentFarBlockHeight = 0;//現在の遠いブロック
+    float previousFarBlockHeight = 0;//1フレーム前のブロック
+    
+    Vector3 nowPoint = Vector3.zero;//現在の位置
+
+    string[][] aiPersonalityArray;
+
+    TimeController timeController;
+
     // Use this for initialization
     void Start()
     {
         //初期化処理
         isJump = false;
         holdItemCount = 0;
-        isHipDrop = false;
         jumpCount = 0;
         rigid = GetComponent<Rigidbody>();
         rotationPosition = transform.position;
@@ -181,6 +192,12 @@ public class PlayerMove : MonoBehaviour
 
         //180622 SE
         playerSE = transform.GetComponent<SEController>();
+
+        if (playerState != PlayerState.CONTROLLER)
+            AIInitialize();
+
+        //時間オブジェ取得
+        timeController = GameObject.Find("TimeController").GetComponent<TimeController>();
     }
 
     void Update()
@@ -209,23 +226,23 @@ public class PlayerMove : MonoBehaviour
             return;
         }
 
-        //移動&ジャンプ入力処理
-        HandleXInput();
-
-        if (Input.GetKeyDown(KeyCode.R))
+        //プレイヤーの操作状態で判定
+        switch (playerState)
         {
-            Debug.Log(jumpCount + "ジャンプカウント");
+            case PlayerState.CONTROLLER://コントローラーだったら
+                //移動&ジャンプ入力処理
+                HandleXInput();
+                break;
+            default://AIだったら
+                PlayerAI();//AIメソッド
+                break;
         }
-
         //ダッシュ中でなければ
         if (!_isDash)
         {
             dashStart = true;
         }
-
-        //タックル関係
-        IsTackle();
-        //Clamp();
+        
     }
 
     // Update is called once per frame
@@ -234,11 +251,7 @@ public class PlayerMove : MonoBehaviour
         //動けないなら
         if (isStan)
         {
-            //スタン中に動かないように修正
-            if (!hitHipDrop)
-            {
-                rigid.velocity = Vector3.zero;
-            }
+            rigid.velocity = Vector3.zero;            
 
             //最初に移動量をゼロに
             if (stanTime <= 0.0f)
@@ -266,7 +279,7 @@ public class PlayerMove : MonoBehaviour
                 if(isBlastStan)
                 {
                     isBlastStan = false;
-                    balloonMaster.GetComponent<BalloonMaster>().isRoulette = true;
+                    balloonMaster.isRoulette = true;
                 }
                 if (stan_Star_Particle != null)
                 {
@@ -300,13 +313,7 @@ public class PlayerMove : MonoBehaviour
         {
             transform.rotation = Quaternion.LookRotation(diff);
         }
-
-        ////ベルトコンベアに乗っていたら動く
-        //if (onConveyor)
-        //{
-        //    rigid.velocity += direction;
-        //}
-
+        
         //Rayを飛ばしてベルトコンベアに当たっていたらベルトコンベアで動くようにする
         RaycastHit hit;
         if (Physics.Linecast(transform.position + Vector3.up, transform.position + Vector3.down, out hit, LayerMask.GetMask("BeltConveyor")))
@@ -321,121 +328,29 @@ public class PlayerMove : MonoBehaviour
     }
 
     /// <summary>
-    /// 移動入力処理
-    /// </summary>
-    void MoveInput()
-    {
-        //方向指定
-        AxisX = Input.GetAxis(horizontal);
-        AxisZ = Input.GetAxis(vertical);
-
-        //風船を持っていないとき
-        if (balloon == null)
-            moveSpeed = originMoveSpeed;
-        //風船を持っている時
-        else
-            moveSpeed = balloonMoveSpeed;
-    }
-
-    /// <summary>
-    /// ジャンプ入力処理
-    /// </summary>
-    void JumpInput()
-    {
-        //ジャンプボタンを押したら
-        if (Input.GetButtonDown(jump))
-        {
-            //ジャンプパワー設定
-            jumpPower = balloon != null ? balloonJumpPower * 700 : originJumpPower * 700;
-
-            //地面にいたら
-            if (jumpCount == 0)
-            {
-                rigid.AddForce(new Vector3(0, jumpPower, 0));
-                playerSE.PlayPlayerSEOnce((int)SEController.PlayerSE.Jump);
-                //GetComponent<AudioSource>().PlayOneShot(soundSE1);
-            }
-
-            //空中にいたら
-            else if (jumpCount == 1)
-            {
-                hipDropTime = 0.3f;
-                rigid.velocity = Vector3.zero;
-                hipDropPosition = transform.position;
-            }
-
-            //ジャンプカウント増加
-            jumpCount++;
-
-            //上限設定
-            if (jumpCount > 2)
-                jumpCount = 2;
-        }
-    }
-
-    /// <summary>
     /// 移動処理
     /// </summary>
     public void Move()
     {
         //移動vector生成
         Vector3 moveVector = Vector3.zero;
-
-        //あたり判定
-        // HitField();
-
+        
         //移動量設定
         moveVector.x = moveSpeed * moveJoy.x;
         moveVector.z = moveSpeed * moveJoy.y;
 
-
         //y方向無しの現在のvelocity保存
         Vector3 rigidVelocity = new Vector3(rigid.velocity.x, 0, rigid.velocity.z);
+        
+        //移動量追加
+        rigid.AddForce(100 * (moveVector - rigidVelocity));
 
-        if (!isMoveInertia)
-        {
-            //移動量追加
-            rigid.AddForce(100 * (moveVector - rigidVelocity));
+        //移動量2.5倍
+        rigidVelocity = new Vector3(rigidVelocity.x * 2.5f, rigid.velocity.y, rigidVelocity.z * 2.5f);
 
-            //移動量2.5倍
-            rigidVelocity = new Vector3(rigidVelocity.x * 2.5f, rigid.velocity.y, rigidVelocity.z * 2.5f);
-
-            //設定
-            rigid.velocity = rigidVelocity;
-        }
-        else
-        {
-            //移動（慣性あり）
-            rigid.AddForce(moveVector * 15 - rigidVelocity * 2);
-
-            float a = 7;
-
-            if (rigid.velocity.x > a)
-            {
-                rigid.velocity = new Vector3(a, rigid.velocity.y, rigid.velocity.z);
-            }
-            if (rigid.velocity.z > a)
-            {
-                rigid.velocity = new Vector3(rigid.velocity.x, rigid.velocity.y, a);
-            }
-            if (rigid.velocity.x < -a)
-            {
-                rigid.velocity = new Vector3(-a, rigid.velocity.y, rigid.velocity.z);
-            }
-            if (rigid.velocity.z < -a)
-            {
-                rigid.velocity = new Vector3(rigid.velocity.x, rigid.velocity.y, -a);
-            }
-        }
-    }
-
-    /// <summary>
-    /// ギズモ描画
-    /// </summary>
-    void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), new Vector3(transform.localScale.x * 2, transform.localScale.x * 2 * 2, transform.localScale.x * 2));
+        //設定
+        rigid.velocity = rigidVelocity;
+        
     }
 
     /// <summary>
@@ -458,183 +373,36 @@ public class PlayerMove : MonoBehaviour
             //重力設定
             gravPower = 9.8f;
         }
-
-        if (canHipDrop)
-        {
-            //ヒップドロップ中
-            if (jumpCount == 2)
-            {
-                //一定時間空中で停止
-                hipDropTime -= Time.deltaTime;
-                if (hipDropTime > 0)
-                {
-                    //移動量ゼロ
-                    rigid.velocity = Vector3.zero;
-                    //位置保存
-                    transform.position = hipDropPosition;
-                }
-                //左右移動ゼロ化
-                moveJoy.x = 0;
-                moveJoy.y = 0;
-
-                //重力設定
-                gravPower = 9.8f * 2;
-                //ヒップドロップ中
-                isHipDrop = true;
-            }
-        }
-
-        //あたり判定用配列
-        /*
-        Collider[] colArray = Physics.OverlapBox(
-            transform.position + new Vector3(0, -0.01f, 0) + new Vector3(0, 1, 0),
-            new Vector3(transform.localScale.x * 2 / 2 - 0.01f,
-            transform.localScale.y * 2,
-            transform.localScale.z * 2 / 2 - 0.01f),
-            transform.localRotation);*/
-
-        //RaycastHit[] colArray = rigid.SweepTestAll(-transform.up, 10.0f);
-
+        
         //重力追加
         rigid.AddForce(new Vector3(0, -gravPower * 5, 0));
 
         //地面いるか判定
         bool isField = false;
-
-        //foreach (var cx in colArray)
+        
+        //あたり判定を別のオブジェクトに任せた
+        if (playerJumpHit.isJumpHit)
         {
-            //Debug.Log(cx.transform.name);
-            //当たっているものが床かプレイヤーだったら
-            //if ((cx.transform.tag == "Field")||(cx.transform.tag == "Player"&&cx.transform.gameObject != gameObject))
-            //あたり判定を別のオブジェクトに任せた
-            if (playerJumpHit.isJumpHit)
+            //位置を少し浮かす
+            transform.position = new Vector3(transform.position.x, transform.position.y + 0.01f, transform.position.z);
+            //地面にいる
+            isField = true;
+            //ジャンプ終える
+            isJump = false;;
+            //地面にいる状態に変更
+            if (jumpCount > 0)
             {
-                //位置を少し浮かす
-                transform.position = new Vector3(transform.position.x, transform.position.y + 0.01f, transform.position.z);
-                //地面にいる
-                isField = true;
-                //ジャンプ終える
-                isJump = false;
-                //ヒップドロップ中だったら
-                if (isHipDrop && hipDropTime <= 0)
-                {
-                    //衝撃波生成
-                    InstantiateHipDrop();
-                }
-                isHipDrop = false;
-                //地面にいる状態に変更
-                if (jumpCount > 0)
-                {
-                    jumpCount = 0;
-                }
+                jumpCount = 0;
             }
         }
 
-        //地面にいる状態　かつ　地面にいない判定だったら（壁から落ちる）
+
+        //地面にいない判定　かつ　地面にいる状態だったら（壁から落ちる）
         if (!isField && jumpCount == 0)
         {
             //ジャンプ状態に変更
             jumpCount = 1;
         }
-
-        ////床以下にならないようにする
-        //if (transform.position.y < 1f)
-        //{
-        //    transform.position = new Vector3(transform.position.x,1f, transform.position.z);
-        //    isJump = false;
-        //}
-    }
-
-    /// <summary>
-    /// Rayを使ったあたり判定
-    /// </summary>
-    void HitField()
-    {
-        //x方向あたり判定
-        if (Input.GetAxis(horizontal) > 0)
-        {
-            //移動先で当たっているもの
-            foreach (var cx in Physics.OverlapBox(transform.position + new Vector3(0.01f, 0.01f, 0) + new Vector3(0, 1, 0), new Vector3(transform.localScale.x * 2 / 2, transform.localScale.y * 2, transform.localScale.z * 2 / 2), transform.localRotation))
-            {
-                //当たっているものが床か特殊壁だったら
-                if (cx.tag == "Field")
-                {
-                    //移動しない
-                    //AxisX = 0;
-                    moveJoy.x = 0;
-                    break;
-                }
-            }
-        }
-
-        //z方向あたり判定
-        if (Input.GetAxis(vertical) > 0)
-        {
-            //移動先で当たっているもの
-            foreach (var cx in Physics.OverlapBox(transform.position + new Vector3(0, 0.01f, 0.01f) + new Vector3(0, 1, 0), new Vector3(transform.localScale.x * 2 / 2, transform.localScale.y * 2, transform.localScale.z * 2 / 2), transform.localRotation))
-            {
-                //当たっているものが床か特殊壁だったら
-                if (cx.tag == "Field")
-                {
-                    //移動しない
-                    //AxisZ = 0;
-                    moveJoy.y = 0;
-                    break;
-                }
-            }
-        }
-
-        //x方向あたり判定
-        if (Input.GetAxis(horizontal) < 0)
-        {
-            //移動先で当たっているもの
-            foreach (var cx in Physics.OverlapBox(transform.position + new Vector3(-0.01f, 0.01f, 0) + new Vector3(0, 1, 0), new Vector3(transform.localScale.x * 2 / 2, transform.localScale.y * 2, transform.localScale.z * 2 / 2), transform.localRotation))
-            {
-                //当たっているものが床か特殊壁だったら
-                if (cx.tag == "Field")
-                {
-                    //移動しない
-                    //AxisX = 0;
-                    moveJoy.x = 0;
-                    break;
-                }
-            }
-        }
-
-        //z方向あたり判定
-        if (Input.GetAxis(vertical) < 0)
-        {
-            //移動先で当たっているもの
-            foreach (var cx in Physics.OverlapBox(transform.position + new Vector3(0, 0.01f, -0.01f) + new Vector3(0, 1, 0), new Vector3(transform.localScale.x * 2 / 2, transform.localScale.y * 2, transform.localScale.z * 2 / 2), transform.localRotation))
-            {
-                //当たっているものが床か特殊壁だったら
-                if (cx.tag == "Field")
-                {
-                    //移動しない
-                    //AxisZ = 0;
-                    moveJoy.y = 0;
-                    break;
-                }
-            }
-        }
-    }
-
-    void OnCollisionEnter(Collision col)
-    {           
-            ////自身がダッシュ中であり、ジャンプしていないとき
-            //if (_isDash && jumpCount == 0)
-            //{
-            //    //相手のプレイヤーがスタン中でない、かつ、ダッシュ中でない、又は、ジャンプしていなければ
-            //    if (!col.gameObject.GetComponent<PlayerMove>().isStan &&
-            //        (!col.gameObject.GetComponent<PlayerMove>().IsDash || col.gameObject.GetComponent<PlayerMove>().jumpCount == 0))
-            //    {
-            //        //相手のプレイヤーを弾く
-            //        col.gameObject.GetComponent<PlayerMove>().isHit = true;
-            //        col.gameObject.GetComponent<Rigidbody>().AddForce((col.transform.position - transform.position + new Vector3(0, 0.1f, 0)) * attackPower,
-            //            ForceMode.Impulse);
-            //    }
-            //}
-        
     }
 
     void OnTriggerEnter(Collider col)
@@ -647,33 +415,6 @@ public class PlayerMove : MonoBehaviour
                 balloon.GetComponent<BalloonOrigin>().BalloonMove(transform.gameObject, col.gameObject);//爆発物の移動処理
                 GamePad.SetVibration(XDInput[(int)(playerIndex)], 0.0f, 1.0f);
                 isStop = true;
-            }
-        }
-            //強制交換アイテムに当たったら
-            if (col.gameObject.name.Contains("ExChangeItem"))
-        {
-            if (balloon != null)
-                balloon = null;
-            Destroy(col.gameObject);//強制交換アイテム破棄
-            GameObject[] pList = GameObject.FindGameObjectsWithTag("Player");//プレイヤー配列を作成
-            GameObject b = GameObject.FindGameObjectWithTag("Balloon");
-            b.GetComponent<BalloonOrigin>().BalloonExChange(pList, gameObject);
-        }
-
-        //衝撃波に当たったら
-        if (col.gameObject.tag == "HipDropCircle")
-        {
-            //衝撃波ヒット時振動
-            if (!col.transform.name.Contains(transform.name) && !isStan)
-            {
-                //GamePad.SetVibration(XDInput[(int)(playerIndex)], 0.0f, 1.0f);
-                //isStop = true;
-                isStan = true;
-                ItemBlast(1);
-
-                //衝撃波からプレイヤーの方向に向かって吹き飛ぶ
-                rigid.AddForce((col.transform.position - transform.position) * -shockWavePower);
-                hitHipDrop = true;
             }
         }
     }
@@ -705,127 +446,6 @@ public class PlayerMove : MonoBehaviour
     }
 
     /// <summary>
-    /// アイテム排出処理
-    /// </summary>
-    /// <param name="count">割合</param>
-    public void ItemBlast(float count)
-    {
-        //if (itemList.Count > 0)
-        //{
-        //    int j = (int)(itemList.Count * (count / 10));//指定した割合で排出
-        //    for (int i = 0; i < j; i++)
-        //    {
-        //        GameObject item = originItem;
-        //        int itemNum = Random.Range(0, itemList.Count);
-
-        //        switch (itemList[itemNum])//取得したアイテムからランダムで選出
-        //        {
-        //            case "PointItem(Clone)"://普通のアイテム
-        //                blastCount--;
-        //                break;
-        //            case "HighPointItem(Clone)"://高ポイントアイテム
-        //                blastCount -= 2;
-        //                item = originHighItem;
-        //                break;
-        //        }
-        //        itemList.RemoveAt(itemNum);//リストから削除
-        //        GameObject spawnItem = Instantiate(item, transform.position+new Vector3(0,item.transform.localScale.y+3,0), Quaternion.Euler(90,0,0));//生成
-        //        spawnItem.GetComponent<ItemController>().SetMovePosition();
-        //        spawnItem.GetComponent<ItemController>().isGet = false;
-        //    }
-        //}
-
-        //排出ポイント割合
-        int itemRatio = (int)(holdItemCount * (count / 10));
-        //排出ポイント割合が0になるまで排出
-        while (itemRatio > 0)
-        {
-            //排出アイテム設定
-            GameObject item = originItem;
-
-            //2ポイント以下なら別設定
-            if (itemRatio <= 2)
-            {
-                GameObject spawnItem;//排出させたアイテム
-                int TwoOrOne = Random.Range(0, 2);
-
-                //1/2の確率で、排出ポイント割合が2で、2ポイントアイテムをもっていたら
-                if (TwoOrOne == 0 && itemRatio == 2 && itemList.Contains("2CoinPointItem(Clone)"))
-                {
-                    holdItemCount -= 2;//2ポイント減
-                    itemRatio -= 2;//排出ポイント割合2ポイント減
-                    item = originHighItem;//2ポイントアイテム排出
-                    spawnItem = Instantiate(item, transform.position + new Vector3(0, item.transform.localScale.y + 3, 0), Quaternion.Euler(90, 0, 0));//生成
-                    spawnItem.GetComponent<ItemController>().SetMovePosition();//移動設定
-                    spawnItem.GetComponent<ItemController>().isGet = false;//取れない設定
-                    itemList.Remove("2CoinPointItem(Clone)");//2ポイントアイテム削除
-                    break;
-                }
-                holdItemCount--;//ポイント減
-                itemRatio--;//排出ポイント割合ポイント減
-                item = originItem;//ポイントアイテム排出
-                spawnItem = Instantiate(item, transform.position + new Vector3(0, item.transform.localScale.y + 3, 0), Quaternion.Euler(90, 0, 0));//生成
-                spawnItem.GetComponent<ItemController>().SetMovePosition();//移動設定
-                spawnItem.GetComponent<ItemController>().isGet = false;//取れない設定
-                itemList.Remove("1CoinPointItem(Clone)");//ポイントアイテム削除
-            }
-            //それ以外はランダム
-            else
-            {
-                int itemNum = Random.Range(0, itemList.Count);//ランダム設定
-                switch (itemList[itemNum])//取得したアイテムからランダムで選出
-                {
-                    case "1CoinPointItem(Clone)"://普通のアイテム
-                        holdItemCount--;//ポイント減
-                        itemRatio--;//排出ポイント割合ポイント減
-                        item = originItem;//ポイントアイテム排出
-                        break;
-                    case "2CoinPointItem(Clone)"://高ポイントアイテム
-                        holdItemCount -= 2;//2ポイント減
-                        itemRatio -= 2;//排出ポイント割合2ポイント減
-                        item = originHighItem;//2ポイントアイテム排出
-                        break;
-                }
-                GameObject spawnItem = Instantiate(item, transform.position + new Vector3(0, item.transform.localScale.y + 3, 0), Quaternion.Euler(90, 0, 0));//生成
-                spawnItem.GetComponent<ItemController>().SetMovePosition();//移動設定
-                spawnItem.GetComponent<ItemController>().isGet = false;//取れない設定
-                itemList.RemoveAt(itemNum);//排出アイテム削除
-            }
-        }
-    }
-
-    /// <summary>
-    /// 180515　何
-    /// 衝撃波生成
-    /// </summary>
-    private void InstantiateHipDrop()
-    {
-        //プレイヤー別に衝撃波の色が違う
-        switch (transform.name)
-        {
-            case "Player1":
-                GameObject hipDrop1 = Instantiate(hipDropCircle[0], transform.position + new Vector3(0, 0.2f, 0), Quaternion.identity);
-                hipDrop1.name = hipDrop1.name + transform.name;
-                break;
-            case "Player2":
-                GameObject hipDrop2 = Instantiate(hipDropCircle[1], transform.position + new Vector3(0, 0.2f, 0), Quaternion.identity);
-                hipDrop2.name = hipDrop2.name + transform.name;
-                break;
-            case "Player3":
-                GameObject hipDrop3 = Instantiate(hipDropCircle[2], transform.position + new Vector3(0, 0.2f, 0), Quaternion.identity);
-                hipDrop3.name = hipDrop3.name + transform.name;
-                break;
-            case "Player4":
-                GameObject hipDrop4 = Instantiate(hipDropCircle[3], transform.position + new Vector3(0, 0.2f, 0), Quaternion.identity);
-                hipDrop4.name = hipDrop4.name + transform.name;
-                break;
-        }
-
-        //効果音追加
-        //playerSE.PlayerPlayreSEOnce((int)SEController.PlayerSE.HipDrop);
-    }
-
-    /// <summary>
     /// 追加日：180516 追加者：何
     /// プレイヤーアニメーション
     /// </summary>
@@ -833,7 +453,6 @@ public class PlayerMove : MonoBehaviour
     private void PlayerAnim(Animator anim)
     {
         anim.SetBool("isJump", isJump);//`ジャンプ
-        anim.SetBool("isHipDrop", isHipDrop);//ヒップドロップ
         anim.SetFloat("velocity", Mathf.Abs(rigid.velocity.x) <= 0.001f && Mathf.Abs(rigid.velocity.z) <= 0.001f ? 0 : 1);//移動
         anim.SetBool("isStan", isStan);//スタン
     }
@@ -910,20 +529,6 @@ public class PlayerMove : MonoBehaviour
             {
                 rigid.AddForce(new Vector3(0, jumpPower, 0));
                 playerSE.PlayPlayerSEOnce((int)SEController.PlayerSE.Jump);
-                //GetComponent<AudioSource>().PlayOneShot(soundSE1);
-            }
-            //空中にいたら
-            else if (jumpCount == 1)
-            {
-                hipDropTime = 0.3f;
-                //rigid.velocity = Vector3.zero;
-                hipDropPosition = transform.position;
-
-                if (canHipDrop)
-                {
-                    //効果音追加
-                    //playerSE.PlayerPlayreSEOnce((int)SEController.PlayerSE.HipDropTurnInAir);
-                }
             }
 
             //ジャンプカウント増加
@@ -946,7 +551,6 @@ public class PlayerMove : MonoBehaviour
         if (_isDash)
         {
             //ダッシュ中にパーティクルを生成
-            //if (dash_Particle == null) dash_Particle = Instantiate(origin_Dash_Particle, transform);
             dashParticleTime -= Time.deltaTime;
             if (dashParticleTime <= 0)
             {
@@ -957,9 +561,6 @@ public class PlayerMove : MonoBehaviour
         else
         {
             SetDashLimitTime(holdItemCount, dashTimePerItem);
-
-            //ダッシュ中ではない時パーティクルを削除
-            //if (dash_Particle != null) Destroy(dash_Particle);
         }
 
         // RBボタン押している間
@@ -985,7 +586,6 @@ public class PlayerMove : MonoBehaviour
                 {
                     //効果音追加
                     playerSE.PlayPlayerSEOnce((int)SEController.PlayerSE.Dash);
-                    //GetComponent<AudioSource>().PlayOneShot(soundSE6);
                 }
                 dashStart = false;
             }
@@ -1060,93 +660,488 @@ public class PlayerMove : MonoBehaviour
                 currentState.Buttons.Start == ButtonState.Pressed)
             {
                 pauseScript.PausePlayerIndex = playerIndex;//自分がポーズプレイヤー
-                //pauseScript.IsStartBtnPushed = true;
             }
+        }
+    }
+
+    /// <summary>
+    /// AIの初期化メソッド
+    /// </summary>
+    void AIInitialize()
+    {
+        //影響マップ準備取得
+        aiMapController = GameObject.Find("AIMapController").GetComponent<AIMapController>();
+
+        //各影響配列初期化
+        influenceMap = new float[(int)aiMapController.mapHeight][];
+        otherInfluenceMap = new float[(int)aiMapController.mapHeight][];
+        coinInfluenceMap = new float[(int)aiMapController.mapHeight][];
+
+        int I = 0, J = 0;//配列位置保存用int
+        float l = 100;//距離保存用float
+
+        //全セル判定
+        for (int i = 0; i < aiMapController.mapHeight; i++)
+        {
+            //各二重配列初期化
+            influenceMap[i] = new float[(int)aiMapController.mapWidth];
+            otherInfluenceMap[i] = new float[(int)aiMapController.mapWidth];
+            coinInfluenceMap[i] = new float[(int)aiMapController.mapWidth];
+
+            for (int j = 0; j < aiMapController.mapWidth; j++)
+            {
+                //各影響マップの影響値初期化
+                influenceMap[i][j] = 0;
+                if (aiMapController.stageArray[i][j] == "-1")
+                    //ステージセルがプレイヤー進入禁止エリアだったら影響値下げる
+                    influenceMap[i][j] = -10000;
+                otherInfluenceMap[i][j] = 0;
+                coinInfluenceMap[i][j] = 0;
+
+                //現在のポジションと取得したセルの距離判定
+                float Length = Vector3.Distance(aiMapController.positionArray[i][j], new Vector3(transform.position.x, aiMapController.positionArray[i][j].y, transform.position.z));
+
+                //距離が1.5以下
+                if (Length <= 1.5f)
+                {
+                    //保存した距離より短ければ
+                    if (Length <= l)
+                    {
+                        //距離更新
+                        l = Length;
+                        //配列位置保存
+                        I = i;
+                        J = j;
+                    }
+                }
+            }
+        }
+        //一番近いセルの位置を保存
+        currentNearBlockHeight = previousNearBlockHeight = float.Parse(aiMapController.stageArray[I][J]);
+
+        aiPersonalityArray = ArraySet();
+    }
+
+    string[][] ArraySet()
+    {
+        //現在のステージに対応したcsv読み込み
+        StreamReader sr = new StreamReader("Assets/AIPersonality/" + playerState.ToString() + ".csv");
+        //リスト作成
+        List<string[]> sList = new List<string[]>();
+        //リストに各値収納
+        while (sr.EndOfStream == false)
+        {
+            string line = sr.ReadLine();
+            sList.Add(line.Split(','));
+        }
+        sr.Close();
+        //リスト返す
+        return sList.ToArray();
+    }
+
+    /// <summary>
+    /// AIプレイヤーの挙動メソッド
+    /// </summary>
+    void PlayerAI()
+    {
+        //各影響マップ作製
+        ObjectInfluenceSet();
+        //影響マップ作製
+        MapInfluenceSet();
+
+        Vector3 nextPoint = Vector3.zero;//次のポイント
+        Vector3 nearPoint = Vector3.zero;//影響値が高い近いポイント
+        Vector3 farPoint = Vector3.zero;//影響値が高い遠いポイント
+        float nearInfluence = 0;//近いポイントの影響値
+        float farInfluence = 0;//遠いポイントの影響値
+
+        //近いポイントセット
+        NextPointSet(out nearPoint, out nearInfluence, currentNearBlockHeight, 1.5f);
+        //遠いポイントセット
+        NextPointSet(out farPoint, out farInfluence, currentFarBlockHeight, 3.5f);
+
+        //近めを目指すか遠目を目指すか
+        NearFarCheck(out nextPoint, nearPoint, farPoint, nearInfluence, farInfluence);
+        
+        //AIの移動処理
+        AIMove(nextPoint);
+        
+        //ジャンプ間隔更新
+        aiJumpTime -= Time.deltaTime;
+        //前方にあたり判定飛ばす
+        Collider[] colArray = Physics.OverlapBox(transform.position + new Vector3(moveJoy.x, 1,moveJoy.y),new Vector3(0.5f,1.0f,0.5f));
+        foreach (var cx in colArray)
+        {
+            //フィールドに当たっていたら
+            if (cx.transform.tag == "Field")
+            {
+                //AIのジャンプ処理
+                AIJump();
+            }
+            
+        }
+
+        //1フレーム前の値を現在の値に更新
+        previousNearBlockHeight = currentNearBlockHeight;
+        previousFarBlockHeight = currentFarBlockHeight;
+        nowPoint = nextPoint;
+    }
+
+    /// <summary>
+    /// オブジェクト影響値セット
+    /// </summary>
+    void ObjectInfluenceSet()
+    {
+        //全セル取得
+        for (int i = 0; i < aiMapController.mapHeight; i++)
+        {
+            for (int j = 0; j < aiMapController.mapWidth; j++)
+            {
+                //各影響値初期化
+                otherInfluenceMap[i][j] = 0;
+                coinInfluenceMap[i][j] = 0;
+            }
+        }
+
+        //自分以外の影響値セット
+        foreach (var otherPlayer in GameObject.FindGameObjectsWithTag("Player"))
+        {
+            if (otherPlayer.name != gameObject.name)
+            {
+                ObjectMapSet_Player(otherPlayer, false, otherInfluenceMap);
+            }
+        }
+
+        //アイテムの影響値セット
+        foreach (var coin in GameObject.FindGameObjectsWithTag("Item"))
+        {
+            int I = 0, J = 0;//配列位置保存
+            float l = 100;//距離保存
+
+            //全セル取得
+            for (int i = 0; i < aiMapController.mapHeight; i++)
+            {
+                for (int j = 0; j < aiMapController.mapWidth; j++)
+                {
+                    //取得したセルと取得したアイテムとの距離取得
+                    float Length = Vector3.Distance(aiMapController.positionArray[i][j], new Vector3(coin.transform.position.x, aiMapController.positionArray[i][j].y, coin.transform.position.z));
+
+                    //距離が1.5以下で
+                    if (Length <= 1.5f)
+                    {
+                        //距離が保存した値以下なら
+                        if (Length <= l)
+                        {
+                            //距離更新
+                            l = Length;
+                            //配列位置保存
+                            I = i;
+                            J = j;
+                        }
+                    }
+                }
+            }
+
+            //プレイヤーの位置が床で、コインの位置が高い壁の位置なら
+            if (float.Parse(aiMapController.stageArray[I][J]) == 2 && currentNearBlockHeight < 1)
+                //影響値を設定しない
+                continue;
+
+            //影響値を設定する
+            ObjectMapSet_Player(coin, false, coinInfluenceMap);
+        }
+    }
+
+    /// <summary>
+    /// 影響マップ作製
+    /// </summary>
+    void MapInfluenceSet()
+    {
+        //全セル取得
+        for (int i = 0; i < aiMapController.mapHeight; i++)
+        {
+            for (int j = 0; j < aiMapController.mapWidth; j++)
+            {
+
+                //影響値セット
+                //エクセルからどの影響割合を取り出すか
+
+                int infState = 1;//取り出す添え字
+                
+                //鬼との距離が8以下なら
+                if (balloonMaster.nowPlayer != null&&Vector3.Distance(transform.position, balloonMaster.nowPlayer.transform.position) <= 8.0f)
+                    infState = 4;
+                //ロスタイム中なら
+                else if (timeController.timeState == TimeState.LOSSTIME)
+                    infState = 3;
+                //バルーンが貯金を破裂させるバルーンなら
+                else if (balloonMaster.NowBalloon != null && balloonMaster.NowBalloon.name.Contains("PostBalloon"))
+                    infState = 2;
+                //それ以外
+                else
+                    infState = 1;
+                //バルーンが　ついていなければ
+                if (balloon == null)
+                {
+                    //影響値セット
+                    influenceMap[i][j] =
+                    aiMapController.balloonInfluenceMap[i][j] * float.Parse(aiPersonalityArray[infState][1]) +
+                    aiMapController.postInfluenceMap[i][j] * float.Parse(aiPersonalityArray[infState][2]) +
+                    coinInfluenceMap[i][j] * float.Parse(aiPersonalityArray[infState][3]) +
+                    ReturnInfluence(otherInfluenceMap[i][j]) * float.Parse(aiPersonalityArray[infState][4]);
+
+                
+                    //現在の位置が床の場合、高い壁の影響値は0
+                    if (float.Parse(aiMapController.stageArray[i][j]) == 2 && previousNearBlockHeight == 0)
+                        influenceMap[i][j] = 0;
+                }
+                else
+                { //影響値セット
+                    influenceMap[i][j] =
+                    aiMapController.balloonInfluenceMap[i][j] * float.Parse(aiPersonalityArray[5][1]) +
+                    aiMapController.postInfluenceMap[i][j] * float.Parse(aiPersonalityArray[5][2]) +
+                    coinInfluenceMap[i][j] * float.Parse(aiPersonalityArray[5][3]) +
+                    otherInfluenceMap[i][j] * float.Parse(aiPersonalityArray[5][4]);
+
+                }
+
+                //セルがプレイヤー進入禁止エリアだったら
+                if (float.Parse(aiMapController.stageArray[i][j]) <= -1)
+                    //影響値0
+                    influenceMap[i][j] = 0;
+            }
+        }
+    }
+
+    /// <summary>
+    /// 各オブジェクト影響値設定
+    /// </summary>
+    /// <param name="obj">オブジェクト</param>
+    /// <param name="isReturn">反転させるかどうか</param>
+    /// <param name="objInfluenceMap">影響マップ</param>
+    void ObjectMapSet_Player(GameObject obj, bool isReturn, float[][] objInfluenceMap)
+    {
+        //全セル取得
+        for (int i = 0; i < aiMapController.mapHeight; i++)
+        {
+            for (int j = 0; j < aiMapController.mapWidth; j++)
+            {
+                //オブジェクトと取得したセルの距離を取得
+                float Length = Vector3.Distance(aiMapController.positionArray[i][j], new Vector3(obj.transform.position.x, aiMapController.positionArray[i][j].y, obj.transform.position.z));
+
+                float influence = 0;//影響値
+
+               //距離に応じた影響値を設定
+                if (isReturn)
+                    //反転させるなら
+                    //近いほど影響値低く設定
+                    influence = Length / 20;
+                else
+                    //反転させないなら
+                    //近いほど影響値高く設定
+                    influence = 1 - Length / 20;
+                //影響値の範囲を0から1の間で設定
+                if (influence < 0)
+                    influence = 0;
+                else if (influence > 1)
+                    influence = 1;
+
+                //取り出したセルの影響値より求めた影響値が高ければ
+                if (objInfluenceMap[i][j] < influence)
+                {
+                    //影響値更新
+                    objInfluenceMap[i][j] = influence;
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// 影響値反転メソッド
+    /// </summary>
+    /// <param name="objectInfuence">影響マップ</param>
+    /// <returns>影響マップ</returns>
+    float ReturnInfluence(float objectInfuence)
+    {
+        float returnInfluence = 1 - objectInfuence;
+
+        return returnInfluence;
+    }
+
+    /// <summary>
+    /// 次に目指すポイントをセット
+    /// </summary>
+    /// <param name="point">次のポイント</param>
+    /// <param name="influence">影響値</param>
+    /// <param name="blockHight">ブロックの高さ</param>
+    /// <param name="findRadius">検索範囲</param>
+    void NextPointSet(out Vector3 point, out float influence, float blockHight, float findRadius)
+    {
+        //初期化
+        point = Vector3.zero;
+        influence = 0;
+
+        //全セル取得
+        for (int i = 0; i < aiMapController.mapHeight; i++)
+        {
+            for (int j = 0; j < aiMapController.mapWidth; j++)
+            {
+                //取得したセルと現在位置との距離取得
+                float length = Vector3.Distance(aiMapController.positionArray[i][j], new Vector3(transform.position.x, aiMapController.positionArray[i][j].y, transform.position.z));
+
+                //距離が検索範囲以内　かつ　0.5以上（近すぎるのは判定外）
+                if (length <= findRadius && length >= 0.5f) 
+                {
+                    //取得したセルの影響値が保存している影響値より高かったら
+                    if (influenceMap[i][j] > influence)
+                    {
+                        //保存影響値更新
+                        influence = influenceMap[i][j];
+                        //次に目指す位置設定
+                        point = aiMapController.positionArray[i][j];
+                        //目指す位置のブロック位置設定
+                        blockHight = float.Parse(aiMapController.stageArray[i][j]);
+                    }
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// 近場を目指すか遠目を目指すか（谷判定用）
+    /// </summary>
+    /// <param name="nextPoint">次のポイント</param>
+    /// <param name="nearPoint">近場で影響値が高いポイント</param>
+    /// <param name="farPoint">遠目で影響値が高いポイント</param>
+    /// <param name="nearInfluence">近場のポイントの影響値</param>
+    /// <param name="farInfluence">遠目のポイントの影響値</param>
+    void NearFarCheck(out Vector3 nextPoint, Vector3 nearPoint, Vector3 farPoint, float nearInfluence, float farInfluence)
+    {
+        /*
+        自身が壁の上にいる場合に谷を跳び越すかどうかの判定に使う
+        遠目を目指す、自身が壁の上以上、目指す位置が高い壁の上、間に壁がない　なら谷判定
+        */
+
+        //遠目の影響値のほうが高く　かつ
+        //1フレーム前（移動前の今いる位置）のブロックが壁以上　かつ
+        //現在（移動前の目指す場所）が高い壁ならば
+        if (nearInfluence < farInfluence && 
+            previousNearBlockHeight >= 1 &&
+            currentFarBlockHeight == 2)
+        {
+            //レイに当たった物体
+            RaycastHit hit;
+
+            //レイを飛ばす　自分が立っている壁の底辺から1.5（1セル分）のレイ
+            if (Physics.Raycast(new Vector3(nowPoint.x, -2, nowPoint.z), (farPoint - nowPoint).normalized, out hit, 1.5f))
+            {
+                //もし壁以外があれば
+                if (hit.transform.tag != "Field")
+                {
+                    //遠目を目指す
+                    nextPoint = farPoint;
+                    //ジャンプ
+                    AIJump();
+                }
+                //壁があれば
+                else
+                {
+                    //近場を目指す
+                    nextPoint = nearPoint;
+                }
+            }
+            //何もレイが当たらなければ
             else
             {
-                //pauseScript.IsStartBtnPushed = false;
+                //遠目を目指す
+                nextPoint = farPoint;
+                //ジャンプ
+                AIJump();
             }
         }
-    }
-    /// <summary>
-    /// 他プレイヤーからタックルされたとき
-    /// </summary>
-    private void IsTackle()
-    {
-        //当たっていなければ
-        if (!isHit)
-        {
-            transform.GetComponent<BoxCollider>().enabled = true;
-            transform.GetChild(2).GetComponent<BoxCollider>().enabled = true;
-            transform.GetChild(3).GetComponent<BoxCollider>().enabled = true;
-        }
+        //普通は
         else
         {
-            transform.GetComponent<BoxCollider>().enabled = false;
-            transform.GetChild(2).GetComponent<BoxCollider>().enabled = false;
-            transform.GetChild(3).GetComponent<BoxCollider>().enabled = false;
-            hitTime -= Time.deltaTime;
-            if (hitTime <= 0)
-            {
-                isHit = false;
-                hitTime = 0.1f;
-            }
+            //近場を目指す
+            nextPoint = nearPoint;
         }
     }
 
     /// <summary>
-    /// 移動制限
+    /// AIのジャンプ処理
     /// </summary>
-    private void Clamp()
+    void AIJump()
     {
-        //playerPos_X=Mathf.Clamp(transform.position.x,,);
-        playerPos_Y = Mathf.Clamp(transform.position.y, 0.5f, 8f);
-        //playerPos_Z=Mathf.Clamp(transform.position.z,,);
-
-        if (GameObject.Find("SmallStage(Clone)"))
+        //AIのジャンプ間隔が来たなら
+        if (aiJumpTime <= 0.0f)
         {
-            transform.position = new Vector3(
-                Mathf.Clamp(transform.position.x, -11.5f, 11.5f),
-                playerPos_Y,
-                Mathf.Clamp(transform.position.z, -11.5f, 11.5f));
-        }
+            //ジャンプパワー設定
+            jumpPower = balloon != null ? balloonJumpPower * 700 : originJumpPower * 700;
 
-        if (GameObject.Find("SmallStage 1(Clone)"))
-        {
-            transform.position = new Vector3(
-                Mathf.Clamp(transform.position.x, -9.5f, 9.5f),
-                playerPos_Y,
-                Mathf.Clamp(transform.position.z, -9.5f, 9.5f));
-        }
+            //地面にいたら
+            if (jumpCount == 0)
+            {
+                //ジャンプ
+                rigid.AddForce(new Vector3(0, jumpPower, 0));
+                //SE鳴らす
+                playerSE.PlayPlayerSEOnce((int)SEController.PlayerSE.Jump);
+                //ジャンプ間隔再設定
+                aiJumpTime = 0.3f;
+            }
 
-        if (GameObject.Find("SmallStage2(Clone)"))
-        {
-            transform.position = new Vector3(
-                Mathf.Clamp(transform.position.x, -7.5f, 7.5f),
-                playerPos_Y,
-                Mathf.Clamp(transform.position.z, -7.5f, 7.5f));
+            //ジャンプカウント増加
+            jumpCount++;
+
+            //上限設定
+            if (jumpCount >= 1)
+                jumpCount = 1;
         }
     }
 
-    //void OnCollisionStay(Collision col)
-    //{
-    //    //Rayを飛ばしてベルトコンベアに当たっていたらベルトコンベアで動くようにする
-    //    if (Physics.Linecast(transform.position + Vector3.up, transform.position + Vector3.down, LayerMask.GetMask("BeltConveyor")))
-    //    {
-    //        var beltConveyor = col.gameObject.GetComponent<BeltConveyor>();
-    //        if (beltConveyor != null)
-    //        {
-    //            direction = beltConveyor.Conveyor();
-    //            onConveyor = true;
-    //        }
-    //        else
-    //        {
-    //            onConveyor = false;
-    //        }
-    //    }
-    //    else
-    //    {
-    //        onConveyor = false;
-    //    }
-    //}
+    /// <summary>
+    /// AIの移動処理
+    /// </summary>
+    /// <param name="nextPoint">次の位置</param>
+    void AIMove(Vector3 nextPoint)
+    {
+        //方向指定
+        Vector3 moves = nextPoint - transform.position;
+        //正規化
+        moves = moves.normalized;
+
+        //ジャンプ中は方向変えない
+        if (jumpCount < 1)
+        {
+            //移動に渡す
+            moveJoy.x = moves.x;
+            moveJoy.y = moves.z;
+
+            //正規化
+            moveJoy = moveJoy.normalized;
+        }
+        
+        //風船を持っていないとき
+        if (balloon == null)
+        {
+            //ダッシュ中
+            if (_isDash)
+            {
+                //倍率によって乗算
+                moveSpeed = originMoveSpeed * dashSpeedScale;
+            }
+            else moveSpeed = originMoveSpeed;
+        }
+        //風船を持っている時
+        else
+        {
+            //ダッシュ中
+            if (_isDash)
+            {
+                //倍率によって乗算
+                moveSpeed = balloonMoveSpeed * dashSpeedScale;
+            }
+            else moveSpeed = balloonMoveSpeed;
+        }
+
+    }
 }

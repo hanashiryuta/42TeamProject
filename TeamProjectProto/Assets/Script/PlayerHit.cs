@@ -28,7 +28,6 @@ public class PlayerHit : MonoBehaviour {
         {
             if (col.gameObject.GetComponent<ItemController>().isGet && playerMove.balloon == null&&!playerMove.isStan)
             {
-                Debug.Log(col.GetComponent<ItemController>().point);
                 col.gameObject.GetComponent<ItemController>().Item_Death_Particle();//アイテム取得時パーティクル生成
                 playerMove.itemList.Add(col.name);//リスト追加
                 playerMove.holdItemCount += col.GetComponent<ItemController>().point; //内容物所持数を増やす 
