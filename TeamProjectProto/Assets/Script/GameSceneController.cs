@@ -22,6 +22,7 @@ public class GameSceneController : SceneController
     List<GameObject> playerList = new List<GameObject>();//生成したプレイヤーのリスト
 
     PostRespawn postRespawn;
+    bool isPostFliedWhenFinish = false;//終了時貯金箱飛んでるか？
 
     //pause->toTitle
     bool isToTitle = false;//タイトルに行くか
@@ -130,10 +131,10 @@ public class GameSceneController : SceneController
         {
             if (post.GetComponent<PostSet>().isPost == true)
             {
-                Debug.Log(post.GetComponent<PostSet>().post.GetComponent<PostController>().postState);
                 if ((int)(post.GetComponent<PostSet>().post.GetComponent<PostController>().postState) >= (int)PostState.AIRSPAWN)
                 {
                     isPostFly++;
+                    isPostFliedWhenFinish = true;
                 }
             }
         }
@@ -143,7 +144,14 @@ public class GameSceneController : SceneController
             SetPlayerRank();
             gameLoad.NextScene = GameLoad.Scenes.Result;
 
-            fadeOutDelayTime = finishCall._waitTime;
+            if (isPostFliedWhenFinish)//飛んだら
+            {
+                fadeOutDelayTime = 0;//貯金箱終了時フェード開始
+            }
+            else//飛んでなかったら
+            {
+                fadeOutDelayTime = finishCall._waitTime;//待ち時間終わったらフェード開始
+            }
             isSceneChange = true;
         }
     }

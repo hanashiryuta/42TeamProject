@@ -23,9 +23,6 @@ public class CharacterSelectSceneController : SceneController
     //AI
     bool _isAISpawned = false;
 
-    //フェードアウト遅延時間
-    public float fadeOutDelayTime = 1f;
-
     //接続したプレイヤー関連
     [SerializeField]
     GameObject connectedPlayerStatusObj;//接続プレイヤーステータスOBJ

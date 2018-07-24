@@ -39,6 +39,7 @@ public class SceneController : MonoBehaviour
     public float moveX = 0;//X軸移動量
     [HideInInspector]
     public float moveY = 0;//Y軸移動量
+    GamePadState shutDownState;
 
     //InputDelay
     [HideInInspector]
@@ -148,6 +149,8 @@ public class SceneController : MonoBehaviour
         }
 
         CheckSceneState();
+
+        GameShutDown();
     }
 
     /// <summary>
@@ -217,6 +220,28 @@ public class SceneController : MonoBehaviour
         Vector3 worldPoint = Camera.main.ScreenToWorldPoint(bg_position);
         //転換されたワールド座標で生成
         GameObject.Instantiate(bg, worldPoint, Camera.main.transform.rotation);
+    }
+
+    /// <summary>
+    /// Start＆Back同時押しでゲーム強制終了
+    /// </summary>
+    void GameShutDown()
+    {
+        for(int i = 0; i < 4; i++)
+        {
+            if (GamePad.GetState((PlayerIndex)i).IsConnected)
+            {
+                shutDownState = GamePad.GetState((PlayerIndex)i);
+                //Start＆Back同時押し
+                if (shutDownState.Buttons.Start == ButtonState.Pressed &&
+                    shutDownState.Buttons.Back == ButtonState.Pressed)
+                {
+                    Application.Quit();
+                }
+            }
+
+        }
+
     }
 
 }
