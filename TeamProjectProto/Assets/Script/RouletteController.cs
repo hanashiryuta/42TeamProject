@@ -72,6 +72,8 @@ public class RouletteController : MonoBehaviour {
     public GameObject originRoulettePanel;//ルーレット背景フェード
     GameObject roulettePanel;
 
+    float aiTime = 0.2f;
+
     // Use this for initialization
     void Start () {
         ////ゲームを一時的に止める
@@ -126,12 +128,6 @@ public class RouletteController : MonoBehaviour {
         transform.SetAsLastSibling();
         //ボタン取得
         currentState = GamePad.GetState(playerIndex);
-
-        //コントローラーがなければreturn
-        if (!currentState.IsConnected)
-        {
-            return;
-        }
 
         //状態により行動変化
         switch (rouletteState)
@@ -270,7 +266,6 @@ public class RouletteController : MonoBehaviour {
                 }
                 break;
         }
-
         //ボタン状態更新
         previousState = currentState;
     }
@@ -281,9 +276,24 @@ public class RouletteController : MonoBehaviour {
     /// <returns></returns>
     bool PushA()
     {
-        //押したときだけ判定
-        if (previousState.Buttons.A == ButtonState.Released && currentState.Buttons.A == ButtonState.Pressed)
-            return true;
+        //プレイヤーの操作状態がコントローラーだったら
+        if (jugglerPlayer.GetComponent<PlayerMove>().playerState == PlayerState.CONTROLLER)
+        {
+            //押したときだけ判定
+            if (previousState.Buttons.A == ButtonState.Released && currentState.Buttons.A == ButtonState.Pressed)
+                return true;
+        }
+        //操作状態がそれ以外（AI)だったら
+        else
+        {
+            //一定時間ごとにtrueを返す
+            aiTime -= Time.deltaTime;
+            if (aiTime <= 0) 
+            {
+                aiTime = 0.2f;
+                return true;
+            }
+        }
 
         return false;
     }

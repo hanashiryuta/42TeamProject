@@ -110,7 +110,7 @@ public class BalloonMaster : MonoBehaviour {
         foreach(var player in pList)
         {
             //各プレイヤーに自身を設定
-            player.GetComponent<PlayerMove>().balloonMaster = gameObject;
+            player.GetComponent<PlayerMove>().balloonMaster = this;
         }
         //最初のプレイヤーを設定
         nextPlayer = pList[Random.Range(0, pList.Length)];
