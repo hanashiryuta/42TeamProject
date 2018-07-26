@@ -29,6 +29,12 @@ public class TitleScene : SceneController
     [SerializeField]
     GameObject bgmControllerOBJ;
 
+    //DEMO
+    [SerializeField]
+    float secondsToDemo = 20f;//デモモードに入るまでの秒数
+    float demoTimer = 0;
+    TutorialController tutorialController;
+
     // Use this for initialization
     public override void Start()
     {
@@ -46,6 +52,9 @@ public class TitleScene : SceneController
         {
             Instantiate(bgmControllerOBJ).GetComponent<BGMController>();
         }
+
+        //チュートリアルコントローラー（DEMOモード関連用）
+        tutorialController = GameObject.Find("TutorialController").GetComponent<TutorialController>();
 
         base.Start();
     }
@@ -68,6 +77,12 @@ public class TitleScene : SceneController
             case TitleSceneState.None://基準状態
                 moveY = currentState.ThumbSticks.Left.Y;
                 TitleXInput();
+
+                demoTimer += Time.deltaTime;
+                if (demoTimer >= secondsToDemo)//時間が達したら
+                {
+                    DemoMode();
+                }
                 break;
 
             case TitleSceneState.Start://スタート
@@ -86,6 +101,13 @@ public class TitleScene : SceneController
                 if (fadeController.IsFadeOutFinish)
                     Application.Quit();
                 break;
+
+            case TitleSceneState.ToDemo://デモモード
+                //フェードアウト終わったら
+                if (fadeController.IsFadeOutFinish)
+                    //NextSceneLoad
+                    gameLoad.LoadingStartWithoutOBJ();
+                break;
         }
 
         previousState = currentState;
@@ -101,6 +123,8 @@ public class TitleScene : SceneController
         {
             if (!isInputDelay)
             {
+                demoTimer = 0;//デモカウントリセット
+
                 inputDelayCnt = inputDelayTime;
                 ChooseNextBtn("up");
                 se.PlaySystemSE((int)SEController.SystemSE.CursorMove);
@@ -116,6 +140,8 @@ public class TitleScene : SceneController
         {
             if (!isInputDelay)
             {
+                demoTimer = 0;//デモカウントリセット
+
                 inputDelayCnt = inputDelayTime;
                 ChooseNextBtn("down");
                 se.PlaySystemSE((int)SEController.SystemSE.CursorMove);
@@ -130,6 +156,8 @@ public class TitleScene : SceneController
         if (previousState.Buttons.A == XInputDotNetPure.ButtonState.Released &&
             currentState.Buttons.A == XInputDotNetPure.ButtonState.Pressed)
         {
+            demoTimer = 0;//デモカウントリセット
+
             se.PlaySystemSE((int)SEController.SystemSE.OK);
             BtnPushed(nowSelectedBtn);
         }
@@ -216,5 +244,17 @@ public class TitleScene : SceneController
     {
         isSceneChange = true;
         sceneState = TitleSceneState.Exit;
+    }
+
+    /// <summary>
+    /// デモモード
+    /// </summary>
+    void DemoMode()
+    {
+        //キャラ生成画面のConnectPlayerStatusなしの状態でMainシーンへ(Debug/Demoモードに入る)
+        gameLoad.NextScene = GameLoad.Scenes.Main;
+        isSceneChange = true;
+        tutorialController.isTutorial = false;//チュートリアルなし
+        sceneState = TitleSceneState.ToDemo;
     }
 }
