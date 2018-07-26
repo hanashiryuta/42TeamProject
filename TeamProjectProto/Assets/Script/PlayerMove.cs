@@ -160,9 +160,15 @@ public class PlayerMove : MonoBehaviour
 
     TimeController timeController;
 
+    public bool isAI;
+
     // Use this for initialization
     void Start()
     {
+        if (isAI)
+            playerState = PlayerState.NormalAI;
+        else
+            playerState = PlayerState.CONTROLLER;
         //初期化処理
         isJump = false;
         holdItemCount = 0;
@@ -1120,7 +1126,7 @@ public class PlayerMove : MonoBehaviour
             //正規化
             moveJoy = moveJoy.normalized;
         }
-        
+
         //風船を持っていないとき
         if (balloon == null)
         {
@@ -1143,6 +1149,7 @@ public class PlayerMove : MonoBehaviour
             }
             else moveSpeed = balloonMoveSpeed;
         }
+    }
 
     //void OnCollisionStay(Collision col)
     //{
