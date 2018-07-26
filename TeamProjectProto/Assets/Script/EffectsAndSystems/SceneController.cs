@@ -66,7 +66,8 @@ public class SceneController : MonoBehaviour
         None,   //基準状態
         Start,  //スタート
         Creadit,//クレジット
-        Exit    //ゲーム終了
+        Exit,   //ゲーム終了
+        ToDemo    //デモモード
     }
 
     /// <summary>
@@ -96,7 +97,8 @@ public class SceneController : MonoBehaviour
         FadeIn,         //フェードイン中
         None,           //基準状態
         ToTitleScene,   //次のシーンに移行
-        ToNextScene     //次のシーンに移行
+        ToNextScene,    //次のシーンに移行
+        Demo            //デモモード
     }
 
     /// <summary>
