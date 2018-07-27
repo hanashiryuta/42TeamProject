@@ -49,11 +49,6 @@ public class SpawnUIPlayer : MonoBehaviour
         {
             SpawnPlayerCharacter();
 
-            //プレイヤーが生成し終わったら受け取りオブジェを削除
-            //「もう一回」でステージ選択シーンに移行するので廃止
-            //connectedPlayerStatus.Created = false;
-            //Destroy(connectedPlayerStatus.transform.gameObject);
-
             iscreated = true;
         }
         else

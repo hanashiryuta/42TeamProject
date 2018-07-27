@@ -191,7 +191,7 @@ public class PostController : MonoBehaviour {
     /// </summary>
     void Stay()
     {
-        if(finishCall.IsCalling)
+        if(finishCall.IsShowing)
         {
             bc.enabled = false;
             return;

@@ -85,8 +85,8 @@ public class TimeController : MonoBehaviour {
         timeText.text = HalfWidth2FullWidth.Set2FullWidth(gameTime.ToString("0.0"));
         //時間フラグがfalseなら//startCountDown中タイム進まない
         if (!isPause &&
-            !startCntDown.GetComponent<StartCountDown>().IsCntDown &&
-            !finishCall.GetComponent<FinishCall>().IsCalling)
+            !startCntDown.GetComponent<StartCountDown>().IsCntingDown &&
+            !finishCall.GetComponent<FinishCall>().IsShowing)
         {
             gameTime -= Time.deltaTime;
             if (gameTime <= 0)

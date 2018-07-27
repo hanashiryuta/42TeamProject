@@ -36,7 +36,7 @@ public class ItemRespawn : MonoBehaviour {
         //respawnTime -= Time.deltaTime;
         if (item == null /*&& itemRespawnLimit.GetComponent<ItemRespawnLimit>().isRespawn()*/) {
             respawnTime -= Time.deltaTime;
-            if (respawnTime < 0 && !startCntDown.IsCntDown && !finishCall.IsCalling) {
+            if (respawnTime < 0 && !startCntDown.IsCntingDown && !finishCall.IsShowing) {
                 item = Instantiate(itemList[Random.Range(0, itemList.Count)], transform.position + new Vector3(0,0.5f,0), Quaternion.Euler(90,0,0), transform);//内容物を生成する
                 respawnTime = setRespawnTiem;
 

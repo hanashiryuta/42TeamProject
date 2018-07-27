@@ -153,7 +153,7 @@ public class BalloonMaster : MonoBehaviour {
     void Update ()
     {
         // カウントダウン中は何もしない
-        if (startCntDown.IsCntDown || finishCall.IsCalling)
+        if (startCntDown.IsCntingDown || finishCall.IsShowing)
             return;
 
         //ルーレット呼び出し処理

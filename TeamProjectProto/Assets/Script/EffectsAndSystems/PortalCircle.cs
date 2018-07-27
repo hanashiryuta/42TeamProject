@@ -101,7 +101,7 @@ public class PortalCircle : MonoBehaviour
             }
         }
     }
-    float tmpRange = 0;
+
     /// <summary>
     /// ポータルを開く（外側に伸ばす）
     /// </summary>
@@ -110,7 +110,6 @@ public class PortalCircle : MonoBehaviour
         //DOTween.KillAll(); ここでKillしたらCameraChakeが止まっちゃう
         DOTween.To(() => currentPortalRadius, SetPortalRadius, blowRange, seconds).SetEase(Ease.OutExpo);
     }
-
 
     /// <summary>
     /// ポータルを閉める

@@ -130,7 +130,6 @@ public class PlayerRank : MonoBehaviour
                     player.transform.Find("Armature/Bone/Bone.001/Bone.002/Bone.003/Bone.004/Bone.004_end/Crown").gameObject.SetActive(false);
                 }
             }
-
         }
     }
 }

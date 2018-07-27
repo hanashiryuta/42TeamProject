@@ -242,7 +242,7 @@ public class PlayerMove : MonoBehaviour
                 HandleXInput();
                 break;
             default://AIだったら
-                if (!startCntDown.IsCntDown && !finishCall.IsCalling)
+                if (!startCntDown.IsCntingDown && !finishCall.IsShowing)
                     PlayerAI();//AIメソッド
                 break;
         }
@@ -306,14 +306,14 @@ public class PlayerMove : MonoBehaviour
         Jump();
 
         //スタートカウントダウンOR終了合図中動かせない
-        if (!startCntDown.IsCntDown && !finishCall.IsCalling)
+        if (!startCntDown.IsCntingDown && !finishCall.IsShowing)
         {
             //移動処理
             Move();
         }
 
         //終了合図中動けない
-        if (finishCall.IsCalling)
+        if (finishCall.IsShowing)
         {
             rigid.velocity = Vector3.zero;
         }
@@ -522,7 +522,7 @@ public class PlayerMove : MonoBehaviour
 
         PauseXInput();
         JumpXInput();
-        if (!startCntDown.IsCntDown && !finishCall.IsCalling)
+        if (!startCntDown.IsCntingDown && !finishCall.IsShowing)
             DashXInput();
 
         previousState = currentState;

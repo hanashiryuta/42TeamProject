@@ -51,7 +51,7 @@ public class PostSet : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         //カウントダウン中、終了中は何もしない
-        if (startCntDown.IsCntDown || finishCall.IsCalling)
+        if (startCntDown.IsCntingDown || finishCall.IsShowing)
             return;
 
         //ロスタイムならすぐ生成

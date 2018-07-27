@@ -17,12 +17,6 @@ public class BGSpawn : MonoBehaviour
     {
         Spawn();
 	}
-	
-	// Update is called once per frame
-	void Update ()
-    {
-		
-	}
 
     /// <summary>
     /// 背景生成
