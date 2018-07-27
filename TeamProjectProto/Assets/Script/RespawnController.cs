@@ -43,9 +43,14 @@ public class RespawnController : MonoBehaviour {
             new Color(0 / 255f, 255 / 255f, 65 / 255f)//緑
         };
 
-        if(GameObject.FindGameObjectWithTag("PlayerStatus") == null)
+        if (GameObject.Find("GameController") != null)
         {
-            DemoDebugMode();
+            preScene = GameObject.Find("GameController").GetComponent<GameSetting>().preScene;
+        }
+
+        if (preScene == "Title")
+        {
+            DemoMode();
         }
         else
         {
@@ -110,15 +115,11 @@ public class RespawnController : MonoBehaviour {
     }
 
     /// <summary>
-    /// デバッグ用&デモ用
+    /// デモ用
     /// </summary>
-    void DemoDebugMode()
+    void DemoMode()
     {
         Debug.Log("PlayerSpawn_Debug");
-        if(GameObject.Find("GameController") != null)
-        {
-            preScene = GameObject.Find("GameController").GetComponent<GameSetting>().preScene;
-        }
 
         //生成位置を数だけプレイヤーを生成する
         for (int i = 0; i < transform.childCount; i++)
@@ -141,17 +142,10 @@ public class RespawnController : MonoBehaviour {
             //影をPlayerの子にして生成
             GameObject s = Instantiate(shadow, p.transform.position - Vector3.down, Quaternion.identity, p.transform);
 
-            //リザルトシーンから直接来たらDEMOのAIに切り替える
-            if (preScene == "Title")
-            {
-                int aiMode = Random.Range(1, 3 + 1);//AIMODEをランダムに
-                p.GetComponent<PlayerMove>().PlayerAIState = (PlayerState)aiMode;
-            }
+            int aiMode = Random.Range(1, 3 + 1);//AIMODEをランダムに
+            p.GetComponent<PlayerMove>().PlayerAIState = (PlayerState)aiMode;
         }
 
-        if (preScene == "Title")
-        {
-            isDemo = true;
-        }
+        isDemo = true;
     }
 }
