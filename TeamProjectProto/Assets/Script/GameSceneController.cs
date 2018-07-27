@@ -33,6 +33,10 @@ public class GameSceneController : SceneController
 
     //SceneState
     GameSceneState sceneState = GameSceneState.FadeIn;
+    GameLoad.Scenes nextScene;
+
+    //DEMO
+    RespawnController respawnController;
 
     // Use this for initialization
     public override void Start()
@@ -48,7 +52,8 @@ public class GameSceneController : SceneController
         finishCall = GameObject.Find("FinishCall").GetComponent<FinishCall>();
 
         //players
-        playerList = GameObject.Find("PlayerRespawns").GetComponent<RespawnController>().PlayerList;
+        respawnController = GameObject.Find("PlayerRespawns").GetComponent<RespawnController>();
+        playerList = respawnController.PlayerList;
 
         postRespawn = GameObject.Find("PostRespawnPoint").GetComponent<PostRespawn>();
 
@@ -64,22 +69,33 @@ public class GameSceneController : SceneController
         {
             case GameSceneState.FadeIn://フェードイン中
                 if (fadeController.IsFadeInFinish)
-                    sceneState = GameSceneState.None;
+                {
+                    if (respawnController.isDemo)
+                    {
+                        sceneState = GameSceneState.Demo;
+                    }
+                    else
+                    {
+                        sceneState = GameSceneState.None;
+                    }
+                }
                 break;
 
             case GameSceneState.None://基準状態
                 if (timeController.GetComponent<TimeController>().isEnd)
                 {
+                    nextScene = GameLoad.Scenes.Result;
                     sceneState = GameSceneState.ToNextScene;
                 }
                 if (isToTitle)
                 {
+                    nextScene = GameLoad.Scenes.Title;
                     sceneState = GameSceneState.ToTitleScene;
                 }
                 break;
 
             case GameSceneState.ToTitleScene://タイトルシーンに移行
-                isEnd_ToTitle();
+                isEnd_WithoutFinishMotion(nextScene);
                 //フェードアウト終わったら
                 if (fadeController.IsFadeOutFinish)
                 {
@@ -90,7 +106,7 @@ public class GameSceneController : SceneController
                 break;
 
             case GameSceneState.ToNextScene://次のシーンに移行
-                isEnd_ToResult();
+                isEnd_WithFinishMotion(nextScene);
                 //フェードアウト終わったら
                 if (fadeController.IsFadeOutFinish)
                 {
@@ -99,20 +115,33 @@ public class GameSceneController : SceneController
                     gameLoad.LoadingStartWithoutOBJ();
                 }
                 break;
-        }
 
+            case GameSceneState.Demo://デモモード
+                DemoInput();
+                if (timeController.GetComponent<TimeController>().isEnd)
+                {
+                    nextScene = GameLoad.Scenes.Title;
+                    sceneState = GameSceneState.ToNextScene;
+                }
+                if (isToTitle)
+                {
+                    nextScene = GameLoad.Scenes.Title;
+                    sceneState = GameSceneState.ToTitleScene;
+                }
+                break;
+        }
     }
 
     /// <summary>
-    /// 終了処理(Result)
+    /// 終了処理(Finish処理あり)
     /// </summary>
-    public void isEnd_ToResult()
+    void isEnd_WithFinishMotion(GameLoad.Scenes next)
     {
         //万が一シーンが切り替わると同時にコントローラーが振動し始めたときにコントローラーの振動を停止する処理
-        GamePad.SetVibration(PlayerIndex.One, 0.0f, 0.0f);
-        GamePad.SetVibration(PlayerIndex.Two, 0.0f, 0.0f);
-        GamePad.SetVibration(PlayerIndex.Three, 0.0f, 0.0f);
-        GamePad.SetVibration(PlayerIndex.Four, 0.0f, 0.0f);
+        for (int i = 0; i < 4; i++)
+        {
+            GamePad.SetVibration((PlayerIndex)i, 0.0f, 0.0f);
+        }
 
         //終了合図
         finishCall.ShowUp();
@@ -142,7 +171,7 @@ public class GameSceneController : SceneController
         if (isPostFly <= 0)
         {
             SetPlayerRank();
-            gameLoad.NextScene = GameLoad.Scenes.Result;
+            gameLoad.NextScene = next;
 
             if (isPostFliedWhenFinish)//飛んだら
             {
@@ -155,26 +184,26 @@ public class GameSceneController : SceneController
             isSceneChange = true;
         }
     }
-    
+
     /// <summary>
-    /// 終了処理(Title)
+    /// 終了処理(Finish処理なし)
     /// </summary>
-    public void isEnd_ToTitle()
+    void isEnd_WithoutFinishMotion(GameLoad.Scenes next)
     {
         // PlayerRankの順位更新を停止
         playerRank.GetComponent<PlayerRank>().IsInPlay = false;
 
         //万が一シーンが切り替わると同時にコントローラーが振動し始めたときにコントローラーの振動を停止する処理
-        GamePad.SetVibration(PlayerIndex.One, 0.0f, 0.0f);
-        GamePad.SetVibration(PlayerIndex.Two, 0.0f, 0.0f);
-        GamePad.SetVibration(PlayerIndex.Three, 0.0f, 0.0f);
-        GamePad.SetVibration(PlayerIndex.Four, 0.0f, 0.0f);
+        for (int i = 0; i < 4; i++)
+        {
+            GamePad.SetVibration((PlayerIndex)i, 0.0f, 0.0f);
+        }
 
         //DOTween全削除
         DOTween.KillAll();
 
         //fadeout
-        gameLoad.NextScene = GameLoad.Scenes.Title;
+        gameLoad.NextScene = next;
         isSceneChange = true;
     }
 
@@ -197,5 +226,26 @@ public class GameSceneController : SceneController
         }
         playerRank.GetComponent<PlayerRank>().ResultRank = tmp;
         playerRank.GetComponent<PlayerRank>().PlayerRankScore = score;
+    }
+
+    /// <summary>
+    /// デモ中のボタン操作
+    /// </summary>
+    void DemoInput()
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            if (GamePad.GetState((PlayerIndex)i).IsConnected)
+            {
+                GamePadState demoState = GamePad.GetState((PlayerIndex)i);
+                //Aボタン押したら
+                if (demoState.Buttons.A == ButtonState.Pressed)
+                {
+                    //タイトルに
+                    isToTitle = true;
+                }
+            }
+
+        }
     }
 }

@@ -11,11 +11,11 @@ using UnityEngine.SceneManagement;
 public class ConnectedPlayerStatus : MonoBehaviour
 {
     [SerializeField]
-    Dictionary<string, int> _connectedPlayer = new Dictionary< string, int>();//繋がているプレイヤー名ディクショナリ
+    Dictionary<string, int> _connectedPlayerDic = new Dictionary< string, int>();//繋がているプレイヤー名ディクショナリ
     public Dictionary<string, int> ConnectedPlayer
     {
-        get { return _connectedPlayer; }
-        set { _connectedPlayer = value; }
+        get { return _connectedPlayerDic; }
+        set { _connectedPlayerDic = value; }
     }
 
     string _stageName;//ステージの名前
@@ -30,6 +30,13 @@ public class ConnectedPlayerStatus : MonoBehaviour
     {
         get { return isCreated; }
         set { isCreated = value; }
+    }
+
+    List<bool> _isAIList = new List<bool>();//AIか？
+    public List<bool> IsAIList
+    {
+        get { return _isAIList; }
+        set { _isAIList = value; }
     }
 
     void Awake()
@@ -62,7 +69,7 @@ public class ConnectedPlayerStatus : MonoBehaviour
         if(scene.name == "CharacterSelect")
         {
             //現在接続プレイヤーディクショナリをクリア
-            _connectedPlayer.Clear();
+            _connectedPlayerDic.Clear();
         }
     }
 }

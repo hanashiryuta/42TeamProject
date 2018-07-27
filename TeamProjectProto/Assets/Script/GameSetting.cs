@@ -7,13 +7,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameSetting : MonoBehaviour {
+public class GameSetting : MonoBehaviour
+{
 
     public List<GameObject> gameObjectList;//ゲーム開始時配置するオブジェクト
 
     public List<GameObject> stagesList;//ステージリスト
 
     ConnectedPlayerStatus connectedPlayerStatus;//プレイヤーステータス(選択したステージをここに渡す)
+
+    //DEMO
+    [HideInInspector]
+    public string preScene;//前のシーン
 
     // Use this for initialization
     void Awake ()
@@ -37,6 +42,18 @@ public class GameSetting : MonoBehaviour {
             }
         }
 
+        if (GameObject.Find("BGMController(Clone)") != null)
+        {
+            preScene = GameObject.Find("BGMController(Clone)").GetComponent<BGMController>().preScene;
+            
+            //DEMO(直接Title->Main)だったらランダムステージ
+            if (preScene == "Title")
+            {
+                int randomStageIndex = Random.Range(0, stagesList.Count);
+                gameObjectList[0] = stagesList[randomStageIndex];
+            }
+        }
+
         for (int i = 0;i<gameObjectList.Count;i++)
         {
             GameObject obj = Instantiate(gameObjectList[i]);//生成
@@ -44,7 +61,6 @@ public class GameSetting : MonoBehaviour {
             {
                 obj.transform.SetParent(GameObject.Find("PausePanel").transform);//キャンバスに移る
                 obj.transform.localPosition = Vector3.zero;
-
             }
         }
     }

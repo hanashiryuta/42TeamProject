@@ -26,8 +26,13 @@ public class RespawnController : MonoBehaviour {
     ConnectedPlayerStatus connectedPlayerStatus;//接続したプレイヤー
     int spawnPoint = 0;//生成ポイントインデックス
 
+    //DEMO
+    string preScene;//前のシーン
+    public bool isDemo = false;
+
     // Use this for initialization
-    void Awake () {
+    void Awake ()
+    {
         //初期化処理
         playerList = new List<GameObject>();
         colorList = new List<Color>()
@@ -40,13 +45,12 @@ public class RespawnController : MonoBehaviour {
 
         if(GameObject.FindGameObjectWithTag("PlayerStatus") == null)
         {
-            DebugMode();
+            DemoDebugMode();
         }
         else
         {
             SpawnPlayerByStatus();
         }
-
     }
 
     /// <summary>
@@ -92,6 +96,12 @@ public class RespawnController : MonoBehaviour {
             //影をPlayerの子にして生成
             GameObject s = Instantiate(shadow, p.transform.position - Vector3.down, Quaternion.identity, p.transform);
 
+            if (connectedPlayerStatus.IsAIList[cntPlSta.Value])
+            {
+                int aiMode = Random.Range(1, 3 + 1);//AIMODEをランダムに
+                p.GetComponent<PlayerMove>().PlayerAIState = (PlayerState)aiMode;
+            }
+
             //一回生成したポイントで二度生成しないように削除
             Destroy(transform.GetChild(positionAry[spawnPoint]).gameObject);
 
@@ -100,11 +110,16 @@ public class RespawnController : MonoBehaviour {
     }
 
     /// <summary>
-    /// デバッグ用
+    /// デバッグ用&デモ用
     /// </summary>
-    void DebugMode()
+    void DemoDebugMode()
     {
         Debug.Log("PlayerSpawn_Debug");
+        if(GameObject.Find("GameController") != null)
+        {
+            preScene = GameObject.Find("GameController").GetComponent<GameSetting>().preScene;
+        }
+
         //生成位置を数だけプレイヤーを生成する
         for (int i = 0; i < transform.childCount; i++)
         {
@@ -125,6 +140,18 @@ public class RespawnController : MonoBehaviour {
 
             //影をPlayerの子にして生成
             GameObject s = Instantiate(shadow, p.transform.position - Vector3.down, Quaternion.identity, p.transform);
+
+            //リザルトシーンから直接来たらDEMOのAIに切り替える
+            if (preScene == "Title")
+            {
+                int aiMode = Random.Range(1, 3 + 1);//AIMODEをランダムに
+                p.GetComponent<PlayerMove>().PlayerAIState = (PlayerState)aiMode;
+            }
+        }
+
+        if (preScene == "Title")
+        {
+            isDemo = true;
         }
     }
 }

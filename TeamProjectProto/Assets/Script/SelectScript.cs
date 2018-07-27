@@ -344,10 +344,10 @@ public class SelectScript : MonoBehaviour
     void ObjectSet()
     {
         //振動止める
-        GamePad.SetVibration(PlayerIndex.One, 0.0f, 0.0f);
-        GamePad.SetVibration(PlayerIndex.Two, 0.0f, 0.0f);
-        GamePad.SetVibration(PlayerIndex.Three, 0.0f, 0.0f);
-        GamePad.SetVibration(PlayerIndex.Four, 0.0f, 0.0f);
+        for (int i = 0; i < 4; i++)
+        {
+            GamePad.SetVibration((PlayerIndex)i, 0.0f, 0.0f);
+        }
         //ポーズリストクリア
         pauseList.Clear();
         //設定したタグをポーズ対象に選択

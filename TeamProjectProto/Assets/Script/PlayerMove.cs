@@ -139,8 +139,12 @@ public class PlayerMove : MonoBehaviour
     bool onConveyor = false;
     Vector3 direction;
 
-    [HideInInspector]
-    public PlayerState playerState = PlayerState.NormalAI;//プレイヤー操作状態
+    PlayerState playerState = PlayerState.CONTROLLER;//プレイヤー操作状態
+    public PlayerState PlayerAIState
+    {
+        get { return playerState; }
+        set { playerState = value; }
+    }
     AIMapController aiMapController;//AIのマップ準備クラス
     float[][] influenceMap;//影響マップ
     float[][] otherInfluenceMap;//他のプレイヤーの影響マップ
@@ -166,14 +170,15 @@ public class PlayerMove : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        if (isAI)
-            playerState = PlayerState.NormalAI;
-        else
-            playerState = PlayerState.CONTROLLER;
+        //if (isAI)
+        //    playerState = PlayerState.NormalAI;
+        //else
+        //    playerState = PlayerState.CONTROLLER;
 
-        if (name == "Player1" || name == "Player2")
-            playerState = PlayerState.CONTROLLER;
-
+        //if(name == "Player1")
+        //{
+        //    playerState = PlayerState.CONTROLLER;
+        //}
         //初期化処理
         isJump = false;
         holdItemCount = 0;
@@ -271,7 +276,11 @@ public class PlayerMove : MonoBehaviour
                 //スタン中あたり判定のレイヤーを変えてプレイヤー同士当たらないようにする
                 playerCol.layer = LayerMask.NameToLayer("PlayerStanHit");
                 //rigid.velocity = Vector3.zero;
-                GamePad.SetVibration(XDInput[(int)(playerIndex)], 0.0f, 1.0f);
+                //プレイヤーがAIではなかったら
+                if(playerState == PlayerState.CONTROLLER)
+                {
+                    GamePad.SetVibration(XDInput[(int)(playerIndex)], 0.0f, 1.0f);
+                }
                 isStop = true;
                 //星型パーティクル生成
                 if (stan_Star_Particle == null)
@@ -426,7 +435,10 @@ public class PlayerMove : MonoBehaviour
             if (balloon != null)//爆発物があれば
             {
                 balloon.GetComponent<BalloonOrigin>().BalloonMove(transform.gameObject, col.gameObject);//爆発物の移動処理
-                GamePad.SetVibration(XDInput[(int)(playerIndex)], 0.0f, 1.0f);
+                if (playerState == PlayerState.CONTROLLER) 
+                {
+                    GamePad.SetVibration(XDInput[(int)(playerIndex)], 0.0f, 1.0f);
+                }
                 isStop = true;
             }
         }
@@ -1245,7 +1257,6 @@ public class PlayerMove : MonoBehaviour
             _dashCountDown = _dashLimitTime;
         }
     }
-
     //void OnCollisionStay(Collision col)
     //{
     //    //Rayを飛ばしてベルトコンベアに当たっていたらベルトコンベアで動くようにする

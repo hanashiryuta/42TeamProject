@@ -64,16 +64,15 @@ public class CharacterSelectSceneController : SceneController
             case CharacterSceneState.None://基準状態
                 if (Is_ControllablePlayer_Pressed_Start())//Start押されたら
                 {
-                    /*//AI無し
-                    if (!_isAISpawned)
-                    {
-                        Invoke("AICharacterSpawn", _delayTime);
-                        _isAISpawned = true;
-                    }
-                    ToStageSelectScene();*/
-
                     //SE鳴る
                     se.PlaySystemSE((int)SEController.SystemSE.OK);
+
+                    //NPC生成
+                    if (!_isAISpawned)
+                    {
+                        AICharacterSpawn();
+                    }
+
                     sceneState = CharacterSceneState.ToNextScene;
                 }
                 if (Is_ControllablePlayer_Pressed_B_Back())//B(Back)押されたら
@@ -105,49 +104,6 @@ public class CharacterSelectSceneController : SceneController
     }
 
     /// <summary>
-    /// 全員準備完了か
-    /// </summary>
-    /// <returns></returns>
-    bool IsPlayerStandby()
-    {
-        bool isAllReady = false;//準備完了か
-        int readyPlayers = 0;//準備完了プレイヤー数
-        for (int i = 0; i < standbyCheck.Length; i++)
-        {
-            if (standbyCheck[i].IsSpawn == false)
-            {
-                isAllReady = false;//準備完了してない
-                //break; 前のプレイヤーが空なら後ろのチェック行かないのでbreakしちゃだめ
-            }
-            else
-            {
-                readyPlayers++;
-            }
-        }
-
-        //準備完了したプレイヤーと 接続しているプレイヤー人数と同じ
-        //且つプレイヤーが一人ではない
-        if (readyPlayers == ConnectedPlayerCount() &&
-            ConnectedPlayerCount() != 1)
-        {
-            isAllReady = true;//準備完了
-        }
-
-        //プレイヤーが一人の時
-        if (readyPlayers == ConnectedPlayerCount() &&
-            ConnectedPlayerCount() == 1)
-        {
-            mainText.text = "一人では遊べないよ！";
-        }
-        else
-        {
-            mainText.text = "Ａボタンを押して\n入場";
-        }
-
-        return isAllReady;
-    }
-
-    /// <summary>
     /// ゲーム進行操作可能なプレイヤーがSTARTボタン押したか
     /// </summary>
     /// <returns></returns>
@@ -172,8 +128,7 @@ public class CharacterSelectSceneController : SceneController
         if (standbyCheck[(int)controllablePlayerIndex].IsSpawn)
         {
             //ゲーム進行操作プレイヤーがSTART押したら
-            if (standbyCheck[(int)controllablePlayerIndex].IsStartPressed &&
-                readyPlayers != 1)
+            if (standbyCheck[(int)controllablePlayerIndex].IsStartPressed)
             {
                 gameLoad.NextScene = GameLoad.Scenes.StageSelect;//ステージシーンに
                 isAllReady = true;//準備完了
@@ -181,14 +136,7 @@ public class CharacterSelectSceneController : SceneController
         }
 
         //プレイヤーが一人の時
-        if (readyPlayers <= 1)
-        {
-            //mainText.text = "一人では遊べないよ！";
-            mainText.enabled = false;
-            player1Text.enabled = false;
-            startText.enabled = false;
-        }
-        else
+        if (readyPlayers >= 1)
         {
             mainText.text = "　　の\n" +
                             "　　　　　　　で\n" +
@@ -234,15 +182,20 @@ public class CharacterSelectSceneController : SceneController
         return connectedPlayerNums;
     }
 
+    /// <summary>
+    /// NPC生成
+    /// </summary>
     void AICharacterSpawn()
     {
         for (int i = 0; i < standbyCheck.Length; i++)
         {
-            if (!standbyCheck[i].CurrentState.IsConnected)
+            //PLがない位置はNPCで埋める
+            if (!standbyCheck[i].IsSpawn)
             {
                 standbyCheck[i].IsAI = true;
                 standbyCheck[i].SpawnAICharacter();
-                standbyCheck[i].PlayerLabel.text = "COM";
+                standbyCheck[i].PlayerLabel.text = "ＮＰＣ";
+                standbyCheck[i].IsSpawn = true;
             }
         }
         _isAISpawned = true;
@@ -299,12 +252,24 @@ public class CharacterSelectSceneController : SceneController
         {
             connectedPlayerStatus = Instantiate(connectedPlayerStatusObj).GetComponent<ConnectedPlayerStatus>();
         }
+        //再格納のためClear
         connectedPlayerStatus.ConnectedPlayer.Clear();
+        connectedPlayerStatus.IsAIList.Clear();
+        //プレイヤーInfoを格納
         for (int i = 0; i < standbyCheck.Length; i++)
         {
             if (standbyCheck[i].IsSpawn)
             {
-                //プレイヤー名とインデックスを記録
+                //AIか
+                if (standbyCheck[i].IsAI)
+                {
+                    connectedPlayerStatus.IsAIList.Add(true);
+                }
+                else
+                {
+                    connectedPlayerStatus.IsAIList.Add(false);
+                }
+                //プレイヤー名とインデックスを格納
                 connectedPlayerStatus.ConnectedPlayer.Add("Player" + (i + 1), i);
             }
         }

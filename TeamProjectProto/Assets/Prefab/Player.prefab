@@ -831,7 +831,7 @@ MonoBehaviour:
   playerSE: {fileID: 0}
   playerCol: {fileID: 1710551229950362}
   totalItemCount_For_Text: 0
-  playerState: 1
+  playerState: 0
   isAI: 1
   playerIndex: 0
   dashTiredTime: 1

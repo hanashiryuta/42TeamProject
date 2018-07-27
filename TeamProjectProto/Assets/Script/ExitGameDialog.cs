@@ -23,10 +23,10 @@ public class ExitGameDialog : MonoBehaviour {
 
     void OnApplicationQuit()
     {
-        GamePad.SetVibration(PlayerIndex.One, 0.0f, 0.0f);
-        GamePad.SetVibration(PlayerIndex.Two, 0.0f, 0.0f);
-        GamePad.SetVibration(PlayerIndex.Three, 0.0f, 0.0f);
-        GamePad.SetVibration(PlayerIndex.Four, 0.0f, 0.0f);
+        for(int i = 0; i < 4; i++)
+        {
+            GamePad.SetVibration((PlayerIndex)i, 0.0f, 0.0f);
+        }
     }
 
 }

@@ -16,7 +16,8 @@ public class BGMController : MonoBehaviour
     float defaultVolume = 0.5f;//デフォルト音量
 
     public static bool isCreated = false;//生成されたか？
-    string preScene;//前のシーン
+    [HideInInspector]
+    public string preScene;//前のシーン
 
     RouletteController rouletteCon;//ルーレットコントローラー
     bool isGetRoulette = false;//ルーレットを取得したか？
