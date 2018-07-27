@@ -160,25 +160,15 @@ public class PlayerMove : MonoBehaviour
 
     Vector3 nowPoint = Vector3.zero;//現在の位置
 
-    string[][] aiPersonalityArray;
+    string[][] aiPersonalityArray;//AIの性格エクセル
 
-    TimeController timeController;
-
-    public bool isAI;
-    bool isAIDash;
+    TimeController timeController;//時間管理クラス
+    
+    bool isAIDash;//AIがダッシュできるかどうか
 
     // Use this for initialization
     void Start()
     {
-        //if (isAI)
-        //    playerState = PlayerState.NormalAI;
-        //else
-        //    playerState = PlayerState.CONTROLLER;
-
-        //if(name == "Player1")
-        //{
-        //    playerState = PlayerState.CONTROLLER;
-        //}
         //初期化処理
         isJump = false;
         holdItemCount = 0;
@@ -209,7 +199,9 @@ public class PlayerMove : MonoBehaviour
         //180622 SE
         playerSE = transform.GetComponent<SEController>();
 
+        //プレイヤー操作状態がAIだったら
         if (playerState != PlayerState.CONTROLLER)
+            //AI初期化処理
             AIInitialize();
 
         //時間オブジェ取得
@@ -748,6 +740,7 @@ public class PlayerMove : MonoBehaviour
         //一番近いセルの位置を保存
         currentNearBlockHeight = previousNearBlockHeight = float.Parse(aiMapController.stageArray[I][J]);
 
+        //性格設定
         aiPersonalityArray = ArraySet();
     }
 
@@ -1183,6 +1176,9 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// AIのダッシュ処理
+    /// </summary>
     void AIDash()
     {
         if (_isDash)
@@ -1200,7 +1196,7 @@ public class PlayerMove : MonoBehaviour
             SetDashLimitTime(holdItemCount, dashTimePerItem);
         }
 
-        // RBボタン押している間
+        // ダッシュ可能なら
         if (isAIDash)
         {
             //カウントダウン
@@ -1230,10 +1226,11 @@ public class PlayerMove : MonoBehaviour
             {
                 _dashCountDown = 0;
                 _isDash = false;
+                //ダッシュ不可能に
                 isAIDash = false;
             }
         }
-        // RBボタン押してない間
+        //ダッシュ不可能なら
         else
         {
             _isDash = false;
@@ -1257,27 +1254,6 @@ public class PlayerMove : MonoBehaviour
             _dashCountDown = _dashLimitTime;
         }
     }
-    //void OnCollisionStay(Collision col)
-    //{
-    //    //Rayを飛ばしてベルトコンベアに当たっていたらベルトコンベアで動くようにする
-    //    if (Physics.Linecast(transform.position + Vector3.up, transform.position + Vector3.down, LayerMask.GetMask("BeltConveyor")))
-    //    {
-    //        var beltConveyor = col.gameObject.GetComponent<BeltConveyor>();
-    //        if (beltConveyor != null)
-    //        {
-    //            direction = beltConveyor.Conveyor();
-    //            onConveyor = true;
-    //        }
-    //        else
-    //        {
-    //            onConveyor = false;
-    //        }
-    //    }
-    //    else
-    //    {
-    //        onConveyor = false;
-    //    }
-    //}
 
     private void RayHitBeltConveyor()
     {
