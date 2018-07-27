@@ -231,7 +231,7 @@ public class PlayerMove : MonoBehaviour
                 break;
             default://AIだったら
                 if (!startCntDown.IsCntingDown && !finishCall.IsShowing)
-                    PlayerAI();//AIメソッド
+                    playerAI.PlayerAIThink();//AIメソッド
                 break;
         }
         //ダッシュ中でなければ
