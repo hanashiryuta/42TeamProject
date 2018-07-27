@@ -529,7 +529,7 @@ MonoBehaviour:
   creditCanvas: {fileID: 1394221701}
   bgmControllerOBJ: {fileID: 1178841107629970, guid: b643a883259f6a343af7796b24b6bfaa,
     type: 2}
-  secondsToDemo: 2
+  secondsToDemo: 10
 --- !u!114 &1218557528
 MonoBehaviour:
   m_ObjectHideFlags: 0

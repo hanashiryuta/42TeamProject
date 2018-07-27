@@ -73,6 +73,7 @@ public class RouletteController : MonoBehaviour {
     GameObject roulettePanel;
 
     float aiTime = 0.2f;
+    int demoTextIndex = 0;
 
     // Use this for initialization
     void Start () {
@@ -119,13 +120,22 @@ public class RouletteController : MonoBehaviour {
 
         roulettePanel = Instantiate(originRoulettePanel,GameObject.FindGameObjectWithTag("Canvas").transform);
 
-        roulettePanel.transform.SetAsLastSibling();
+        for(int i = 0; i < transform.parent.childCount; i++)
+        {
+            if (transform.parent.GetChild(i).GetComponent<DemoText>() != null)
+            {
+                demoTextIndex = i;
+                break;
+            }
+        }
+
+        roulettePanel.transform.SetSiblingIndex(demoTextIndex);
     }
 	
 	// Update is called once per frame
 	void Update () {
         //Canvasの一番手前に表示
-        transform.SetAsLastSibling();
+        transform.SetSiblingIndex(demoTextIndex + 2);
         //ボタン取得
         currentState = GamePad.GetState(playerIndex);
 
