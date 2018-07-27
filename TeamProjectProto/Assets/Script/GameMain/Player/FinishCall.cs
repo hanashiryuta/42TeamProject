@@ -14,12 +14,12 @@ public class FinishCall : MonoBehaviour
     [SerializeField]
     Image _bg;
 
-    public float _waitTime = 3;
+    public float _waitTime = 3;//フェードまでの待ち時間
 
-    bool _isCalling = false;
-    public bool IsCalling
+    bool _isShowing = false;//表示中か
+    public bool IsShowing
     {
-        get { return _isCalling; }
+        get { return _isShowing; }
     }
 
     //SE
@@ -39,9 +39,12 @@ public class FinishCall : MonoBehaviour
 
 	}
 
+    /// <summary>
+    /// 表示
+    /// </summary>
     public void ShowUp()
     {
-        _isCalling = true;
+        _isShowing = true;
         _text.enabled = true;
         _bg.enabled = true;
 
@@ -52,6 +55,9 @@ public class FinishCall : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 非表示
+    /// </summary>
     public void ShutDown()
     {
         _text.text = "";

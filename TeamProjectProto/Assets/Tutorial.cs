@@ -148,7 +148,7 @@ public class Tutorial : MonoBehaviour
     void Stay()
     {
         //ゲーム終了時、ルーレット表示時、ポーズ表示時、操作説明は隠す
-        if (finishObj.IsCalling || balloonMaster.isRoulette || selectScript.isTutorial)
+        if (finishObj.IsShowing || balloonMaster.isRoulette || selectScript.isTutorial)
             operation.SetActive(false);
         else
             operation.SetActive(true);//それ以外は表示

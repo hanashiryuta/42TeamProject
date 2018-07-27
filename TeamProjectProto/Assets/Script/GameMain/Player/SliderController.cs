@@ -14,14 +14,14 @@ public class SliderController : MonoBehaviour
 
     //ダッシュゲージ関連
     [SerializeField]
-    GameObject origin_dashSliderOBJ;//ダッシュ用スライダー
+    GameObject origin_dashSliderOBJ;//ダッシュ用スライダーOBJ
     GameObject dashSliderOBJ;
     Slider dashSlider;
     RectTransform dashSliderTfm;
-    CanvasGroup dashCanvas;
+    CanvasGroup dashCanvasGroup;
     [SerializeField]
-    Vector3 dashOffset = new Vector3(0, -20f, 0);
-    Text countDownText;
+    Vector3 dashOffset = new Vector3(0, -20f, 0);//プレイヤーとのオフセット値
+    Text countDownText;//手持ちアイテム数格納テキスト
 
 	// Use this for initialization
 	void Start ()
@@ -33,7 +33,7 @@ public class SliderController : MonoBehaviour
         dashSliderOBJ = Instantiate(origin_dashSliderOBJ);//生成
         dashSliderOBJ.name = player.name + dashSliderOBJ.name;//対応プレイヤーの名前を付ける
         dashSliderOBJ.transform.SetParent(GameObject.Find("DashSliders").transform);//キャンバスに移る
-        dashCanvas = dashSliderOBJ.transform.GetComponent<CanvasGroup>();//キャンバスグループ(表示用)
+        dashCanvasGroup = dashSliderOBJ.transform.GetComponent<CanvasGroup>();//キャンバスグループ(表示用)
         countDownText = dashSliderOBJ.GetComponentInChildren<Text>();
         player.HoldItemCountText = countDownText;//プレイヤー所持アイテム数
         dashSlider = dashSliderOBJ.transform.GetComponent<Slider>();
@@ -78,7 +78,7 @@ public class SliderController : MonoBehaviour
     /// </summary>
     public void InvisibleSlider()
     {
-        dashCanvas.alpha = 0;
+        dashCanvasGroup.alpha = 0;
     }
 
 }

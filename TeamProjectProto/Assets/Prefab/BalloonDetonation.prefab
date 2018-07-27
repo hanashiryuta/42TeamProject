@@ -21,7 +21,6 @@ GameObject:
   - component: {fileID: 4908588549271460}
   - component: {fileID: 33719162960458242}
   - component: {fileID: 23227775372838738}
-  - component: {fileID: 114445707019906422}
   m_Layer: 0
   m_Name: BalloonDetonation
   m_TagString: Untagged
@@ -199,18 +198,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotate: {x: 0, y: 0, z: 3}
---- !u!114 &114445707019906422
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1034089992292260}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0780c56d572ee24dac4dfd002ab8ead, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mat: {fileID: 2100000, guid: 709129a96481e1843983f5174d7de802, type: 2}
 --- !u!198 &198720350357303212
 ParticleSystem:
   m_ObjectHideFlags: 1
