@@ -47,12 +47,12 @@ public class PlayerMove : MonoBehaviour
     Text totalItemCountText;//内容物所持数累計テキスト
     [HideInInspector]
     public float totalItemCount = 0;//内容物所持数累計
-    
+
     public bool isStan = false;//動けるかどうか
     public float originStanTime = 1.5f;//動けるようになるまでの時間
     [HideInInspector]
     public float stanTime;
-    
+
     [HideInInspector]
     public float jumpCount = 0;//ジャンプ回数
     public GameObject originItem;//アイテム
@@ -110,11 +110,11 @@ public class PlayerMove : MonoBehaviour
     GameObject dash_Particle;//ダッシュパーティクル
 
     bool dashStart = true;//ダッシュしたかどうか
-    
+
     [HideInInspector]
     public bool isHit = false;//ダッシュしていない他プレイヤーに当たったか
     float hitTime = 0.1f;//BoxColliderを付けなおすまでの時間
-    
+
     float playerPos_X;//X座標の移動制限（ステージセレクトで選ばれたステージに応じて、変更）
     float playerPos_Y;//Y座標の移動制限
     float playerPos_Z;//Z座標の移動制限（ステージセレクトで選ばれたステージに応じて、変更）
@@ -153,16 +153,27 @@ public class PlayerMove : MonoBehaviour
 
     float currentFarBlockHeight = 0;//現在の遠いブロック
     float previousFarBlockHeight = 0;//1フレーム前のブロック
-    
+
     Vector3 nowPoint = Vector3.zero;//現在の位置
 
     string[][] aiPersonalityArray;
 
     TimeController timeController;
 
+    public bool isAI;
+    bool isAIDash;
+
     // Use this for initialization
     void Start()
     {
+        if (isAI)
+            playerState = PlayerState.NormalAI;
+        else
+            playerState = PlayerState.CONTROLLER;
+
+        if (name == "Player1" || name == "Player2")
+            playerState = PlayerState.CONTROLLER;
+
         //初期化処理
         isJump = false;
         holdItemCount = 0;
@@ -234,7 +245,8 @@ public class PlayerMove : MonoBehaviour
                 HandleXInput();
                 break;
             default://AIだったら
-                PlayerAI();//AIメソッド
+                if (!startCntDown.IsCntDown && !finishCall.IsCalling)
+                    PlayerAI();//AIメソッド
                 break;
         }
         //ダッシュ中でなければ
@@ -242,7 +254,7 @@ public class PlayerMove : MonoBehaviour
         {
             dashStart = true;
         }
-        
+
     }
 
     // Update is called once per frame
@@ -251,7 +263,7 @@ public class PlayerMove : MonoBehaviour
         //動けないなら
         if (isStan)
         {
-            rigid.velocity = Vector3.zero;            
+            rigid.velocity = Vector3.zero;
 
             //最初に移動量をゼロに
             if (stanTime <= 0.0f)
@@ -276,7 +288,7 @@ public class PlayerMove : MonoBehaviour
                 playerCol.layer = LayerMask.NameToLayer("PlayerHit");
                 isStan = false;
                 stanTime = 0.0f;
-                if(isBlastStan)
+                if (isBlastStan)
                 {
                     isBlastStan = false;
                     balloonMaster.isRoulette = true;
@@ -304,7 +316,7 @@ public class PlayerMove : MonoBehaviour
         {
             rigid.velocity = Vector3.zero;
         }
-    
+
         Vector3 diff = new Vector3(moveJoy.x, 0, moveJoy.y);
 
         diff.y = 0;
@@ -313,7 +325,7 @@ public class PlayerMove : MonoBehaviour
         {
             transform.rotation = Quaternion.LookRotation(diff);
         }
-        
+
         //Rayを飛ばしてベルトコンベアに当たっていたらベルトコンベアで動くようにする
         RayHitBeltConveyor();
         //RaycastHit hit;
@@ -335,14 +347,14 @@ public class PlayerMove : MonoBehaviour
     {
         //移動vector生成
         Vector3 moveVector = Vector3.zero;
-        
+
         //移動量設定
         moveVector.x = moveSpeed * moveJoy.x;
         moveVector.z = moveSpeed * moveJoy.y;
 
         //y方向無しの現在のvelocity保存
         Vector3 rigidVelocity = new Vector3(rigid.velocity.x, 0, rigid.velocity.z);
-        
+
         //移動量追加
         rigid.AddForce(100 * (moveVector - rigidVelocity));
 
@@ -351,7 +363,7 @@ public class PlayerMove : MonoBehaviour
 
         //設定
         rigid.velocity = rigidVelocity;
-        
+
     }
 
     /// <summary>
@@ -374,13 +386,13 @@ public class PlayerMove : MonoBehaviour
             //重力設定
             gravPower = 9.8f;
         }
-        
+
         //重力追加
         rigid.AddForce(new Vector3(0, -gravPower * 5, 0));
 
         //地面いるか判定
         bool isField = false;
-        
+
         //あたり判定を別のオブジェクトに任せた
         if (playerJumpHit.isJumpHit)
         {
@@ -389,7 +401,7 @@ public class PlayerMove : MonoBehaviour
             //地面にいる
             isField = true;
             //ジャンプ終える
-            isJump = false;;
+            isJump = false; ;
             //地面にいる状態に変更
             if (jumpCount > 0)
             {
@@ -406,7 +418,7 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
-    void OnTriggerEnter(Collider col)
+    void OnTriggerStay(Collider col)
     {
         //プレイヤーに当たったら
         if (col.gameObject.tag == "Player")
@@ -631,7 +643,11 @@ public class PlayerMove : MonoBehaviour
     {
         //上限固定をしなければアイテムの個数に応じて上限を設定する
         if (!isConstant)
+        {
             _dashLimitTime = (itemAmount + 1) * time;
+            if (playerState != PlayerState.CONTROLLER && _dashLimitTime >= 5.0f)
+                _dashLimitTime = 5.0f;
+        }
         //上限を固定する
         else
         {
@@ -650,11 +666,11 @@ public class PlayerMove : MonoBehaviour
     /// </summary>
     void PauseXInput()
     {
-        if(pauseScript == null)
+        if (pauseScript == null)
             pauseScript = GameObject.Find("PauseCtrl").GetComponent<SelectScript>();
 
         //ポーズ中じゃなかった
-        if(pauseScript.pauseState == PauseState.NONEPAUSE)
+        if (pauseScript.pauseState == PauseState.NONEPAUSE)
         {
             //STARTボタンを押したら（ポーズ開始）解除->SelectScript
             if (previousState.Buttons.Start == ButtonState.Released &&
@@ -757,20 +773,22 @@ public class PlayerMove : MonoBehaviour
         float farInfluence = 0;//遠いポイントの影響値
 
         //近いポイントセット
-        NextPointSet(out nearPoint, out nearInfluence, currentNearBlockHeight, 1.5f);
+        NextPointSet(out nearPoint, out nearInfluence, out currentNearBlockHeight, 1.5f);
         //遠いポイントセット
-        NextPointSet(out farPoint, out farInfluence, currentFarBlockHeight, 3.5f);
+        NextPointSet(out farPoint, out farInfluence, out currentFarBlockHeight, 3.5f);
 
         //近めを目指すか遠目を目指すか
         NearFarCheck(out nextPoint, nearPoint, farPoint, nearInfluence, farInfluence);
-        
+
         //AIの移動処理
         AIMove(nextPoint);
-        
+        //AIのダッシュ処理
+        AIDash();
+
         //ジャンプ間隔更新
         aiJumpTime -= Time.deltaTime;
         //前方にあたり判定飛ばす
-        Collider[] colArray = Physics.OverlapBox(transform.position + new Vector3(moveJoy.x, 1,moveJoy.y),new Vector3(0.5f,1.0f,0.5f));
+        Collider[] colArray = Physics.OverlapBox(transform.position + new Vector3(moveJoy.x, 1, moveJoy.y), new Vector3(0.4f, 0.9f, 0.4f));
         foreach (var cx in colArray)
         {
             //フィールドに当たっていたら
@@ -779,7 +797,7 @@ public class PlayerMove : MonoBehaviour
                 //AIのジャンプ処理
                 AIJump();
             }
-            
+
         }
 
         //1フレーム前の値を現在の値に更新
@@ -868,10 +886,14 @@ public class PlayerMove : MonoBehaviour
                 //エクセルからどの影響割合を取り出すか
 
                 int infState = 1;//取り出す添え字
-                
+
                 //鬼との距離が8以下なら
-                if (balloonMaster.nowPlayer != null&&Vector3.Distance(transform.position, balloonMaster.nowPlayer.transform.position) <= 8.0f)
+                if (balloonMaster.nowPlayer != null && balloon == null && Vector3.Distance(transform.position, balloonMaster.nowPlayer.transform.position) <= 8.0f)
+                {
+                    if(_dashCountDown >=_dashLimitTime/2 && Vector3.Distance(transform.position, balloonMaster.nowPlayer.transform.position) <= 5.0f)
+                    isAIDash = true;
                     infState = 4;
+                }
                 //ロスタイム中なら
                 else if (timeController.timeState == TimeState.LOSSTIME)
                     infState = 3;
@@ -891,19 +913,19 @@ public class PlayerMove : MonoBehaviour
                     coinInfluenceMap[i][j] * float.Parse(aiPersonalityArray[infState][3]) +
                     ReturnInfluence(otherInfluenceMap[i][j]) * float.Parse(aiPersonalityArray[infState][4]);
 
-                
+
                     //現在の位置が床の場合、高い壁の影響値は0
                     if (float.Parse(aiMapController.stageArray[i][j]) == 2 && previousNearBlockHeight == 0)
                         influenceMap[i][j] = 0;
                 }
                 else
-                { //影響値セット
+                {
+                    //影響値セット
                     influenceMap[i][j] =
                     aiMapController.balloonInfluenceMap[i][j] * float.Parse(aiPersonalityArray[5][1]) +
                     aiMapController.postInfluenceMap[i][j] * float.Parse(aiPersonalityArray[5][2]) +
                     coinInfluenceMap[i][j] * float.Parse(aiPersonalityArray[5][3]) +
                     otherInfluenceMap[i][j] * float.Parse(aiPersonalityArray[5][4]);
-
                 }
 
                 //セルがプレイヤー進入禁止エリアだったら
@@ -932,7 +954,7 @@ public class PlayerMove : MonoBehaviour
 
                 float influence = 0;//影響値
 
-               //距離に応じた影響値を設定
+                //距離に応じた影響値を設定
                 if (isReturn)
                     //反転させるなら
                     //近いほど影響値低く設定
@@ -976,11 +998,12 @@ public class PlayerMove : MonoBehaviour
     /// <param name="influence">影響値</param>
     /// <param name="blockHight">ブロックの高さ</param>
     /// <param name="findRadius">検索範囲</param>
-    void NextPointSet(out Vector3 point, out float influence, float blockHight, float findRadius)
+    void NextPointSet(out Vector3 point, out float influence, out float blockHight, float findRadius)
     {
         //初期化
         point = Vector3.zero;
         influence = 0;
+        blockHight = 0;
 
         //全セル取得
         for (int i = 0; i < aiMapController.mapHeight; i++)
@@ -991,7 +1014,7 @@ public class PlayerMove : MonoBehaviour
                 float length = Vector3.Distance(aiMapController.positionArray[i][j], new Vector3(transform.position.x, aiMapController.positionArray[i][j].y, transform.position.z));
 
                 //距離が検索範囲以内　かつ　0.5以上（近すぎるのは判定外）
-                if (length <= findRadius && length >= 0.5f) 
+                if (length <= findRadius && length >= 0.5f)
                 {
                     //取得したセルの影響値が保存している影響値より高かったら
                     if (influenceMap[i][j] > influence)
@@ -1002,6 +1025,9 @@ public class PlayerMove : MonoBehaviour
                         point = aiMapController.positionArray[i][j];
                         //目指す位置のブロック位置設定
                         blockHight = float.Parse(aiMapController.stageArray[i][j]);
+
+                        if (balloon != null && influence >= 0.5 && _dashCountDown >=_dashLimitTime/5)
+                            isAIDash = true;
                     }
                 }
             }
@@ -1026,7 +1052,7 @@ public class PlayerMove : MonoBehaviour
         //遠目の影響値のほうが高く　かつ
         //1フレーム前（移動前の今いる位置）のブロックが壁以上　かつ
         //現在（移動前の目指す場所）が高い壁ならば
-        if (nearInfluence < farInfluence && 
+        if (nearInfluence < farInfluence &&
             previousNearBlockHeight >= 1 &&
             currentFarBlockHeight == 2)
         {
@@ -1120,7 +1146,7 @@ public class PlayerMove : MonoBehaviour
             //正規化
             moveJoy = moveJoy.normalized;
         }
-        
+
         //風船を持っていないとき
         if (balloon == null)
         {
@@ -1143,6 +1169,82 @@ public class PlayerMove : MonoBehaviour
             }
             else moveSpeed = balloonMoveSpeed;
         }
+    }
+
+    void AIDash()
+    {
+        if (_isDash)
+        {
+            //ダッシュ中にパーティクルを生成
+            dashParticleTime -= Time.deltaTime;
+            if (dashParticleTime <= 0)
+            {
+                Instantiate(origin_Dash_Particle, transform.position, Quaternion.identity);
+                dashParticleTime = 0.1f;
+            }
+        }
+        else
+        {
+            SetDashLimitTime(holdItemCount, dashTimePerItem);
+        }
+
+        // RBボタン押している間
+        if (isAIDash)
+        {
+            //カウントダウン
+            if (balloon != null)
+            {
+                //風船を持つプレイヤーは消費量半分
+                _dashCountDown -= Time.deltaTime / 2f;
+            }
+            else
+            {
+                _dashCountDown -= Time.deltaTime;
+            }
+
+            if (_dashCountDown > 0)
+            {
+                _isDash = true;
+
+                //ダッシュしたら1度だけ音を鳴らす
+                if (dashStart)
+                {
+                    //効果音追加
+                    playerSE.PlayPlayerSEOnce((int)SEController.PlayerSE.Dash);
+                }
+                dashStart = false;
+            }
+            else
+            {
+                _dashCountDown = 0;
+                _isDash = false;
+                isAIDash = false;
+            }
+        }
+        // RBボタン押してない間
+        else
+        {
+            _isDash = false;
+
+            //ゲージ切れでしたら１秒待つから回復
+            if (_dashCountDown <= 0 && dashTiredTime > 0)
+            {
+                dashTiredTime -= Time.deltaTime;
+            }
+            else
+            {
+                //半分の速度でカウントダウン回復
+                _dashCountDown += Time.deltaTime/* / 2f*/;
+                dashTiredTime = 1f;
+            }
+        }
+
+        //上限に超えないようにする
+        if (_dashCountDown >= _dashLimitTime)
+        {
+            _dashCountDown = _dashLimitTime;
+        }
+    }
 
     //void OnCollisionStay(Collision col)
     //{
