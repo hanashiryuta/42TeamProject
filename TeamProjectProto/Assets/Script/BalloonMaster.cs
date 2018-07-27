@@ -277,7 +277,10 @@ public class BalloonMaster : MonoBehaviour {
 
         //次に風船を持つプレイヤーのコントローラー振動
         nextPlayerIndex = nextPlayer.GetComponent<PlayerMove>().playerIndex;
-        GamePad.SetVibration(nextPlayerIndex, 0.0f, 1.0f);
+        if (nextPlayer.GetComponent<PlayerMove>().PlayerAIState == PlayerState.CONTROLLER)
+        {
+            GamePad.SetVibration(nextPlayerIndex, 0.0f, 1.0f);
+        }
         GameObject.Find("PostRespawnPoint").GetComponent<PostRespawn>().isBalloon = true;
     }
     

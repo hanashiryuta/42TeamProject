@@ -54,7 +54,6 @@ public class GameSetting : MonoBehaviour
             }
         }
 
-
         for (int i = 0;i<gameObjectList.Count;i++)
         {
             GameObject obj = Instantiate(gameObjectList[i]);//生成
@@ -62,7 +61,6 @@ public class GameSetting : MonoBehaviour
             {
                 obj.transform.SetParent(GameObject.Find("PausePanel").transform);//キャンバスに移る
                 obj.transform.localPosition = Vector3.zero;
-
             }
         }
     }

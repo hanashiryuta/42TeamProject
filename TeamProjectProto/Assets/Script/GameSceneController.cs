@@ -138,10 +138,10 @@ public class GameSceneController : SceneController
     void isEnd_WithFinishMotion(GameLoad.Scenes next)
     {
         //万が一シーンが切り替わると同時にコントローラーが振動し始めたときにコントローラーの振動を停止する処理
-        GamePad.SetVibration(PlayerIndex.One, 0.0f, 0.0f);
-        GamePad.SetVibration(PlayerIndex.Two, 0.0f, 0.0f);
-        GamePad.SetVibration(PlayerIndex.Three, 0.0f, 0.0f);
-        GamePad.SetVibration(PlayerIndex.Four, 0.0f, 0.0f);
+        for (int i = 0; i < 4; i++)
+        {
+            GamePad.SetVibration((PlayerIndex)i, 0.0f, 0.0f);
+        }
 
         //終了合図
         finishCall.ShowUp();
@@ -194,10 +194,10 @@ public class GameSceneController : SceneController
         playerRank.GetComponent<PlayerRank>().IsInPlay = false;
 
         //万が一シーンが切り替わると同時にコントローラーが振動し始めたときにコントローラーの振動を停止する処理
-        GamePad.SetVibration(PlayerIndex.One, 0.0f, 0.0f);
-        GamePad.SetVibration(PlayerIndex.Two, 0.0f, 0.0f);
-        GamePad.SetVibration(PlayerIndex.Three, 0.0f, 0.0f);
-        GamePad.SetVibration(PlayerIndex.Four, 0.0f, 0.0f);
+        for (int i = 0; i < 4; i++)
+        {
+            GamePad.SetVibration((PlayerIndex)i, 0.0f, 0.0f);
+        }
 
         //DOTween全削除
         DOTween.KillAll();
