@@ -151,7 +151,7 @@ public class BalloonOrigin : MonoBehaviour
     //    }
 
         //スタートカウントダウン中＆プレイヤーがスタン時膨らまない
-        if (!finishCall.IsCalling||player.GetComponent<PlayerMove>().isStan)
+        if (!finishCall.IsShowing||player.GetComponent<PlayerMove>().isStan)
         {
             //時間経過で膨らむ処理
             if (isTimeBlast)

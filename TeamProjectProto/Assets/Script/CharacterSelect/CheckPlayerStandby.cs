@@ -42,7 +42,6 @@ public class CheckPlayerStandby : MonoBehaviour
     //キャンセルか
     bool isCancel = false;
 
-
     public PlayerIndex ControllablePlayerIndex
     {
         set { controllablePlayerIndex = value; }
@@ -173,6 +172,11 @@ public class CheckPlayerStandby : MonoBehaviour
         _btnText.enabled = false;//未参加テキスト非表示
     }
   
+    /// <summary>
+    /// 指定のボタンが押されたか？
+    /// </summary>
+    /// <param name="btn"></param>
+    /// <returns></returns>
     bool IsBtnPressed(string btn)
     {
         switch (btn)

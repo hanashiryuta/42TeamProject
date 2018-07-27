@@ -103,7 +103,6 @@ public class GameLoad : MonoBehaviour
         //　読み込みが終わるまで進捗状況をスライダーの値に反映させる
         while (async.progress < 0.9f)
         {
-            //Debug.Log(async.progress);
             slider.value = async.progress;
             yield return new WaitForEndOfFrame();
         }

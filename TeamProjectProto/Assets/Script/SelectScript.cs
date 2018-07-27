@@ -114,7 +114,7 @@ public class SelectScript : MonoBehaviour
     void Update()
     {
         //スタート、エンドのカウント中だったら
-        if (startCntDown.IsCntDown || finishCall.IsCalling)
+        if (startCntDown.IsCntingDown || finishCall.IsShowing)
             return;
 
         HandleXInput();

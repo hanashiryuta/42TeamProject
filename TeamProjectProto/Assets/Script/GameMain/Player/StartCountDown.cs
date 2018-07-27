@@ -15,19 +15,20 @@ public class StartCountDown : MonoBehaviour
     Image _bg;
 
     [SerializeField]
-    int _cntDownTime = 3;
-    public float waitTime = 0;
+    int _cntDownTime = 3;//カウントダウン秒数
+    public float waitTime = 0;//カウントダウン始まるまでの待ち時間
 
-    bool _isCntDown = true;
-    public bool IsCntDown
+    bool _isCntingDown = true;//カウントダウン中か
+    public bool IsCntingDown
     {
-        get { return _isCntDown; }
+        get { return _isCntingDown; }
     }
-    bool _isCntDownStarted = false;
+    bool _isCntDownStarted = false;//カウントダウン開始したか
 
     //SE
     AudioSource audio;
 
+    //チュートリアル
     TutorialController tutorialController;
     bool isTuto = true;
 
@@ -70,8 +71,13 @@ public class StartCountDown : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// カウントダウンコルーチン
+    /// </summary>
+    /// <returns></returns>
     IEnumerator CountdownCoroutine()
     {
+        //フェード待ち
         yield return new WaitForSeconds(waitTime);
 
         _textCntDown.enabled = true;
@@ -80,6 +86,7 @@ public class StartCountDown : MonoBehaviour
         audio.Play();
         for (int i = _cntDownTime; i > 0; i--)
         {
+            //秒数に沿って表示
             _textCntDown.text = HalfWidth2FullWidth.Set2FullWidth(i.ToString());
             yield return new WaitForSeconds(1.0f);
         }
@@ -87,8 +94,9 @@ public class StartCountDown : MonoBehaviour
         _textCntDown.text = "ＧＯ！";
         yield return new WaitForSeconds(1.0f);
 
+        //カウントダウン終了
         _textCntDown.text = "";
-        _isCntDown = false;
+        _isCntingDown = false;
         _textCntDown.enabled = false;
         _bg.enabled = false;
     }

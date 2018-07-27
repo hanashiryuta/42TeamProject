@@ -17,7 +17,7 @@ public class PlayerScoreUIController : MonoBehaviour
     [SerializeField]
     Sprite[] offlineTexs;//不参加テクスチャ
 
-    RespawnController playerRespawn;
+    RespawnController playerRespawn;//プレイヤー生成
     List<GameObject> _pList = new List<GameObject>(); // Player List
 
     // Use this for initialization
@@ -27,11 +27,6 @@ public class PlayerScoreUIController : MonoBehaviour
         _pList = playerRespawn.PlayerList;//現在いるプレイヤーのリストをもらう
 
         SetOfflinePlayerImage();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
     }
 
     /// <summary>
