@@ -45,13 +45,12 @@ public class RespawnController : MonoBehaviour {
 
         if(GameObject.FindGameObjectWithTag("PlayerStatus") == null)
         {
-            DebugMode();
+            DemoDebugMode();
         }
         else
         {
             SpawnPlayerByStatus();
         }
-
     }
 
     /// <summary>
@@ -97,6 +96,12 @@ public class RespawnController : MonoBehaviour {
             //影をPlayerの子にして生成
             GameObject s = Instantiate(shadow, p.transform.position - Vector3.down, Quaternion.identity, p.transform);
 
+            if (connectedPlayerStatus.IsAIList[cntPlSta.Value])
+            {
+                int aiMode = Random.Range(1, 3 + 1);//AIMODEをランダムに
+                p.GetComponent<PlayerMove>().PlayerAIState = (PlayerState)aiMode;
+            }
+
             //一回生成したポイントで二度生成しないように削除
             Destroy(transform.GetChild(positionAry[spawnPoint]).gameObject);
 
@@ -107,7 +112,7 @@ public class RespawnController : MonoBehaviour {
     /// <summary>
     /// デバッグ用&デモ用
     /// </summary>
-    void DebugMode()
+    void DemoDebugMode()
     {
         Debug.Log("PlayerSpawn_Debug");
         if(GameObject.Find("GameController") != null)
@@ -140,7 +145,7 @@ public class RespawnController : MonoBehaviour {
             if (preScene == "Title")
             {
                 int aiMode = Random.Range(1, 3 + 1);//AIMODEをランダムに
-                p.GetComponent<PlayerMove>().playerState = (PlayerState)aiMode;
+                p.GetComponent<PlayerMove>().PlayerAIState = (PlayerState)aiMode;
             }
         }
 

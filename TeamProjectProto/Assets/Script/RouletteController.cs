@@ -149,10 +149,10 @@ public class RouletteController : MonoBehaviour {
                 if (waitTime < 0)
                 {
                     //振動停止
-                    GamePad.SetVibration(PlayerIndex.One, 0.0f, 0.0f);
-                    GamePad.SetVibration(PlayerIndex.Two, 0.0f, 0.0f);
-                    GamePad.SetVibration(PlayerIndex.Three, 0.0f, 0.0f);
-                    GamePad.SetVibration(PlayerIndex.Four, 0.0f, 0.0f);
+                    for (int i = 0; i < 4; i++)
+                    {
+                        GamePad.SetVibration((PlayerIndex)i, 0.0f, 0.0f);
+                    }
                     waitTime = 1;
                     //状態変化
                     rouletteState = RouletteState.START;
@@ -277,7 +277,7 @@ public class RouletteController : MonoBehaviour {
     bool PushA()
     {
         //プレイヤーの操作状態がコントローラーだったら
-        if (jugglerPlayer.GetComponent<PlayerMove>().playerState == PlayerState.CONTROLLER)
+        if (jugglerPlayer.GetComponent<PlayerMove>().PlayerAIState == PlayerState.CONTROLLER)
         {
             //押したときだけ判定
             if (previousState.Buttons.A == ButtonState.Released && currentState.Buttons.A == ButtonState.Pressed)

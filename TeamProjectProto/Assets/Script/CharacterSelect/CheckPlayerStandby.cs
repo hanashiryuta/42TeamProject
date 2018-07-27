@@ -69,6 +69,7 @@ public class CheckPlayerStandby : MonoBehaviour
     public bool IsSpawn
     {
         get { return _isSpawn; }
+        set { _isSpawn = value; }
     }
     public bool IsCanPressBtn
     {
@@ -168,9 +169,8 @@ public class CheckPlayerStandby : MonoBehaviour
     {
         player = GameObject.Instantiate(playerPrefabs, transform.position, Quaternion.Euler(0, 180, 0));
         player.GetComponentInChildren<SkinnedMeshRenderer>().materials[0].mainTexture = tex;//テクスチャ変更
-        _playrLabel.enabled = true;
-
-        _isSpawn = true;
+        _playrLabel.enabled = true;//名前表示
+        _btnText.enabled = false;//未参加テキスト非表示
     }
   
     bool IsBtnPressed(string btn)
